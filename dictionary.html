@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <title>單字本 - Typing Hero</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="responsive_enhanced.css">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Orbitron', sans-serif;
+      background: linear-gradient(to bottom, #000010, #020111);
+      color: #fff;
+      text-align: center;
+    }
+    header {
+      background: #001122;
+      padding: 10px 20px;
+      box-shadow: 0 0 10px #0ff4;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 1.8rem;
+      color: #0ff;
+    }
+    .btn {
+      background: #0ff;
+      color: #001122;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      box-shadow: 0 0 8px #0ff;
+      font-size: 1rem;
+    }
+    main {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    #addForm, #bulkInput {
+      background: #001122;
+      padding: 16px;
+      border-radius: 12px;
+      margin-bottom: 24px;
+      box-shadow: 0 0 8px #0ff2;
+      text-align: left;
+    }
+    #addForm input, #bulkInput textarea {
+      padding: 10px;
+      margin: 8px 0;
+      border-radius: 8px;
+      border: 1px solid #0ff;
+      background: #000822;
+      color: #0ff;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    #bulkInput textarea {
+      height: 100px;
+      resize: vertical;
+    }
+    #addForm button, #bulkInput button {
+      padding: 10px 16px;
+      border: none;
+      border-radius: 8px;
+      background: #0ff;
+      color: #001122;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    #addForm button:hover, #bulkInput button:hover {
+      background: #33ffff;
+    }
+    #message {
+      margin-top: 10px;
+      color: #ff6;
+      font-size: 1rem;
+      min-height: 1.2rem;
+    }
+    #wordList {
+      list-style: none;
+      padding: 0;
+    }
+    #wordList li {
+      background: #111;
+      border: 2px solid #44f;
+      border-radius: 8px;
+      margin: 8px 0;
+      padding: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      animation: fadeIn 0.3s ease-in-out;
+      font-size: 1rem;
+    }
+    #wordList .text {
+      text-align: left;
+    }
+    #wordList .text span {
+      display: block;
+    }
+    #wordList button {
+      background: transparent;
+      border: none;
+      color: #f66;
+      font-size: 1.2rem;
+      cursor: pointer;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>📚 單字本</h1>
+    <button class="btn" onclick="location.href='index.html'">🏠 回首頁</button>
+  </header>
+
+  <main>
+    <!-- 單筆新增 -->
+    <section id="addForm">
+      <label>單筆新增：</label>
+      <input id="enInput" type="text" placeholder="英文單字">
+      <input id="zhInput" type="text" placeholder="中文翻譯">
+      <button onclick="addWord()">新增單字</button>
+    </section>
+
+    <!-- 批量貼上匯入 -->
+    <section id="bulkInput">
+      <label>批量貼上匯入格式（每行「英文 - 中文」或「英文,中文」）：</label>
+      <textarea id="bulkTextarea" placeholder="apple - 蘋果&#10;space,太空"></textarea>
+      <button onclick="bulkAddWords()">批量匯入 (貼上)</button>
+    </section>
+
+    <div id="message"></div>
+    <ul id="wordList"></ul>
+  </main>
+
+  <script>
+    let builtInWords = [];
+
+    // 載入內建單字（原本已有程式，不動）
+    async function loadBuiltIn() {
+      try {
+        const res = await fetch('quiz.html');
+        const text = await res.text();
+        const oneline = text.replace(/\r?\n/g, ' ');
+        const match = oneline.match(/const\s+vocabData\s*=\s*(\{.*?\});/);
+        if (match && match[1]) {
+          const objString = match[1];
+          const jsonString = objString.replace(/(\w+)\s*:/g, '"$1":').replace(/'/g, '"');
+          const vocabData = JSON.parse(jsonString);
+          builtInWords = [];
+          Object.values(vocabData).forEach(arr => {
+            arr.forEach(item => {
+              if (item.en) builtInWords.push(item.en.toLowerCase());
+            });
+          });
+        }
+      } catch (e) {
+        console.error('無法讀取 quiz.html 或解析失敗', e);
+      }
+    }
+
+    function loadDictionary() {
+      return JSON.parse(localStorage.getItem('dictionary') || '[]');
+    }
+    function saveDictionary(dict) {
+      try {
+        localStorage.setItem('dictionary', JSON.stringify(dict));
+      } catch (e) {
+        console.error('儲存 dictionary 失敗', e);
+        throw e;
+      }
+    }
+
+    function renderList() {
+      const listEl = document.getElementById('wordList');
+      listEl.innerHTML = '';
+      const dict = loadDictionary();
+      dict.forEach((item, index) => {
+        const li = document.createElement('li');
+        li.innerHTML = `
+          <div class="text">
+            <span><strong>EN:</strong> ${item.en}</span>
+            <span><strong>中:</strong> ${item.zh}</span>
+          </div>
+          <button onclick="removeWord(${index})">✖</button>
+        `;
+        listEl.appendChild(li);
+      });
+    }
+
+    function showMessage(msg, isError = false) {
+      const msgDiv = document.getElementById('message');
+      msgDiv.textContent = msg;
+      msgDiv.style.color = isError ? '#f55' : '#6f6';
+      setTimeout(() => { msgDiv.textContent = ''; }, 3000);
+    }
+
+    // 單筆新增：新增完成後通知 atlas 更新（不改基本功能，僅加通知）
+    function addWord() {
+      const enInput = document.getElementById('enInput');
+      const zhInput = document.getElementById('zhInput');
+      const en = enInput.value.trim();
+      const zh = zhInput.value.trim();
+      if (!en || !zh) return;
+
+      const dict = loadDictionary();
+      const lowerEn = en.toLowerCase();
+      if (builtInWords.includes(lowerEn)) {
+        showMessage('❗ 此單字已為系統內建', true);
+        return;
+      }
+      const existIdx = dict.findIndex(item => item.en.toLowerCase() === lowerEn);
+      if (existIdx !== -1) {
+        showMessage('❗ 此單字已存在於單字本中', true);
+        return;
+      }
+
+      dict.push({ en, zh });
+      try {
+        saveDictionary(dict);
+      } catch (e) {
+        showMessage('❗ 儲存失敗，請檢查 localStorage 空間', true);
+        return;
+      }
+      enInput.value = '';
+      zhInput.value = '';
+      renderList();
+      showMessage('✅ 已成功新增');
+
+      // 通知 atlas 更新
+      localStorage.setItem('dictionary_lastUpdate', Date.now());
+
+      // 如需自動跳 atlas，可在此加上：
+      // setTimeout(() => { location.href = 'atlas.html'; }, 500);
+    }
+
+    // 批量貼上匯入：新增完成後通知 atlas 更新
+    function bulkAddWords() {
+      const raw = document.getElementById('bulkTextarea').value.trim();
+      if (!raw) {
+        showMessage('❗ 請貼入內容', true);
+        return;
+      }
+      const lines = raw.split(/\r?\n/);
+      const parsed = [];
+      lines.forEach(line => {
+        if (!line.trim()) return;
+        let idx = line.indexOf('-');
+        if (idx === -1) {
+          idx = line.indexOf(',');
+        }
+        if (idx === -1) return;
+        const en = line.slice(0, idx).trim();
+        const zh = line.slice(idx + 1).trim();
+        if (!en || !zh) return;
+        parsed.push({ en, zh });
+      });
+
+      if (parsed.length === 0) {
+        showMessage('❗ 貼入格式錯誤；需「英文 - 中文」或「英文,中文」', true);
+        return;
+      }
+
+      // 預覽 confirm（顯示前 20 筆）
+      let previewStr = `將匯入以下 ${parsed.length} 筆單字：\n`;
+      const showN = Math.min(parsed.length, 20);
+      for (let i = 0; i < showN; i++) {
+        previewStr += `${i + 1}. ${parsed[i].en} - ${parsed[i].zh}\n`;
+      }
+      if (parsed.length > showN) {
+        previewStr += `…（還有 ${parsed.length - showN} 筆未列出）\n`;
+      }
+      previewStr += '確定要繼續嗎？';
+      if (!confirm(previewStr)) return;
+
+      const dict = loadDictionary();
+      let added = 0, replaced = 0;
+      parsed.forEach(obj => {
+        const lowerEn = obj.en.toLowerCase();
+        if (builtInWords.includes(lowerEn)) return;
+        const existIdx = dict.findIndex(item => item.en.toLowerCase() === lowerEn);
+        if (existIdx !== -1) {
+          const doOv = confirm(`「${obj.en}」已存在，按確定覆蓋，按取消略過。`);
+          if (doOv) {
+            dict[existIdx].zh = obj.zh;
+            replaced++;
+          }
+        } else {
+          dict.push({ en: obj.en, zh: obj.zh });
+          added++;
+        }
+      });
+
+      try {
+        saveDictionary(dict);
+      } catch (e) {
+        showMessage('❗ 儲存失敗，請檢查 localStorage 空間', true);
+        return;
+      }
+      renderList();
+      showMessage(`✅ 已新增 ${added} 筆，覆蓋 ${replaced} 筆`);
+
+      // 通知 atlas 更新
+      localStorage.setItem('dictionary_lastUpdate', Date.now());
+
+      document.getElementById('bulkTextarea').value = '';
+      // 如需自動跳 atlas，加上：
+      // setTimeout(() => { location.href = 'atlas.html'; }, 500);
+    }
+
+    function removeWord(index) {
+      const dict = loadDictionary();
+      dict.splice(index, 1);
+      saveDictionary(dict);
+      renderList();
+      showMessage('✅ 已刪除');
+
+      // 通知 atlas 更新 (若刪到空，myDictionary 星球會消失)
+      localStorage.setItem('dictionary_lastUpdate', Date.now());
+    }
+
+    window.addEventListener('load', async () => {
+      await loadBuiltIn();
+      renderList();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,3763 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>自動儲存管理器 - 英語學習遊戲</title>
+    <link rel="stylesheet" href="responsive_enhanced.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            color: white;
+            font-family: 'Microsoft JhengHei', 'Segoe UI', Arial, sans-serif;
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* 背景動畫 */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(120, 200, 255, 0.2) 0%, transparent 50%);
+            z-index: -1;
+            animation: backgroundFloat 20s ease-in-out infinite;
+        }
+
+        @keyframes backgroundFloat {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(30px, -30px) rotate(1deg); }
+            66% { transform: translate(-20px, 20px) rotate(-1deg); }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 25px;
+            padding: 40px;
+            backdrop-filter: blur(20px);
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            animation: containerGlow 8s ease-in-out infinite;
+        }
+
+        @keyframes containerGlow {
+            0%, 100% { box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 0 0 rgba(103, 126, 234, 0); }
+            50% { box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 0 30px rgba(103, 126, 234, 0.3); }
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 40px;
+            background: linear-gradient(45deg, #00ffff, #ff6b9d, #ffd93d);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 
+                0 0 30px rgba(0, 255, 255, 0.5),
+                0 0 60px rgba(255, 107, 157, 0.3);
+            font-size: 3rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            animation: titleGradient 4s ease-in-out infinite, titleFloat 6s ease-in-out infinite;
+            position: relative;
+        }
+
+        h1::before {
+            content: '🔄';
+            position: absolute;
+            left: -60px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 2.5rem;
+            animation: iconSpin 8s linear infinite;
+        }
+
+        @keyframes titleGradient {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        @keyframes titleFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        @keyframes iconSpin {
+            0% { transform: translateY(-50%) rotate(0deg); }
+            100% { transform: translateY(-50%) rotate(360deg); }
+        }
+
+        .status-panel {
+            max-width: 520px;
+            margin: 40px auto 32px auto;
+            padding: 32px 32px 24px 32px;
+            border-radius: 24px;
+            background: rgba(255,255,255,0.13);
+            box-shadow: 0 6px 32px rgba(0,0,0,0.13);
+            border: 2px solid rgba(0,0,0,0.08);
+        }
+        .status-panel h3 {
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: #174ea6;
+            margin-bottom: 24px;
+            letter-spacing: 1.5px;
+        }
+        .status-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 22px;
+            padding: 18px 28px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.18), rgba(255,255,255,0.09));
+            border-radius: 16px;
+            border: 2px solid rgba(0,0,0,0.07);
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        }
+        .status-label {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #26324a;
+            letter-spacing: 1px;
+            margin-right: 12px;
+            background: none !important;
+            -webkit-text-fill-color: unset !important;
+            text-shadow: 0 2px 8px rgba(255,255,255,0.2), 0 1px 0 #fff;
+        }
+        .status-value {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #222;
+            background: #fff6;
+            border-radius: 8px;
+            padding: 8px 16px;
+            min-width: 120px;
+            text-align: right;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+        }
+        @media (max-width: 600px) {
+            .status-panel {
+                max-width: 98vw;
+                padding: 16px 4vw 12px 4vw;
+            }
+            .status-panel h3 { font-size: 1.15rem; }
+            .status-label, .status-value { font-size: 1rem; }
+            .status-item { padding: 10px 8px; }
+        }
+
+        .status-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .status-item:hover {
+            transform: translateY(-2px);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.12));
+            box-shadow: 
+                0 8px 25px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .status-item:hover::before {
+            left: 100%;
+        }
+
+        .status-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .status-label {
+            font-weight: 700;
+            background: linear-gradient(45deg, #00ffff, #ff6b9d, #ffd93d);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 1.1rem;
+            position: relative;
+            z-index: 2;
+            text-shadow: 
+                0 0 10px rgba(0, 255, 255, 0.3),
+                0 0 20px rgba(255, 107, 157, 0.2);
+            letter-spacing: 0.5px;
+        }
+
+        .status-value {
+            color: #ffffff;
+            font-family: 'Courier New', monospace;
+            font-weight: 600;
+            font-size: 1rem;
+            padding: 8px 16px;
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.4));
+            border-radius: 10px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            position: relative;
+            z-index: 2;
+            transition: all 0.3s ease;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            box-shadow: 
+                0 2px 8px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+
+        .status-value:hover {
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.5));
+            transform: scale(1.05);
+            border-color: rgba(255, 255, 255, 0.5);
+            box-shadow: 
+                0 4px 12px rgba(0, 0, 0, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+        
+        /* 特殊狀態樣式 */
+        .status-value.success {
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.4), rgba(0, 212, 170, 0.3));
+            border-color: rgba(0, 255, 136, 0.6);
+            color: #00ff88;
+            text-shadow: 0 0 15px rgba(0, 255, 136, 0.7);
+            font-weight: 700;
+            animation: successPulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes successPulse {
+            0%, 100% { 
+                box-shadow: 
+                    0 2px 8px rgba(0, 0, 0, 0.3),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+                    0 0 0 rgba(0, 255, 136, 0);
+            }
+            50% { 
+                box-shadow: 
+                    0 2px 8px rgba(0, 0, 0, 0.3),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+                    0 0 20px rgba(0, 255, 136, 0.4);
+            }
+        }
+        
+        .status-value.error {
+            background: linear-gradient(135deg, rgba(255, 107, 107, 0.4), rgba(231, 76, 60, 0.3));
+            border-color: rgba(255, 107, 107, 0.6);
+            color: #ff6b6b;
+            text-shadow: 0 0 15px rgba(255, 107, 107, 0.7);
+            font-weight: 700;
+            animation: errorPulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes errorPulse {
+            0%, 100% { 
+                box-shadow: 
+                    0 2px 8px rgba(0, 0, 0, 0.3),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+                    0 0 0 rgba(255, 107, 107, 0);
+            }
+            50% { 
+                box-shadow: 
+                    0 2px 8px rgba(0, 0, 0, 0.3),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+                    0 0 20px rgba(255, 107, 107, 0.4);
+            }
+        }
+        
+        .status-value.warning {
+            background: linear-gradient(135deg, rgba(255, 193, 7, 0.3), rgba(255, 152, 0, 0.2));
+            border-color: rgba(255, 193, 7, 0.5);
+            color: #ffc107;
+            text-shadow: 0 0 10px rgba(255, 193, 7, 0.5);
+        }
+        
+        .status-value.info {
+            background: linear-gradient(135deg, rgba(52, 152, 219, 0.3), rgba(41, 128, 185, 0.2));
+            border-color: rgba(52, 152, 219, 0.5);
+            color: #3498db;
+            text-shadow: 0 0 10px rgba(52, 152, 219, 0.5);
+        }
+        
+        /* 自動儲存狀態特殊樣式 */
+        #autoSaveStatus {
+            font-size: 1.2rem !important;
+            font-weight: 900 !important;
+            letter-spacing: 1.5px !important;
+            padding: 15px 25px !important;
+            border-width: 4px !important;
+            position: relative;
+            background: linear-gradient(135deg, 
+                rgba(0, 0, 0, 0.9) 0%, 
+                rgba(0, 0, 0, 0.8) 50%, 
+                rgba(0, 0, 0, 0.9) 100%) !important;
+            color: #ffffff !important;
+            text-shadow: 
+                0 0 10px rgba(255, 255, 255, 0.8),
+                0 0 20px rgba(255, 255, 255, 0.6),
+                0 0 30px rgba(255, 255, 255, 0.4) !important;
+            box-shadow: 
+                0 4px 15px rgba(0, 0, 0, 0.6),
+                0 0 30px rgba(255, 255, 255, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+            backdrop-filter: blur(10px) !important;
+        }
+        
+        #autoSaveStatus::before {
+            content: '🔄';
+            position: absolute;
+            left: -35px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.4rem;
+            animation: spin 2s linear infinite;
+            filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.8));
+        }
+        
+        @keyframes spin {
+            0% { transform: translateY(-50%) rotate(0deg); }
+            100% { transform: translateY(-50%) rotate(360deg); }
+        }
+        
+        /* 自動儲存狀態的不同類型樣式 */
+        #autoSaveStatus.saving {
+            background: linear-gradient(135deg, 
+                rgba(52, 152, 219, 0.9) 0%, 
+                rgba(41, 128, 185, 0.8) 50%, 
+                rgba(52, 152, 219, 0.9) 100%) !important;
+            border-color: rgba(52, 152, 219, 0.8) !important;
+            color: #ffffff !important;
+            animation: savingPulse 1.5s ease-in-out infinite !important;
+        }
+        
+        @keyframes savingPulse {
+            0%, 100% { 
+                box-shadow: 
+                    0 4px 15px rgba(0, 0, 0, 0.6),
+                    0 0 30px rgba(52, 152, 219, 0.4),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            }
+            50% { 
+                box-shadow: 
+                    0 4px 15px rgba(0, 0, 0, 0.6),
+                    0 0 50px rgba(52, 152, 219, 0.7),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+            }
+        }
+        
+        #autoSaveStatus.success {
+            background: linear-gradient(135deg, 
+                rgba(0, 255, 136, 0.9) 0%, 
+                rgba(0, 212, 170, 0.8) 50%, 
+                rgba(0, 255, 136, 0.9) 100%) !important;
+            border-color: rgba(0, 255, 136, 0.8) !important;
+            color: #ffffff !important;
+            animation: successPulse 2s ease-in-out infinite !important;
+        }
+        
+        #autoSaveStatus.error {
+            background: linear-gradient(135deg, 
+                rgba(255, 107, 107, 0.9) 0%, 
+                rgba(231, 76, 60, 0.8) 50%, 
+                rgba(255, 107, 107, 0.9) 100%) !important;
+            border-color: rgba(255, 107, 107, 0.8) !important;
+            color: #ffffff !important;
+            animation: errorPulse 2s ease-in-out infinite !important;
+        }
+
+        .control-panel {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .control-group {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .control-group::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #00ffff, #ff6b9d, #ffd93d, #00ffff);
+            background-size: 200% 100%;
+            animation: borderGlow 3s linear infinite;
+        }
+
+        .control-group:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        @keyframes borderGlow {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 200% 0%; }
+        }
+
+        .control-group h3 {
+            background: linear-gradient(45deg, #00ff88, #00d4aa, #a8edea);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 25px;
+            text-align: center;
+            font-size: 1.4rem;
+            font-weight: 600;
+            position: relative;
+            z-index: 2;
+            text-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            padding: 16px 28px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            margin: 12px 8px;
+            min-width: 220px;
+            box-shadow: 
+                0 8px 25px rgba(102, 126, 234, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 
+                0 15px 35px rgba(102, 126, 234, 0.6),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 30%, #f093fb 100%);
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn:active {
+            transform: translateY(-2px) scale(0.98);
+            transition: all 0.1s ease;
+        }
+
+        .btn.danger {
+            background: linear-gradient(45deg, #ff6b6b, #e74c3c);
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+        }
+
+        .btn.danger:hover {
+            box-shadow: 0 6px 20px rgba(255, 107, 107, 0.5);
+        }
+
+        .btn.success {
+            background: linear-gradient(45deg, #00ff88, #00d4aa);
+            box-shadow: 0 4px 15px rgba(0, 255, 136, 0.3);
+        }
+
+        .btn.success:hover {
+            box-shadow: 0 6px 20px rgba(0, 255, 136, 0.5);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        /* Modal 樣式 */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
+            margin: 5% auto;
+            padding: 0;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            animation: modalSlideIn 0.3s ease-out;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, rgba(255, 107, 107, 0.2), rgba(231, 76, 60, 0.1));
+            padding: 20px 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px 20px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            color: #ff6b6b;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .close {
+            color: #ff6b6b;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .close:hover {
+            color: #e74c3c;
+            transform: scale(1.1);
+        }
+
+        .modal-body {
+            padding: 30px;
+        }
+
+        .clear-option {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .clear-option:hover {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.08));
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .clear-option h4 {
+            margin: 0 0 10px 0;
+            color: #ff6b6b;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .clear-option p {
+            margin: 0 0 15px 0;
+            color: #ffffff;
+            font-size: 0.95rem;
+            line-height: 1.4;
+        }
+
+        .clear-option .btn {
+            min-width: 150px;
+            padding: 12px 20px;
+            font-size: 0.9rem;
+        }
+
+        .rarity-select {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: #ffffff;
+            padding: 8px 12px;
+            margin-right: 10px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .rarity-select:hover {
+            border-color: rgba(255, 255, 255, 0.4);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.08));
+        }
+
+        .rarity-select option {
+            background: #2c3e50;
+            color: #ffffff;
+        }
+
+        .backup-list {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 35px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .backup-list::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #ffd93d, #ff6b9d, #667eea);
+            background-size: 200% 100%;
+            animation: listGlow 4s linear infinite;
+        }
+
+        @keyframes listGlow {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 200% 0%; }
+        }
+
+        .backup-item {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.08));
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .backup-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.8s ease;
+        }
+
+        .backup-item:hover {
+            transform: translateY(-3px);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1));
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .backup-item:hover::before {
+            left: 100%;
+        }
+
+        .backup-info {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .backup-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .backup-actions .btn {
+            min-width: 100px;
+            padding: 10px 15px;
+            font-size: 0.9rem;
+        }
+
+        .log-panel {
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.2));
+            border-radius: 20px;
+            padding: 30px;
+            font-family: 'Fira Code', 'Courier New', monospace;
+            max-height: 350px;
+            overflow-y: auto;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            position: relative;
+            backdrop-filter: blur(10px);
+        }
+
+        .log-panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #00ff88, #00d4aa, #a8edea);
+            background-size: 200% 100%;
+            animation: logGlow 3s linear infinite;
+        }
+
+        @keyframes logGlow {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 200% 0%; }
+        }
+
+        /* 自定義滾動條 */
+        .log-panel::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .log-panel::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+
+        .log-panel::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 4px;
+        }
+
+        .log-panel::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #764ba2, #f093fb);
+        }
+
+        .log-item {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            color: #e8e8e8;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .log-item:hover {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.05);
+            padding-left: 10px;
+            border-radius: 5px;
+        }
+
+        .log-item:last-child {
+            border-bottom: none;
+        }
+
+        /* 日誌項目圖標樣式 */
+        .log-item:before {
+            content: '▶';
+            color: #667eea;
+            margin-right: 8px;
+            font-size: 0.7rem;
+            opacity: 0.7;
+        }
+
+        .nav-buttons {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .nav-buttons .btn {
+            margin: 0 10px;
+            background: linear-gradient(45deg, #95a5a6, #7f8c8d);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .control-panel {
+                grid-template-columns: 1fr;
+            }
+
+            .backup-item {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .backup-actions {
+                justify-content: center;
+            }
+        }
+
+        .notification {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.95), rgba(0, 212, 170, 0.95));
+            color: white;
+            padding: 18px 30px;
+            border-radius: 15px;
+            font-weight: 600;
+            z-index: 1000;
+            transform: translateX(400px);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 
+                0 8px 25px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            font-size: 0.95rem;
+            letter-spacing: 0.5px;
+        }
+
+        .notification.show {
+            transform: translateX(0) scale(1);
+            animation: notificationPulse 0.6s ease;
+        }
+
+        .notification.error {
+            background: linear-gradient(135deg, rgba(255, 107, 107, 0.95), rgba(231, 76, 60, 0.95));
+        }
+
+        @keyframes notificationPulse {
+            0% { transform: translateX(0) scale(1); }
+            50% { transform: translateX(0) scale(1.05); }
+            100% { transform: translateX(0) scale(1); }
+        }
+
+        /* ========== 響應式設計 ========== */
+        
+        /* 平板適配 (1024px 以下) */
+        @media (max-width: 1024px) {
+            .container {
+                max-width: 95%;
+                padding: 25px;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .status-panel, .control-panel, .backup-list, .log-panel {
+                padding: 20px;
+            }
+            
+            .control-group {
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+            }
+            
+            .control-group button {
+                width: 100%;
+                margin: 0;
+            }
+        }
+
+        /* 手機橫屏適配 (768px 以下) */
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+            
+            .container {
+                max-width: 100%;
+                padding: 20px;
+                border-radius: 15px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+                margin-bottom: 20px;
+            }
+            
+            .status-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+                padding: 15px;
+            }
+            
+            .status-label {
+                font-size: 1rem;
+                text-shadow: 
+                    0 0 8px rgba(0, 255, 255, 0.4),
+                    0 0 16px rgba(255, 107, 157, 0.3);
+            }
+            
+            .status-value {
+                font-size: 0.95rem;
+                word-break: break-all;
+                padding: 6px 12px;
+                background: linear-gradient(135deg, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.5));
+                border: 1px solid rgba(255, 255, 255, 0.4);
+            }
+            
+            .backup-item {
+                padding: 12px;
+            }
+            
+            .backup-info {
+                font-size: 0.85rem;
+                line-height: 1.4;
+            }
+            
+            .backup-actions {
+                flex-direction: column;
+                gap: 8px;
+                margin-top: 10px;
+            }
+            
+            .backup-actions button {
+                width: 100%;
+                padding: 10px;
+                font-size: 0.85rem;
+            }
+            
+            .nav-buttons {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .nav-buttons button {
+                width: 100%;
+                max-width: none;
+            }
+            
+            .log-container {
+                max-height: 200px;
+                font-size: 0.8rem;
+            }
+        }
+
+        /* 手機豎屏適配 (600px 以下) */
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+            
+            .container {
+                padding: 15px;
+                border-radius: 12px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+                margin-bottom: 15px;
+            }
+            
+            h3 {
+                font-size: 1.3rem;
+                margin-bottom: 12px;
+            }
+            
+            .status-panel, .control-panel, .backup-list, .log-panel {
+                padding: 15px;
+                margin-bottom: 20px;
+                border-radius: 12px;
+            }
+            
+            .status-item {
+                padding: 12px;
+                border-radius: 10px;
+                margin-bottom: 12px;
+                border-width: 1px;
+            }
+            
+            button, .btn {
+                padding: 12px 16px;
+                font-size: 0.9rem;
+                border-radius: 8px;
+                min-height: 44px; /* 觸控友好 */
+            }
+            
+            .backup-item {
+                padding: 10px;
+                border-radius: 8px;
+                margin-bottom: 10px;
+            }
+            
+            #importFile {
+                width: 100%;
+                padding: 12px;
+                font-size: 0.9rem;
+            }
+        }
+
+        /* 超小螢幕適配 (480px 以下) */
+        @media (max-width: 480px) {
+            body {
+                padding: 8px;
+            }
+            
+            .container {
+                padding: 12px;
+                border-radius: 10px;
+            }
+            
+            h1 {
+                font-size: 1.6rem;
+                margin-bottom: 12px;
+            }
+            
+            h3 {
+                font-size: 1.2rem;
+                margin-bottom: 10px;
+            }
+            
+            .status-panel, .control-panel, .backup-list, .log-panel {
+                padding: 12px;
+                margin-bottom: 15px;
+                border-radius: 10px;
+            }
+            
+            .status-item {
+                padding: 8px;
+                margin-bottom: 8px;
+            }
+            
+            .status-label, .status-value {
+                font-size: 0.85rem;
+            }
+            
+            .status-value {
+                padding: 4px 8px;
+                background: linear-gradient(135deg, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.6));
+                border: 1px solid rgba(255, 255, 255, 0.5);
+            }
+            
+            button, .btn {
+                padding: 10px 12px;
+                font-size: 0.85rem;
+                min-height: 48px; /* 更大的觸控區域 */
+            }
+            
+            .backup-item {
+                padding: 8px;
+                margin-bottom: 8px;
+            }
+            
+            .backup-info {
+                font-size: 0.8rem;
+            }
+            
+            .backup-actions button {
+                padding: 8px;
+                font-size: 0.8rem;
+            }
+            
+            .log-container {
+                max-height: 150px;
+                font-size: 0.75rem;
+                padding: 8px;
+            }
+            
+            .notification {
+                font-size: 0.85rem;
+                padding: 10px 15px;
+                border-radius: 8px;
+                margin: 8px;
+            }
+        }
+
+        /* 觸控裝置優化 */
+        @media (hover: none) and (pointer: coarse) {
+            button, .btn {
+                min-height: 44px;
+                min-width: 44px;
+                padding: 12px 16px;
+            }
+            
+            .btn:hover {
+                transform: none; /* 移除hover效果 */
+            }
+            
+            .btn:active {
+                transform: scale(0.98);
+                opacity: 0.8;
+            }
+            
+            .backup-item {
+                cursor: default;
+            }
+            
+            .backup-item:hover {
+                transform: none;
+            }
+        }
+
+        /* 橫屏模式優化 */
+        @media (max-width: 900px) and (orientation: landscape) {
+            .container {
+                max-width: 95%;
+                padding: 15px;
+            }
+            
+            .status-panel, .control-panel {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 15px;
+                align-items: start;
+            }
+            
+            .status-panel h3, .control-panel h3 {
+                grid-column: 1 / -1;
+                margin-bottom: 10px;
+            }
+            
+            .nav-buttons {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 10px;
+            }
+        }
+
+        /* ========== 卡片管理器模態框樣式 ========== */
+        
+        .modal {
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            animation: modalFadeIn 0.3s ease;
+        }
+
+        @keyframes modalFadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
+            margin: 2% auto;
+            padding: 0;
+            border-radius: 25px;
+            width: 90%;
+            max-width: 1200px;
+            max-height: 90vh;
+            overflow-y: auto;
+            backdrop-filter: blur(20px);
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            animation: modalSlideIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes modalSlideIn {
+            from { 
+                transform: translateY(-50px) scale(0.9);
+                opacity: 0;
+            }
+            to { 
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, rgba(52, 152, 219, 0.2), rgba(41, 128, 185, 0.1));
+            padding: 25px 30px;
+            border-radius: 25px 25px 0 0;
+            border-bottom: 2px solid rgba(52, 152, 219, 0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            background: linear-gradient(45deg, #3498db, #2980b9);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin: 0;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .close {
+            color: #aaa;
+            font-size: 2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .close:hover {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
+
+        .modal-body {
+            padding: 30px;
+        }
+
+        .card-stats-panel, .rarity-progress-panel, .category-progress-panel, .card-actions-panel {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-stats-panel::before, .rarity-progress-panel::before, 
+        .category-progress-panel::before, .card-actions-panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #3498db, #2980b9, #3498db);
+            background-size: 200% 100%;
+            animation: borderGlow 3s linear infinite;
+        }
+
+        .card-stats-panel h3, .rarity-progress-panel h3, 
+        .category-progress-panel h3, .card-actions-panel h3 {
+            background: linear-gradient(45deg, #3498db, #2980b9);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .stat-item {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.08));
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .stat-item:hover {
+            transform: translateY(-2px);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1));
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .stat-label {
+            display: block;
+            color: #ccc;
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            display: block;
+            color: #fff;
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, #3498db, #2980b9);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .progress-item {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .progress-title {
+            color: #fff;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .progress-count {
+            color: #3498db;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3498db, #2980b9);
+            border-radius: 4px;
+            transition: width 0.8s ease;
+            position: relative;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: progressShine 2s linear infinite;
+        }
+
+        @keyframes progressShine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .action-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .action-buttons .btn {
+            margin: 0;
+            min-width: auto;
+        }
+
+        /* 響應式設計 */
+        @media (max-width: 768px) {
+            .modal-content {
+                width: 95%;
+                margin: 5% auto;
+                max-height: 95vh;
+            }
+
+            .modal-header {
+                padding: 20px;
+            }
+
+            .modal-header h2 {
+                font-size: 1.5rem;
+            }
+
+            .modal-body {
+                padding: 20px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .action-buttons {
+                grid-template-columns: 1fr;
+            }
+
+            .progress-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 5px;
+            }
+        }
+
+        /* 安全設定區域 */
+        .card {
+          background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+          border-radius: 15px;
+          padding: 20px;
+          margin-bottom: 30px;
+          border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .setting-group {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 20px;
+        }
+
+        .setting-item {
+          flex: 1;
+          min-width: 200px;
+        }
+
+        .setting-item label {
+          font-size: 1.2rem;
+          font-weight: 600;
+          color: #fff;
+          margin-bottom: 10px;
+        }
+
+        .setting-controls {
+          display: flex;
+          gap: 10px;
+        }
+
+        .setting-description {
+          font-size: 0.9rem;
+          color: #ccc;
+          margin-top: 5px;
+        }
+
+        /* 手機版優化 */
+        @media (max-width: 600px) {
+          #audioControls {
+            bottom: 10px;
+            right: 10px;
+          }
+          
+          #audioControls button {
+            width: 30px;
+            height: 30px;
+          }
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔄 自動儲存管理器</h1>
+        
+        <!-- 狀態面板 -->
+        <div class="status-panel">
+            <h3 style="color: #00ff88; margin-bottom: 20px; text-align: center;">📊 系統狀態</h3>
+            <div class="status-item">
+                <span class="status-label">自動儲存狀態：</span>
+                <span class="status-value" id="autoSaveStatus">檢查中...</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">最後儲存時間：</span>
+                <span class="status-value" id="lastSaveTime">檢查中...</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">監控資料項目：</span>
+                <span class="status-value" id="dataKeysCount">檢查中...</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">備份數量：</span>
+                <span class="status-value" id="backupCount">檢查中...</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">💎 寶石系統：</span>
+                <span class="status-value" id="gemSystemStatus">檢查中...</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">💎 寶石總數：</span>
+                <span class="status-value" id="totalGems">計算中...</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">💎 寶石種類：</span>
+                <span class="status-value" id="gemTypes">計算中...</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">🎴 卡片系統：</span>
+                <span class="status-value" id="cardSystemStatus">檢查中...</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">🎴 已收集卡片：</span>
+                <span class="status-value" id="collectedCards">計算中...</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">🎴 卡片碎片：</span>
+                <span class="status-value" id="cardShards">計算中...</span>
+            </div>
+        </div>
+
+        <!-- 控制面板 -->
+        <div class="control-panel">
+            <div class="control-group">
+                <h3>🎮 基本控制</h3>
+                <button class="btn" id="toggleAutoSave" onclick="toggleAutoSave()">
+                    切換自動儲存
+                </button>
+                <button class="btn success" onclick="manualSave()">
+                    💾 立即儲存
+                </button>
+                <button class="btn" onclick="refreshStatus()">
+                    🔄 重新整理狀態
+                </button>
+            </div>
+
+            <div class="control-group">
+                <h3>☁️ 雲端備份</h3>
+                <button class="btn" onclick="loadFromCloud()">
+                    📡 載入雲端備份
+                </button>
+                <button class="btn" onclick="exportBackup()">
+                    📤 匯出備份檔案
+                </button>
+                <button class="btn" onclick="importBackup()">
+                    📥 匯入備份檔案
+                </button>
+                <input type="file" id="importFile" accept=".json" style="display: none;" onchange="handleImportFile(event)">
+            </div>
+
+            <div class="control-group">
+                <h3>📋 備份管理</h3>
+                <button class="btn" onclick="generateFiveBackups()" style="background: linear-gradient(135deg, #FF6B6B, #4ECDC4);">
+                    📝 生成5個備份
+                </button>
+            </div>
+            
+            <div class="control-group">
+                <h3>💎 寶石系統管理</h3>
+                <button class="btn" onclick="syncGemData()" style="background: linear-gradient(135deg, #9b59b6, #e74c3c);">
+                    🔄 同步寶石資料
+                </button>
+                <button class="btn" onclick="exportGemData()">
+                    📤 匯出寶石資料
+                </button>
+                <button class="btn" onclick="validateGemData()">
+                    ✅ 驗證寶石資料
+                </button>
+            </div>
+            
+            <div class="control-group">
+                <h3>🎴 卡片系統管理</h3>
+                <button class="btn" onclick="syncCardData()" style="background: linear-gradient(135deg, #3498db, #2980b9);">
+                    🔄 同步卡片資料
+                </button>
+                <button class="btn" onclick="exportCardData()">
+                    📤 匯出卡片資料
+                </button>
+                <button class="btn" onclick="validateCardData()">
+                    ✅ 驗證卡片資料
+                </button>
+                <button class="btn" onclick="showCardManager()">
+                    📋 卡片管理器
+                </button>
+                <button class="btn" onclick="importCardFile()" style="background: linear-gradient(135deg, #e67e22, #d35400);">
+                    📥 匯入卡片檔案
+                </button>
+                <input type="file" id="cardFileInput" accept=".json,.txt,.csv" style="display: none;" onchange="handleCardFileImport(event)">
+            </div>
+            
+            <div class="control-group">
+                <h3>⚠️ 危險操作</h3>
+                <button class="btn danger" onclick="clearAllBackups()">
+                    🗑️ 清除所有備份
+                </button>
+                <button class="btn danger" onclick="resetAutoSave()">
+                    ⚡ 重設自動儲存
+                </button>
+            </div>
+        </div>
+
+        <!-- 備份列表 -->
+        <div class="backup-list">
+            <h3 style="color: #00ff88; margin-bottom: 20px; text-align: center;">📋 備份列表</h3>
+            <div id="backupListContainer">
+                載入中...
+            </div>
+        </div>
+
+        <!-- 操作紀錄 -->
+        <div class="log-panel">
+            <h3 style="color: #00ff88; margin-bottom: 15px;">📝 操作紀錄</h3>
+            <div id="logContainer">
+                系統啟動中...
+            </div>
+        </div>
+
+        <!-- 導航按鈕 -->
+        <div class="nav-buttons">
+            <button class="btn" onclick="window.location.href='index.html'">
+                🏠 回到首頁
+            </button>
+            <button class="btn" onclick="window.location.href='cards.html'">
+                🎴 卡片收集
+            </button>
+            <button class="btn" onclick="window.location.href='gacha.html'">
+                🎰 轉蛋系統
+            </button>
+        </div>
+    </div>
+
+    <!-- 通知容器 -->
+    <div id="notification" class="notification"></div>
+
+    <!-- 卡片管理器模態框 -->
+    <div id="cardManagerModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>🎴 卡片管理器</h2>
+                <span class="close" onclick="closeCardManager()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <!-- 卡片統計面板 -->
+                <div class="card-stats-panel">
+                    <h3>📊 卡片統計</h3>
+                    <div id="raritySummary" style="color:#3498db;font-weight:700;margin-bottom:10px;"></div>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <span class="stat-label">總卡片數</span>
+                            <span class="stat-value" id="totalCardsCount">-</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">已收集</span>
+                            <span class="stat-value" id="collectedCardsCount">-</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">收集進度</span>
+                            <span class="stat-value" id="collectionProgress">-</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">碎片總數</span>
+                            <span class="stat-value" id="totalShardsCount">-</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 稀有度進度 -->
+                <div class="rarity-progress-panel">
+                    <h3>⭐ 稀有度進度</h3>
+                    <div id="rarityProgressContainer"></div>
+                </div>
+
+                <!-- 類別進度 -->
+                <div class="category-progress-panel">
+                    <h3>📂 類別進度</h3>
+                    <div id="categoryProgressContainer"></div>
+                </div>
+
+                <!-- 卡片操作面板 -->
+                <div class="card-actions-panel">
+                    <h3>⚙️ 卡片操作</h3>
+                    <div class="action-buttons">
+                        <button class="btn" onclick="addRandomCard()">
+                            🎲 添加隨機卡片
+                        </button>
+                        <button class="btn" onclick="addRandomShards()">
+                            💎 添加隨機碎片
+                        </button>
+                        <button class="btn danger" onclick="showClearOptions()">
+                            🗑️ 清除選項
+                        </button>
+                        <button class="btn" onclick="exportCardBackup()">
+                            📤 匯出卡片備份
+                        </button>
+                        <button class="btn" onclick="importCardBackup()">
+                            📥 匯入卡片備份
+                        </button>
+                        <input type="file" id="cardImportFile" accept=".json" style="display: none;" onchange="handleCardImportFile(event)">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 清除選項 Modal -->
+    <div id="clearOptionsModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>🗑️ 清除選項</h3>
+                <span class="close" onclick="closeClearOptionsModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="clear-option">
+                    <h4>🎴 清除卡片</h4>
+                    <p>清除所有已擁有的卡片，但保留碎片</p>
+                    <button class="btn danger" onclick="clearCardsOnly()">清除卡片</button>
+                </div>
+                <div class="clear-option">
+                    <h4>🎯 清除特定稀有度卡片</h4>
+                    <p>只清除特定稀有度的卡片，但保留碎片</p>
+                    <select id="raritySelect" class="rarity-select">
+                        <option value="普通">普通</option>
+                        <option value="稀有">稀有</option>
+                        <option value="超稀有">超稀有</option>
+                    </select>
+                    <button class="btn danger" onclick="clearCardsByRarity()">清除選定稀有度卡片</button>
+                </div>
+                <div class="clear-option">
+                    <h4>💎 清除碎片</h4>
+                    <p>清除所有碎片，但保留已解鎖的卡片</p>
+                    <button class="btn danger" onclick="clearShardsOnly()">清除碎片</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 音樂控制按鈕 -->
+    <button id="bgMusicControl" onclick="toggleBackgroundMusic()" title="背景音樂控制">🎵</button>
+    <button id="toggleMusic" title="背景音樂"></button>
+
+    <!-- 載入必要的 JavaScript -->
+    <script src="js/userData.js"></script>
+    <script src="js/gemSystem.js"></script>
+    <script src="js/autoSaveSystem.js"></script>
+    <script src="js/cards.js"></script>
+    <!-- 移除直接載入 cardStorage.js，改為動態載入以避免初始化衝突 -->
+    
+    <script>
+        // 全域變數
+        let logs = [];
+        
+        // 頁面載入完成後初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(() => {
+                initializeManager();
+            }, 1000);
+        });
+        
+        /**
+         * 初始化管理器
+         */
+        function initializeManager() {
+            addLog('自動儲存管理器啟動中...');
+            
+            // 檢查自動儲存系統是否載入
+            if (typeof window.UnifiedAutoSave === 'undefined') {
+                addLog('❌ 自動儲存系統未載入，請重新整理頁面');
+                showNotification('自動儲存系統載入失敗，請重新整理頁面', 'error');
+                return;
+            }
+            
+            addLog('✅ 自動儲存系統已載入');
+            
+            // 動態載入卡片儲存系統（避免初始化衝突）
+            loadCardStorageSystem();
+            
+            // 添加資料變化監聽器
+            window.UnifiedAutoSave.addListener((key, value) => {
+                addLog(`🔄 資料變化：${key}`);
+            });
+            
+            // 初始化顯示
+            refreshStatus();
+            loadBackupList();
+            
+            addLog('🎯 管理器初始化完成');
+        }
+        
+        /**
+         * 動態載入卡片儲存系統
+         */
+        function loadCardStorageSystem() {
+            addLog('🎴 動態載入卡片儲存系統...');
+            
+            // 檢查是否已經載入
+            if (typeof window.CardStorage !== 'undefined') {
+                addLog('✅ 卡片儲存系統已載入');
+                return;
+            }
+            
+            // 動態載入 cardStorage.js
+            const script = document.createElement('script');
+            script.src = 'js/cardStorage.js';
+            script.onload = function() {
+                addLog('✅ 卡片儲存系統載入完成');
+                
+                // 手動初始化（避免自動初始化衝突）
+                if (typeof window.CardStorage !== 'undefined') {
+                    window.CardStorage.init();
+                    addLog('✅ 卡片儲存系統初始化完成');
+                }
+                
+                // 重新整理卡片狀態
+                setTimeout(() => {
+                    refreshCardStatus();
+                }, 500);
+            };
+            script.onerror = function() {
+                addLog('❌ 卡片儲存系統載入失敗');
+            };
+            document.head.appendChild(script);
+        }
+        
+        /**
+         * 切換自動儲存狀態
+         */
+        function toggleAutoSave() {
+            if (typeof window.UnifiedAutoSave === 'undefined') {
+                showNotification('自動儲存系統未載入', 'error');
+                return;
+            }
+            
+            const newState = window.UnifiedAutoSave.toggleAutoSave();
+            const statusText = newState ? '已啟用' : '已停用';
+            
+            addLog(`🔄 自動儲存已${statusText}`);
+            showNotification(`自動儲存${statusText}`, 'success');
+            
+            refreshStatus();
+        }
+        
+        /**
+         * 手動儲存
+         */
+        function manualSave() {
+            if (typeof window.UnifiedAutoSave === 'undefined') {
+                showNotification('自動儲存系統未載入', 'error');
+                return;
+            }
+            
+            addLog('💾 執行手動儲存...');
+            
+            try {
+                window.UnifiedAutoSave.performImmediateSave();
+                addLog('✅ 手動儲存完成');
+                showNotification('手動儲存完成', 'success');
+                refreshStatus();
+                loadBackupList();
+            } catch (error) {
+                addLog('❌ 手動儲存失敗：' + error.message);
+                showNotification('手動儲存失敗', 'error');
+            }
+        }
+        
+        /**
+         * 載入雲端備份
+         */
+        function loadFromCloud() {
+            if (typeof window.UnifiedAutoSave === 'undefined') {
+                showNotification('自動儲存系統未載入', 'error');
+                return;
+            }
+            
+            addLog('📡 準備載入雲端備份...');
+            
+            const success = window.UnifiedAutoSave.loadFromCloud();
+            
+            if (success) {
+                addLog('✅ 雲端備份載入成功');
+            } else {
+                addLog('❌ 雲端備份載入失敗或取消');
+            }
+        }
+        
+        /**
+         * 載入指定備份
+         */
+        function loadBackup(backupId) {
+            if (typeof window.UnifiedAutoSave === 'undefined') {
+                showNotification('自動儲存系統未載入', 'error');
+                return;
+            }
+            
+            addLog(`📡 載入備份 ID: ${backupId}...`);
+            
+            const success = window.UnifiedAutoSave.loadFromBackup(backupId);
+            
+            if (success) {
+                addLog('✅ 備份載入成功');
+            } else {
+                addLog('❌ 備份載入失敗或取消');
+            }
+        }
+        
+        /**
+         * 匯出備份檔案
+         */
+        function exportBackup() {
+            if (typeof window.UnifiedAutoSave === 'undefined') {
+                showNotification('自動儲存系統未載入', 'error');
+                return;
+            }
+            
+            try {
+                const data = window.UnifiedAutoSave.collectAllGameData();
+                const exportData = {
+                    gameData: data,
+                    exportTime: new Date().toISOString(),
+                    version: '2.0'
+                };
+                
+                const blob = new Blob([JSON.stringify(exportData, null, 2)], {
+                    type: 'application/json'
+                });
+                
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `遊戲備份_${new Date().toISOString().slice(0, 10)}.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                addLog('📤 備份檔案匯出完成');
+                showNotification('備份檔案匯出完成', 'success');
+                
+            } catch (error) {
+                addLog('❌ 匯出失敗：' + error.message);
+                showNotification('匯出失敗', 'error');
+            }
+        }
+        
+        /**
+         * 匯入備份檔案
+         */
+        function importBackup() {
+            document.getElementById('importFile').click();
+        }
+        
+        /**
+         * 處理匯入檔案
+         */
+        function handleImportFile(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const importData = JSON.parse(e.target.result);
+                    
+                    if (!importData.gameData) {
+                        throw new Error('檔案格式不正確');
+                    }
+                    
+                    if (!confirm(`確定要匯入此備份檔案嗎？\n\n匯出時間：${new Date(importData.exportTime).toLocaleString()}\n版本：${importData.version}\n\n⚠️ 這將會覆蓋目前的所有遊戲資料！`)) {
+                        return;
+                    }
+                    
+                    // 載入資料
+                    const gameData = importData.gameData;
+                    
+                    // 優先從主系統收集
+                    if (typeof window.gemSystem !== 'undefined' && window.gemSystem.gems) {
+                        gameData['gems'] = JSON.stringify(window.gemSystem.gems);
+                    } else {
+                        // 備用從localStorage收集
+                        const userData = JSON.parse(localStorage.getItem('grammarGameData') || '{}');
+                        if (userData.gems) {
+                            gameData['gems'] = JSON.stringify(userData.gems);
+                        }
+                    }
+                    
+                    // 同步到備用資料
+                    localStorage.setItem('grammarGameData', JSON.stringify(gameData));
+                    
+                    addLog('📥 備份檔案匯入完成');
+                    showNotification('備份檔案匯入成功！頁面將重新整理...', 'success');
+                    
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 2000);
+                    
+                } catch (error) {
+                    addLog('❌ 匯入失敗：' + error.message);
+                    showNotification('匯入失敗：檔案格式錯誤', 'error');
+                }
+            };
+            
+            reader.readAsText(file);
+            event.target.value = '';
+        }
+        
+        /**
+         * 生成5個備份
+         */
+        function generateFiveBackups() {
+            if (typeof window.UnifiedAutoSave === 'undefined') {
+                showNotification('自動儲存系統未載入', 'error');
+                return;
+            }
+            
+            if (!confirm('確定要生成5個間隔10分鐘的備份嗎？\n\n這將會清除現有備份並創建新的備份序列。')) {
+                return;
+            }
+            
+            addLog('📝 開始生成5個備份...');
+            
+            try {
+                // 先清除現有備份
+                window.UnifiedAutoSave.clearAllBackups();
+                
+                // 等待清除完成後再生成新備份
+                setTimeout(() => {
+                    window.UnifiedAutoSave.ensureFiveBackups();
+                    
+                    addLog('✅ 5個備份生成完成');
+                    showNotification('已生成5個間隔10分鐘的備份', 'success');
+                    
+                    // 重新整理顯示
+                    setTimeout(() => {
+                        refreshStatus();
+                        loadBackupList();
+                    }, 500);
+                }, 500);
+                
+            } catch (error) {
+                addLog('❌ 生成備份失敗：' + error.message);
+                showNotification('生成備份失敗', 'error');
+            }
+        }
+        
+        /**
+         * 清除所有備份
+         */
+        function clearAllBackups() {
+            if (typeof window.UnifiedAutoSave === 'undefined') {
+                showNotification('自動儲存系統未載入', 'error');
+                return;
+            }
+            
+            addLog('🗑️ 準備清除所有備份...');
+            window.UnifiedAutoSave.clearAllBackups();
+            
+            setTimeout(() => {
+                refreshStatus();
+                loadBackupList();
+            }, 1000);
+        }
+        
+        /**
+         * 重設自動儲存系統
+         */
+        function resetAutoSave() {
+            // 增加更詳細的確認對話框
+            const confirmMessage = `確定要重設自動儲存系統嗎？\n\n` +
+                `⚠️ 此操作將會：\n` +
+                `• 停止自動儲存功能\n` +
+                `• 清除自動儲存設定\n` +
+                `• 保留遊戲資料（不會清空卡片、星星等）\n\n` +
+                `📊 目前狀態：\n` +
+                `• 自動儲存：${typeof window.UnifiedAutoSave !== 'undefined' && window.UnifiedAutoSave.autoSaveEnabled ? '已啟用' : '已停用'}\n` +
+                `• 備份數量：${typeof window.UnifiedAutoSave !== 'undefined' ? window.UnifiedAutoSave.getBackupList().length : '無法檢查'} 個\n\n` +
+                `確定要繼續嗎？`;
+            
+            if (!confirm(confirmMessage)) {
+                return;
+            }
+            
+            try {
+                // 在重設前先創建一個備份
+                if (typeof window.UnifiedAutoSave !== 'undefined') {
+                    window.UnifiedAutoSave.performImmediateSave();
+                    addLog('💾 重設前已創建備份');
+                }
+                
+                // 停止自動儲存
+                if (typeof window.UnifiedAutoSave !== 'undefined') {
+                    window.UnifiedAutoSave.stopAutoSave();
+                }
+                
+                // 清除自動儲存相關設定（但保留遊戲資料）
+                localStorage.removeItem('unifiedAutoSaveEnabled');
+                localStorage.removeItem('unifiedAutoSaveInterval');
+                localStorage.removeItem('lastAutoSaveTime');
+                
+                addLog('⚡ 自動儲存系統已重設');
+                showNotification('自動儲存系統已重設，頁面將重新整理...', 'success');
+                
+                setTimeout(() => {
+                    window.location.reload();
+                }, 2000);
+                
+            } catch (error) {
+                addLog('❌ 重設失敗：' + error.message);
+                showNotification('重設失敗', 'error');
+            }
+        }
+        
+        /**
+         * 重新整理狀態
+         */
+        function refreshStatus() {
+            if (typeof window.UnifiedAutoSave === 'undefined') {
+                const autoSaveStatusEl = document.getElementById('autoSaveStatus');
+                const lastSaveTimeEl = document.getElementById('lastSaveTime');
+                const dataKeysCountEl = document.getElementById('dataKeysCount');
+                const backupCountEl = document.getElementById('backupCount');
+                const gemSystemStatusEl = document.getElementById('gemSystemStatus');
+                const totalGemsEl = document.getElementById('totalGems');
+                const gemTypesEl = document.getElementById('gemTypes');
+                
+                autoSaveStatusEl.textContent = '❌ 自動儲存系統未載入';
+                autoSaveStatusEl.className = 'status-value error';
+                lastSaveTimeEl.textContent = '無法檢查';
+                lastSaveTimeEl.className = 'status-value error';
+                dataKeysCountEl.textContent = '無法檢查';
+                dataKeysCountEl.className = 'status-value error';
+                backupCountEl.textContent = '無法檢查';
+                backupCountEl.className = 'status-value error';
+                gemSystemStatusEl.textContent = '無法檢查';
+                gemSystemStatusEl.className = 'status-value error';
+                totalGemsEl.textContent = '無法檢查';
+                totalGemsEl.className = 'status-value error';
+                gemTypesEl.textContent = '無法檢查';
+                gemTypesEl.className = 'status-value error';
+                return;
+            }
+            
+            try {
+                const status = window.UnifiedAutoSave.getStatus();
+                
+                const autoSaveStatusEl = document.getElementById('autoSaveStatus');
+                const lastSaveTimeEl = document.getElementById('lastSaveTime');
+                const dataKeysCountEl = document.getElementById('dataKeysCount');
+                const backupCountEl = document.getElementById('backupCount');
+                
+                autoSaveStatusEl.textContent = status.enabled ? '🟢 自動儲存已啟用' : '🔴 自動儲存已停用';
+                autoSaveStatusEl.className = 'status-value ' + (status.enabled ? 'success' : 'error');
+                
+                lastSaveTimeEl.textContent = status.lastSaveTime;
+                lastSaveTimeEl.className = 'status-value info';
+                
+                dataKeysCountEl.textContent = status.dataKeysCount + ' 項';
+                dataKeysCountEl.className = 'status-value info';
+                
+                backupCountEl.textContent = status.backupCount + ' 個';
+                backupCountEl.className = 'status-value info';
+                
+                // 檢查寶石系統狀態
+                refreshGemStatus();
+                
+                // 檢查卡片系統狀態
+                refreshCardStatus();
+                
+                // 更新切換按鈕文字
+                const toggleBtn = document.getElementById('toggleAutoSave');
+                if (toggleBtn) {
+                    toggleBtn.textContent = status.enabled ? '⏸️ 停用自動儲存' : '🔄 啟用自動儲存';
+                    toggleBtn.className = status.enabled ? 'btn danger' : 'btn success';
+                }
+                
+            } catch (error) {
+                addLog('❌ 狀態更新失敗：' + error.message);
+            }
+        }
+        
+        /**
+         * 刷新寶石系統狀態
+         */
+        function refreshGemStatus() {
+            try {
+                // 檢查寶石系統是否載入
+                const gemSystemLoaded = typeof window.gemSystem !== 'undefined';
+                const gemSystemStatusEl = document.getElementById('gemSystemStatus');
+                gemSystemStatusEl.textContent = gemSystemLoaded ? '🟢 已載入' : '🔴 未載入';
+                gemSystemStatusEl.className = 'status-value ' + (gemSystemLoaded ? 'success' : 'error');
+                
+                if (gemSystemLoaded && window.gemSystem.gems) {
+                    // 直接從寶石系統計算
+                    const totalGems = Object.values(window.gemSystem.gems)
+                        .reduce((total, count) => total + (parseInt(count) || 0), 0);
+                    const uniqueTypes = Object.keys(window.gemSystem.gems)
+                        .filter(key => parseInt(window.gemSystem.gems[key]) > 0).length;
+                        
+                                            const totalGemsEl = document.getElementById('totalGems');
+                        const gemTypesEl = document.getElementById('gemTypes');
+                        totalGemsEl.textContent = totalGems + ' 顆';
+                        totalGemsEl.className = 'status-value success';
+                        gemTypesEl.textContent = uniqueTypes + ' 種';
+                        gemTypesEl.className = 'status-value info';
+                } else {
+                    // 從備用方案檢查
+                    const userData = JSON.parse(localStorage.getItem('grammarGameData') || '{}');
+                    if (userData.gems) {
+                        const totalGems = Object.values(userData.gems)
+                            .reduce((total, count) => total + (parseInt(count) || 0), 0);
+                        const uniqueTypes = Object.keys(userData.gems)
+                            .filter(key => parseInt(userData.gems[key]) > 0).length;
+                            
+                        const totalGemsEl = document.getElementById('totalGems');
+                        const gemTypesEl = document.getElementById('gemTypes');
+                        totalGemsEl.textContent = totalGems + ' 顆 (備用)';
+                        totalGemsEl.className = 'status-value warning';
+                        gemTypesEl.textContent = uniqueTypes + ' 種 (備用)';
+                        gemTypesEl.className = 'status-value warning';
+                    } else {
+                        const totalGemsEl = document.getElementById('totalGems');
+                        const gemTypesEl = document.getElementById('gemTypes');
+                        totalGemsEl.textContent = '0 顆';
+                        totalGemsEl.className = 'status-value error';
+                        gemTypesEl.textContent = '0 種';
+                        gemTypesEl.className = 'status-value error';
+                    }
+                }
+                
+            } catch (error) {
+                const gemSystemStatusEl = document.getElementById('gemSystemStatus');
+                const totalGemsEl = document.getElementById('totalGems');
+                const gemTypesEl = document.getElementById('gemTypes');
+                gemSystemStatusEl.textContent = '❌ 檢查失敗';
+                gemSystemStatusEl.className = 'status-value error';
+                totalGemsEl.textContent = '無法計算';
+                totalGemsEl.className = 'status-value error';
+                gemTypesEl.textContent = '無法計算';
+                gemTypesEl.className = 'status-value error';
+                console.error('寶石狀態檢查失敗:', error);
+            }
+        }
+        
+        /**
+         * 刷新卡片系統狀態
+         */
+        function refreshCardStatus() {
+            try {
+                // 檢查卡片系統是否載入
+                const cardSystemLoaded = typeof window.CardStorage !== 'undefined';
+                const cardSystemStatusEl = document.getElementById('cardSystemStatus');
+                cardSystemStatusEl.textContent = cardSystemLoaded ? '🟢 已載入' : '🔄 載入中...';
+                cardSystemStatusEl.className = 'status-value ' + (cardSystemLoaded ? 'success' : 'info');
+                
+                if (cardSystemLoaded) {
+                    // 獲取卡片收集進度
+                    const progress = window.CardStorage.getCollectionProgress();
+                    const shards = window.CardStorage.getShards();
+                    const totalShards = Object.values(shards).reduce((total, count) => total + (parseInt(count) || 0), 0);
+                    
+                    const collectedCardsEl = document.getElementById('collectedCards');
+                    const cardShardsEl = document.getElementById('cardShards');
+                    collectedCardsEl.textContent = `${progress.unlocked}/${progress.total} (${progress.percentage}%)`;
+                    collectedCardsEl.className = 'status-value success';
+                    cardShardsEl.textContent = totalShards + ' 個';
+                    cardShardsEl.className = 'status-value info';
+                } else {
+                    // 從備用方案檢查（只讀取，不修改）
+                    const userData = JSON.parse(localStorage.getItem('grammarGameData') || '{}');
+                    if (userData.ownedCards) {
+                        const ownedCount = Object.keys(userData.ownedCards).length;
+                        const shards = userData.cardShards || {};
+                        const totalShards = Object.values(shards).reduce((total, count) => total + (parseInt(count) || 0), 0);
+                        
+                        const collectedCardsEl = document.getElementById('collectedCards');
+                        const cardShardsEl = document.getElementById('cardShards');
+                        collectedCardsEl.textContent = ownedCount + ' 張 (備用)';
+                        collectedCardsEl.className = 'status-value warning';
+                        cardShardsEl.textContent = totalShards + ' 個 (備用)';
+                        cardShardsEl.className = 'status-value warning';
+                    } else {
+                        const collectedCardsEl = document.getElementById('collectedCards');
+                        const cardShardsEl = document.getElementById('cardShards');
+                        collectedCardsEl.textContent = '0 張';
+                        collectedCardsEl.className = 'status-value error';
+                        cardShardsEl.textContent = '0 個';
+                        cardShardsEl.className = 'status-value error';
+                    }
+                }
+                
+            } catch (error) {
+                const cardSystemStatusEl = document.getElementById('cardSystemStatus');
+                const collectedCardsEl = document.getElementById('collectedCards');
+                const cardShardsEl = document.getElementById('cardShards');
+                cardSystemStatusEl.textContent = '❌ 檢查失敗';
+                cardSystemStatusEl.className = 'status-value error';
+                collectedCardsEl.textContent = '無法計算';
+                collectedCardsEl.className = 'status-value error';
+                cardShardsEl.textContent = '無法計算';
+                cardShardsEl.className = 'status-value error';
+                console.error('卡片狀態檢查失敗:', error);
+            }
+        }
+        
+        /**
+         * 載入備份列表
+         */
+        function loadBackupList() {
+            const container = document.getElementById('backupListContainer');
+            
+            if (typeof window.UnifiedAutoSave === 'undefined') {
+                container.innerHTML = '<div style="text-align: center; color: #ff6b6b;">自動儲存系統未載入</div>';
+                return;
+            }
+            
+            try {
+                const backupList = window.UnifiedAutoSave.getBackupList();
+                
+                if (backupList.length === 0) {
+                    container.innerHTML = '<div style="text-align: center; color: #aaa;">目前沒有備份</div>';
+                    return;
+                }
+                
+                let html = '';
+                backupList.forEach((backup, index) => {
+                    const saveTime = new Date(backup.saveTime).toLocaleString();
+                    let saveType = backup.saveType === 'auto' ? '自動儲存' : '手動儲存';
+                    
+                    // 如果是歷史備份，添加標記
+                    if (backup.isHistorical) {
+                        saveType += ' (歷史)';
+                    }
+                    
+                    const dataSize = (backup.dataSize / 1024).toFixed(1) + ' KB';
+                    
+                    // 顯示星星數量、卡片數量和寶石數量（如果有的話）
+                    const totalStars = backup.totalStars !== undefined ? backup.totalStars : '未知';
+                    const cardCount = backup.cardCount !== undefined ? backup.cardCount : '未知';
+                    const totalGems = backup.totalGems !== undefined ? backup.totalGems : '未知';
+                    const uniqueGemTypes = backup.uniqueGemTypes !== undefined ? backup.uniqueGemTypes : '未知';
+                    
+                    // 計算時間差距
+                    const now = new Date();
+                    const backupTime = new Date(backup.saveTime);
+                    const timeDiff = Math.round((now - backupTime) / (1000 * 60)); // 分鐘
+                    let timeAgo = '';
+                    if (timeDiff < 60) {
+                        timeAgo = `${timeDiff} 分鐘前`;
+                    } else if (timeDiff < 1440) {
+                        timeAgo = `${Math.round(timeDiff / 60)} 小時前`;
+                    } else {
+                        timeAgo = `${Math.round(timeDiff / 1440)} 天前`;
+                    }
+                    
+                    html += `
+                        <div class="backup-item" style="${backup.isHistorical ? 'opacity: 0.8; border-left: 3px solid #888;' : ''}">
+                            <div class="backup-info">
+                                <div><strong>🕐 ${saveTime}</strong> <span style="color: #aaa; font-size: 0.9em;">(${timeAgo})</span></div>
+                                <div>類型：${saveType} | 大小：${dataSize}</div>
+                                <div style="color: #ffd700;">⭐ ${totalStars} 顆星星 | 🎴 ${cardCount} 張卡片 | 💎 ${totalGems} 顆寶石 (${uniqueGemTypes} 種)</div>
+                            </div>
+                            <div class="backup-actions">
+                                <button class="btn" onclick="loadBackup(${backup.id})">
+                                    📡 載入
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                container.innerHTML = html;
+                
+            } catch (error) {
+                container.innerHTML = '<div style="text-align: center; color: #ff6b6b;">載入備份列表失敗</div>';
+                addLog('❌ 載入備份列表失敗：' + error.message);
+            }
+        }
+        
+        /**
+         * 添加操作紀錄
+         */
+        function addLog(message) {
+            const timestamp = new Date().toLocaleTimeString();
+            logs.unshift(`[${timestamp}] ${message}`);
+            
+            // 只保留最新的50條紀錄
+            if (logs.length > 50) {
+                logs = logs.slice(0, 50);
+            }
+            
+            updateLogDisplay();
+        }
+        
+        /**
+         * 更新紀錄顯示
+         */
+        function updateLogDisplay() {
+            const container = document.getElementById('logContainer');
+            container.innerHTML = logs.map(log => `<div class="log-item">${log}</div>`).join('');
+        }
+        
+        /**
+         * 顯示通知
+         */
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = `notification ${type}`;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+        
+        // 每30秒自動重新整理狀態
+        setInterval(() => {
+            if (typeof window.UnifiedAutoSave !== 'undefined') {
+                refreshStatus();
+            }
+        }, 30000);
+        
+        // 點擊模態框外部關閉
+        window.onclick = function(event) {
+            const modal = document.getElementById('cardManagerModal');
+            if (event.target === modal) {
+                closeCardManager();
+            }
+        }
+        
+        // 等待卡片系統載入完成
+        function waitForCardSystem() {
+            if (typeof window.CardStorage !== 'undefined' && window.allCards) {
+                addLog('🎴 卡片系統已載入完成');
+                refreshCardStatus();
+            } else {
+                setTimeout(waitForCardSystem, 500);
+            }
+        }
+        
+        // 頁面載入後等待卡片系統
+        setTimeout(waitForCardSystem, 2000);
+        
+        // =================
+        // 寶石系統管理功能
+        // =================
+        
+        /**
+         * 同步寶石資料
+         */
+        function syncGemData() {
+            addLog('💎 開始同步寶石資料...');
+            
+            try {
+                // 檢查寶石系統是否載入
+                if (typeof window.gemSystem === 'undefined') {
+                    addLog('❌ 寶石系統未載入，無法同步');
+                    showNotification('寶石系統未載入，無法同步', 'error');
+                    return;
+                }
+                
+                // 強制觸發寶石資料更新
+                const currentGems = window.gemSystem.gems;
+                const userData = JSON.parse(localStorage.getItem('grammarGameData') || '{}');
+                
+                // 同步到備用資料
+                userData.gems = currentGems;
+                localStorage.setItem('grammarGameData', JSON.stringify(userData));
+                
+                // 觸發自動儲存
+                if (window.UnifiedAutoSave && window.UnifiedAutoSave.autoSaveEnabled) {
+                    window.UnifiedAutoSave.scheduleAutoSave();
+                }
+                
+                addLog('✅ 寶石資料同步完成');
+                showNotification('寶石資料已成功同步', 'success');
+                
+                // 重新整理狀態
+                refreshGemStatus();
+                
+            } catch (error) {
+                addLog('❌ 寶石資料同步失敗：' + error.message);
+                showNotification('寶石資料同步失敗', 'error');
+            }
+        }
+        
+        /**
+         * 匯出寶石資料
+         */
+        function exportGemData() {
+            addLog('💎 準備匯出寶石資料...');
+            
+            try {
+                let gemData = {};
+                
+                // 從寶石系統取得資料
+                if (typeof window.gemSystem !== 'undefined' && window.gemSystem.gems) {
+                    gemData = window.gemSystem.gems;
+                } else {
+                    // 從備用方案取得
+                    const userData = JSON.parse(localStorage.getItem('grammarGameData') || '{}');
+                    gemData = userData.gems || {};
+                }
+                
+                // 創建匯出資料
+                const exportData = {
+                    exportTime: new Date().toISOString(),
+                    version: '1.0',
+                    gems: gemData,
+                    statistics: {
+                        totalGems: Object.values(gemData).reduce((total, count) => total + (parseInt(count) || 0), 0),
+                        uniqueTypes: Object.keys(gemData).filter(key => parseInt(gemData[key]) > 0).length
+                    }
+                };
+                
+                // 下載檔案
+                const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `gem_data_${new Date().toISOString().slice(0, 10)}.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                addLog('✅ 寶石資料匯出完成');
+                showNotification('寶石資料已匯出', 'success');
+                
+            } catch (error) {
+                addLog('❌ 寶石資料匯出失敗：' + error.message);
+                showNotification('寶石資料匯出失敗', 'error');
+            }
+        }
+        
+        /**
+         * 驗證寶石資料
+         */
+        function validateGemData() {
+            addLog('💎 開始驗證寶石資料...');
+            
+            try {
+                let issues = [];
+                let totalGems = 0;
+                let validTypes = 0;
+                
+                // 檢查主要寶石系統
+                if (typeof window.gemSystem !== 'undefined' && window.gemSystem.gems) {
+                    const mainGems = window.gemSystem.gems;
+                    
+                    for (const [gemType, count] of Object.entries(mainGems)) {
+                        const numCount = parseInt(count);
+                        if (isNaN(numCount) || numCount < 0) {
+                            issues.push(`寶石類型 "${gemType}" 數量無效: ${count}`);
+                        } else {
+                            totalGems += numCount;
+                            if (numCount > 0) validTypes++;
+                        }
+                    }
+                    
+                    addLog(`💎 主系統：${totalGems} 顆寶石，${validTypes} 種類型`);
+                } else {
+                    issues.push('主要寶石系統未載入');
+                }
+                
+                // 檢查備用系統
+                const userData = JSON.parse(localStorage.getItem('grammarGameData') || '{}');
+                if (userData.gems) {
+                    let backupTotal = 0;
+                    let backupTypes = 0;
+                    
+                    for (const [gemType, count] of Object.entries(userData.gems)) {
+                        const numCount = parseInt(count);
+                        if (!isNaN(numCount) && numCount > 0) {
+                            backupTotal += numCount;
+                            backupTypes++;
+                        }
+                    }
+                    
+                    addLog(`💎 備用系統：${backupTotal} 顆寶石，${backupTypes} 種類型`);
+                    
+                    // 比較主系統和備用系統
+                    if (totalGems !== backupTotal) {
+                        issues.push(`主系統與備用系統寶石總數不符 (${totalGems} vs ${backupTotal})`);
+                    }
+                } else {
+                    issues.push('備用寶石資料不存在');
+                }
+                
+                // 報告結果
+                if (issues.length === 0) {
+                    addLog('✅ 寶石資料驗證通過');
+                    showNotification('寶石資料驗證通過', 'success');
+                } else {
+                    addLog('⚠️ 發現以下問題：');
+                    issues.forEach(issue => addLog(`  - ${issue}`));
+                    showNotification(`發現 ${issues.length} 個問題，請查看日誌`, 'error');
+                }
+                
+                // 重新整理顯示
+                refreshGemStatus();
+                
+            } catch (error) {
+                addLog('❌ 寶石資料驗證失敗：' + error.message);
+                showNotification('寶石資料驗證失敗', 'error');
+            }
+        }
+        
+        // =================
+        // 卡片系統管理功能
+        // =================
+        
+        /**
+         * 同步卡片資料
+         */
+        function syncCardData() {
+            addLog('🎴 開始同步卡片資料...');
+            
+            try {
+                // 檢查卡片系統是否載入
+                if (typeof window.CardStorage === 'undefined') {
+                    addLog('❌ 卡片系統未載入，正在嘗試載入...');
+                    loadCardStorageSystem();
+                    
+                    // 等待載入完成
+                    setTimeout(() => {
+                        if (typeof window.CardStorage !== 'undefined') {
+                            syncCardData(); // 重新嘗試
+                        } else {
+                            showNotification('卡片系統載入失敗，無法同步', 'error');
+                        }
+                    }, 2000);
+                    return;
+                }
+                
+                // 同步到備用資料
+                const userData = JSON.parse(localStorage.getItem('grammarGameData') || '{}');
+                userData.ownedCards = window.CardStorage.getOwnedCards();
+                userData.cardShards = window.CardStorage.getShards();
+                userData.cardStats = window.CardStorage.getCardStats();
+                localStorage.setItem('grammarGameData', JSON.stringify(userData));
+                
+                // 觸發自動儲存
+                if (window.UnifiedAutoSave && window.UnifiedAutoSave.autoSaveEnabled) {
+                    window.UnifiedAutoSave.scheduleAutoSave();
+                }
+                
+                addLog('✅ 卡片資料同步完成');
+                showNotification('卡片資料已成功同步', 'success');
+                
+                // 重新整理狀態
+                refreshCardStatus();
+                
+            } catch (error) {
+                addLog('❌ 卡片資料同步失敗：' + error.message);
+                showNotification('卡片資料同步失敗', 'error');
+            }
+        }
+        
+        /**
+         * 匯出卡片資料
+         */
+        function exportCardData() {
+            addLog('🎴 準備匯出卡片資料...');
+            
+            try {
+                let cardData = {};
+                
+                // 從卡片系統取得資料
+                if (typeof window.CardStorage !== 'undefined') {
+                    cardData = {
+                        ownedCards: window.CardStorage.getOwnedCards(),
+                        cardShards: window.CardStorage.getShards(),
+                        cardStats: window.CardStorage.getCardStats()
+                    };
+                } else {
+                    // 從備用方案取得
+                    const userData = JSON.parse(localStorage.getItem('grammarGameData') || '{}');
+                    cardData = {
+                        ownedCards: userData.ownedCards || {},
+                        cardShards: userData.cardShards || {},
+                        cardStats: userData.cardStats || {}
+                    };
+                }
+                
+                // 創建匯出資料
+                const exportData = {
+                    exportTime: new Date().toISOString(),
+                    version: '1.0',
+                    ...cardData,
+                    statistics: {
+                        totalCards: Object.keys(cardData.ownedCards).length,
+                        totalShards: Object.values(cardData.cardShards).reduce((total, count) => total + (parseInt(count) || 0), 0)
+                    }
+                };
+                
+                // 下載檔案
+                const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `card_data_${new Date().toISOString().slice(0, 10)}.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                addLog('✅ 卡片資料匯出完成');
+                showNotification('卡片資料已匯出', 'success');
+                
+            } catch (error) {
+                addLog('❌ 卡片資料匯出失敗：' + error.message);
+                showNotification('卡片資料匯出失敗', 'error');
+            }
+        }
+        
+        /**
+         * 驗證卡片資料
+         */
+        function validateCardData() {
+            addLog('🎴 開始驗證卡片資料...');
+            
+            try {
+                let issues = [];
+                
+                // 檢查主要卡片系統
+                if (typeof window.CardStorage !== 'undefined') {
+                    const ownedCards = window.CardStorage.getOwnedCards();
+                    const shards = window.CardStorage.getShards();
+                    const stats = window.CardStorage.getCardStats();
+                    
+                    addLog(`🎴 主系統：${Object.keys(ownedCards).length} 張卡片，${Object.keys(shards).length} 種碎片`);
+                    
+                    // 檢查碎片數量是否為正數
+                    for (const [cardId, count] of Object.entries(shards)) {
+                        if (parseInt(count) < 0) {
+                            issues.push(`卡片 "${cardId}" 碎片數量為負數: ${count}`);
+                        }
+                    }
+                } else {
+                    issues.push('主要卡片系統未載入');
+                }
+                
+                // 檢查備用系統
+                const userData = JSON.parse(localStorage.getItem('grammarGameData') || '{}');
+                if (userData.ownedCards) {
+                    addLog(`🎴 備用系統：${Object.keys(userData.ownedCards).length} 張卡片`);
+                } else {
+                    issues.push('備用卡片資料不存在');
+                }
+                
+                // 報告結果
+                if (issues.length === 0) {
+                    addLog('✅ 卡片資料驗證通過');
+                    showNotification('卡片資料驗證通過', 'success');
+                } else {
+                    addLog('⚠️ 發現以下問題：');
+                    issues.forEach(issue => addLog(`  - ${issue}`));
+                    showNotification(`發現 ${issues.length} 個問題，請查看日誌`, 'error');
+                }
+                
+                // 重新整理顯示
+                refreshCardStatus();
+                
+            } catch (error) {
+                addLog('❌ 卡片資料驗證失敗：' + error.message);
+                showNotification('卡片資料驗證失敗', 'error');
+            }
+        }
+        
+        /**
+         * 顯示卡片管理器
+         */
+        function showCardManager() {
+            addLog('🎴 開啟卡片管理器...');
+            
+            try {
+                // 檢查卡片系統是否載入
+                if (typeof window.CardStorage === 'undefined') {
+                    addLog('❌ 卡片系統未載入，正在嘗試載入...');
+                    loadCardStorageSystem();
+                    
+                    // 等待載入完成
+                    setTimeout(() => {
+                        if (typeof window.CardStorage !== 'undefined') {
+                            showCardManager(); // 重新嘗試
+                        } else {
+                            showNotification('卡片系統載入失敗，無法開啟管理器', 'error');
+                        }
+                    }, 2000);
+                    return;
+                }
+                
+                // 更新卡片統計
+                updateCardManagerStats();
+                
+                // 顯示模態框
+                document.getElementById('cardManagerModal').style.display = 'block';
+                
+                addLog('✅ 卡片管理器已開啟');
+                
+            } catch (error) {
+                addLog('❌ 開啟卡片管理器失敗：' + error.message);
+                showNotification('開啟卡片管理器失敗', 'error');
+            }
+        }
+        
+        /**
+         * 關閉卡片管理器
+         */
+        function closeCardManager() {
+            document.getElementById('cardManagerModal').style.display = 'none';
+            addLog('🎴 卡片管理器已關閉');
+        }
+        
+        /**
+         * 更新卡片管理器統計
+         */
+        function updateCardManagerStats() {
+            try {
+                if (typeof window.CardStorage === 'undefined') {
+                    throw new Error('卡片系統未載入');
+                }
+                
+                // 更新基本統計
+                const progress = window.CardStorage.getCollectionProgress();
+                const shards = window.CardStorage.getShards();
+                const totalShards = Object.values(shards).reduce((total, count) => total + (parseInt(count) || 0), 0);
+                
+                document.getElementById('totalCardsCount').textContent = progress.total;
+                document.getElementById('collectedCardsCount').textContent = progress.unlocked;
+                document.getElementById('collectionProgress').textContent = progress.percentage + '%';
+                document.getElementById('totalShardsCount').textContent = totalShards;
+                
+                // 新增：各稀有度收集數量
+                const rarityProgress = window.CardStorage.getRarityProgress();
+                let raritySummary = '';
+                for (const [rarity, data] of Object.entries(rarityProgress)) {
+                    raritySummary += `${rarity}：${data.unlocked} 張　`;
+                }
+                document.getElementById('raritySummary').textContent = raritySummary.trim();
+                
+                // 更新稀有度進度
+                updateRarityProgress();
+                
+                // 更新類別進度
+                updateCategoryProgress();
+                
+            } catch (error) {
+                console.error('更新卡片統計失敗:', error);
+                // 顯示錯誤狀態
+                document.getElementById('totalCardsCount').textContent = '錯誤';
+                document.getElementById('collectedCardsCount').textContent = '錯誤';
+                document.getElementById('collectionProgress').textContent = '錯誤';
+                document.getElementById('totalShardsCount').textContent = '錯誤';
+                document.getElementById('raritySummary').textContent = '';
+                
+                // 嘗試重新載入卡片系統
+                if (typeof window.CardStorage === 'undefined') {
+                    loadCardStorageSystem();
+                }
+            }
+        }
+        
+        /**
+         * 更新稀有度進度
+         */
+        function updateRarityProgress() {
+            try {
+                const rarityProgress = window.CardStorage.getRarityProgress();
+                const container = document.getElementById('rarityProgressContainer');
+                
+                let html = '';
+                for (const [rarity, data] of Object.entries(rarityProgress)) {
+                    const percentage = data.total > 0 ? (data.unlocked / data.total * 100).toFixed(1) : 0;
+                    const color = rarity === '普通' ? '#3498db' : rarity === '稀有' ? '#f39c12' : '#e74c3c';
+                    
+                    html += `
+                        <div class="progress-item">
+                            <div class="progress-header">
+                                <span class="progress-title">${rarity}</span>
+                                <span class="progress-count">${data.unlocked}/${data.total}</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: ${percentage}%; background: linear-gradient(90deg, ${color}, ${color}dd);"></div>
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                container.innerHTML = html;
+                
+            } catch (error) {
+                console.error('更新稀有度進度失敗:', error);
+            }
+        }
+        
+        /**
+         * 更新類別進度
+         */
+        function updateCategoryProgress() {
+            try {
+                const categoryProgress = window.CardStorage.getCategoryProgress();
+                const container = document.getElementById('categoryProgressContainer');
+                
+                let html = '';
+                for (const [category, data] of Object.entries(categoryProgress)) {
+                    const percentage = data.total > 0 ? (data.unlocked / data.total * 100).toFixed(1) : 0;
+                    
+                    html += `
+                        <div class="progress-item">
+                            <div class="progress-header">
+                                <span class="progress-title">${category}</span>
+                                <span class="progress-count">${data.unlocked}/${data.total}</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: ${percentage}%;"></div>
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                container.innerHTML = html;
+                
+            } catch (error) {
+                console.error('更新類別進度失敗:', error);
+            }
+        }
+        
+        /**
+         * 添加隨機卡片
+         */
+        function addRandomCard() {
+            try {
+                if (typeof window.CardStorage === 'undefined') {
+                    throw new Error('卡片系統未載入');
+                }
+                
+                if (!window.allCards || window.allCards.length === 0) {
+                    throw new Error('卡片資料未載入');
+                }
+                
+                // 獲取未擁有的卡片
+                const ownedCards = window.CardStorage.getOwnedCards();
+                const availableCards = window.allCards.filter(card => !ownedCards[card.word]);
+                
+                if (availableCards.length === 0) {
+                    showNotification('已收集所有卡片！', 'success');
+                    return;
+                }
+                
+                // 隨機選擇一張卡片
+                const randomCard = availableCards[Math.floor(Math.random() * availableCards.length)];
+                window.CardStorage.addCard(randomCard.word);
+                
+                addLog(`🎴 添加隨機卡片：${randomCard.word} (${randomCard.rarity})`);
+                showNotification(`已添加卡片：${randomCard.word}`, 'success');
+                
+                // 更新顯示
+                updateCardManagerStats();
+                refreshCardStatus();
+                
+            } catch (error) {
+                addLog('❌ 添加隨機卡片失敗：' + error.message);
+                showNotification('添加隨機卡片失敗', 'error');
+            }
+        }
+        
+        /**
+         * 添加隨機碎片
+         */
+        function addRandomShards() {
+            try {
+                if (typeof window.CardStorage === 'undefined') {
+                    throw new Error('卡片系統未載入');
+                }
+                
+                if (!window.allCards || window.allCards.length === 0) {
+                    throw new Error('卡片資料未載入');
+                }
+                
+                // 隨機選擇一張卡片
+                const randomCard = window.allCards[Math.floor(Math.random() * window.allCards.length)];
+                const amount = Math.floor(Math.random() * 5) + 1; // 1-5個碎片
+                
+                window.CardStorage.addShard(randomCard.word, amount);
+                
+                addLog(`💎 添加隨機碎片：${randomCard.word} +${amount} 個`);
+                showNotification(`已添加 ${amount} 個 ${randomCard.word} 碎片`, 'success');
+                
+                // 更新顯示
+                updateCardManagerStats();
+                refreshCardStatus();
+                
+            } catch (error) {
+                addLog('❌ 添加隨機碎片失敗：' + error.message);
+                showNotification('添加隨機碎片失敗', 'error');
+            }
+        }
+        
+        /**
+         * 顯示清除選項 Modal
+         */
+        function showClearOptions() {
+            const modal = document.getElementById('clearOptionsModal');
+            modal.style.display = 'block';
+        }
+
+        /**
+         * 關閉清除選項 Modal
+         */
+        function closeClearOptionsModal() {
+            const modal = document.getElementById('clearOptionsModal');
+            modal.style.display = 'none';
+        }
+
+        /**
+         * 只清除卡片，保留碎片
+         */
+        function clearCardsOnly() {
+            // 獲取目前的卡片和碎片資訊
+            let currentCards = 0;
+            let currentShards = 0;
+            
+            try {
+                if (typeof window.CardStorage !== 'undefined') {
+                    const ownedCards = window.CardStorage.getOwnedCards();
+                    const shards = window.CardStorage.getShards();
+                    currentCards = Object.keys(ownedCards).length;
+                    currentShards = Object.values(shards).reduce((sum, count) => sum + (parseInt(count) || 0), 0);
+                } else {
+                    // 備用方案
+                    const ownedCards = JSON.parse(localStorage.getItem('ownedCards') || '{}');
+                    const shards = JSON.parse(localStorage.getItem('cardShards') || '{}');
+                    currentCards = Object.keys(ownedCards).length;
+                    currentShards = Object.values(shards).reduce((sum, count) => sum + (parseInt(count) || 0), 0);
+                }
+            } catch (error) {
+                console.warn('無法獲取目前卡片資訊:', error);
+            }
+            
+            const confirmMessage = `確定要清除所有已擁有的卡片嗎？\n\n` +
+                `📊 目前狀態：\n` +
+                `• 已擁有卡片：${currentCards} 張\n` +
+                `• 碎片數量：${currentShards} 個\n\n` +
+                `⚠️ 此操作將會：\n` +
+                `• 清除所有已擁有的卡片\n` +
+                `• 保留所有碎片（${currentShards} 個）\n` +
+                `• 保留星星和其他遊戲資料\n\n` +
+                `💎 碎片將會保留，您可以用來重新合成卡片\n\n` +
+                `確定要繼續嗎？`;
+            
+            if (!confirm(confirmMessage)) {
+                return;
+            }
+            
+            try {
+                // 在清除前先創建備份
+                if (typeof window.UnifiedAutoSave !== 'undefined') {
+                    window.UnifiedAutoSave.performImmediateSave();
+                    addLog('💾 清除前已創建備份');
+                }
+                
+                if (typeof window.CardStorage === 'undefined') {
+                    throw new Error('卡片系統未載入');
+                }
+                
+                // 只清除卡片，保留碎片
+                const ownedCards = window.CardStorage.getOwnedCards();
+                const clearedCount = Object.keys(ownedCards).length;
+                
+                // 清空卡片
+                window.CardStorage.setOwnedCards({});
+                
+                addLog(`🎴 已清除 ${clearedCount} 張卡片，碎片已保留`);
+                showNotification(`已清除 ${clearedCount} 張卡片，碎片已保留`, 'success');
+                
+                // 關閉 Modal
+                closeClearOptionsModal();
+                
+                // 更新顯示
+                updateCardManagerStats();
+                refreshCardStatus();
+                
+            } catch (error) {
+                addLog('❌ 清除卡片失敗：' + error.message);
+                showNotification('清除卡片失敗', 'error');
+            }
+        }
+
+        /**
+         * 清除特定稀有度的卡片，保留碎片
+         */
+        function clearCardsByRarity() {
+            const rarity = document.getElementById('raritySelect').value;
+            
+            if (!confirm(`確定要清除所有「${rarity}」稀有度的卡片嗎？\n\n💎 碎片將會保留`)) {
+                return;
+            }
+            
+            try {
+                if (typeof window.CardStorage === 'undefined') {
+                    throw new Error('卡片系統未載入');
+                }
+                
+                if (!window.allCards || window.allCards.length === 0) {
+                    throw new Error('卡片資料未載入');
+                }
+                
+                const ownedCards = window.CardStorage.getOwnedCards();
+                let clearedCount = 0;
+                const newOwnedCards = {};
+                
+                // 只保留非指定稀有度的卡片
+                for (const [cardId, isOwned] of Object.entries(ownedCards)) {
+                    const card = window.allCards.find(c => c.word === cardId);
+                    if (card && card.rarity !== rarity) {
+                        newOwnedCards[cardId] = isOwned;
+                    } else if (card && card.rarity === rarity) {
+                        clearedCount++;
+                    }
+                }
+                
+                window.CardStorage.setOwnedCards(newOwnedCards);
+                
+                addLog(`🎴 已清除 ${clearedCount} 張「${rarity}」卡片，碎片已保留`);
+                showNotification(`已清除 ${clearedCount} 張「${rarity}」卡片，碎片已保留`, 'success');
+                
+                // 關閉 Modal
+                closeClearOptionsModal();
+                
+                // 更新顯示
+                updateCardManagerStats();
+                refreshCardStatus();
+                
+            } catch (error) {
+                addLog('❌ 清除特定稀有度卡片失敗：' + error.message);
+                showNotification('清除特定稀有度卡片失敗', 'error');
+            }
+        }
+
+        /**
+         * 只清除碎片，保留已解鎖的卡片
+         */
+        function clearShardsOnly() {
+            // 獲取目前的卡片和碎片資訊
+            let currentCards = 0;
+            let currentShards = 0;
+            
+            try {
+                if (typeof window.CardStorage !== 'undefined') {
+                    const ownedCards = window.CardStorage.getOwnedCards();
+                    const shards = window.CardStorage.getShards();
+                    currentCards = Object.keys(ownedCards).length;
+                    currentShards = Object.values(shards).reduce((sum, count) => sum + (parseInt(count) || 0), 0);
+                } else {
+                    // 備用方案
+                    const ownedCards = JSON.parse(localStorage.getItem('ownedCards') || '{}');
+                    const shards = JSON.parse(localStorage.getItem('cardShards') || '{}');
+                    currentCards = Object.keys(ownedCards).length;
+                    currentShards = Object.values(shards).reduce((sum, count) => sum + (parseInt(count) || 0), 0);
+                }
+            } catch (error) {
+                console.warn('無法獲取目前卡片資訊:', error);
+            }
+            
+            const confirmMessage = `確定要清除所有碎片嗎？\n\n` +
+                `📊 目前狀態：\n` +
+                `• 已擁有卡片：${currentCards} 張\n` +
+                `• 碎片數量：${currentShards} 個\n\n` +
+                `⚠️ 此操作將會：\n` +
+                `• 保留所有已解鎖的卡片\n` +
+                `• 清除所有碎片（${currentShards} 個）\n` +
+                `• 保留星星和其他遊戲資料\n\n` +
+                `🎴 已解鎖的卡片將會保留，您仍然可以使用它們\n\n` +
+                `確定要繼續嗎？`;
+            
+            if (!confirm(confirmMessage)) {
+                return;
+            }
+            
+            try {
+                // 在清除前先創建備份
+                if (typeof window.UnifiedAutoSave !== 'undefined') {
+                    window.UnifiedAutoSave.performImmediateSave();
+                    addLog('💾 清除前已創建備份');
+                }
+                
+                if (typeof window.CardStorage === 'undefined') {
+                    throw new Error('卡片系統未載入');
+                }
+                
+                // 只清除碎片，保留卡片
+                const shards = window.CardStorage.getShards();
+                const clearedShards = Object.values(shards).reduce((sum, count) => sum + (parseInt(count) || 0), 0);
+                
+                // 清空碎片
+                window.CardStorage.setShards({});
+                
+                addLog(`💎 已清除 ${clearedShards} 個碎片，卡片已保留`);
+                showNotification(`已清除 ${clearedShards} 個碎片，卡片已保留`, 'success');
+                
+                // 關閉 Modal
+                closeClearOptionsModal();
+                
+                // 更新顯示
+                updateCardManagerStats();
+                refreshCardStatus();
+                
+            } catch (error) {
+                addLog('❌ 清除碎片失敗：' + error.message);
+                showNotification('清除碎片失敗', 'error');
+            }
+        }
+
+        
+        /**
+         * 匯出卡片備份
+         */
+        function exportCardBackup() {
+            try {
+                if (typeof window.CardStorage === 'undefined') {
+                    throw new Error('卡片系統未載入');
+                }
+                
+                const exportData = window.CardStorage.exportData();
+                const blob = new Blob([exportData], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `card_backup_${new Date().toISOString().slice(0, 10)}.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                addLog('📤 卡片備份匯出完成');
+                showNotification('卡片備份已匯出', 'success');
+                
+            } catch (error) {
+                addLog('❌ 匯出卡片備份失敗：' + error.message);
+                showNotification('匯出卡片備份失敗', 'error');
+            }
+        }
+        
+        /**
+         * 匯入卡片備份
+         */
+        function importCardBackup() {
+            document.getElementById('cardImportFile').click();
+        }
+        
+        /**
+         * 處理卡片匯入檔案
+         */
+        function handleCardImportFile(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    if (typeof window.CardStorage === 'undefined') {
+                        throw new Error('卡片系統未載入');
+                    }
+                    
+                    const success = window.CardStorage.importData(e.target.result);
+                    
+                    if (success) {
+                        addLog('📥 卡片備份匯入完成');
+                        showNotification('卡片備份匯入成功！', 'success');
+                        
+                        // 更新顯示
+                        updateCardManagerStats();
+                        refreshCardStatus();
+                    } else {
+                        throw new Error('匯入失敗');
+                    }
+                    
+                } catch (error) {
+                    addLog('❌ 匯入卡片備份失敗：' + error.message);
+                    showNotification('匯入卡片備份失敗', 'error');
+                }
+            };
+            
+            reader.readAsText(file);
+            event.target.value = '';
+        }
+        
+        /**
+         * 匯入卡片檔案
+         */
+        function importCardFile() {
+            addLog('📥 準備匯入卡片檔案...');
+            document.getElementById('cardFileInput').click();
+        }
+        
+        /**
+         * 處理卡片檔案匯入
+         */
+        function handleCardFileImport(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            addLog(`📥 處理檔案：${file.name} (${(file.size / 1024).toFixed(1)} KB)`);
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    if (typeof window.CardStorage === 'undefined') {
+                        throw new Error('卡片系統未載入');
+                    }
+                    
+                    const fileContent = e.target.result;
+                    const fileName = file.name.toLowerCase();
+                    let importResult = false;
+                    
+                    // 根據檔案類型處理
+                    if (fileName.endsWith('.json')) {
+                        importResult = handleJsonCardFile(fileContent);
+                    } else if (fileName.endsWith('.txt')) {
+                        importResult = handleTextCardFile(fileContent);
+                    } else if (fileName.endsWith('.csv')) {
+                        importResult = handleCsvCardFile(fileContent);
+                    } else {
+                        throw new Error('不支援的檔案格式');
+                    }
+                    
+                    if (importResult) {
+                        addLog('✅ 卡片檔案匯入成功');
+                        showNotification('卡片檔案匯入成功！', 'success');
+                        
+                        // 更新顯示
+                        updateCardManagerStats();
+                        refreshCardStatus();
+                        
+                        // 觸發自動儲存
+                        if (window.UnifiedAutoSave && window.UnifiedAutoSave.autoSaveEnabled) {
+                            window.UnifiedAutoSave.scheduleAutoSave();
+                        }
+                    } else {
+                        throw new Error('匯入處理失敗');
+                    }
+                    
+                } catch (error) {
+                    addLog('❌ 卡片檔案匯入失敗：' + error.message);
+                    showNotification('卡片檔案匯入失敗：' + error.message, 'error');
+                }
+            };
+            
+            reader.readAsText(file);
+            event.target.value = '';
+        }
+        
+        /**
+         * 處理 JSON 格式的卡片檔案
+         */
+        function handleJsonCardFile(content) {
+            try {
+                const data = JSON.parse(content);
+                
+                // 檢查是否為卡片備份格式
+                if (data.ownedCards && data.cardShards) {
+                    return window.CardStorage.importData(content);
+                }
+                
+                // 檢查是否為單字列表格式
+                if (Array.isArray(data)) {
+                    return importWordList(data);
+                }
+                
+                // 檢查是否為物件格式的單字列表
+                if (typeof data === 'object' && !data.ownedCards) {
+                    const wordList = Object.keys(data);
+                    return importWordList(wordList);
+                }
+                
+                throw new Error('無法識別的 JSON 格式');
+                
+            } catch (error) {
+                throw new Error('JSON 解析失敗：' + error.message);
+            }
+        }
+        
+        /**
+         * 處理文字格式的卡片檔案
+         */
+        function handleTextCardFile(content) {
+            try {
+                // 按行分割並過濾空行
+                const lines = content.split('\n')
+                    .map(line => line.trim())
+                    .filter(line => line.length > 0);
+                
+                if (lines.length === 0) {
+                    throw new Error('檔案內容為空');
+                }
+                
+                addLog(`📝 從文字檔案讀取到 ${lines.length} 個單字`);
+                return importWordList(lines);
+                
+            } catch (error) {
+                throw new Error('文字檔案處理失敗：' + error.message);
+            }
+        }
+        
+        /**
+         * 處理 CSV 格式的卡片檔案
+         */
+        function handleCsvCardFile(content) {
+            try {
+                // 按行分割並過濾空行
+                const lines = content.split('\n')
+                    .map(line => line.trim())
+                    .filter(line => line.length > 0);
+                
+                if (lines.length === 0) {
+                    throw new Error('檔案內容為空');
+                }
+                
+                // 解析 CSV 行
+                const wordList = [];
+                lines.forEach((line, index) => {
+                    // 跳過標題行（如果第一行包含標題）
+                    if (index === 0 && (line.includes('word') || line.includes('單字') || line.includes('Word'))) {
+                        return;
+                    }
+                    
+                    // 分割 CSV 欄位
+                    const columns = line.split(',').map(col => col.trim().replace(/"/g, ''));
+                    const word = columns[0]; // 假設第一欄是單字
+                    
+                    if (word && word.length > 0) {
+                        wordList.push(word);
+                    }
+                });
+                
+                if (wordList.length === 0) {
+                    throw new Error('未找到有效的單字');
+                }
+                
+                addLog(`📝 從 CSV 檔案讀取到 ${wordList.length} 個單字`);
+                return importWordList(wordList);
+                
+            } catch (error) {
+                throw new Error('CSV 檔案處理失敗：' + error.message);
+            }
+        }
+        
+        /**
+         * 匯入單字列表
+         */
+        function importWordList(wordList) {
+            try {
+                if (!window.allCards || window.allCards.length === 0) {
+                    throw new Error('卡片資料未載入');
+                }
+                
+                let addedCount = 0;
+                let shardCount = 0;
+                const addedCards = [];
+                
+                // 為每個單字添加卡片或碎片
+                wordList.forEach(word => {
+                    const card = window.allCards.find(c => c.word.toLowerCase() === word.toLowerCase());
+                    
+                    if (card) {
+                        const ownedCards = window.CardStorage.getOwnedCards();
+                        
+                        // 如果卡片尚未擁有，則添加卡片
+                        if (!ownedCards[card.word]) {
+                            window.CardStorage.addCard(card.word);
+                            addedCards.push(card.word);
+                            addedCount++;
+                        } else {
+                            // 如果卡片已擁有，則添加碎片
+                            window.CardStorage.addShard(card.word, 1);
+                            shardCount++;
+                        }
+                    }
+                });
+                
+                addLog(`✅ 成功添加 ${addedCount} 張新卡片，${shardCount} 個碎片`);
+                if (addedCards.length > 0) {
+                    addLog(`📝 新增卡片：${addedCards.slice(0, 10).join(', ')}${addedCards.length > 10 ? '...' : ''}`);
+                }
+                
+                return true;
+                
+            } catch (error) {
+                throw new Error('單字列表匯入失敗：' + error.message);
+            }
+        }
+        
+        /**
+         * 同步寶石資料
+         */
+        function syncGemData() {
+            addLog('💎 開始同步寶石資料...');
+            
+            try {
+                // 檢查寶石系統是否載入
+                if (typeof window.gemSystem === 'undefined') {
+                    addLog('❌ 寶石系統未載入，無法同步');
+                    showNotification('寶石系統未載入，無法同步', 'error');
+                    return;
+                }
+                
+                // 強制觸發寶石資料更新
+                const currentGems = window.gemSystem.gems;
+                const userData = JSON.parse(localStorage.getItem('grammarGameData') || '{}');
+                
+                // 同步到備用資料
+                userData.gems = currentGems;
+                localStorage.setItem('grammarGameData', JSON.stringify(userData));
+                
+                // 觸發自動儲存
+                if (window.UnifiedAutoSave && window.UnifiedAutoSave.autoSaveEnabled) {
+                    window.UnifiedAutoSave.scheduleAutoSave();
+                }
+                
+                addLog('✅ 寶石資料同步完成');
+                showNotification('寶石資料已成功同步', 'success');
+                
+                // 重新整理狀態
+                refreshGemStatus();
+                
+            } catch (error) {
+                addLog('❌ 寶石資料同步失敗：' + error.message);
+                showNotification('寶石資料同步失敗', 'error');
+            }
+        }
+        
+        /**
+         * 匯出寶石資料
+         */
+        function exportGemData() {
+            addLog('💎 準備匯出寶石資料...');
+            
+            try {
+                let gemData = {};
+                
+                // 從寶石系統取得資料
+                if (typeof window.gemSystem !== 'undefined' && window.gemSystem.gems) {
+                    gemData = window.gemSystem.gems;
+                } else {
+                    // 從備用方案取得
+                    const userData = JSON.parse(localStorage.getItem('grammarGameData') || '{}');
+                    gemData = userData.gems || {};
+                }
+                
+                // 創建匯出資料
+                const exportData = {
+                    exportTime: new Date().toISOString(),
+                    version: '1.0',
+                    gems: gemData,
+                    statistics: {
+                        totalGems: Object.values(gemData).reduce((total, count) => total + (parseInt(count) || 0), 0),
+                        uniqueTypes: Object.keys(gemData).filter(key => parseInt(gemData[key]) > 0).length
+                    }
+                };
+                
+                // 下載檔案
+                const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `gem_data_${new Date().toISOString().slice(0, 10)}.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                addLog('✅ 寶石資料匯出完成');
+                showNotification('寶石資料已匯出', 'success');
+                
+            } catch (error) {
+                addLog('❌ 寶石資料匯出失敗：' + error.message);
+                showNotification('寶石資料匯出失敗', 'error');
+            }
+        }
+        
+        /**
+         * 驗證寶石資料
+         */
+        function validateGemData() {
+            addLog('💎 開始驗證寶石資料...');
+            
+            try {
+                let issues = [];
+                let totalGems = 0;
+                let validTypes = 0;
+                
+                // 檢查主要寶石系統
+                if (typeof window.gemSystem !== 'undefined' && window.gemSystem.gems) {
+                    const mainGems = window.gemSystem.gems;
+                    
+                    for (const [gemType, count] of Object.entries(mainGems)) {
+                        const numCount = parseInt(count);
+                        if (isNaN(numCount) || numCount < 0) {
+                            issues.push(`寶石類型 "${gemType}" 數量無效: ${count}`);
+                        } else {
+                            totalGems += numCount;
+                            if (numCount > 0) validTypes++;
+                        }
+                    }
+                    
+                    addLog(`💎 主系統：${totalGems} 顆寶石，${validTypes} 種類型`);
+                } else {
+                    issues.push('主要寶石系統未載入');
+                }
+                
+                // 檢查備用系統
+                const userData = JSON.parse(localStorage.getItem('grammarGameData') || '{}');
+                if (userData.gems) {
+                    let backupTotal = 0;
+                    let backupTypes = 0;
+                    
+                    for (const [gemType, count] of Object.entries(userData.gems)) {
+                        const numCount = parseInt(count);
+                        if (!isNaN(numCount) && numCount > 0) {
+                            backupTotal += numCount;
+                            backupTypes++;
+                        }
+                    }
+                    
+                    addLog(`💎 備用系統：${backupTotal} 顆寶石，${backupTypes} 種類型`);
+                    
+                    // 比較主系統和備用系統
+                    if (totalGems !== backupTotal) {
+                        issues.push(`主系統與備用系統寶石總數不符 (${totalGems} vs ${backupTotal})`);
+                    }
+                } else {
+                    issues.push('備用寶石資料不存在');
+                }
+                
+                // 報告結果
+                if (issues.length === 0) {
+                    addLog('✅ 寶石資料驗證通過');
+                    showNotification('寶石資料驗證通過', 'success');
+                } else {
+                    addLog('⚠️ 發現以下問題：');
+                    issues.forEach(issue => addLog(`  - ${issue}`));
+                    showNotification(`發現 ${issues.length} 個問題，請查看日誌`, 'error');
+                }
+                
+                // 重新整理顯示
+                refreshGemStatus();
+                
+            } catch (error) {
+                addLog('❌ 寶石資料驗證失敗：' + error.message);
+                showNotification('寶石資料驗證失敗', 'error');
+            }
+        }
+
+        // 切換背景音樂
+        function toggleBackgroundMusic() {
+          if (isMusicPlaying) {
+            pauseBackgroundMusic();
+          } else {
+            playBackgroundMusic();
+          }
+        }
+
+        // 播放背景音樂
+        function playBackgroundMusic() {
+          if (bgMusic) {
+            bgMusic.play().then(() => {
+              isMusicPlaying = true;
+              document.getElementById('bgMusicControl').textContent = '🔊';
+              localStorage.setItem('bgMusicState', 'playing');
+            });
+          }
+        }
+
+        // 暫停背景音樂
+        function pauseBackgroundMusic() {
+          if (bgMusic) {
+            bgMusic.pause();
+            isMusicPlaying = false;
+            document.getElementById('bgMusicControl').textContent = '';
+            localStorage.setItem('bgMusicState', 'paused');
+          }
+        }
+
+        // 頁面載入時檢查音樂狀態
+        const musicState = localStorage.getItem('bgMusicState');
+        if (musicState === 'playing') {
+          playBackgroundMusic();
+        }
+
+        // 更新所有音樂控制按鈕
+        function updateAllControls() {
+          const controls = [
+            document.getElementById('bgmControl'),
+            document.getElementById('bgMusicControl'),
+            document.getElementById('toggleMusic'),
+            document.getElementById('musicToggle')
+          ];
+          
+          controls.forEach(control => {
+            if (control) {
+              if (isPlaying) {
+                control.textContent = '🔊';
+                control.classList.remove('paused');
+              } else {
+                control.textContent = '🔇';
+                control.classList.add('paused');
+              }
+            }
+          });
+        }
+
+        // 背景音樂控制
+        const backgroundMusic = document.getElementById('backgroundMusic');
+        const toggleMusicBtn = document.getElementById('toggleMusic');
+        let isMusicPlaying = LinkageSystem.music.isPlaying();
+
+        // 從 localStorage 讀取音樂播放狀態
+        if (isMusicPlaying) {
+          backgroundMusic.play();
+          toggleMusicBtn.style.background = 'rgba(0, 255, 255, 0.2)';
+        }
+
+        toggleMusicBtn.addEventListener('click', () => {
+          if (isMusicPlaying) {
+            backgroundMusic.pause();
+            toggleMusicBtn.style.background = 'rgba(10, 20, 40, 0.85)';
+            LinkageSystem.music.setPlaying(false);
+          } else {
+            backgroundMusic.play();
+            toggleMusicBtn.style.background = 'rgba(0, 255, 255, 0.2)';
+            LinkageSystem.music.setPlaying(true);
+          }
+          isMusicPlaying = !isMusicPlaying;
+        });
+
+        // 打字音效控制
+        let isSoundEnabled = true;
+        const typingSound = document.getElementById('typingSound');
+
+        function playTypingSound() {
+          if (isSoundEnabled) {
+            typingSound.currentTime = 0;
+            typingSound.play().catch(error => {
+              console.log('音效播放失敗:', error);
+            });
+          }
+        }
+
+    </script>
+    <audio id="backgroundMusic" loop>
+      <source src="sound/午後放鬆時光（純音樂）.mp3" type="audio/mpeg">
+    </audio>
+</body>
+</html> 

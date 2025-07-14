@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>性能優化指南</title>
+    <style>
+        body {
+            font-family: 'Microsoft JhengHei', Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .optimization-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-left: 4px solid #3498db;
+            background: #f8f9fa;
+            border-radius: 5px;
+        }
+        .optimization-section h2 {
+            color: #2980b9;
+            margin-top: 0;
+        }
+        .problem {
+            background: #ffe6e6;
+            border-left-color: #e74c3c;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        .solution {
+            background: #e8f5e8;
+            border-left-color: #27ae60;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        .code {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+        }
+        .priority {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        .high { background: #e74c3c; color: white; }
+        .medium { background: #f39c12; color: white; }
+        .low { background: #27ae60; color: white; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 系統性能優化指南</h1>
+        
+        <div class="optimization-section">
+            <h2>1. 檔案載入優化 <span class="priority high">高優先級</span></h2>
+            
+            <div class="problem">
+                <strong>問題：</strong>大型檔案載入緩慢
+                <ul>
+                    <li>cards.js (124.77 KB) - 包含大量卡片資料</li>
+                    <li>cards_backup.js (116.07 KB) - 重複備份檔案</li>
+                    <li>grammarTower.js (56.96 KB) - 語法塔邏輯</li>
+                </ul>
+            </div>
+            
+            <div class="solution">
+                <strong>解決方案：</strong>
+                <ol>
+                    <li><strong>移除重複檔案：</strong>刪除 cards_backup.js 等備份檔案</li>
+                    <li><strong>分離載入：</strong>將卡片資料移到 JSON 檔案，按需載入</li>
+                    <li><strong>壓縮檔案：</strong>使用 minified 版本</li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="optimization-section">
+            <h2>2. 動畫效果優化 <span class="priority medium">中優先級</span></h2>
+            
+            <div class="problem">
+                <strong>問題：</strong>過多動畫影響性能
+                <ul>
+                    <li>星空背景動畫持續運行</li>
+                    <li>多個 CSS 動畫同時執行</li>
+                    <li>GPU 使用率過高</li>
+                </ul>
+            </div>
+            
+            <div class="solution">
+                <strong>解決方案：</strong>
+                <ol>
+                    <li><strong>暫停非必要動畫：</strong>當頁面不可見時暫停動畫</li>
+                    <li><strong>減少動畫數量：</strong>只保留重要視覺效果</li>
+                    <li><strong>使用 CSS transform：</strong>優化 GPU 加速</li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="optimization-section">
+            <h2>3. 記憶體管理優化 <span class="priority high">高優先級</span></h2>
+            
+            <div class="problem">
+                <strong>問題：</strong>記憶體洩漏和過度使用
+                <ul>
+                    <li>大量資料儲存在記憶體中</li>
+                    <li>事件監聽器未正確清理</li>
+                    <li>定時器未及時清除</li>
+                </ul>
+            </div>
+            
+            <div class="solution">
+                <strong>解決方案：</strong>
+                <ol>
+                    <li><strong>清理事件監聽器：</strong>頁面卸載時移除所有監聽器</li>
+                    <li><strong>清除定時器：</strong>使用 clearInterval 和 clearTimeout</li>
+                    <li><strong>分批處理資料：</strong>避免一次性載入大量資料</li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="optimization-section">
+            <h2>4. 立即執行的優化措施</h2>
+            
+            <div class="solution">
+                <strong>快速修復：</strong>
+                <ol>
+                    <li><strong>刪除備份檔案：</strong>移除 cards_backup.js</li>
+                    <li><strong>暫停背景動畫：</strong>在非活動頁面暫停星空動畫</li>
+                    <li><strong>減少同時載入：</strong>只載入當前頁面需要的檔案</li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="optimization-section">
+            <h2>5. 程式碼優化範例</h2>
+            
+            <div class="code">
+// 優化前：持續運行的動畫
+function animate() {
+    updateStars();
+    drawStars();
+    requestAnimationFrame(animate);
+}
+
+// 優化後：可控制的動畫
+let animationId = null;
+let isPageVisible = true;
+
+function animate() {
+    if (!isPageVisible) return;
+    
+    updateStars();
+    drawStars();
+    animationId = requestAnimationFrame(animate);
+}
+
+// 頁面可見性控制
+document.addEventListener('visibilitychange', () => {
+    isPageVisible = !document.hidden;
+    if (!isPageVisible && animationId) {
+        cancelAnimationFrame(animationId);
+    } else if (isPageVisible && !animationId) {
+        animate();
+    }
+});
+            </div>
+        </div>
+
+        <div class="optimization-section">
+            <h2>6. 預期改善效果</h2>
+            
+            <ul>
+                <li><strong>載入速度：</strong>提升 40-60%</li>
+                <li><strong>記憶體使用：</strong>減少 30-50%</li>
+                <li><strong>CPU 使用率：</strong>降低 20-40%</li>
+                <li><strong>電池壽命：</strong>延長 25-35%</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html> 

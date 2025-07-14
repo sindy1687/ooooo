@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <title>星際英打冒險 - Typing Hero</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="responsive_enhanced.css">
+
+  <style>
+    html, body {
+      margin: 0;
+      height: 100%;
+      font-family: 'Orbitron', sans-serif;
+      background: linear-gradient(to bottom, #020111 0%, #000010 100%);
+      color: #fff;
+      overflow: auto;
+    }
+    * {
+      font-family: 'Orbitron', sans-serif;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+    }
+    /* 頁面最上方輸出「總星星」 */
+    #topBar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: rgba(0,0,0,0.7);
+      padding: 10px 20px;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      z-index: 2;
+    }
+    #topBar div {
+      font-size: 1rem;
+      color: #0ff;
+    }
+
+    /* 原本的首頁布局 */
+    #homeScreen {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding-top: 80px; /* 預留 topBar 的高度 */
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+      min-height: 100vh;
+      padding-bottom: 120px;
+    }
+    h1 {
+      font-size: 2.8rem;
+      color: #00ffff;
+      text-shadow: 0 0 12px #00ffff, 0 0 24px #0ff;
+      margin-bottom: 8px;
+    }
+    .subtitle {
+      color: #99ccff;
+      font-size: 1.2rem;
+      margin-bottom: 24px;
+      text-shadow: 0 0 6px #3388cc;
+    }
+
+    #avatar {
+      display: block;
+      width: 160px;
+      height: auto;
+      margin-bottom: 16px;
+      transition: transform .3s;
+    }
+    #avatar:hover {
+      transform: scale(1.1);
+    }
+    #avatarCarousel {
+      display: flex;
+      overflow-x: auto;
+      justify-content: center;
+      scroll-behavior: smooth;
+      gap: 30px;
+      margin-top: auto;
+      margin-bottom: 24px;
+      padding: 10px 0;
+      scrollbar-color: #0ff transparent;
+      scrollbar-width: thin;
+    }
+    #avatarCarousel::-webkit-scrollbar {
+      height: 8px;
+    }
+    #avatarCarousel::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    #avatarCarousel::-webkit-scrollbar-thumb {
+      background: #00ffffaa;
+      border-radius: 4px;
+    }
+    .avatarSlide {
+      flex: 0 0 auto;
+      width: 100px;
+      height: 140px;
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: transform 0.3s, border-color 0.3s;
+    }
+    .avatarSlide:hover {
+      transform: scale(1.15);
+      border-color: #0ff;
+    }
+    .avatarSlide.selected {
+      border-color: #0ff;
+      box-shadow: 0 0 10px #0ff;
+    }
+    #homeBtns {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    #homeBtns button {
+      padding: 12px 20px;
+      border: 2px solid #0ff;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 1rem;
+      background: radial-gradient(circle at top left, #001133 0%, #000022 100%);
+      color: #0ff;
+      box-shadow: 0 0 10px #0ff6, inset 0 0 5px #00ffff44;
+      text-shadow: 0 0 4px #0ff;
+      transition: transform .25s, box-shadow .25s;
+      cursor: pointer;
+      margin-bottom: 8px;
+    }
+    #homeBtns button:hover {
+      transform: scale(1.08);
+      box-shadow: 0 0 20px #0ff, 0 0 30px #00ffff88;
+    }
+    .youtubeContainer {
+      position: fixed;
+      top: 12px;
+      right: 100px; /* 調整位置以免擋住星星數 */
+      z-index: 3;
+      width: 120px;
+      height: 60px;
+      border: 2px solid #0ff;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 0 10px #0ff5;
+      background: #000;
+    }
+    .youtubeContainer iframe {
+      width: 120px;
+      height: 60px;
+      border: none;
+    }
+  </style>
+</head>
+<body>
+  <!-- 1. 總星星顯示區塊：從 localStorage 讀 totalStars -->
+  <div id="topBar">
+    <div id="starsDisplay">⭐︎ 總星星：<span id="totalStarsCount">0</span></div>
+  </div>
+
+  <canvas id="stars"></canvas>
+
+  <div id="homeScreen">
+    <h1>🌌 星際英打冒險</h1>
+    <p class="subtitle">踏上宇宙任務，征服單字星系！</p>
+
+    <!-- 顯示目前選擇的頭像（可自訂預設） -->
+    <img id="avatar" src="img/avatars/avatar_TL.png" alt="角色頭像">
+    <div id="avatarCarousel">
+      <div class="avatarSlide selected" style="background-image: url('img/avatars/avatar_TL.png');" onclick="selectAvatar(this, 'img/avatars/avatar_TL.png')"></div>
+      <div class="avatarSlide" style="background-image: url('img/avatars/avatar_TR.png');" onclick="selectAvatar(this, 'img/avatars/avatar_TR.png')"></div>
+      <div class="avatarSlide" style="background-image: url('img/avatars/avatar_BL.png');" onclick="selectAvatar(this, 'img/avatars/avatar_BL.png')"></div>
+      <div class="avatarSlide" style="background-image: url('img/avatars/avatar_BR.png');" onclick="selectAvatar(this, 'img/avatars/avatar_BR.png')"></div>
+      <div class="avatarSlide" style="background-image: url('img/avatars/avatar_astro1.png');" onclick="selectAvatar(this, 'img/avatars/avatar_astro1.png')"></div>
+      <div class="avatarSlide" style="background-image: url('img/avatars/avatar_spacekid.png');" onclick="selectAvatar(this, 'img/avatars/avatar_spacekid.png')"></div>
+    </div>
+
+    <div id="homeBtns">
+      <button onclick="location.href='atlas.html'">🚀 開始冒險</button>
+      <button onclick="location.href='dictionary.html'">📚 單字本</button>
+      <button onclick="location.href='cards.html'">👩‍🏫 卡片收藏</button>
+      <button onclick="location.href='grammar_levels.html'">🏰 文法高塔</button>
+    </div>
+  </div>
+
+  <!-- YouTube 嵌入播放器 -->
+  <div class="youtubeContainer">
+    <iframe width="120" height="60" src="https://www.youtube.com/embed/IywhLqENzqg?autoplay=1&mute=1&loop=1&playlist=IywhLqENzqg" 
+            title="YouTube video player" frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+            referrerpolicy="strict-origin-when-cross-origin" allow="autoplay; encrypted-media;" allowfullscreen>
+    </iframe>
+  </div>
+
+  <script>
+    //------------------------------------------------------------------------------   
+    //  一、從 localStorage 取出 totalStars，無資料就預設 0
+    //------------------------------------------------------------------------------   
+    function loadTotalStars() {
+      const stored = localStorage.getItem('totalStars');
+      return stored !== null ? parseInt(stored, 10) : 0;
+    }
+
+    function updateTopBarStars() {
+      const count = loadTotalStars();
+      document.getElementById('totalStarsCount').textContent = count;
+    }
+
+    //------------------------------------------------------------------------------   
+    //  二、頭像選擇邏輯（若需要記住選擇也可存回 localStorage） 
+    //------------------------------------------------------------------------------   
+    function selectAvatar(el, src) {
+      document.querySelectorAll('.avatarSlide').forEach(div => div.classList.remove('selected'));
+      el.classList.add('selected');
+      localStorage.setItem('selectedAvatar', src);
+      document.getElementById('avatar').src = src;
+    }
+
+    window.addEventListener('load', () => {
+      // 載入並顯示總星星
+      updateTopBarStars();
+
+      // 如果 localStorage 有存過 avatar，就一併載入
+      const savedAvatar = localStorage.getItem('selectedAvatar');
+      if (savedAvatar) {
+        document.getElementById('avatar').src = savedAvatar;
+        document.querySelectorAll('.avatarSlide').forEach(div => {
+          if (div.style.backgroundImage.includes(savedAvatar)) {
+            div.classList.add('selected');
+          } else {
+            div.classList.remove('selected');
+          }
+        });
+      }
+    });
+  </script>
+
+  <!-- ===== 星空背景動畫 ===== -->
+  <script>
+    const canvas = document.getElementById('stars');
+    const ctx = canvas.getContext('2d');
+    let width, height;
+    let stars = [];
+    const numStars = 100;
+
+    function initCanvas() {
+      width = window.innerWidth;
+      height = window.innerHeight;
+      canvas.width = width;
+      canvas.height = height;
+      stars = [];
+      for (let i = 0; i < numStars; i++) {
+        stars.push({
+          x: Math.random() * width,
+          y: Math.random() * height,
+          size: Math.random() * 1.5 + 0.5,
+          speed: Math.random() * 0.5 + 0.2
+        });
+      }
+    }
+
+    function updateStars() {
+      for (let star of stars) {
+        star.y += star.speed;
+        if (star.y > height) {
+          star.y = 0;
+          star.x = Math.random() * width;
+        }
+      }
+    }
+
+    function drawStars() {
+      ctx.clearRect(0, 0, width, height);
+      ctx.fillStyle = '#ffffff';
+      for (let star of stars) {
+        ctx.beginPath();
+        ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    function animate() {
+      updateStars();
+      drawStars();
+      requestAnimationFrame(animate);
+    }
+
+    window.addEventListener('resize', initCanvas);
+    window.addEventListener('load', () => {
+      initCanvas();
+      animate();
+    });
+  </script>
+
+  <!-- =================== 測試者整合程式碼 =================== -->
+  <script>
+    // ⭐ 確保存在變數 stars（如果前面沒定義，可以再從 localStorage 讀一次）
+    let stars = parseInt(localStorage.getItem("totalStars") || "0");
+
+    function updateStars() {
+      const el = document.getElementById("stars") || document.getElementById("totalStarsCount");
+      if (el) el.textContent = stars;
+      localStorage.setItem("totalStars", stars);
+    }
+
+    function runTesterInstructions() {
+      const data = localStorage.getItem("testerInstructions");
+      if (!data) return;
+
+      let instructions;
+      try {
+        instructions = JSON.parse(data);
+      } catch {
+        console.warn("Tester 指令格式錯誤");
+        return;
+      }
+      // 只執行一次
+      localStorage.removeItem("testerInstructions");
+
+      if (instructions.addStars) {
+        stars += 999;
+        localStorage.setItem("totalStars", stars);
+        console.log("⭐ 已加 999 星星");
+        updateStars();
+      }
+
+      if (instructions.unlockAll) {
+        const unlocked = Array.from({ length: 20 }, (_, i) => `category${i + 1}`);
+        localStorage.setItem("unlockedLevels", JSON.stringify(unlocked));
+        console.log("🔓 已解鎖所有關卡");
+      }
+
+      if (instructions.testerMode) {
+        alert("🧪 測試者模式啟動！");
+        // 這裡可加入其他 debug UI
+      }
+    }
+
+    window.addEventListener("load", () => {
+      runTesterInstructions();
+      updateStars();
+    });
+  </script>
+  <!-- =================== End 測試者整合程式碼 =================== -->
+</body>
+</html>

@@ -1,0 +1,1424 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <title>星際英打冒險 − 編輯單字本</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="responsive_enhanced.css">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Source+Sans+Pro:wght@300;400;600;700&family=Noto+Sans+TC:wght@300;400;500;700&family=Noto+Sans+SC:wght@300;400;500;700&family=Noto+Sans+Symbols&family=Noto+Sans+Symbols+2&display=swap" rel="stylesheet">
+
+  <style>
+    /*-------------------------
+      全域重設 & 字體
+    -------------------------*/
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: 'Noto Sans TC', 'Noto Sans SC', 'Inter', 'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft JhengHei', 'PingFang TC', 'Helvetica Neue', Arial, sans-serif;
+      background: linear-gradient(to bottom, #020111 0%, #000010 100%);
+      color: #fff;
+      overflow: hidden;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    /*-------------------------
+      Scrollbar 自訂 (WebKit)
+    -------------------------*/
+    ::-webkit-scrollbar {
+      width: 12px;
+      height: 12px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 6px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(69, 162, 158, 0.6);
+      border-radius: 6px;
+      border: 2px solid rgba(0,0,0,0.2);
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(69, 162, 158, 0.8);
+    }
+    body {
+      scrollbar-width: thin;
+      scrollbar-color: rgba(69,162,158,0.6) rgba(0,0,0,0.2);
+    }
+
+    /*-------------------------
+      左上角 TopBar（顯示總星星數 + 返回單字本列表）
+    -------------------------*/
+    #topBar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: rgba(10, 20, 40, 0.85);
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 3;
+      border-bottom: 2px solid #00ffff;
+      box-shadow: 0 0 16px #00ffff;
+    }
+    
+    /*-------------------------
+      音樂控制按鈕
+    -------------------------*/
+    #audioControls {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1001;
+      display: flex;
+      gap: 10px;
+    }
+    
+    #toggleMusic {
+      background: rgba(10, 20, 40, 0.85);
+      border: 2px solid #00ffff;
+      color: #00ffff;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 0 16px #00ffff;
+    }
+    
+    #toggleMusic:hover {
+      background: rgba(0, 255, 255, 0.2);
+      transform: scale(1.1);
+      box-shadow: 0 0 24px #00ffff;
+    }
+    
+    #toggleMusic.playing {
+      background: rgba(0, 255, 255, 0.2);
+      border-color: #00ffff;
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+    
+    #testMusic {
+      background: rgba(10, 20, 40, 0.85);
+      border: 2px solid #00ffff;
+      color: #00ffff;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 0 16px #00ffff;
+      font-size: 0.8rem;
+    }
+    
+    #testMusic:hover {
+      background: rgba(0, 255, 255, 0.2);
+      transform: scale(1.1);
+    }
+    #topBar #starsDisplay {
+      font-size: 1.2rem;
+      color: #ffd700;
+      font-weight: bold;
+      text-shadow: 0 0 8px #ffd700;
+    }
+    #topBar .back-btn {
+      background: linear-gradient(90deg, #00ffff 0%, #a259ff 100%);
+      border: none;
+      color: #000;
+      border-radius: 8px;
+      padding: 8px 16px;
+      font-size: 0.9rem;
+      text-decoration: none;
+      transition: transform 0.2s, box-shadow 0.2s;
+      cursor: pointer;
+      font-weight: bold;
+      box-shadow: 0 0 16px #00ffff;
+    }
+    #topBar .back-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 24px #00ffff;
+    }
+
+    /*-------------------------
+      星空 Canvas 背景
+    -------------------------*/
+    canvas#stars {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+    }
+
+    /*-------------------------
+      主容器
+    -------------------------*/
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 800px;
+      margin: 80px auto 40px;
+      background: rgba(10, 20, 40, 0.7);
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 0 32px #00ffff44, 0 0 80px #a259ff22 inset;
+      border: 2px solid #00ffff;
+      backdrop-filter: blur(8px);
+      overflow-y: auto;
+      max-height: calc(100vh - 140px);
+    }
+    .container h1 {
+      color: #00ffff;
+      text-align: center;
+      text-shadow: 0 0 12px #00ffff, 0 0 32px #a259ff;
+      margin-bottom: 20px;
+      font-size: 2rem;
+      letter-spacing: 1px;
+      font-family: 'Orbitron', sans-serif;
+    }
+    .container h2 {
+      color: #99ccff;
+      margin-top: 24px;
+      margin-bottom: 12px;
+      font-size: 1.3rem;
+      text-shadow: 0 0 6px #3388cc;
+      font-family: 'Orbitron', sans-serif;
+    }
+
+    /*-------------------------
+      遊戲選單 按鈕區塊
+    -------------------------*/
+    .game-menu-btn {
+      display: block;
+      width: 100%;
+      text-align: center;
+      background: linear-gradient(90deg, #00ffff 0%, #a259ff 100%);
+      color: #000;
+      border: none;
+      border-radius: 12px;
+      padding: 14px 0;
+      font-size: 1.1rem;
+      font-weight: bold;
+      margin: 16px 0;
+      cursor: pointer;
+      box-shadow: 0 0 16px #00ffff, 0 0 24px #a259ff99;
+      transition: transform 0.2s, box-shadow 0.2s;
+      font-family: 'Orbitron', sans-serif;
+    }
+    .game-menu-btn:hover {
+      transform: scale(1.02);
+      box-shadow: 0 0 24px #00ffff, 0 0 32px #a259ffcc;
+    }
+
+    /*-------------------------
+      遊戲彈窗（modal）樣式
+    -------------------------*/
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.8);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 4;
+      backdrop-filter: blur(4px);
+    }
+    .modal-content {
+      background: rgba(10, 20, 40, 0.95);
+      border: 2px solid #00ffff;
+      border-radius: 16px;
+      padding: 30px;
+      width: 90%;
+      max-width: 450px;
+      box-shadow: 0 0 32px #00ffff44, 0 0 80px #a259ff22 inset;
+      backdrop-filter: blur(8px);
+    }
+    .modal-content h2 {
+      text-align: center;
+      color: #00ffff;
+      margin-bottom: 20px;
+      text-shadow: 0 0 8px #00ffff;
+      font-size: 1.5rem;
+    }
+    .modal-content button {
+      width: 100%;
+      background: linear-gradient(90deg, #00ffff 0%, #a259ff 100%);
+      border: none;
+      color: #000;
+      border-radius: 10px;
+      padding: 12px 0;
+      font-size: 1rem;
+      margin-bottom: 12px;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      font-weight: bold;
+      box-shadow: 0 0 16px #00ffff;
+    }
+    .modal-content button:hover {
+      transform: scale(1.02);
+      box-shadow: 0 0 24px #00ffff;
+    }
+    .modal-close {
+      display: block;
+      margin: 16px auto 0;
+      background: linear-gradient(90deg, #ff4444 0%, #cc0000 100%);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 20px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      font-weight: bold;
+      box-shadow: 0 0 16px #ff4444;
+    }
+    .modal-close:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 24px #ff4444;
+    }
+
+    /*-------------------------
+      Disabled 按鈕樣式
+    -------------------------*/
+    button:disabled {
+      background: #555 !important;
+      color: #aaa !important;
+      cursor: not-allowed !important;
+      box-shadow: none !important;
+      transform: none !important;
+    }
+
+    /*-------------------------
+      匯入/匯出 區塊
+    -------------------------*/
+    .io-group {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .io-group input[type="file"] {
+      color: #c5c6c7;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid #00ffff;
+      border-radius: 8px;
+      padding: 8px;
+      box-shadow: 0 0 8px #00ffff80;
+    }
+    .io-group button {
+      background: linear-gradient(90deg, #00ffff 0%, #a259ff 100%);
+      color: #000;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 16px;
+      font-size: 0.95rem;
+      cursor: pointer;
+      box-shadow: 0 0 16px #00ffff;
+      transition: transform 0.2s, box-shadow 0.2s;
+      font-weight: bold;
+      font-family: 'Orbitron', sans-serif;
+    }
+    .io-group button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 24px #00ffff;
+    }
+
+    /*-------------------------
+      檔案格式說明
+    -------------------------*/
+    .format-info {
+      background: rgba(10, 20, 40, 0.6);
+      border: 1px solid #00ffff;
+      border-radius: 12px;
+      padding: 16px;
+      margin: 16px 0;
+      font-size: 0.9rem;
+      color: #c5c6c7;
+      box-shadow: 0 0 16px #00ffff44;
+    }
+    .format-info strong {
+      color: #00ffff;
+      text-shadow: 0 0 4px #00ffff;
+    }
+    .format-info code {
+      background: rgba(0,0,0,0.3);
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: #ffd700;
+      font-family: 'Roboto Mono', monospace;
+    }
+
+    /*-------------------------
+      新增單字 區塊
+    -------------------------*/
+    .add-group input,
+    .add-group textarea {
+      width: 100%;
+      padding: 12px;
+      margin: 8px 0;
+      border-radius: 10px;
+      border: 2px solid #00ffff;
+      background: rgba(10, 20, 40, 0.7);
+      color: #fff;
+      font-size: 1rem;
+      box-shadow: 0 0 16px #00ffff80;
+      font-family: 'Noto Sans TC', 'Noto Sans SC', 'Noto Sans Symbols', 'Noto Sans Symbols 2', 'Inter', 'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft JhengHei', 'PingFang TC', sans-serif;
+      font-weight: 400;
+      line-height: 1.5;
+    }
+    .add-group input:focus,
+    .add-group textarea:focus {
+      outline: none;
+      box-shadow: 0 0 24px #00ffff;
+    }
+    .add-group textarea {
+      resize: vertical;
+      height: 80px;
+    }
+    .add-group button {
+      background: linear-gradient(90deg, #00ffff 0%, #a259ff 100%);
+      color: #000;
+      border: none;
+      border-radius: 10px;
+      padding: 12px 20px;
+      font-size: 1rem;
+      cursor: pointer;
+      box-shadow: 0 0 16px #00ffff;
+      transition: transform 0.2s, box-shadow 0.2s;
+      margin-top: 12px;
+      font-weight: bold;
+      font-family: 'Orbitron', sans-serif;
+    }
+    .add-group button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 24px #00ffff;
+    }
+
+    /*-------------------------
+      單字列表
+    -------------------------*/
+    ul#wordList {
+      list-style: none;
+      margin-top: 16px;
+      padding-left: 0;
+    }
+    ul#wordList li {
+      background: rgba(10, 20, 40, 0.6);
+      margin-bottom: 12px;
+      padding: 16px;
+      border-radius: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border: 1px solid #00ffff;
+      box-shadow: 0 0 16px #00ffff44;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    ul#wordList li:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 24px #00ffff66;
+    }
+    ul#wordList li span.word-item {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      flex: 1;
+      gap: 8px;
+    }
+    ul#wordList li span.word-item .word-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+    }
+    ul#wordList li span.word-item .word-number {
+      font-size: 1rem;
+      color: #00ffff;
+      text-shadow: 0 0 4px #00ffff;
+      font-weight: bold;
+      min-width: 30px;
+      text-align: center;
+      font-family: 'Orbitron', sans-serif;
+      background: rgba(0, 255, 255, 0.1);
+      border-radius: 6px;
+      padding: 4px 8px;
+      border: 1px solid rgba(0, 255, 255, 0.3);
+    }
+    ul#wordList li span.word-item .example-row {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      width: 100%;
+      margin-left: 20px;
+    }
+    ul#wordList li span.word-item b.english-word {
+      font-size: 1.2rem;
+      color: #ffd700;
+      text-shadow: 0 0 6px #ffd700;
+      min-width: 120px;
+      font-family: 'Source Sans Pro', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+    ul#wordList li span.word-item span.chinese-meaning {
+      font-size: 1.1rem;
+      color: #99ccff;
+      text-shadow: 0 0 4px #3388cc;
+      font-family: 'Noto Sans TC', 'Noto Sans SC', 'Noto Sans Symbols', 'Noto Sans Symbols 2', 'Microsoft JhengHei', 'PingFang TC', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-weight: 500;
+    }
+    ul#wordList li span.word-item span.english-example {
+      font-size: 0.95rem;
+      color: #c5c6c7;
+      font-style: italic;
+      text-shadow: 0 0 2px #666;
+      font-family: 'Source Sans Pro', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-weight: 400;
+      line-height: 1.4;
+    }
+    ul#wordList li span.word-item span.example-translation {
+      font-size: 0.9rem;
+      color: #888;
+      margin-left: 10px;
+      font-family: 'Noto Sans TC', 'Noto Sans SC', 'Noto Sans Symbols', 'Noto Sans Symbols 2', 'Microsoft JhengHei', 'PingFang TC', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-weight: 400;
+    }
+    /* 按鈕群組 */
+    ul#wordList li div {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    /* 刪除按鈕 */
+    ul#wordList li button.btn-delete {
+      background: linear-gradient(90deg, #ff4444 0%, #cc0000 100%);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      font-weight: bold;
+      box-shadow: 0 0 12px #ff4444;
+    }
+    ul#wordList li button.btn-delete:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 16px #ff4444;
+    }
+    /* 發音按鈕 */
+    ul#wordList li button.btn-pronounce {
+      background: linear-gradient(90deg, #ffd700 0%, #ffaa00 100%);
+      color: #000;
+      border: none;
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      font-weight: bold;
+      box-shadow: 0 0 12px #ffd700;
+    }
+    ul#wordList li button.btn-pronounce:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 16px #ffd700;
+    }
+    /* 例句發音按鈕 */
+    ul#wordList li button.btn-pronounce[onclick*="pronounceSentence"] {
+      background: linear-gradient(90deg, #3498db 0%, #2980b9 100%);
+      color: #fff;
+      box-shadow: 0 0 12px #3498db;
+    }
+    ul#wordList li button.btn-pronounce[onclick*="pronounceSentence"]:hover {
+      box-shadow: 0 0 16px #3498db;
+    }
+
+    /*-------------------------
+      Scrollbar for .container
+    -------------------------*/
+    .container::-webkit-scrollbar {
+      width: 12px;
+    }
+    .container::-webkit-scrollbar-track {
+      background: rgba(0,0,0,0.2);
+      border-radius: 6px;
+    }
+    .container::-webkit-scrollbar-thumb {
+      background: rgba(69,162,158,0.6);
+      border-radius: 6px;
+      border: 2px solid rgba(0,0,0,0.2);
+    }
+    .container::-webkit-scrollbar-thumb:hover {
+      background: rgba(69,162,158,0.8);
+    }
+    .container {
+      scrollbar-width: thin;
+      scrollbar-color: rgba(69,162,158,0.6) rgba(0,0,0,0.2);
+    }
+
+    /*-------------------------
+      搜尋單字 區塊
+    -------------------------*/
+    .search-group {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .search-group input[type="search"] {
+      flex: 1;
+      padding: 10px 16px;
+      border-radius: 10px;
+      border: 2px solid #00ffff;
+      background: rgba(10, 20, 40, 0.7);
+      color: #fff;
+      font-size: 1rem;
+      box-shadow: 0 0 16px #00ffff80;
+      font-family: 'Inter', 'Source Sans Pro', sans-serif;
+    }
+    .search-group input[type="search"]:focus {
+      outline: none;
+      box-shadow: 0 0 24px #00ffff;
+    }
+    .search-group button {
+      background: linear-gradient(90deg, #ff4444 0%, #cc0000 100%);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 16px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      box-shadow: 0 0 12px #ff4444;
+      font-family: 'Orbitron', sans-serif;
+      font-weight: bold;
+    }
+    #searchNotFound {
+      text-align: center;
+      padding: 20px;
+      margin-top: 10px;
+      background: rgba(255, 215, 0, 0.1);
+      border: 1px solid rgba(255, 215, 0, 0.3);
+      border-radius: 12px;
+      color: #ffd700;
+      font-size: 1.1rem;
+    }
+    #searchNotFound button {
+      margin-left: 15px;
+      background: linear-gradient(90deg, #00ffff 0%, #a259ff 100%);
+      color: #000;
+      border: none;
+      border-radius: 8px;
+      padding: 8px 16px;
+      font-size: 1rem;
+      cursor: pointer;
+      font-family: 'Orbitron', sans-serif;
+      font-weight: bold;
+      box-shadow: 0 0 12px #00ffff;
+    }
+  </style>
+</head>
+<body>
+  <!-- 左上角 TopBar：星星數 + 返回單字本列表 -->
+  <div id="topBar">
+    <div id="starsDisplay">⭐<span id="totalStarsCount">0</span></div>
+    <a href="book.html" class="back-btn">⬅ 返回單字本列表</a>
+  </div>
+
+  <!-- 音樂控制 -->
+  <div id="audioControls">
+    <button id="toggleMusic" title="背景音樂">
+      <span class="material-icons">music_note</span>
+    </button>
+    <button id="testMusic" title="測試音樂系統" onclick="diagnoseMusicSystem()" style="font-size: 0.8rem; padding: 2px 6px;">
+      🔍
+    </button>
+  </div>
+
+  <!-- 背景音樂音頻元素 -->
+  <audio id="backgroundMusic" loop>
+    <source src="sound/午後放鬆時光（純音樂）.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- 星空 Canvas -->
+  <canvas id="stars"></canvas>
+
+  <!-- 主容器：編輯單字本 -->
+  <div class="container">
+    <h1>📖 編輯單字本：<span id="bookNameDisplay"></span></h1>
+
+    <!-- 遊戲選單按鈕 -->
+    <button class="game-menu-btn" onclick="openGameModal()">🎮 遊戲選單</button>
+
+    <!-- 匯入 / 匯出 -->
+    <h2>📥 匯入 / 📤 匯出</h2>
+    <div class="io-group">
+      <input type="file" id="fileInput" accept=".csv,.txt">
+      <button onclick="importFile()">匯入檔案</button>
+      <button onclick="exportCSV()">匯出 CSV</button>
+    </div>
+    
+    <!-- 檔案格式說明 -->
+    <div class="format-info">
+      <strong>📋 支援的檔案格式：</strong><br>
+      • CSV 格式：<code>apple,蘋果,This is an apple.,這是一個蘋果。</code><br>
+      • 中文冒號：<code>apple：蘋果：This is an apple.：這是一個蘋果。</code><br>
+      • 英文冒號：<code>apple:蘋果:This is an apple.:這是一個蘋果。</code><br>
+      • Tab 分隔：<code>apple	蘋果	This is an apple.	這是一個蘋果。</code><br>
+      • 空格分隔：<code>apple 蘋果 This is an apple. 這是一個蘋果。</code><br>
+      <em>每行一個單字，格式：英文單字 + 分隔符 + 中文解釋 + 分隔符 + 英文例句 + 分隔符 + 例句中文解釋</em><br>
+      <em style="color: #999;">注意：例句中文解釋為可選欄位，如果沒有提供會自動設為空字串</em><br>
+      <br>
+      <strong>🔤 支援的檔案編碼：</strong><br>
+      • UTF-8（推薦）<br>
+      • Big5（繁體中文）<br>
+      • GBK（簡體中文）<br>
+      • GB2312（簡體中文）<br>
+      • UTF-16<br>
+      <em style="color: #999;">系統會自動檢測並處理不同編碼格式，解決中文亂碼問題</em><br>
+      <br>
+      <strong>📊 匯入功能特色：</strong><br>
+      • ✅ 支援無限數量的單字匯入<br>
+      • ✅ 即時進度顯示<br>
+      • ✅ 批次處理，避免瀏覽器卡頓<br>
+      • ✅ 自動跳過無效行並顯示統計<br>
+      • ✅ 支援大型檔案（數千個單字）<br>
+      • 🔄 自動過濾重複單字（依英文單字判斷）<br>
+      <em style="color: #999;">匯入大量單字時會顯示進度條，請耐心等待完成</em>
+    </div>
+
+    <!-- 新增單字 -->
+    <h2>➕ 新增單字</h2>
+    <div class="add-group">
+      <input id="word" placeholder="英文單字">
+      <input id="meaning" placeholder="中文解釋">
+      <textarea id="example" placeholder="英文例句"></textarea>
+      <textarea id="exampleMeaning" placeholder="例句中文解釋"></textarea>
+      <button onclick="addWord()">新增</button>
+    </div>
+
+    <!-- 單字列表 -->
+    <h2>🗂 單字列表</h2>
+
+    <!-- 搜尋單字 -->
+    <div class="search-group">
+      <input type="search" id="searchInput" placeholder="即時搜尋英文單字..." oninput="searchWord()">
+      <button onclick="clearSearch()">清除搜尋</button>
+    </div>
+
+    <ul id="wordList"></ul>
+    <div id="searchNotFound" style="display: none;"></div>
+  </div>
+
+  <!-- 遊戲選單 Modal -->
+  <div class="modal-overlay" id="gameModal">
+    <div class="modal-content">
+      <h2>選擇遊戲模式</h2>
+      <button onclick="startSpelling()">
+        拼字遊戲<br>
+        <span style="font-size:0.8rem;color:#ccc;">(顯示意思，拼出英文字)</span>
+      </button>
+      <button onclick="startMatching()">
+        單字配對遊戲<br>
+        <span style="font-size:0.8rem;color:#ccc;">(記憶配對卡)</span>
+      </button>
+      <button onclick="startTimeChallenge()">
+        時間挑戰<br>
+        <span style="font-size:0.8rem;color:#ccc;">(限時答題)</span>
+      </button>
+      <button onclick="startQuiz('meaning-to-word')">
+        單字選擇題<br>
+        <span style="font-size:0.8rem;color:#ccc;">(由意思選單字)</span>
+      </button>
+      <button class="modal-close" onclick="closeGameModal()">關閉</button>
+    </div>
+  </div>
+
+  <!-- 這是隱藏的輸入框 -->
+  <input type="text" id="secretInput" style="position: absolute; left: -9999px; opacity: 0;" placeholder="輸入快捷鍵">
+
+  <!-- 載入必要的 JavaScript 檔案 -->
+  <script src="js/userData.js"></script>
+  <script src="js/sound.js"></script>
+  <script src="js/starRewardSystem.js"></script>
+  
+  <script>
+    /***** 背景音樂連動系統 *****/
+    let backgroundMusic = null;
+    let toggleMusicBtn = null;
+    let isMusicPlaying = false;
+    
+    // 初始化背景音樂系統
+    function initBackgroundMusic() {
+      console.log('🎵 初始化背景音樂系統...');
+      
+      backgroundMusic = document.getElementById('backgroundMusic');
+      toggleMusicBtn = document.getElementById('toggleMusic');
+      
+      if (!backgroundMusic) {
+        console.error('❌ 找不到背景音樂元素');
+        return;
+      }
+      
+      if (!toggleMusicBtn) {
+        console.error('❌ 找不到音樂控制按鈕');
+        return;
+      }
+      
+      // 設定音樂屬性
+      backgroundMusic.volume = 0.3;
+      backgroundMusic.loop = true;
+      
+      // 檢查 LinkageSystem 是否可用
+      if (typeof LinkageSystem !== 'undefined' && LinkageSystem.music) {
+        isMusicPlaying = LinkageSystem.music.isPlaying();
+        console.log('🔗 LinkageSystem 音樂狀態:', isMusicPlaying);
+      } else {
+        // 備用方案：直接從 localStorage 讀取
+        const musicState = localStorage.getItem('bgMusicState');
+        isMusicPlaying = musicState === 'playing';
+        console.log('📦 localStorage 音樂狀態:', isMusicPlaying);
+      }
+      
+      // 根據狀態設定按鈕外觀
+      updateMusicButtonState();
+      
+      // 如果應該播放，嘗試播放
+      if (isMusicPlaying) {
+        playBackgroundMusic();
+      }
+      
+      console.log('✅ 背景音樂系統初始化完成');
+    }
+    
+    // 更新音樂按鈕狀態
+    function updateMusicButtonState() {
+      if (!toggleMusicBtn) return;
+      
+      if (isMusicPlaying) {
+        toggleMusicBtn.classList.add('playing');
+        toggleMusicBtn.style.background = 'rgba(0, 255, 255, 0.2)';
+      } else {
+        toggleMusicBtn.classList.remove('playing');
+        toggleMusicBtn.style.background = 'rgba(10, 20, 40, 0.85)';
+      }
+    }
+    
+    // 播放背景音樂
+    function playBackgroundMusic() {
+      if (!backgroundMusic) return;
+      
+      // 優先使用 SoundSystem
+      if (typeof SoundSystem !== 'undefined' && SoundSystem.bgm) {
+        SoundSystem.bgm.play();
+        isMusicPlaying = true;
+        updateMusicButtonState();
+        console.log('🎵 透過 SoundSystem 播放背景音樂');
+        return;
+      }
+      
+      // 備用方案：直接播放本地音樂元素
+      backgroundMusic.play().then(() => {
+        isMusicPlaying = true;
+        updateMusicButtonState();
+        
+        // 同步到 LinkageSystem
+        if (typeof LinkageSystem !== 'undefined' && LinkageSystem.music) {
+          LinkageSystem.music.setPlaying(true);
+        } else {
+          localStorage.setItem('bgMusicState', 'playing');
+        }
+        
+        console.log('🎵 背景音樂開始播放');
+      }).catch(err => {
+        console.error('❌ 背景音樂播放失敗:', err);
+        isMusicPlaying = false;
+        updateMusicButtonState();
+      });
+    }
+    
+    // 暫停背景音樂
+    function pauseBackgroundMusic() {
+      if (!backgroundMusic) return;
+      
+      // 優先使用 SoundSystem
+      if (typeof SoundSystem !== 'undefined' && SoundSystem.bgm) {
+        SoundSystem.bgm.pause();
+        isMusicPlaying = false;
+        updateMusicButtonState();
+        console.log('🔇 透過 SoundSystem 暫停背景音樂');
+        return;
+      }
+      
+      // 備用方案：直接暫停本地音樂元素
+      backgroundMusic.pause();
+      isMusicPlaying = false;
+      updateMusicButtonState();
+      
+      // 同步到 LinkageSystem
+      if (typeof LinkageSystem !== 'undefined' && LinkageSystem.music) {
+        LinkageSystem.music.setPlaying(false);
+      } else {
+        localStorage.setItem('bgMusicState', 'paused');
+      }
+      
+      console.log('🔇 背景音樂已暫停');
+    }
+    
+    // 切換背景音樂播放狀態
+    function toggleBackgroundMusic() {
+      if (isMusicPlaying) {
+        pauseBackgroundMusic();
+      } else {
+        playBackgroundMusic();
+      }
+    }
+    
+    // 音樂系統診斷函數
+    function diagnoseMusicSystem() {
+      console.log('🔍 === 音樂系統診斷 ===');
+      console.log('背景音樂元素:', backgroundMusic);
+      console.log('音樂控制按鈕:', toggleMusicBtn);
+      console.log('當前播放狀態:', isMusicPlaying);
+      console.log('LinkageSystem 可用:', typeof LinkageSystem !== 'undefined');
+      console.log('SoundSystem 可用:', typeof SoundSystem !== 'undefined');
+      
+      if (backgroundMusic) {
+        console.log('音樂檔案路徑:', backgroundMusic.src);
+        console.log('音樂音量:', backgroundMusic.volume);
+        console.log('音樂是否循環:', backgroundMusic.loop);
+        console.log('音樂是否暫停:', backgroundMusic.paused);
+        console.log('音樂當前時間:', backgroundMusic.currentTime);
+      }
+      
+      if (typeof LinkageSystem !== 'undefined' && LinkageSystem.music) {
+        console.log('LinkageSystem 音樂狀態:', LinkageSystem.music.isPlaying());
+        console.log('LinkageSystem 音樂音量:', LinkageSystem.music.getVolume());
+      }
+      
+      if (typeof SoundSystem !== 'undefined' && SoundSystem.bgm) {
+        console.log('SoundSystem 背景音樂:', SoundSystem.bgm);
+        console.log('SoundSystem 背景音樂狀態:', !SoundSystem.bgm.paused);
+      }
+      
+      alert('音樂系統診斷完成，請查看控制台');
+    }
+    /*----------------------------------------
+      (1) 讀取星星數並顯示
+    ----------------------------------------*/
+    function loadTotalStars() {
+      const v = localStorage.getItem('totalStars');
+      return v ? parseInt(v, 10) : 0;
+    }
+    function updateStarsDisplay() {
+      StarRewardSystem.updateStarsDisplay();
+    }
+
+    /*----------------------------------------
+      (2) 星空背景動畫
+    ----------------------------------------*/
+    const canvas = document.getElementById('stars');
+    const ctx = canvas.getContext('2d');
+    let W, H;
+    let stars = [];
+    const numStars = 100;
+
+    function initCanvas() {
+      W = window.innerWidth;
+      H = window.innerHeight;
+      canvas.width = W;
+      canvas.height = H;
+      stars = [];
+      for (let i = 0; i < numStars; i++) {
+        stars.push({
+          x: Math.random() * W,
+          y: Math.random() * H,
+          size: Math.random() * 1.5 + 0.5,
+          speed: Math.random() * 0.5 + 0.2
+        });
+      }
+    }
+
+    function updateStars() {
+      stars.forEach(s => {
+        s.y += s.speed;
+        if (s.y > H) {
+          s.y = 0;
+          s.x = Math.random() * W;
+        }
+      });
+    }
+
+    function drawStars() {
+      ctx.clearRect(0, 0, W, H);
+      ctx.fillStyle = '#ffffff';
+      stars.forEach(s => {
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
+        ctx.fill();
+      });
+    }
+
+    function animate() {
+      updateStars();
+      drawStars();
+      requestAnimationFrame(animate);
+    }
+
+    window.addEventListener('resize', initCanvas);
+
+    /*----------------------------------------
+      (3) 單字本管理邏輯
+    ----------------------------------------*/
+    const bookName = new URLSearchParams(location.search).get('book');
+    const storageKey = 'book_' + bookName;
+    let vocab = JSON.parse(localStorage.getItem(storageKey) || '[]');
+
+    document.getElementById('bookNameDisplay').textContent = bookName;
+
+    function saveVocab() {
+      localStorage.setItem(storageKey, JSON.stringify(vocab));
+    }
+
+    function displayWords(filter = '') {
+      const ul = document.getElementById('wordList');
+      const searchNotFoundDiv = document.getElementById('searchNotFound');
+      ul.innerHTML = '';
+      searchNotFoundDiv.style.display = 'none';
+
+      const lowerCaseFilter = filter.toLowerCase();
+      const filteredVocab = vocab.filter(v => 
+        v.word.toLowerCase().includes(lowerCaseFilter) ||
+        v.meaning.toLowerCase().includes(lowerCaseFilter)
+      );
+
+      if (filteredVocab.length === 0 && filter) {
+        searchNotFoundDiv.style.display = 'block';
+        searchNotFoundDiv.innerHTML = `
+          <span>🤷‍♂️ 找不到包含 "<strong>${filter}</strong>" 的單字</span>
+          <button onclick="prepareAddWord('${filter}')">➕ 新增為單字</button>
+        `;
+      } else {
+        filteredVocab.forEach((v) => {
+          const originalIndex = vocab.findIndex(item => item === v);
+          const li = document.createElement('li');
+          li.innerHTML = `
+            <span class="word-item">
+              <div class="word-row">
+                <span class="word-number">${originalIndex + 1}.</span>
+                <b class="english-word">${v.word}</b>
+                <span class="chinese-meaning">${v.meaning}</span>
+              </div>
+              <div class="example-row">
+                <span class="english-example">${v.example}</span>
+                <span class="example-translation">${v.exampleMeaning || ''}</span>
+              </div>
+            </span>
+            <div>
+              <button class="btn-pronounce" onclick="pronounceWord('${v.word}')" title="唸出單字">🔊</button>
+              <button class="btn-pronounce" onclick="pronounceSentence('${v.example}')" title="唸出例句">📝</button>
+              <button class="btn-delete" onclick="deleteWord(${originalIndex})">刪除</button>
+            </div>
+          `;
+          ul.appendChild(li);
+        });
+      }
+    }
+
+    function searchWord() {
+      const searchTerm = document.getElementById('searchInput').value.trim();
+      displayWords(searchTerm);
+    }
+
+    function clearSearch() {
+      document.getElementById('searchInput').value = '';
+      displayWords();
+    }
+
+    function prepareAddWord(word) {
+      const wordInput = document.getElementById('word');
+      // 如果搜尋的是中文，則填入中文欄位
+      if (/[\u4e00-\u9fa5]/.test(word)) {
+        document.getElementById('meaning').value = word;
+        document.getElementById('word').focus();
+      } else {
+        wordInput.value = word;
+        document.getElementById('meaning').focus();
+      }
+      document.querySelector('.add-group').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    function addWord() {
+      const w = document.getElementById('word').value.trim();
+      const m = document.getElementById('meaning').value.trim();
+      const e = document.getElementById('example').value.trim();
+      const em = document.getElementById('exampleMeaning').value.trim();
+      if (!w || !m || !e) return alert('請至少輸入英文、中文和英文例句。');
+      vocab.push({ word: w, meaning: m, example: e, exampleMeaning: em });
+      saveVocab();
+      displayWords();
+      document.getElementById('word').value = '';
+      document.getElementById('meaning').value = '';
+      document.getElementById('example').value = '';
+      document.getElementById('exampleMeaning').value = '';
+      
+      // 新增後清除搜尋條件，以顯示完整列表
+      clearSearch();
+    }
+
+    function deleteWord(index) {
+      if (!confirm('確定刪除這個單字？')) return;
+      vocab.splice(index, 1);
+      saveVocab();
+      // 保持目前的搜尋結果
+      const searchTerm = document.getElementById('searchInput').value.trim();
+      displayWords(searchTerm);
+    }
+
+    function importFile() {
+      const file = document.getElementById('fileInput').files[0];
+      if (!file) return alert('請選擇檔案。');
+      
+      // 顯示匯入進度
+      const progressModal = document.createElement('div');
+      progressModal.className = 'modal-overlay';
+      progressModal.style.display = 'flex';
+      progressModal.innerHTML = `
+        <div class="modal-content">
+          <h2>📥 正在匯入檔案...</h2>
+          <div style="text-align: center; margin: 20px 0;">
+            <div style="font-size: 1.2rem; color: #00ffff; margin-bottom: 10px;">
+              <span id="importProgress">0</span> / <span id="totalLines">0</span> 行
+            </div>
+            <div style="width: 100%; height: 8px; background: rgba(0,0,0,0.3); border-radius: 4px; overflow: hidden;">
+              <div id="progressBar" style="width: 0%; height: 100%; background: linear-gradient(90deg, #00ffff, #a259ff); transition: width 0.3s;"></div>
+            </div>
+          </div>
+          <div id="importStatus" style="text-align: center; color: #c5c6c7; font-size: 0.9rem;">
+            正在讀取檔案...
+          </div>
+        </div>
+      `;
+      document.body.appendChild(progressModal);
+      
+      // 嘗試多種編碼格式來解決中文亂碼問題
+      const tryEncoding = (encoding) => {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = (e) => resolve(e.target.result);
+          reader.onerror = reject;
+          reader.readAsText(file, encoding);
+        });
+      };
+      
+      // 按優先順序嘗試不同編碼
+      const encodings = ['utf-8', 'big5', 'gbk', 'gb2312', 'utf-16'];
+      
+      Promise.any(encodings.map(encoding => tryEncoding(encoding)))
+        .then(text => {
+          // 移除 BOM 標記
+          text = text.replace(/^\uFEFF/, '');
+          
+          const lines = text.split('\n').filter(l => l.trim());
+          const totalLines = lines.length;
+          let importedCount = 0;
+          let skippedCount = 0;
+          let duplicateCount = 0;
+          
+          // 建立現有單字的 Set 以加速查詢（不分大小寫）
+          const existingWords = new Set(vocab.map(v => v.word.toLowerCase()));
+
+          // 更新總行數
+          document.getElementById('totalLines').textContent = totalLines;
+          document.getElementById('importStatus').textContent = '正在解析單字資料...';
+          
+          // 批次處理，避免阻塞UI
+          const batchSize = 100;
+          const processBatch = (startIndex) => {
+            const endIndex = Math.min(startIndex + batchSize, totalLines);
+            
+            for (let i = startIndex; i < endIndex; i++) {
+              const line = lines[i];
+              let word, meaning, example, exampleMeaning;
+              
+              // 嘗試不同的分隔符號格式
+              if (line.includes(',')) {
+                // CSV 格式：word,meaning,example,exampleMeaning
+                const parts = line.split(',').map(s => s.trim());
+                if (parts.length >= 4) {
+                  [word, meaning, example, exampleMeaning] = parts;
+                } else if (parts.length === 3) {
+                  [word, meaning, example] = parts;
+                  exampleMeaning = '';
+                }
+              } else if (line.includes('：')) {
+                // 中文冒號格式：word：meaning：example：exampleMeaning
+                const parts = line.split('：').map(s => s.trim());
+                if (parts.length >= 4) {
+                  [word, meaning, example, exampleMeaning] = parts;
+                } else if (parts.length === 3) {
+                  [word, meaning, example] = parts;
+                  exampleMeaning = '';
+                }
+              } else if (line.includes(':')) {
+                // 英文冒號格式：word:meaning:example:exampleMeaning
+                const parts = line.split(':').map(s => s.trim());
+                if (parts.length >= 4) {
+                  [word, meaning, example, exampleMeaning] = parts;
+                } else if (parts.length === 3) {
+                  [word, meaning, example] = parts;
+                  exampleMeaning = '';
+                }
+              } else if (line.includes('\t')) {
+                // Tab 分隔格式：word\tmeaning\texample\texampleMeaning
+                const parts = line.split('\t').map(s => s.trim());
+                if (parts.length >= 4) {
+                  [word, meaning, example, exampleMeaning] = parts;
+                } else if (parts.length === 3) {
+                  [word, meaning, example] = parts;
+                  exampleMeaning = '';
+                }
+              } else if (line.includes(' ')) {
+                // 空格分隔格式：word meaning example exampleMeaning
+                const parts = line.split(' ');
+                if (parts.length >= 4) {
+                  word = parts[0];
+                  meaning = parts[1];
+                  example = parts[2];
+                  exampleMeaning = parts.slice(3).join(' ');
+                } else if (parts.length === 3) {
+                  word = parts[0];
+                  meaning = parts[1];
+                  example = parts[2];
+                  exampleMeaning = '';
+                }
+              }
+              
+              // 如果成功解析且必要欄位都有值，則新增單字
+              if (word && meaning && example) {
+                // 檢查是否重複（不分大小寫）
+                if (!existingWords.has(word.toLowerCase())) {
+                  vocab.push({ 
+                    word: word, 
+                    meaning: meaning, 
+                    example: example, 
+                    exampleMeaning: exampleMeaning || '' 
+                  });
+                  // 將新單字加入 Set，以處理檔案內的重複
+                  existingWords.add(word.toLowerCase());
+                  importedCount++;
+                } else {
+                  duplicateCount++;
+                }
+              } else {
+                skippedCount++;
+              }
+            }
+            
+            // 更新進度
+            const progress = Math.min(endIndex, totalLines);
+            const progressPercent = (progress / totalLines) * 100;
+            document.getElementById('importProgress').textContent = progress;
+            document.getElementById('progressBar').style.width = progressPercent + '%';
+            
+            // 如果還有更多行要處理，繼續批次處理
+            if (endIndex < totalLines) {
+              document.getElementById('importStatus').textContent = `正在處理第 ${progress} 行...`;
+              setTimeout(() => processBatch(endIndex), 10); // 短暫延遲避免阻塞UI
+            } else {
+              // 完成處理
+              document.getElementById('importStatus').textContent = '正在儲存資料...';
+              
+              setTimeout(() => {
+                saveVocab();
+                displayWords();
+                
+                // 移除進度視窗
+                document.body.removeChild(progressModal);
+                
+                // 顯示結果
+                let resultMessage = `✅ 成功匯入 ${importedCount} 個單字`;
+                if (duplicateCount > 0) {
+                  resultMessage += `\n🔄 已忽略 ${duplicateCount} 個重複單字`;
+                }
+                if (skippedCount > 0) {
+                  resultMessage += `\n⚠️ 已跳過 ${skippedCount} 個無效行`;
+                }
+                alert(resultMessage);
+                
+                // 匯入成功後清空搜尋框
+                clearSearch();
+              }, 100);
+            }
+          };
+          
+          // 開始批次處理
+          processBatch(0);
+        })
+        .catch(error => {
+          console.error('檔案讀取失敗:', error);
+          document.body.removeChild(progressModal);
+          alert('❌ 檔案讀取失敗，請檢查檔案格式或編碼');
+        });
+    }
+
+    function exportCSV() {
+      if (vocab.length === 0) return alert('目前沒有可匯出的單字。');
+      const csvContent = vocab.map(v => `${v.word},${v.meaning},${v.example},${v.exampleMeaning || ''}`).join('\n');
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = `${bookName}.csv`;
+      link.click();
+    }
+
+    /*----------------------------------------
+      (4) 發音功能
+    ----------------------------------------*/
+    function pronounceWord(text) {
+      if (!('speechSynthesis' in window)) {
+        return alert('此瀏覽器不支援發音功能');
+      }
+      
+      // 使用新的發音系統
+      SoundSystem.speech.speakWord(text);
+    }
+
+    function pronounceSentence(text) {
+      if (!('speechSynthesis' in window)) {
+        return alert('此瀏覽器不支援發音功能');
+      }
+      
+      // 使用新的發音系統
+      SoundSystem.speech.speakSentence(text);
+    }
+
+    /*----------------------------------------
+      (5) 遊戲選單 modal 邏輯
+    ----------------------------------------*/
+    function openGameModal() {
+      document.getElementById('gameModal').style.display = 'flex';
+    }
+    function closeGameModal() {
+      document.getElementById('gameModal').style.display = 'none';
+    }
+
+    function startSpelling() {
+      // 跳轉到拼字遊戲
+      window.location.href = `spelling.html?book=${encodeURIComponent(bookName)}`;
+    }
+    function startMatching() {
+      // 跳轉到配對遊戲
+      window.location.href = `flipcard_practice.html?book=${encodeURIComponent(bookName)}`;
+    }
+    function startTimeChallenge() {
+      // 跳轉到限時答題
+      window.location.href = `time_challenge.html?book=${encodeURIComponent(bookName)}`;
+    }
+
+    function startQuiz(mode) {
+      // 跳轉到單字選擇題
+      window.location.href = `quiz_game.html?book=${encodeURIComponent(bookName)}&mode=${mode}`;
+    }
+
+    /*----------------------------------------
+      (6) 初始化
+    ----------------------------------------*/
+    window.addEventListener('load', () => {
+      updateStarsDisplay();
+      initCanvas();
+      animate();
+      displayWords();
+      
+      // 初始化音樂系統
+      setTimeout(() => {
+        initBackgroundMusic();
+        
+        // 綁定音樂控制按鈕事件
+        const musicBtn = document.getElementById('toggleMusic');
+        if (musicBtn) {
+          musicBtn.addEventListener('click', toggleBackgroundMusic);
+          console.log('🎵 音樂控制按鈕事件已綁定');
+        }
+        
+        // 添加用戶互動觸發音樂播放
+        let hasUserInteracted = false;
+        
+        function handleUserInteraction() {
+          if (!hasUserInteracted) {
+            hasUserInteracted = true;
+            console.log('👆 用戶互動觸發，音樂系統已啟用');
+            
+            // 如果應該播放但還沒播放，嘗試播放
+            if (isMusicPlaying && backgroundMusic && backgroundMusic.paused) {
+              playBackgroundMusic();
+            }
+          }
+        }
+        
+        // 監聽各種用戶互動事件
+        ['click', 'touchstart', 'keydown'].forEach(eventType => {
+          document.addEventListener(eventType, handleUserInteraction, { once: true });
+        });
+      }, 500);
+      
+      // 監聽頁面可見性變化，處理音樂暫停/恢復
+      document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+          // 頁面隱藏時暫停音樂
+          if (isMusicPlaying && backgroundMusic) {
+            backgroundMusic.pause();
+          }
+        } else {
+          // 頁面顯示時恢復音樂
+          if (isMusicPlaying && backgroundMusic && backgroundMusic.paused) {
+            backgroundMusic.play().catch(err => {
+              console.log('頁面恢復時音樂播放失敗:', err);
+            });
+          }
+        }
+      });
+      
+      // 初始化語音系統
+      if ('speechSynthesis' in window) {
+        // 等待語音載入完成
+        window.speechSynthesis.onvoiceschanged = () => {
+          console.log('語音系統已載入');
+        };
+      }
+      
+      // 添加鍵盤快捷鍵
+      document.addEventListener('keydown', (e) => {
+        // 音樂控制快捷鍵
+        if (e.key === 'm' || e.key === 'M') {
+          toggleBackgroundMusic();
+        }
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,1424 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <title>英打小英雄 - 星座挑戰</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="responsive_enhanced.css">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <style>
+    /* 防止水平滾動 */
+    html {
+      overflow-x: hidden;
+    }
+    
+    /* 確保所有元素都在視窗範圍內 */
+    * {
+      box-sizing: border-box;
+      max-width: 100%;
+    }
+    
+    /* === 背景：星空與漸層 === */
+    body {
+      margin: 0;
+      padding: 0;
+      overflow: auto;
+      font-family: 'Orbitron', sans-serif;
+      color: #fff;
+      background: linear-gradient(to bottom, #020111 0%, #000010 100%);
+      width: 100%;
+      overflow-x: hidden;
+    }
+    /* 星星粒子 */
+    #starfield {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
+    /* 主要容器：半透明背景和模糊效果 */
+    #container {
+      position: relative;
+      z-index: 1;
+      max-width: 500px;
+      margin: 40px auto;
+      padding: 20px;
+      background: rgba(10, 20, 40, 0.7);
+      border-radius: 16px;
+      box-shadow: 0 0 32px #00ffff44, 0 0 80px #a259ff22 inset;
+      backdrop-filter: blur(8px);
+    }
+    /* 返回首頁按鈕 */
+    .home-btn {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background: linear-gradient(90deg, #00ffff 0%, #a259ff 100%);
+      color: #000;
+      font-weight: bold;
+      padding: 8px 16px;
+      border-radius: 8px;
+      box-shadow: 0 0 16px #00ffff;
+      text-decoration: none;
+      z-index: 2;
+      transition: transform 0.2s, box-shadow 0.2s;
+      font-family: 'Orbitron', sans-serif;
+    }
+    .home-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 32px #00ffff;
+    }
+    /* 總星星顯示 */
+    #totalStars {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      background: rgba(10, 20, 40, 0.85);
+      padding: 8px 14px;
+      border-radius: 10px;
+      box-shadow: 0 0 12px #ffd700, 0 0 32px #00ffff;
+      border: 2px solid #00ffff;
+      color: #ffd700;
+      font-size: 1.2rem;
+      font-weight: bold;
+      z-index: 2;
+      font-family: 'Orbitron', sans-serif;
+    }
+    /* 生命值顯示 */
+    #lives {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      background: rgba(10, 20, 40, 0.85);
+      padding: 8px 14px;
+      border-radius: 10px;
+      box-shadow: 0 0 12px #ffd700, 0 0 32px #00ffff;
+      border: 2px solid #00ffff;
+      color: #ffd700;
+      font-size: 1.2rem;
+      font-weight: bold;
+      z-index: 2;
+      font-family: 'Orbitron', sans-serif;
+    }
+    
+    /* 音樂控制按鈕 */
+    #audioControls {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1001;
+      display: flex;
+      gap: 10px;
+    }
+    
+    #toggleMusic {
+      background: rgba(10, 20, 40, 0.85);
+      border: 2px solid #00ffff;
+      color: #00ffff;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 0 16px #00ffff;
+    }
+    
+    #toggleMusic:hover {
+      background: rgba(0, 255, 255, 0.2);
+      transform: scale(1.1);
+      box-shadow: 0 0 24px #00ffff;
+    }
+    
+    #toggleMusic.playing {
+      background: rgba(0, 255, 255, 0.2);
+      border-color: #00ffff;
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+    
+    #testMusic {
+      background: rgba(10, 20, 40, 0.85);
+      border: 2px solid #00ffff;
+      color: #00ffff;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 0 16px #00ffff;
+      font-size: 0.8rem;
+    }
+    
+    #testMusic:hover {
+      background: rgba(0, 255, 255, 0.2);
+      transform: scale(1.1);
+    }
+    /* 標題 */
+    h1 {
+      margin-top: 60px;
+      font-size: 2rem;
+      letter-spacing: 1px;
+      color: #00ffff;
+      text-shadow: 0 0 12px #00ffff, 0 0 32px #a259ff;
+      z-index: 2;
+      font-family: 'Orbitron', sans-serif;
+      text-align: center;
+    }
+    /* 題數顯示 */
+    #questionCount {
+      margin: 10px auto;
+      font-size: 1.2rem;
+      color: #a0a0ff;
+      text-align: center;
+      z-index: 2;
+      font-family: 'Orbitron', sans-serif;
+      text-shadow: 0 0 6px #00ffff;
+    }
+    /* 單字顯示 */
+    #wordDisplay {
+      margin: 20px auto;
+      font-size: 2.8rem;
+      font-weight: bold;
+      color: #ffd700;
+      text-shadow: 0 0 8px #ffd700;
+      animation: glow 2s ease-in-out infinite alternate;
+      z-index: 2;
+      font-family: 'Orbitron', sans-serif;
+      text-align: center;
+    }
+    @keyframes glow {
+      from { text-shadow: 0 0 8px #ffd700; }
+      to { text-shadow: 0 0 16px #ffd700, 0 0 32px #00ffff; }
+    }
+    /* 計時器 */
+    #timerDisplay {
+      font-size: 1.1rem;
+      color: #00ffff;
+      margin-bottom: 15px;
+      z-index: 2;
+      font-family: 'Orbitron', sans-serif;
+      text-align: center;
+      text-shadow: 0 0 6px #00ffff;
+    }
+    #timerDisplay.danger { animation: flash 1s infinite; }
+    @keyframes flash { 0%,100% { color: #00ffff; } 50% { color: #ff4444; } }
+    /* 輸入框 */
+    #answerInput {
+      font-family: 'Roboto Mono', monospace;
+      font-size: 1.1rem;
+      padding: 12px 16px;
+      border-radius: 12px;
+      border: 2px solid #00ffff;
+      width: 80%;
+      max-width: 400px;
+      background: rgba(10, 20, 40, 0.7);
+      color: #fff;
+      box-shadow: 0 0 16px #00ffff80;
+      text-align: center;
+      outline: none;
+      margin-bottom: 15px;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    #answerInput:focus {
+      border-color: #00ffff;
+      box-shadow: 0 0 32px #00ffff;
+    }
+    /* 回饋訊息 */
+    #feedback {
+      height: 30px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      margin: 12px 0;
+      z-index: 2;
+      font-family: 'Orbitron', sans-serif;
+      text-align: center;
+      color: #ffd700;
+      text-shadow: 0 0 6px #00ffff;
+    }
+    /* 按鈕列 */
+    .btn-row {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 20px;
+      margin-bottom: 80px;
+      z-index: 2;
+    }
+    .btn-row button {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1rem;
+      padding: 12px 20px;
+      border-radius: 12px;
+      border: none;
+      cursor: pointer;
+      background: linear-gradient(90deg, #00ffff 0%, #a259ff 100%);
+      color: #000;
+      font-weight: bold;
+      box-shadow: 0 0 16px #00ffff, 0 0 24px #a259ff99;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .btn-row button:hover {
+      transform: scale(1.08);
+      box-shadow: 0 0 32px #00ffff, 0 0 48px #a259ffcc;
+    }
+    #speakBtn { 
+      background: linear-gradient(90deg, #ffd700 0%, #ffaa00 100%);
+      color: #000;
+    }
+    /* 模態視窗 */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 10;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      align-items: center;
+      justify-content: center;
+      overflow-y: auto;
+    }
+    .modal-content {
+      background: rgba(10, 20, 40, 0.95);
+      padding: 30px;
+      border-radius: 16px;
+      color: #fff;
+      max-width: 500px;
+      width: 85%;
+      text-align: center;
+      box-shadow: 0 0 32px #00ffff99, 0 0 80px #a259ff44 inset;
+      font-family: 'Orbitron', sans-serif;
+      margin: 20px;
+      border: 2px solid #00ffff;
+    }
+    .modal-content h2 {
+      margin-bottom: 15px;
+      color: #00ffff;
+      text-shadow: 0 0 12px #00ffff, 0 0 32px #a259ff;
+      font-size: 1.5rem;
+      font-family: 'Orbitron', sans-serif;
+    }
+    .modal-content p {
+      margin: 8px 0;
+      font-size: 0.95rem;
+      font-family: 'Orbitron', sans-serif;
+      color: #a0a0ff;
+    }
+    .modal-content ul {
+      list-style: none;
+      padding: 0;
+      max-height: 140px;
+      overflow-y: auto;
+      margin: 15px 0;
+      text-align: left;
+      font-size: 0.9rem;
+      font-family: 'Roboto Mono', monospace;
+      color: #fff;
+    }
+    .modal-content ul li { 
+      margin: 6px 0;
+      padding: 4px 8px;
+      background: rgba(0, 255, 255, 0.1);
+      border-radius: 4px;
+    }
+    /* 翻牌卡片動畫 */
+    .flip-card-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 28px 18px;
+      justify-content: center;
+      margin: 32px auto 0 auto;
+      max-width: 600px;
+    }
+    .flip-card {
+      background: transparent;
+      width: 260px;
+      height: 160px;
+      perspective: 1000px;
+      cursor: pointer;
+      margin: 0 auto;
+    }
+    .flip-card-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transition: transform 0.7s cubic-bezier(.4,2,.6,1);
+      transform-style: preserve-3d;
+    }
+    .flip-card.flipped .flip-card-inner {
+      transform: rotateY(180deg);
+    }
+    .flip-card-front, .flip-card-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 2rem;
+      font-family: 'Orbitron', sans-serif;
+      border-radius: 18px;
+      box-shadow: 0 0 24px #00ffff44, 0 0 48px #a259ff22 inset;
+      background: linear-gradient(135deg, #181818 60%, #00ffff22 100%);
+      color: #00ffff;
+      border: 2px solid #00ffff;
+      user-select: none;
+    }
+    .flip-card-back {
+      background: linear-gradient(135deg, #ffd700 60%, #a259ff22 100%);
+      color: #a259ff;
+      transform: rotateY(180deg);
+      font-size: 2.2rem;
+      font-weight: bold;
+      text-shadow: 0 0 12px #ffd700, 0 0 32px #a259ff;
+    }
+    .practice-next-btn {
+      display: block;
+      margin: 28px auto 0 auto;
+      font-size: 1.1rem;
+      padding: 10px 32px;
+      border-radius: 10px;
+      background: linear-gradient(90deg,#00ffff 0%,#a259ff 100%);
+      color: #000;
+      font-weight: bold;
+      box-shadow: 0 0 12px #00ffff;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .practice-next-btn:hover {
+      transform: scale(1.08);
+      box-shadow: 0 0 32px #00ffff, 0 0 48px #a259ffcc;
+    }
+  </style>
+</head>
+<body>
+  <!-- 音樂控制 -->
+  <div id="audioControls">
+    <button id="toggleMusic" title="背景音樂">
+      <span class="material-icons">music_note</span>
+    </button>
+    <button id="testMusic" title="測試音樂系統" onclick="diagnoseMusicSystem()" style="font-size: 0.8rem; padding: 2px 6px;">
+      🔍
+    </button>
+  </div>
+
+  <!-- 背景音樂音頻元素 -->
+  <audio id="backgroundMusic" loop>
+    <source src="sound/午後放鬆時光（純音樂）.mp3" type="audio/mpeg">
+  </audio>
+
+  <canvas id="starfield"></canvas>
+  <div id="container">
+    <a href="atlas.html" class="home-btn">← 返回首頁</a>
+    <div id="totalStars">總星星：<span id="totalStarCount">0</span> ⭐</div>
+    <div id="lives">❤️❤️❤️❤️❤️</div>
+    <h1>🧠 星座挑戰：<span id="categoryName"></span></h1>
+    <div id="questionCount">第 <span id="currentQuestion">0</span> 題 / 20 題</div>
+    <div id="wordDisplay">準備中...</div>
+    <div id="timerDisplay">⏱ 時間：<span id="timeLeft">30</span> 秒</div>
+    <input type="text" id="answerInput" placeholder="請輸入英文..." autocomplete="off" />
+    <div id="feedback"></div>
+    <div class="btn-row">
+      <button onclick="checkAnswer()">送出</button>
+      <button onclick="nextWord()">跳過</button>
+      <button id="speakBtn" onclick="speakCurrentWord()">🔈 發音</button>
+      <button onclick="restartGame()">🔁 重玩</button>
+    </div>
+
+    <!-- 結算面板 -->
+    <div id="resultModal" class="modal">
+      <div class="modal-content">
+        <h2>關卡結算</h2>
+        <p>⭐ 本次加星星：<span id="sessionStars">0</span></p>
+        <p>✅ 答對題數：<span id="sessionCorrect">0</span></p>
+        <p>❌ 答錯題數：<span id="sessionWrong">0</span></p>
+        <button id="wrongBtn" onclick="showWrongModal()">錯題複習</button>
+        <button onclick="restartGame()">重新開始</button>
+        <button onclick="goHome()">返回首頁</button>
+      </div>
+    </div>
+    <!-- 錯題複習面板 -->
+    <div id="wrongModal" class="modal">
+      <div class="modal-content">
+        <h2>錯題複習</h2>
+        <ul id="wrongItems"></ul>
+        <button onclick="closeWrongModal()">關閉</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 外部字庫檔案 -->
+  <script src="js/userData.js"></script>
+  <script src="js/sound.js"></script>
+  <script src="js/starRewardSystem.js"></script>
+  <script src="js/vocabData.js"></script>
+  <!-- 新增：引入卡片資料 -->
+  <script src="js/cards.js"></script>
+  <script src="js/achievementSystem.js"></script>
+  <script>
+    /***** 背景音樂連動系統 *****/
+    let backgroundMusic = null;
+    let toggleMusicBtn = null;
+    let isMusicPlaying = false;
+    
+    // 初始化背景音樂系統
+    function initBackgroundMusic() {
+      console.log('🎵 初始化背景音樂系統...');
+      
+      backgroundMusic = document.getElementById('backgroundMusic');
+      toggleMusicBtn = document.getElementById('toggleMusic');
+      
+      if (!backgroundMusic) {
+        console.error('❌ 找不到背景音樂元素');
+        return;
+      }
+      
+      if (!toggleMusicBtn) {
+        console.error('❌ 找不到音樂控制按鈕');
+        return;
+      }
+      
+      // 設定音樂屬性
+      backgroundMusic.volume = 0.3;
+      backgroundMusic.loop = true;
+      
+      // 檢查 LinkageSystem 是否可用
+      if (typeof LinkageSystem !== 'undefined' && LinkageSystem.music) {
+        isMusicPlaying = LinkageSystem.music.isPlaying();
+        console.log('🔗 LinkageSystem 音樂狀態:', isMusicPlaying);
+      } else {
+        // 備用方案：直接從 localStorage 讀取
+        const musicState = localStorage.getItem('bgMusicState');
+        isMusicPlaying = musicState === 'playing';
+        console.log('📦 localStorage 音樂狀態:', isMusicPlaying);
+      }
+      
+      // 根據狀態設定按鈕外觀
+      updateMusicButtonState();
+      
+      // 如果應該播放，嘗試播放
+      if (isMusicPlaying) {
+        playBackgroundMusic();
+      }
+      
+      console.log('✅ 背景音樂系統初始化完成');
+    }
+    
+    // 更新音樂按鈕狀態
+    function updateMusicButtonState() {
+      if (!toggleMusicBtn) return;
+      
+      if (isMusicPlaying) {
+        toggleMusicBtn.classList.add('playing');
+        toggleMusicBtn.style.background = 'rgba(0, 255, 255, 0.2)';
+      } else {
+        toggleMusicBtn.classList.remove('playing');
+        toggleMusicBtn.style.background = 'rgba(10, 20, 40, 0.85)';
+      }
+    }
+    
+    // 播放背景音樂
+    function playBackgroundMusic() {
+      if (!backgroundMusic) return;
+      
+      // 優先使用 SoundSystem
+      if (typeof SoundSystem !== 'undefined' && SoundSystem.bgm) {
+        SoundSystem.bgm.play();
+        isMusicPlaying = true;
+        updateMusicButtonState();
+        console.log('🎵 透過 SoundSystem 播放背景音樂');
+        return;
+      }
+      
+      // 備用方案：直接播放本地音樂元素
+      backgroundMusic.play().then(() => {
+        isMusicPlaying = true;
+        updateMusicButtonState();
+        
+        // 同步到 LinkageSystem
+        if (typeof LinkageSystem !== 'undefined' && LinkageSystem.music) {
+          LinkageSystem.music.setPlaying(true);
+        } else {
+          localStorage.setItem('bgMusicState', 'playing');
+        }
+        
+        console.log('🎵 背景音樂開始播放');
+      }).catch(err => {
+        console.error('❌ 背景音樂播放失敗:', err);
+        isMusicPlaying = false;
+        updateMusicButtonState();
+      });
+    }
+    
+    // 暫停背景音樂
+    function pauseBackgroundMusic() {
+      if (!backgroundMusic) return;
+      
+      // 優先使用 SoundSystem
+      if (typeof SoundSystem !== 'undefined' && SoundSystem.bgm) {
+        SoundSystem.bgm.pause();
+        isMusicPlaying = false;
+        updateMusicButtonState();
+        console.log('🔇 透過 SoundSystem 暫停背景音樂');
+        return;
+      }
+      
+      // 備用方案：直接暫停本地音樂元素
+      backgroundMusic.pause();
+      isMusicPlaying = false;
+      updateMusicButtonState();
+      
+      // 同步到 LinkageSystem
+      if (typeof LinkageSystem !== 'undefined' && LinkageSystem.music) {
+        LinkageSystem.music.setPlaying(false);
+      } else {
+        localStorage.setItem('bgMusicState', 'paused');
+      }
+      
+      console.log('🔇 背景音樂已暫停');
+    }
+    
+    // 切換背景音樂播放狀態
+    function toggleBackgroundMusic() {
+      if (isMusicPlaying) {
+        pauseBackgroundMusic();
+      } else {
+        playBackgroundMusic();
+      }
+    }
+    
+    // 音樂系統診斷函數
+    function diagnoseMusicSystem() {
+      console.log('🔍 === 音樂系統診斷 ===');
+      console.log('背景音樂元素:', backgroundMusic);
+      console.log('音樂控制按鈕:', toggleMusicBtn);
+      console.log('當前播放狀態:', isMusicPlaying);
+      console.log('LinkageSystem 可用:', typeof LinkageSystem !== 'undefined');
+      console.log('SoundSystem 可用:', typeof SoundSystem !== 'undefined');
+      
+      if (backgroundMusic) {
+        console.log('音樂檔案路徑:', backgroundMusic.src);
+        console.log('音樂音量:', backgroundMusic.volume);
+        console.log('音樂是否循環:', backgroundMusic.loop);
+        console.log('音樂是否暫停:', backgroundMusic.paused);
+        console.log('音樂當前時間:', backgroundMusic.currentTime);
+      }
+      
+      if (typeof LinkageSystem !== 'undefined' && LinkageSystem.music) {
+        console.log('LinkageSystem 音樂狀態:', LinkageSystem.music.isPlaying());
+        console.log('LinkageSystem 音樂音量:', LinkageSystem.music.getVolume());
+      }
+      
+      if (typeof SoundSystem !== 'undefined' && SoundSystem.bgm) {
+        console.log('SoundSystem 背景音樂:', SoundSystem.bgm);
+        console.log('SoundSystem 背景音樂狀態:', !SoundSystem.bgm.paused);
+      }
+      
+      alert('音樂系統診斷完成，請查看控制台');
+    }
+    
+    // === 星空背景生成 ===
+    const starCanvas = document.getElementById('starfield');
+    const ctx = starCanvas.getContext('2d');
+    let width = window.innerWidth, height = window.innerHeight;
+    starCanvas.width = width;
+    starCanvas.height = height;
+    const starsBg = [];
+    function initStars() {
+      starsBg.length = 0;
+      for (let i = 0; i < 100; i++) {
+        starsBg.push({
+          x: Math.random() * width,
+          y: Math.random() * height,
+          r: Math.random() * 1.2 + 0.3,
+          alpha: Math.random(),
+          twinkle: Math.random() * 5
+        });
+      }
+    }
+    function drawStars() {
+      ctx.clearRect(0, 0, width, height);
+      starsBg.forEach(s => {
+        s.twinkle += 0.02;
+        s.alpha = Math.abs(Math.sin(s.twinkle));
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255, 255, 255, ${s.alpha})`;
+        ctx.fill();
+      });
+      requestAnimationFrame(drawStars);
+    }
+    window.addEventListener('resize', () => {
+      width = window.innerWidth;
+      height = window.innerHeight;
+      starCanvas.width = width;
+      starCanvas.height = height;
+      initStars();
+    });
+    initStars();
+    drawStars();
+
+    // === TTS voices 載入 ===
+    // 使用新的發音系統，移除舊的語音載入邏輯
+
+    function speak(text) {
+      if (!text) return;
+      SoundSystem.speech.speakWord(text);
+    }
+    
+    function speakCurrentWord() {
+      if (!current) return;
+      SoundSystem.speech.speakWord(current.en);
+    }
+
+    // === 使用外部載入的 vocabData ===
+    // 假設 js/vocabData.js 會定義全域變數 vocabData
+
+    // ====== 刪除練習模式狀態與流程 ======
+    // 遊戲變數
+    const params = new URLSearchParams(location.search);
+    const categoryKey = params.get('category') || 'aries';
+    document.getElementById('categoryName').textContent = categoryKey;
+    let words = vocabData[categoryKey] || [];
+    words = words.slice(0, 20); // 每關最多 20 題
+
+    let current = null;
+    let used = [];
+    let wrongList = [];
+    let correctCount = 0;
+    let timer = null;
+    let timeLeft = 30;
+    let lives = 5;
+    
+    // ===== 新增：遊戲狀態追蹤 =====
+    let gameStats = {
+      correctCount: 0,
+      totalAnswered: 0,
+      consecutiveCorrect: 0, // 連續答對次數
+      fastestAnswer: Infinity, // 最快答題時間
+      slowestAnswer: 0, // 最慢答題時間
+      totalTimeUsed: 0, // 總用時
+      perfectAnswers: 0, // 完美答題次數（15秒內答對）
+      startTime: Date.now()
+    };
+
+    // 從 localStorage 取總星星，若無則為 0
+    let totalStarCount = parseInt(localStorage.getItem('totalStars') || '0', 10);
+    function updateTotal() {
+      // 使用連動系統獲取最新的星星數量
+      if (typeof LinkageSystem !== 'undefined') {
+        totalStarCount = LinkageSystem.stars.get();
+      }
+      document.getElementById('totalStarCount').textContent = totalStarCount;
+    }
+
+    function updateLives() {
+      const livesDiv = document.getElementById('lives');
+      livesDiv.innerHTML = '❤️'.repeat(lives) + '🤍'.repeat(5 - lives);
+    }
+
+    function updateQuestionCount() {
+      document.getElementById('currentQuestion').textContent = used.length;
+    }
+    
+    // ===== 新增：星星獎勵計算函數 =====
+    function calculateStarReward(isCorrect, answerTime, consecutiveCount, wordLength) {
+      if (!isCorrect) return 0;
+      
+      let baseReward = 1; // 基礎獎勵
+      
+      // 時間獎勵：越快答對獎勵越多
+      if (answerTime <= 5) {
+        baseReward += 3; // 5秒內 +3星
+      } else if (answerTime <= 10) {
+        baseReward += 2; // 10秒內 +2星
+      } else if (answerTime <= 15) {
+        baseReward += 1; // 15秒內 +1星
+      }
+      
+      // 連擊獎勵：連續答對越多獎勵越多
+      if (consecutiveCount >= 5) {
+        baseReward += 3; // 5連擊 +3星
+      } else if (consecutiveCount >= 3) {
+        baseReward += 2; // 3連擊 +2星
+      } else if (consecutiveCount >= 2) {
+        baseReward += 1; // 2連擊 +1星
+      }
+      
+      // 單字難度獎勵：根據單字長度給予額外獎勵
+      if (wordLength >= 8) {
+        baseReward += 2; // 長單字額外獎勵
+      } else if (wordLength >= 6) {
+        baseReward += 1; // 中等長度單字獎勵
+      }
+      
+      // 星座關卡特殊獎勵
+      baseReward += 1; // 星座關卡額外獎勵
+      
+      return baseReward;
+    }
+    
+    // ===== 新增：顯示獎勵動畫 =====
+    function showRewardAnimation(starsEarned, reason = '') {
+      const rewardDiv = document.createElement('div');
+      rewardDiv.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: linear-gradient(135deg, rgba(255, 215, 0, 0.95), rgba(255, 170, 0, 0.95));
+        color: #000;
+        padding: 20px 30px;
+        border-radius: 15px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        z-index: 1000;
+        box-shadow: 0 0 30px #ffd700;
+        animation: rewardPop 1.2s ease-out forwards;
+        font-family: 'Orbitron', sans-serif;
+        text-align: center;
+        min-width: 300px;
+      `;
+      
+      let reasonText = '';
+      if (reason) {
+        reasonText = `<div style="font-size: 1rem; margin-top: 8px; color: #666;">${reason}</div>`;
+      }
+      
+      rewardDiv.innerHTML = `
+        <div style="font-size: 3rem; margin-bottom: 10px;">⭐</div>
+        <div style="font-size: 1.8rem; margin-bottom: 5px;">+${starsEarned} 星星</div>
+        ${reasonText}
+      `;
+      
+      // 添加動畫樣式
+      const style = document.createElement('style');
+      style.textContent = `
+        @keyframes rewardPop {
+          0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+          50% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
+          100% { transform: translate(-50%, -50%) scale(1); opacity: 0; }
+        }
+      `;
+      document.head.appendChild(style);
+      
+      document.body.appendChild(rewardDiv);
+      
+      // 播放星星音效
+      if (typeof StarRewardSystem !== 'undefined') {
+        StarRewardSystem.playStarSound();
+      }
+      
+      // 3.5秒後移除
+      setTimeout(() => {
+        if (document.body.contains(rewardDiv)) {
+          document.body.removeChild(rewardDiv);
+        }
+        if (document.head.contains(style)) {
+          document.head.removeChild(style);
+        }
+      }, 3500);
+    }
+    
+    // ===== 新增：顯示連擊通知 =====
+    function showComboNotification(comboCount) {
+      if (comboCount < 2) return;
+      
+      const comboDiv = document.createElement('div');
+      comboDiv.style.cssText = `
+        position: fixed;
+        top: 20%;
+        left: 50%;
+        transform: translateX(-50%);
+        background: linear-gradient(135deg, rgba(255, 69, 0, 0.9), rgba(255, 140, 0, 0.9));
+        color: #fff;
+        padding: 15px 25px;
+        border-radius: 25px;
+        font-size: 1.2rem;
+        font-weight: bold;
+        z-index: 1000;
+        box-shadow: 0 0 20px #ff4500;
+        animation: comboSlide 0.8s ease-out forwards;
+        font-family: 'Orbitron', sans-serif;
+      `;
+      
+      let comboText = '';
+      let comboIcon = '';
+      
+      if (comboCount >= 5) {
+        comboText = `${comboCount} 連擊！🔥 無敵連擊！`;
+        comboIcon = '🔥';
+      } else if (comboCount >= 3) {
+        comboText = `${comboCount} 連擊！⚡ 超強連擊！`;
+        comboIcon = '⚡';
+      } else {
+        comboText = `${comboCount} 連擊！✨ 連擊開始！`;
+        comboIcon = '✨';
+      }
+      
+      comboDiv.innerHTML = `${comboIcon} ${comboText} ${comboIcon}`;
+      
+      // 添加動畫樣式
+      const style = document.createElement('style');
+      style.textContent = `
+        @keyframes comboSlide {
+          0% { transform: translateX(-50%) translateY(-100%); opacity: 0; }
+          50% { transform: translateX(-50%) translateY(0); opacity: 1; }
+          100% { transform: translateX(-50%) translateY(0); opacity: 0; }
+        }
+      `;
+      document.head.appendChild(style);
+      
+      document.body.appendChild(comboDiv);
+      
+      // 4秒後移除
+      setTimeout(() => {
+        if (document.body.contains(comboDiv)) {
+          document.body.removeChild(comboDiv);
+        }
+        if (document.head.contains(style)) {
+          document.head.removeChild(style);
+        }
+      }, 4000);
+    }
+
+    function showResultPanel() {
+      // 本次星星已在checkAnswer累加，不需要再次設置
+      document.getElementById('sessionStars').textContent = correctCount * 2;
+      document.getElementById('sessionCorrect').textContent = correctCount;
+      document.getElementById('sessionWrong').textContent = wrongList.length;
+      document.getElementById('wrongBtn').style.display = wrongList.length ? 'inline-block' : 'none';
+      document.getElementById('resultModal').style.display = 'flex';
+      disablePlay();
+      updateTotal();
+
+      // 評分與分數
+      const score = correctCount * 2;
+      let rating = '';
+      if (correctCount === 20) rating = '🌟 滿分高手！';
+      else if (correctCount >= 16) rating = '🎉 很棒，繼續加油！';
+      else if (correctCount >= 10) rating = '👍 還不錯，再努力！';
+      else if (correctCount >= 5) rating = '💡 多多練習會更好！';
+      else rating = '📝 建議多複習單字！';
+
+      // ====== 新增：通關判斷與儲存 ======
+      if (correctCount === 20 || correctCount >= 16) {
+        let passed = JSON.parse(localStorage.getItem('passed_atlas')||'[]');
+        if (!passed.includes(categoryKey)) {
+          passed.push(categoryKey);
+          localStorage.setItem('passed_atlas', JSON.stringify(passed));
+        }
+      }
+
+      // 取得上次分數
+      let lastScore = parseInt(localStorage.getItem('lastScore') || '0', 10);
+      let compare = '';
+      if (lastScore === 0) compare = '（首次遊玩）';
+      else if (score > lastScore) compare = '⬆️ 有進步！';
+      else if (score < lastScore) compare = '⬇️ 有退步';
+      else compare = '➡️ 持平';
+      localStorage.setItem('lastScore', score);
+
+      // 顯示所有錯題列表
+      let wrongListHtml = '';
+      if (wrongList.length > 0) {
+        wrongListHtml = '<ul style="max-height:120px;overflow-y:auto;text-align:left;font-size:1rem;margin:10px 0 0 0;padding:0 10px 0 20px;">';
+        wrongList.forEach(item => {
+          wrongListHtml += `<li>❌ <b>${item.zh}</b> → <span style='color:#ffd700;'>${item.en}</span></li>`;
+        });
+        wrongListHtml += '</ul>';
+      } else {
+        wrongListHtml = '<div style="color:#0f0;margin-top:10px;">本次無錯題！</div>';
+      }
+      // 插入到結算面板（sessionWrong下方）
+      const resultModal = document.getElementById('resultModal').querySelector('.modal-content');
+      let wrongListDiv = document.getElementById('wrongListAll');
+      if (!wrongListDiv) {
+        wrongListDiv = document.createElement('div');
+        wrongListDiv.id = 'wrongListAll';
+        resultModal.appendChild(wrongListDiv);
+      }
+      wrongListDiv.innerHTML = wrongListHtml;
+
+      // 插入分數、評價、進步
+      let scoreDiv = document.getElementById('scoreInfo');
+      if (!scoreDiv) {
+        scoreDiv = document.createElement('div');
+        scoreDiv.id = 'scoreInfo';
+        resultModal.insertBefore(scoreDiv, wrongListDiv);
+      }
+      scoreDiv.innerHTML = `<div style='margin:10px 0 0 0;font-size:1.2rem;'>本次分數：<b style='color:#ffd700;'>${score}</b> 分<br>${rating} <span style='font-size:1rem;color:#00ffff;'>${compare}</span></div>`;
+
+      // ====== 新增：成就系統連動 ======
+      updateQuizAchievements();
+    }
+
+    // ====== 新增：成就系統函數 ======
+    function updateQuizAchievements() {
+      // 更新星座挑戰完成次數
+      const quizGames = parseInt(localStorage.getItem('quizGamesCompleted') || '0');
+      localStorage.setItem('quizGamesCompleted', quizGames + 1);
+      
+      // 檢查並更新相關成就
+      checkAndUpdateQuizAchievements();
+    }
+    
+    function checkAndUpdateQuizAchievements() {
+      // 檢查是否有新成就達成
+      const achievements = [
+        { id: 'speed_learner', name: '快速學習者', requirement: 10 },
+        { id: 'accuracy_master', name: '準確大師', requirement: 20 },
+        { id: 'combo_king', name: '連擊之王', requirement: 15 }
+      ];
+      
+      const claimed = JSON.parse(localStorage.getItem('claimedAchievements') || '[]');
+      
+      achievements.forEach(ach => {
+        if (claimed.includes(ach.id)) return; // 已經領取過了
+        
+        // 計算通過的關卡數量
+        const fillGames = parseInt(localStorage.getItem('fillGamesCompleted') || '0');
+        const cardGames = parseInt(localStorage.getItem('cardGamesCompleted') || '0');
+        const quizGames = parseInt(localStorage.getItem('quizGamesCompleted') || '0');
+        const spellingGames = parseInt(localStorage.getItem('spellingGamesCompleted') || '0');
+        const matchingGames = parseInt(localStorage.getItem('matchingGamesCompleted') || '0');
+        const totalGames = fillGames + cardGames + quizGames + spellingGames + matchingGames;
+        
+        if (totalGames >= ach.requirement) {
+          // 顯示成就達成通知
+          showAchievementNotification(ach.name, ach.id);
+        }
+      });
+    }
+    
+    function showAchievementNotification(achievementName, achievementId) {
+      // 創建成就通知
+      const notification = document.createElement('div');
+      notification.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: linear-gradient(135deg, #ffd700, #ffed4e);
+        color: #000;
+        padding: 20px 30px;
+        border-radius: 15px;
+        font-weight: bold;
+        font-size: 1.2rem;
+        z-index: 10000;
+        box-shadow: 0 0 30px #ffd700;
+        animation: achievementPop 0.8s cubic-bezier(.68, -0.55, .27, 1.55);
+        text-align: center;
+        min-width: 300px;
+      `;
+      
+      notification.innerHTML = `
+        <div style="font-size: 3rem; margin-bottom: 10px;">🏆</div>
+        <div style="margin-bottom: 5px;">🎉 成就達成！</div>
+        <div style="font-size: 1.1rem;">${achievementName}</div>
+        <div style="font-size: 0.9rem; margin-top: 10px; color: #666;">
+          前往成就頁面領取獎勵
+        </div>
+      `;
+      
+      // 添加動畫樣式
+      const style = document.createElement('style');
+      style.textContent = `
+        @keyframes achievementPop {
+          0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+          50% { transform: translate(-50%, -50%) scale(1.1); opacity: 1; }
+          100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        }
+      `;
+      document.head.appendChild(style);
+      
+      document.body.appendChild(notification);
+      
+      // 3秒後自動移除
+      setTimeout(() => {
+        notification.remove();
+        style.remove();
+      }, 3000);
+    }
+
+    function disablePlay() {
+      document.getElementById('answerInput').disabled = true;
+      document.querySelectorAll('.btn-row button').forEach(btn => btn.disabled = true);
+    }
+    function enablePlay() {
+      document.getElementById('answerInput').disabled = false;
+      document.querySelectorAll('.btn-row button').forEach(btn => btn.disabled = false);
+    }
+
+    function showWrongModal() {
+      if (!wrongList.length) return;
+      // 啟動複習模式
+      startReviewMode();
+    }
+    
+    // ===== 複習模式 =====
+    let reviewList = [];
+    let reviewIndex = 0;
+    let inReviewMode = false;
+
+    function startReviewMode() {
+      reviewList = wrongList.slice();
+      reviewIndex = 0;
+      inReviewMode = true;
+      // 不要模糊主畫面
+      // document.getElementById('container').style.filter = 'blur(2px)';
+      document.getElementById('wrongModal').style.display = 'flex';
+      showReviewQuestion();
+    }
+
+    function showReviewQuestion() {
+      const list = document.getElementById('wrongItems');
+      list.innerHTML = '';
+      if (reviewIndex >= reviewList.length) {
+        // 複習結束
+        const li = document.createElement('li');
+        li.textContent = '🎉 複習完成！';
+        list.appendChild(li);
+        document.getElementById('answerInput').disabled = true;
+        return;
+      }
+      const item = reviewList[reviewIndex];
+      const li = document.createElement('li');
+      li.innerHTML = `<span style='color:#ffd700;font-weight:bold;'>${item.zh}</span> <input id='reviewInput' type='text' style='font-size:1rem;padding:4px 8px;border-radius:6px;border:1px solid #00ffff;width:120px;margin-left:8px;' autocomplete='off' /> <span id='reviewFeedback'></span>`;
+      list.appendChild(li);
+      document.getElementById('reviewInput').focus();
+      document.getElementById('reviewInput').addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') checkReviewAnswer();
+      });
+    }
+
+    function checkReviewAnswer() {
+      const item = reviewList[reviewIndex];
+      const input = document.getElementById('reviewInput');
+      const feedback = document.getElementById('reviewFeedback');
+      if (!input) return;
+      if (input.value.trim().toLowerCase() === item.en.toLowerCase()) {
+        feedback.textContent = '✅ 正確';
+        feedback.style.color = '#0f0';
+        setTimeout(() => {
+          reviewIndex++;
+          showReviewQuestion();
+        }, 600);
+      } else {
+        feedback.textContent = `❌ 正解：${item.en}`;
+        feedback.style.color = '#f66';
+        setTimeout(() => {
+          reviewIndex++;
+          showReviewQuestion();
+        }, 1200);
+      }
+    }
+
+    function closeWrongModal() {
+      document.getElementById('wrongModal').style.display = 'none';
+      // document.getElementById('container').style.filter = '';
+      inReviewMode = false;
+      document.getElementById('answerInput').disabled = false;
+    }
+
+    function goHome() {
+      location.href = 'atlas.html';
+    }
+
+    // ===== 新增：計時器函數 =====
+    function startTimer() {
+      timeLeft = 30;
+      document.getElementById('timeLeft').textContent = timeLeft;
+      document.getElementById('timerDisplay').classList.remove('danger');
+      
+      if (timer) {
+        clearInterval(timer);
+      }
+      
+      timer = setInterval(() => {
+        timeLeft--;
+        document.getElementById('timeLeft').textContent = timeLeft;
+        
+        // 時間不足時顯示警告
+        if (timeLeft <= 10) {
+          document.getElementById('timerDisplay').classList.add('danger');
+        }
+        
+        // 時間到
+        if (timeLeft <= 0) {
+          clearInterval(timer);
+          // 時間到算答錯
+          document.getElementById('feedback').textContent = `⏰ 時間到！正解是：${current.en}`;
+          document.getElementById('feedback').style.color = '#f66';
+          SoundSystem.play('wrong');
+          wrongList.push(current);
+          lives--;
+          gameStats.consecutiveCorrect = 0; // 重置連擊
+          
+          updateLives();
+          if (lives <= 0) {
+            setTimeout(() => showResultPanel(), 800);
+          } else {
+            setTimeout(() => nextWord(), 800);
+          }
+        }
+      }, 1000);
+    }
+
+    function nextWord() {
+      if (used.length >= words.length) {
+        document.getElementById('wordDisplay').textContent = '✅ 挑戰完成';
+        clearInterval(timer);
+        showResultPanel();
+        return;
+      }
+      // 跳過也要扣愛心並算錯題
+      if (used.length > 0 && document.getElementById('answerInput').value === '') { // 只有跳過才扣愛心
+        lives--;
+        updateLives();
+        wrongList.push(current);
+        if (lives <= 0) {
+          clearInterval(timer);
+          showResultPanel();
+          return;
+        }
+      }
+      const available = words.filter(w => !used.includes(w.en));
+      current = available[Math.floor(Math.random() * available.length)];
+      used.push(current.en);
+      updateQuestionCount();
+      document.getElementById('wordDisplay').textContent = current.zh;
+      document.getElementById('answerInput').value = '';
+      document.getElementById('feedback').textContent = '';
+      speak(current.en);
+      startTimer();
+      document.getElementById('resultModal').style.display = 'none';
+      document.getElementById('wrongModal').style.display = 'none';
+      enablePlay();
+      updateLives();
+    }
+
+    function checkAnswer() {
+      if (!current) return;
+      const ans = document.getElementById('answerInput').value.trim().toLowerCase();
+      
+      // ===== 新增：計算答題時間 =====
+      const answerTime = (30 - timeLeft); // 30秒倒計時，所以用30減去剩餘時間
+      gameStats.totalAnswered++;
+      gameStats.totalTimeUsed += answerTime;
+      
+      if (ans === current.en.toLowerCase()) {
+        document.getElementById('feedback').textContent = '✅ 正確';
+        document.getElementById('feedback').style.color = '#0f0';
+        SoundSystem.play('correct');
+        correctCount++;
+        
+        // ===== 新增：答對邏輯 =====
+        gameStats.correctCount++;
+        gameStats.consecutiveCorrect++;
+        
+        // 更新最快/最慢答題時間
+        if (answerTime < gameStats.fastestAnswer) {
+          gameStats.fastestAnswer = answerTime;
+        }
+        if (answerTime > gameStats.slowestAnswer) {
+          gameStats.slowestAnswer = answerTime;
+        }
+        
+        // 檢查是否為完美答題（15秒內答對）
+        if (answerTime <= 15) {
+          gameStats.perfectAnswers++;
+        }
+        
+        // 計算星星獎勵
+        const starsEarned = calculateStarReward(true, answerTime, gameStats.consecutiveCorrect, current.en.length);
+        
+        // 使用統一的星星系統
+        if (typeof StarRewardSystem !== 'undefined') {
+          StarRewardSystem.addStars(starsEarned);
+        } else if (typeof LinkageSystem !== 'undefined') {
+          LinkageSystem.stars.add(starsEarned);
+        } else {
+          totalStarCount += starsEarned;
+          localStorage.setItem('totalStars', totalStarCount);
+        }
+        
+        // 更新顯示
+        updateTotal();
+        
+        // 顯示獎勵動畫
+        let reasonText = '';
+        if (answerTime <= 5) {
+          reasonText = '⚡ 超快速答題！';
+        } else if (answerTime <= 10) {
+          reasonText = '🎯 快速答題！';
+        } else if (answerTime <= 15) {
+          reasonText = '✨ 準確答題！';
+        }
+        if (gameStats.consecutiveCorrect >= 3) {
+          reasonText += reasonText ? ' + 連擊獎勵！' : '🔥 連擊獎勵！';
+        }
+        
+        // showRewardAnimation(starsEarned, reasonText); // 移除這一行，統一由 StarRewardSystem 處理彈窗動畫
+        
+        // 顯示連擊通知
+        showComboNotification(gameStats.consecutiveCorrect);
+        
+        // ===== 新增：記錄答對的單字 =====
+        if (typeof VocabularyAchievementSystem !== 'undefined') {
+          VocabularyAchievementSystem.recordCorrectWord(current.en, categoryKey);
+        }
+        
+        clearInterval(timer);
+        setTimeout(() => nextWord(), 800);
+      } else {
+        document.getElementById('feedback').textContent = `❌ 正解是：${current.en}`;
+        document.getElementById('feedback').style.color = '#f66';
+        SoundSystem.play('wrong');
+        wrongList.push(current);
+        lives--;
+        
+        // ===== 新增：答錯邏輯 =====
+        gameStats.consecutiveCorrect = 0; // 重置連擊
+        
+        updateLives();
+        clearInterval(timer);
+        if (lives <= 0) {
+          setTimeout(() => showResultPanel(), 800);
+        } else {
+          setTimeout(() => nextWord(), 800);
+        }
+      }
+    }
+
+    function restartGame() {
+      used = [];
+      wrongList = [];
+      correctCount = 0;
+      lives = 5;
+      gameStats = {
+        correctCount: 0,
+        totalAnswered: 0,
+        consecutiveCorrect: 0,
+        fastestAnswer: Infinity,
+        slowestAnswer: 0,
+        totalTimeUsed: 0,
+        perfectAnswers: 0,
+        startTime: Date.now()
+      };
+      document.getElementById('currentQuestion').textContent = '0';
+      document.getElementById('resultModal').style.display = 'none';
+      document.getElementById('wrongModal').style.display = 'none';
+      updateLives();
+      nextWord();
+    }
+
+    // ===== 頁面初始化 =====
+    document.addEventListener('DOMContentLoaded', function() {
+      // 初始化音效系統
+      if (typeof SoundSystem !== 'undefined') {
+        SoundSystem.init();
+      }
+      
+      // 初始化音樂系統
+      setTimeout(() => {
+        initBackgroundMusic();
+        
+        // 綁定音樂控制按鈕事件
+        const musicBtn = document.getElementById('toggleMusic');
+        if (musicBtn) {
+          musicBtn.addEventListener('click', toggleBackgroundMusic);
+          console.log('🎵 音樂控制按鈕事件已綁定');
+        }
+        
+        // 添加用戶互動觸發音樂播放
+        let hasUserInteracted = false;
+        
+        function handleUserInteraction() {
+          if (!hasUserInteracted) {
+            hasUserInteracted = true;
+            console.log('👆 用戶互動觸發，音樂系統已啟用');
+            
+            // 如果應該播放但還沒播放，嘗試播放
+            if (isMusicPlaying && backgroundMusic && backgroundMusic.paused) {
+              playBackgroundMusic();
+            }
+          }
+        }
+        
+        // 監聽各種用戶互動事件
+        ['click', 'touchstart', 'keydown'].forEach(eventType => {
+          document.addEventListener(eventType, handleUserInteraction, { once: true });
+        });
+      }, 500);
+      
+      // 監聽頁面可見性變化，處理音樂暫停/恢復
+      document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+          // 頁面隱藏時暫停音樂
+          if (isMusicPlaying && backgroundMusic) {
+            backgroundMusic.pause();
+          }
+        } else {
+          // 頁面顯示時恢復音樂
+          if (isMusicPlaying && backgroundMusic && backgroundMusic.paused) {
+            backgroundMusic.play().catch(err => {
+              console.log('頁面恢復時音樂播放失敗:', err);
+            });
+          }
+        }
+      });
+      
+      // 初始化遊戲
+      updateTotal();
+      updateQuestionCount();
+      lives = 5;
+      updateLives();
+      
+      // 設置 Enter 鍵事件監聽器
+      const answerInput = document.getElementById('answerInput');
+      if (answerInput) {
+        answerInput.addEventListener('keydown', function(e) {
+          if (e.key === 'Enter') {
+            e.preventDefault(); // 防止表單提交
+            checkAnswer();
+          }
+        });
+      }
+      
+      // 添加鍵盤快捷鍵
+      document.addEventListener('keydown', (e) => {
+        // 音樂控制快捷鍵
+        if (e.key === 'm' || e.key === 'M') {
+          toggleBackgroundMusic();
+        }
+      });
+      
+      // 開始遊戲
+      nextWord();
+    });
+  </script>
+</body>
+</html>

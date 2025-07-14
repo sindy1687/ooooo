@@ -1,0 +1,1669 @@
+<!-- quiz_game.html − 單字選擇題頁面 -->
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>Cosmic Quiz: Chapter of Choice</title>
+  <!-- 新字體：Noto Sans TC -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="responsive_enhanced.css">
+  <style>
+    /* 防止水平滾動 */
+    html {
+      overflow-x: hidden;
+    }
+    
+    /* 確保所有元素都在視窗範圍內 */
+    * {
+      box-sizing: border-box;
+      max-width: 100%;
+    }
+    
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Orbitron', Arial, sans-serif;
+      background: linear-gradient(to bottom, #020111 0%, #000010 100%);
+      color: #fff;
+      min-height: 100vh;
+      width: 100%;
+      overflow-x: hidden;
+    }
+
+    /*-------------------------
+      全域重設 & 字體
+    -------------------------*/
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: 'Noto Sans TC', 'Inter', 'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft JhengHei', 'PingFang TC', sans-serif;
+      background: linear-gradient(to bottom, #020111 0%, #000010 100%);
+      color: #fff;
+      overflow: hidden;
+      font-size: 16px; /* 設定基礎字體大小 */
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    /*-------------------------
+      左上角 TopBar（顯示星星數 + 返回編輯頁）
+    -------------------------*/
+    #topBar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: rgba(10, 20, 40, 0.85);
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 3;
+      border-bottom: 2px solid #00ffff;
+      box-shadow: 0 0 16px #00ffff;
+    }
+    #topBar #starsDisplay {
+      font-size: 1.3rem;
+      color: #ffd700;
+      font-weight: bold;
+      text-shadow: 0 0 8px #ffd700;
+    }
+    #topBar .back-btn {
+      background: linear-gradient(90deg, #00ffff 0%, #a259ff 100%);
+      border: none;
+      color: #000;
+      border-radius: 8px;
+      padding: 8px 14px;
+      font-size: 1rem;
+      text-decoration: none;
+      transition: transform 0.2s, box-shadow 0.2s;
+      cursor: pointer;
+      font-weight: bold;
+      box-shadow: 0 0 16px #00ffff;
+    }
+    #topBar .back-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 24px #00ffff;
+    }
+
+    /*-------------------------
+      星空 Canvas 背景
+    -------------------------*/
+    canvas#stars {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+    }
+
+    /*-------------------------
+      主容器
+    -------------------------*/
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 800px;
+      margin: 80px auto 40px;
+      background: rgba(10, 20, 40, 0.7);
+      padding: 24px;
+      border-radius: 20px;
+      box-shadow: 0 0 32px #00ffff44, 0 0 80px #a259ff22 inset;
+      border: 2px solid #00ffff;
+      backdrop-filter: blur(8px);
+      overflow-y: auto;
+      max-height: calc(100vh - 140px);
+      line-height: 1.6; /* 增加容器的基礎行高 */
+    }
+    .container h1 {
+      color: #00ffff;
+      text-align: center;
+      text-shadow: 0 0 12px #00ffff, 0 0 32px #a259ff;
+      margin-bottom: 20px;
+      font-size: 2.2rem;
+      font-family: 'Orbitron', sans-serif;
+    }
+    .container .progress {
+      text-align: center;
+      font-size: 1.1rem;
+      color: #99ccff;
+      margin-bottom: 12px;
+    }
+    
+    /*-------------------------
+      計時器樣式
+    -------------------------*/
+    .timer-container {
+      text-align: center;
+      margin-bottom: 20px;
+      padding: 10px;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 10px;
+      border: 1px solid #00ffff;
+      position: relative;
+    }
+    .timer-container.shake {
+      animation: shake 0.5s infinite;
+    }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-2px); }
+      75% { transform: translateX(2px); }
+    }
+    .timer-display {
+      font-size: 1.5rem;
+      font-weight: bold;
+      font-family: 'Orbitron', sans-serif;
+      color: #00ffff;
+      text-shadow: 0 0 8px #00ffff;
+      margin-bottom: 5px;
+    }
+    .timer-bar {
+      width: 100%;
+      height: 8px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 4px;
+      overflow: hidden;
+      position: relative;
+    }
+    .timer-progress {
+      height: 100%;
+      background: linear-gradient(90deg, #00ffff, #a259ff);
+      border-radius: 4px;
+      transition: width 0.3s ease;
+      box-shadow: 0 0 8px #00ffff;
+    }
+    .timer-warning {
+      background: linear-gradient(90deg, #ff6b6b, #ff8e53);
+      animation: pulse 1s infinite;
+    }
+    .timer-danger {
+      background: linear-gradient(90deg, #ff4757, #ff3838);
+      animation: pulse 0.5s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+    @keyframes flash {
+      0%, 100% { background: rgba(0, 0, 0, 0.3); }
+      50% { background: rgba(255, 107, 107, 0.3); }
+    }
+    
+    /* 跳過按鈕樣式 */
+    .skip-btn {
+      display: none;
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: linear-gradient(90deg, #ff6b6b, #ff8e53);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 6px 12px;
+      font-size: 0.9rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 0 8px #ff6b6b;
+    }
+    .skip-btn:hover {
+      background: linear-gradient(90deg, #ff4757, #ff3838);
+      box-shadow: 0 0 12px #ff4757;
+      transform: translateY(-50%) scale(1.05);
+    }
+    .skip-btn:active {
+      transform: translateY(-50%) scale(0.95);
+    }
+    
+    .container .question-area {
+      margin-top: 24px;
+    }
+    .container .question-area #questionText {
+      font-size: 1.3rem;
+      margin-bottom: 20px;
+      color: #cceeff;
+      line-height: 1.7;
+      text-align: center; /* 讓題目和中文都置中 */
+    }
+    .container .choices {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap; /* 強制不換行 */
+      justify-content: center;
+      gap: 10px; /* 縮小間距以適應螢幕 */
+    }
+    .container .choices button.choice-btn {
+      flex: 1; /* 讓按鈕平均分配寬度 */
+      /* 移除 min-width 和 max-width 以允許自由收縮 */
+      background: rgba(10, 30, 50, 0.8);
+      color: #cceeff;
+      border: 2px solid #00ffff;
+      border-radius: 8px;
+      padding: 14px 8px; /* 調整 padding 以免文字溢出 */
+      font-size: 1.1rem;
+      font-weight: 500;
+      cursor: pointer;
+      box-shadow: 0 0 12px #00ffff80;
+      transition: all 0.2s ease;
+    }
+    .container .choices button.choice-btn:hover {
+      background: rgba(0, 255, 255, 0.2);
+      box-shadow: 0 0 20px #00ffff;
+    }
+    .container .choices button:disabled {
+        background: #555 !important;
+        color: #aaa !important;
+        border-color: #555 !important;
+        cursor: not-allowed;
+        box-shadow: none !important;
+    }
+    .container .choices button.correct {
+        background: rgba(46, 204, 113, 0.2);
+        color: #2ecc71;
+        border-color: #2ecc71;
+        box-shadow: 0 0 16px #2ecc71;
+    }
+    .container .choices button.incorrect {
+        background: rgba(231, 76, 60, 0.2);
+        color: #e74c3c;
+        border-color: #e74c3c;
+        box-shadow: 0 0 16px #e74c3c;
+    }
+    .container .feedback {
+      margin-top: 20px;
+      font-size: 1.1rem;
+      min-height: 1.6rem; /* 改為 min-height 以適應多行內容 */
+      text-align: center;
+      line-height: 1.5; /* 增加行高以改善可讀性 */
+    }
+    .container .next-btn {
+      display: none;
+      margin: 20px auto 0;
+      background: #f1c40f;
+      color: #0b0c10;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 24px;
+      font-size: 1.1rem;
+      font-weight: 500;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+      transition: background 0.2s;
+    }
+    .container .next-btn:hover {
+      background: #f39c12;
+    }
+
+    /*-------------------------
+      Scrollbar for .container
+    -------------------------*/
+    .container::-webkit-scrollbar {
+      width: 10px;
+    }
+    .container::-webkit-scrollbar-track {
+      background: rgba(0,0,0,0.2);
+      border-radius: 5px;
+    }
+    .container::-webkit-scrollbar-thumb {
+      background: rgba(69,162,158,0.6);
+      border-radius: 5px;
+    }
+    .container::-webkit-scrollbar-thumb:hover {
+      background: rgba(69,162,158,0.8);
+    }
+    .container {
+      scrollbar-width: thin;
+      scrollbar-color: rgba(69,162,158,0.6) rgba(0,0,0,0.2);
+    }
+
+    /*-------------------------
+      Review Modal
+    -------------------------*/
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 100;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.7);
+      backdrop-filter: blur(5px);
+    }
+    .modal-content {
+      background: rgba(10, 20, 40, 0.95);
+      margin: 5% auto; /* 調整 margin */
+      padding: 30px;
+      border: 2px solid #00ffff;
+      width: 90%;
+      max-width: 1000px;
+      border-radius: 10px;
+      box-shadow: 0 0 32px #00ffff44, 0 0 80px #a259ff22 inset;
+      position: relative;
+      backdrop-filter: blur(8px);
+    }
+    .modal-content h2 {
+      text-align: center;
+      color: #00ffff;
+      font-size: 2rem;
+      margin-bottom: 25px;
+      text-shadow: 0 0 8px #00ffff;
+    }
+    
+    #reviewWordsContainer {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 20px;
+        max-height: 60vh;
+        overflow-y: auto;
+        padding: 15px;
+        margin-bottom: 25px;
+        background: #0a192f;
+        border-radius: 8px;
+    }
+    #reviewWordsContainer::-webkit-scrollbar {
+        width: 8px;
+    }
+    #reviewWordsContainer::-webkit-scrollbar-track {
+        background: #0a192f;
+    }
+    #reviewWordsContainer::-webkit-scrollbar-thumb {
+        background-color: #00ffff;
+        border-radius: 4px;
+    }
+
+    .word-item {
+        background: #112240;
+        padding: 15px 20px;
+        border-radius: 6px;
+        border-left: 4px solid #00ffff;
+      color: #8892b0;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+    .word-item:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 6px 12px rgba(0,0,0,0.4);
+    }
+    .word-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+    .word-header h3 {
+      color: #ccd6f6;
+        font-size: 1.3rem;
+        margin-right: 10px;
+      font-weight: 500;
+    }
+    .pronounce-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+        font-size: 1.4rem;
+      color: #00ffff;
+        transition: color 0.2s;
+        padding: 5px;
+    }
+    .pronounce-btn:hover {
+        color: #fff;
+    }
+    .word-item p {
+        font-size: 1rem;
+        line-height: 1.5;
+    }
+
+    #continueQuizBtn {
+      display: block;
+      width: fit-content;
+      margin: 25px auto 0;
+      background: linear-gradient(90deg, #00ffff 0%, #a259ff 100%);
+      color: #0a192f;
+      padding: 12px 35px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 1.1rem;
+      font-weight: 500;
+      box-shadow: 0 0 16px #00ffff;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    #continueQuizBtn:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 24px #00ffff;
+    }
+    
+    .close-btn {
+      position: absolute;
+      top: 15px;
+      right: 25px;
+      color: #00ffff;
+      font-size: 2rem;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .close-btn:hover,
+    .close-btn:focus {
+        color: #fff;
+        text-decoration: none;
+    }
+
+    /* 結束畫面樣式 */
+    #endScreen {
+      display: none;
+      text-align: center;
+      padding: 40px;
+      font-size: 1.2rem;
+    }
+    #endScreen h2 {
+      font-size: 2.5rem;
+      color: #66fcf1;
+      margin-bottom: 20px;
+    }
+    #endScreen p {
+      font-size: 1.5rem;
+      margin-bottom: 30px;
+    }
+    #endScreen button {
+      background: #45a29e;
+      color: #0b0c10;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 24px;
+      font-size: 1.1rem;
+      font-weight: 500;
+      cursor: pointer;
+      margin: 0 10px;
+      transition: background 0.2s;
+    }
+    #endScreen button:hover {
+      background: #66fcf1;
+    }
+
+    /*-------------------------
+      星星飄動動畫
+    -------------------------*/
+    .floating-star {
+      position: fixed;
+      font-size: 2rem;
+      color: #ffd700;
+      text-shadow: 0 0 10px #ffd700;
+      pointer-events: none;
+      z-index: 1000;
+      animation: starFloat 1.5s ease-out forwards;
+    }
+    
+    @keyframes starFloat {
+      0% {
+        opacity: 1;
+        transform: scale(1);
+      }
+      50% {
+        opacity: 0.8;
+        transform: scale(1.2);
+      }
+      100% {
+        opacity: 0;
+        transform: scale(0.5) translate(var(--target-x), var(--target-y));
+      }
+    }
+    
+    .stars-count-animation {
+      animation: countBounce 0.6s ease-out;
+    }
+    
+    @keyframes countBounce {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.3); }
+      100% { transform: scale(1); }
+    }
+  </style>
+</head>
+<body>
+  <!-- 左上角 TopBar：顯示星星數 + 返回編輯頁面 -->
+  <div id="topBar">
+    <div id="starsDisplay">⭐<span id="totalStarsCount">0</span></div>
+    <div id="currentEarnedStars" style="display: none; color: #ffd700; font-size: 1.1rem; margin-left: 15px;">
+      本輪獲得: <span id="earnedStarsCount">0</span>⭐
+    </div>
+    <a href="#" id="backToBook" class="back-btn">⬅ 返回編輯單字本</a>
+  </div>
+
+  <!-- 星空 Canvas -->
+  <canvas id="stars"></canvas>
+
+  <!-- 主容器：單字選擇題內容 -->
+  <div class="container">
+    <h1 id="modeTitle">單字選擇題</h1>
+    <!-- 進度顯示 -->
+    <p class="progress">
+      第 <span id="currentIdx">1</span> 題 ／ 共 <span id="totalCount">0</span> 題
+    </p>
+    
+    <!-- 計時器 -->
+    <div class="timer-container">
+      <div class="timer-display" id="timerDisplay">10</div>
+      <div class="timer-bar">
+        <div class="timer-progress" id="timerProgress"></div>
+      </div>
+      <button class="skip-btn">跳過</button>
+    </div>
+    
+    <div class="question-area">
+      <!-- 顯示「例句中挖空」的題目 -->
+      <div id="questionText">載入中…</div>
+      <!-- 四個按鈕水平排列 -->
+      <div class="choices" id="choices"></div>
+      <div class="feedback" id="feedback"></div>
+    </div>
+  </div>
+
+  <!-- 單題複習彈窗 -->
+  <div id="reviewModal" class="modal">
+    <div class="modal-content">
+      <span class="close-btn" id="closeModalBtn">&times;</span>
+      <h2 id="reviewModalTitle">單字複習</h2>
+      <div id="reviewWordsContainer">
+        <!-- Word will be dynamically inserted here -->
+      </div>
+      <button id="continueQuizBtn">下一題</button>
+    </div>
+  </div>
+
+  <script src="js/sound.js"></script>
+  <script src="js/starRewardSystem.js"></script>
+  <script>
+    /*----------------------------------------
+      (1) 讀取 URL 參數：book, mode
+    ----------------------------------------*/
+    const params = new URLSearchParams(location.search);
+    const bookName = params.get('book');
+    const mode = params.get('mode'); // 'meaning-to-word' 或 'word-to-meaning'
+    if (!bookName || !mode) {
+      alert('參數錯誤：缺少 book 或 mode。');
+      history.back();
+    }
+
+    // 設定「返回」按鈕的連結
+    document.getElementById('backToBook').href = `book_edit.html?book=${encodeURIComponent(bookName)}`;
+
+    // 顯示測驗模式標題
+    const modeTitleMap = {
+      'meaning-to-word': 'Cosmic Clues: Meaning to Word',
+      'word-to-meaning': 'Decoding the Cosmos: Word to Meaning'
+    };
+    if (!modeTitleMap[mode]) {
+      alert('mode 參數錯誤。');
+      history.back();
+    }
+    document.getElementById('modeTitle').textContent = modeTitleMap[mode];
+
+    /*----------------------------------------
+      (2) 讀取單字本內容
+    ----------------------------------------*/
+    const storageKey = 'book_' + bookName;
+    let vocab = [];
+    try {
+        const vocabData = localStorage.getItem(storageKey);
+        // 僅在有資料時才解析
+        if (vocabData) {
+            vocab = JSON.parse(vocabData);
+        }
+        console.log(`[DEBUG] 成功讀取單字本 '${bookName}'，共 ${vocab.length} 筆單字。`);
+    } catch (e) {
+        console.error(`[DEBUG] 解析單字本 '${bookName}' 的 JSON 資料時發生錯誤:`, e);
+        alert(`讀取單字本 '${bookName}' 失敗，資料可能已損毀或非標準 JSON 格式。請到編輯頁面重新儲存一次，或檢查主控台錯誤。`);
+        // 為了偵錯，暫不跳轉
+        // location.href = `book_edit.html?book=${encodeURIComponent(bookName)}`;
+    }
+
+    if (!Array.isArray(vocab) || vocab.length < 4) {
+      alert('此單字本至少需要 4 筆以上單字才能進行測驗。');
+      location.href = `book_edit.html?book=${encodeURIComponent(bookName)}`;
+    }
+
+    // ----------- 自動分級並混合出題 -------------
+    function autoLevelVocab(vocab, totalCount = 20) {
+      // 分級
+      const easy = vocab.filter(v => v.word.length <= 4);
+      const hard = vocab.filter(v => v.word.length >= 7);
+      const medium = vocab.filter(v => v.word.length > 4 && v.word.length < 7);
+      // 決定各級數量
+      let easyCount = Math.round(totalCount * 0.4);
+      let mediumCount = Math.round(totalCount * 0.4);
+      let hardCount = totalCount - easyCount - mediumCount;
+      // 隨機抽取
+      function pick(arr, n) {
+        const copy = arr.slice();
+        for (let i = copy.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [copy[i], copy[j]] = [copy[j], copy[i]];
+        }
+        return copy.slice(0, n);
+      }
+      let result = [];
+      result = result.concat(pick(easy, easyCount));
+      result = result.concat(pick(medium, mediumCount));
+      result = result.concat(pick(hard, hardCount));
+      // 若不足則補齊
+      const used = new Set(result.map(v => v.word));
+      const left = vocab.filter(v => !used.has(v.word));
+      while (result.length < Math.min(totalCount, vocab.length) && left.length > 0) {
+        result.push(left.pop());
+      }
+      // 最後再洗牌
+      for (let i = result.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [result[i], result[j]] = [result[j], result[i]];
+      }
+      return result;
+    }
+
+    // 取題數上限 20
+    vocab = autoLevelVocab(vocab, Math.min(20, vocab.length));
+
+    const totalCount = vocab.length;
+    let currentIdx = 0; // 從 0 開始
+    let earnedStars = 0; // 新增：追蹤測驗期間獲得的星星
+
+    // 更新進度文字
+    const currentIdxEl = document.getElementById('currentIdx');
+    const totalCountEl = document.getElementById('totalCount');
+    totalCountEl.textContent = totalCount;
+
+    /*----------------------------------------
+      (3) 計時器系統
+    ----------------------------------------*/
+    const TIMER_DURATION = 10; // 每題10秒
+    let timerInterval;
+    let timeLeft;
+    let timerDisplay = document.getElementById('timerDisplay');
+    let timerProgress = document.getElementById('timerProgress');
+    let skipBtn = document.querySelector('.skip-btn');
+    
+    function startTimer() {
+      timeLeft = TIMER_DURATION;
+      updateTimerDisplay();
+      
+      timerInterval = setInterval(() => {
+        timeLeft--;
+        updateTimerDisplay();
+        
+        if (timeLeft <= 0) {
+          clearInterval(timerInterval);
+          handleTimeUp();
+        }
+      }, 1000);
+    }
+    
+    function stopTimer() {
+      if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+      }
+    }
+    
+    function updateTimerDisplay() {
+      timerDisplay.textContent = timeLeft;
+      
+      const progressPercent = (timeLeft / TIMER_DURATION) * 100;
+      timerProgress.style.width = progressPercent + '%';
+      
+      // 根據剩餘時間改變顏色和效果
+      timerProgress.className = 'timer-progress';
+      const timerContainer = document.querySelector('.timer-container');
+      
+      // 在10秒時顯示跳過按鈕
+      if (timeLeft <= 10) {
+        skipBtn.style.display = 'block';
+      } else {
+        skipBtn.style.display = 'none';
+      }
+      
+      if (timeLeft <= 5) {
+        timerProgress.classList.add('timer-danger');
+        timerContainer.classList.add('shake');
+      } else if (timeLeft <= 7) {
+        timerProgress.classList.add('timer-warning');
+        timerContainer.classList.remove('shake');
+      } else {
+        timerContainer.classList.remove('shake');
+      }
+    }
+    
+    function handleTimeUp() {
+      if (answered) return; // 如果已經回答過了，就不處理
+      
+      // 播放時間到的音效
+      const wrongSound = new Audio('sound/wrong.mp3');
+      wrongSound.currentTime = 0;
+      wrongSound.play();
+      
+      // 添加時間到的視覺效果
+      const timerContainer = document.querySelector('.timer-container');
+      timerContainer.style.animation = 'flash 0.3s 3';
+      
+      // 自動選擇錯誤答案（第一個選項）
+      handleChoice(0);
+      
+      // 顯示時間到的提示
+      const feedbackEl = document.getElementById('feedback');
+      feedbackEl.innerHTML = '<span style="font-size: 1.3rem; color: #ff6b6b; font-weight: bold;">⏰ 時間到！</span>';
+      feedbackEl.style.color = '#ff6b6b';
+    }
+    
+    // 跳過按鈕點擊事件
+    function handleSkip() {
+      if (answered) return; // 如果已經回答過了，就不處理
+      
+      // 播放跳過音效
+      const skipSound = new Audio('sound/click.mp3');
+      skipSound.currentTime = 0;
+      skipSound.play();
+      
+      // 顯示跳過提示
+      const feedbackEl = document.getElementById('feedback');
+      feedbackEl.innerHTML = '<span style="font-size: 1.3rem; color: #ff8e53; font-weight: bold;">⏭️ 已跳過此題</span>';
+      feedbackEl.style.color = '#ff8e53';
+      
+      // 停止計時器
+      stopTimer();
+      
+      // 禁用所有按鈕
+      const allChoiceBtns = document.querySelectorAll('.choice-btn');
+      allChoiceBtns.forEach(btn => {
+        btn.disabled = true;
+      });
+      
+      // 標示正確答案
+      const correctBtn = Array.from(allChoiceBtns).find(btn => choices[btn.dataset.index].isCorrect);
+      if(correctBtn) correctBtn.classList.add('correct');
+      
+      // 念出正確答案
+      const correctText = choices.find(c => c.isCorrect).text;
+      if (correctText && currentQuestion.example) {
+        speak(correctText, () => speak(currentQuestion.example, () => {
+          setTimeout(goToNextStep, 500);
+        }));
+      } else if (correctText) {
+        speak(correctText, () => {
+          setTimeout(goToNextStep, 500);
+        });
+      } else {
+        setTimeout(goToNextStep, 500);
+      }
+    }
+
+    /*----------------------------------------
+      (4) 星空背景動畫
+    ----------------------------------------*/
+    const canvas = document.getElementById('stars');
+    const ctx = canvas.getContext('2d');
+    let W, H;
+    let stars = [];
+    const numStars = 100;
+
+    function initCanvas() {
+      W = window.innerWidth;
+      H = window.innerHeight;
+      canvas.width = W;
+      canvas.height = H;
+      stars = [];
+      for (let i = 0; i < numStars; i++) {
+        stars.push({
+          x: Math.random() * W,
+          y: Math.random() * H,
+          size: Math.random() * 1.5 + 0.5,
+          speed: Math.random() * 0.5 + 0.2
+        });
+      }
+    }
+    function updateStars() {
+      stars.forEach(s => {
+        s.y += s.speed;
+        if (s.y > H) {
+          s.y = 0;
+          s.x = Math.random() * W;
+        }
+      });
+    }
+    function drawStars() {
+      ctx.clearRect(0, 0, W, H);
+      ctx.fillStyle = '#ffffff';
+      stars.forEach(s => {
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
+        ctx.fill();
+      });
+    }
+    function animate() {
+      updateStars();
+      drawStars();
+      requestAnimationFrame(animate);
+    }
+    window.addEventListener('resize', initCanvas);
+
+    /*----------------------------------------
+      (5) 顯示星星數
+    ----------------------------------------*/
+    function loadTotalStars() {
+      const v = localStorage.getItem('totalStars');
+      return v ? parseInt(v, 10) : 0;
+    }
+    function updateStarsDisplay() {
+      document.getElementById('totalStarsCount').textContent = loadTotalStars();
+    }
+    
+    function updateCurrentEarnedStars() {
+      const currentEarnedEl = document.getElementById('currentEarnedStars');
+      const earnedCountEl = document.getElementById('earnedStarsCount');
+      
+      if (earnedStars > 0) {
+        currentEarnedEl.style.display = 'block';
+        earnedCountEl.textContent = earnedStars;
+      } else {
+        currentEarnedEl.style.display = 'none';
+      }
+    }
+
+    /*----------------------------------------
+      (5.5) 星星飄動動畫系統
+    ----------------------------------------*/
+    function createFloatingStar(startX, startY, targetX, targetY) {
+      const star = document.createElement('div');
+      star.className = 'floating-star';
+      star.textContent = '⭐';
+      star.style.left = startX + 'px';
+      star.style.top = startY + 'px';
+      star.style.setProperty('--target-x', (targetX - startX) + 'px');
+      star.style.setProperty('--target-y', (targetY - startY) + 'px');
+      
+      document.body.appendChild(star);
+      
+      // 動畫結束後移除元素
+      setTimeout(() => {
+        if (star.parentNode) {
+          star.parentNode.removeChild(star);
+        }
+      }, 1500);
+    }
+    
+    function animateStarsCollection() {
+      if (earnedStars <= 0) return;
+      
+      const starsDisplay = document.getElementById('totalStarsCount');
+      const rect = starsDisplay.getBoundingClientRect();
+      const targetX = rect.left + rect.width / 2;
+      const targetY = rect.top + rect.height / 2;
+      
+      // 創建多個星星從不同位置飄向目標
+      for (let i = 0; i < earnedStars; i++) {
+        setTimeout(() => {
+          // 隨機起始位置（在螢幕中央區域）
+          const startX = window.innerWidth / 2 + (Math.random() - 0.5) * 200;
+          const startY = window.innerHeight / 2 + (Math.random() - 0.5) * 200;
+          
+          createFloatingStar(startX, startY, targetX, targetY);
+        }, i * 200); // 每個星星間隔200ms
+      }
+      
+      // 所有星星飄完後，更新總星星數並播放數字動畫
+      setTimeout(() => {
+        const currentStars = loadTotalStars();
+        const newTotal = currentStars + earnedStars;
+        localStorage.setItem('totalStars', newTotal);
+        
+        // 播放數字變化動畫
+        animateStarsCount(currentStars, newTotal);
+        
+        // 重置獲得的星星數
+        earnedStars = 0;
+      }, earnedStars * 200 + 1500);
+    }
+    
+    function animateStarsCount(from, to) {
+      const starsDisplay = document.getElementById('totalStarsCount');
+      const duration = 1000; // 1秒動畫
+      const startTime = Date.now();
+      
+      function updateCount() {
+        const elapsed = Date.now() - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        
+        // 使用緩動函數讓動畫更自然
+        const easeOutQuart = 1 - Math.pow(1 - progress, 4);
+        const currentCount = Math.floor(from + (to - from) * easeOutQuart);
+        
+        starsDisplay.textContent = currentCount;
+        starsDisplay.classList.add('stars-count-animation');
+        
+        if (progress < 1) {
+          requestAnimationFrame(updateCount);
+        } else {
+          // 動畫結束，移除動畫類別
+          setTimeout(() => {
+            starsDisplay.classList.remove('stars-count-animation');
+          }, 600);
+        }
+      }
+      
+      updateCount();
+    }
+
+    /*----------------------------------------
+      (5.5) 語音合成 (TTS)
+    ----------------------------------------*/
+    function speak(text, onEndCallback) {
+      // 使用新的發音系統
+      if (onEndCallback && typeof onEndCallback === 'function') {
+        SoundSystem.speech.speakQuestion(text, onEndCallback);
+      } else {
+        SoundSystem.speech.speakQuestion(text);
+      }
+    }
+
+    /*----------------------------------------
+      (6) Quiz 邏輯
+      - 以句子挖空的方式出題
+      - 答對時播放正確單字發音
+    ----------------------------------------*/
+    let currentQuestion = null;
+    let choices = [];
+    let answered = false;
+
+    const questionTextEl = document.getElementById('questionText');
+    const choicesEl = document.getElementById('choices');
+    const feedbackEl = document.getElementById('feedback');
+
+    // 載入音效
+    const correctSound = new Audio('sound/correct.mp3');
+    correctSound.preload = 'auto';
+    const wrongSound = new Audio('sound/wrong.mp3');
+    wrongSound.preload = 'auto';
+
+    /**
+     * 為了讓正規表達式能正確匹配，脫逸特殊字元。
+     * @param {string} str - 原始字串
+     * @returns {string} 脫逸後的字串
+     */
+    function escapeRegex(str) {
+      // 脫逸在正規表達式中有特殊意義的字元
+      return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    }
+
+    /**
+     * 計算兩個字串之間的 Levenshtein 距離（編輯距離）
+     * 用來尋找拼字相似的單字
+     */
+    function levenshteinDistance(s1, s2) {
+      s1 = s1.toLowerCase();
+      s2 = s2.toLowerCase();
+      const costs = [];
+      for (let i = 0; i <= s1.length; i++) {
+        let lastValue = i;
+        for (let j = 0; j <= s2.length; j++) {
+          if (i === 0) {
+            costs[j] = j;
+          } else {
+            if (j > 0) {
+              let newValue = costs[j - 1];
+              if (s1.charAt(i - 1) !== s2.charAt(j - 1)) {
+                newValue = Math.min(Math.min(newValue, lastValue), costs[j]) + 1;
+              }
+              costs[j - 1] = lastValue;
+              lastValue = newValue;
+            }
+          }
+        }
+        if (i > 0) {
+          costs[s2.length] = lastValue;
+        }
+      }
+      return costs[s2.length];
+    }
+
+    /**
+     * 從單字本中尋找與目標單字最相似的 N 個單字
+     * @param {string} targetWord - 目標單字
+     * @param {number} count - 要找出的相似單字數量
+     * @returns {string[]} 相似單字陣列
+     */
+    function findSimilarWords(targetWord, count) {
+      const allOtherWords = vocab
+        .map(v => v.word)
+        .filter(word => word.toLowerCase() !== targetWord.toLowerCase());
+
+      if (allOtherWords.length <= count) {
+        return allOtherWords; // 單字庫不足，返回所有其他單字
+      }
+
+      // 計算所有單字的 Levenshtein 距離
+      const wordsWithDistance = allOtherWords.map(word => ({
+        word: word,
+        distance: levenshteinDistance(targetWord, word)
+      }));
+
+      // 依距離排序，距離相同則隨機排序
+      wordsWithDistance.sort((a, b) => {
+        if (a.distance !== b.distance) {
+          return a.distance - b.distance;
+        }
+        return Math.random() - 0.5; // 打亂順序
+      });
+
+      // 取回最相似的前 count 個單字
+      return wordsWithDistance.slice(0, count).map(item => item.word);
+    }
+
+    // 產生第 currentIdx 題：從 vocab[currentIdx]
+    function generateQuestion() {
+      currentQuestion = vocab[currentIdx];
+
+      // example 裡面包含了單字，將該單字替換成「______」
+      let rawSentence = currentQuestion.example || '';
+      
+      // 為了處理單字中可能包含的正規表達式特殊字元，先進行脫逸
+      const escapedWord = escapeRegex(currentQuestion.word);
+      // 用正規去配對單字（大小寫不敏感）
+      const wordRegex = new RegExp(`\\b${escapedWord}\\b`, 'i');
+      let displaySentence = rawSentence.replace(wordRegex, '______');
+      
+      // 在題目下方顯示完整的中文例句翻譯，並高亮單字對應的中文
+      let chineseTranslation = currentQuestion.exampleMeaning || '(無例句翻譯)';
+      const wordMeaning = currentQuestion.meaning;
+      if (wordMeaning && chineseTranslation.includes(wordMeaning)) {
+        // 使用一個鮮豔的顏色來標示單字的中文意思
+        const highlightedMeaning = `<span style="color: #ffd700; font-weight: bold; text-shadow: 0 0 6px #ffd700;">${wordMeaning}</span>`;
+        // 只替換第一個出現的，避免意外替換其他地方
+        chineseTranslation = chineseTranslation.replace(wordMeaning, highlightedMeaning);
+      }
+
+      questionTextEl.innerHTML = `
+        ${displaySentence}
+        <div style="margin-top: 10px; font-size: 1.1rem; color: #a7ffea; font-weight: 500;">${chineseTranslation}</div>
+      `;
+
+      // 準備選項：正確單字 + 三個干擾
+      choices = [];
+      // 正確選項
+      choices.push({ text: currentQuestion.word, isCorrect: true });
+
+      // 抽 3 個干擾：改為尋找拼字相似的單字
+      const distractors = findSimilarWords(currentQuestion.word, 3);
+      distractors.forEach(d => choices.push({ text: d, isCorrect: false }));
+
+      // 如果找不到足夠的相似字，用隨機字補滿
+      while (choices.length < 4 && vocab.length > choices.length) {
+          const r = vocab[Math.floor(Math.random() * totalCount)];
+          let candidate = r.word;
+          // 檢查是否已在選項中
+          if (!choices.some(c => c.text.toLowerCase() === candidate.toLowerCase())) {
+              choices.push({ text: candidate, isCorrect: false });
+          }
+      }
+
+      // Shuffle choices
+      for (let i = choices.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [choices[i], choices[j]] = [choices[j], choices[i]];
+      }
+
+      // 自動念出題目（念出包含答案的完整句子）
+      if (currentQuestion && currentQuestion.example) {
+        speak(currentQuestion.example);
+      }
+    }
+
+    // 處理使用者點選
+    function handleChoice(index) {
+      if (answered) return;
+      answered = true;
+      
+      // 停止計時器
+      stopTimer();
+      
+      // ===== 新增：計算答題時間 =====
+      const answerTime = (TIMER_DURATION - timeLeft); // 10秒倒計時，所以用10減去剩餘時間
+      gameStats.totalAnswered++;
+      gameStats.totalTimeUsed += answerTime;
+      
+      const selected = choices[index];
+      const correctText = choices.find(c => c.isCorrect).text;
+      const allChoiceBtns = choicesEl.querySelectorAll('.choice-btn');
+      
+      // 禁用所有按鈕
+      allChoiceBtns.forEach(btn => {
+        btn.disabled = true;
+      });
+
+      let feedbackMessage = '';
+      if (selected.isCorrect) {
+        feedbackMessage = '✅ 答對了！';
+        feedbackEl.style.color = '#2ecc71';
+        selected.buttonEl.classList.add('correct');
+
+        // 播放答對音效
+        correctSound.currentTime = 0;
+        correctSound.play();
+
+        // ===== 新增：答對邏輯 =====
+        gameStats.correctCount++;
+        gameStats.consecutiveCorrect++;
+        
+        // 更新最快/最慢答題時間
+        if (answerTime < gameStats.fastestAnswer) {
+          gameStats.fastestAnswer = answerTime;
+        }
+        if (answerTime > gameStats.slowestAnswer) {
+          gameStats.slowestAnswer = answerTime;
+        }
+        
+        // 檢查是否為完美答題（5秒內答對）
+        if (answerTime <= 5) {
+          gameStats.perfectAnswers++;
+        }
+        
+        // 計算星星獎勵
+        const starsEarned = calculateStarReward(true, answerTime, gameStats.consecutiveCorrect, currentQuestion.word.length, '普通');
+        
+        // 使用統一的星星系統
+        if (typeof StarRewardSystem !== 'undefined') {
+          StarRewardSystem.addStars(starsEarned);
+        } else {
+          earnedStars += starsEarned;
+        }
+        
+        // 更新顯示
+        updateCurrentEarnedStars();
+        
+        // 顯示獎勵動畫
+        let reasonText = '';
+        if (answerTime <= 3) {
+          reasonText = '⚡ 超快速答題！';
+        } else if (answerTime <= 5) {
+          reasonText = '🎯 快速答題！';
+        } else if (answerTime <= 7) {
+          reasonText = '✨ 準確答題！';
+        }
+        if (gameStats.consecutiveCorrect >= 3) {
+          reasonText += reasonText ? ' + 連擊獎勵！' : '🔥 連擊獎勵！';
+        }
+        
+        showRewardAnimation(starsEarned, reasonText);
+        
+        // 顯示連擊通知
+        showComboNotification(gameStats.consecutiveCorrect);
+
+        // 記錄答對的單字（用於單字達人成就）
+        if (typeof VocabularyAchievementSystem !== 'undefined') {
+          VocabularyAchievementSystem.recordCorrectWord(currentQuestion.word, bookName);
+        }
+      } else {
+        const correctWord = currentQuestion.word;
+        feedbackMessage = `❌ 答錯了！ 正確答案是： <strong style="color: #ffd700; font-weight: bold;">${correctWord}</strong>`;
+        feedbackEl.style.color = '#e74c3c';
+        selected.buttonEl.classList.add('incorrect');
+        
+        // 播放答錯音效
+        wrongSound.currentTime = 0;
+        wrongSound.play();
+
+        // ===== 新增：答錯邏輯 =====
+        gameStats.consecutiveCorrect = 0; // 重置連擊
+
+        // 找出並標示正確答案
+        const correctBtn = Array.from(allChoiceBtns).find(btn => choices[btn.dataset.index].isCorrect);
+        if(correctBtn) correctBtn.classList.add('correct');
+      }
+      
+      // 取得並附加中文解釋
+      feedbackEl.innerHTML = feedbackMessage;
+
+      // 不論對錯，都先停止目前的朗讀，然後念出正確單字和例句
+      // 並在朗讀結束後才前進到下一步
+      window.speechSynthesis.cancel();
+
+      const onSpeechFinished = () => {
+        // 朗讀完畢後，稍微延遲一下再跳轉，避免太突兀
+        setTimeout(goToNextStep, 500);
+      };
+
+      if (correctText && currentQuestion.example) {
+        // 先念單字，念完後再念例句，例句念完後觸發回呼
+        speak(correctText, () => speak(currentQuestion.example, onSpeechFinished));
+      } else if (correctText) {
+        // 只念單字，念完後觸發回呼
+        speak(correctText, onSpeechFinished);
+      } else {
+        // 如果沒有東西可以念，就直接進入下一步
+        onSpeechFinished();
+      }
+    }
+
+    // 在渲染時，將按鈕元素附加到選項物件上，方便之後取用
+    function renderQuestion() {
+        currentIdxEl.textContent = currentIdx + 1;
+        choicesEl.innerHTML = '';
+        feedbackEl.textContent = '';
+        answered = false;
+
+        generateQuestion();
+
+        choices.forEach((choiceObj, i) => {
+            const btn = document.createElement('button');
+            btn.textContent = String.fromCharCode(65 + i) + '. ' + choiceObj.text;
+            btn.className = 'choice-btn';
+            btn.dataset.index = i;
+            btn.addEventListener('click', () => handleChoice(i));
+            choicesEl.appendChild(btn);
+            choiceObj.buttonEl = btn; // 將按鈕實例附加到物件
+        });
+
+        // 啟動計時器
+        startTimer();
+
+        if (currentQuestion && currentQuestion.example) {
+            speak(currentQuestion.example);
+        }
+    }
+
+    /*----------------------------------------
+      (7) 練習彈窗相關邏輯
+    ----------------------------------------*/
+    const reviewModal = document.getElementById('reviewModal');
+    const reviewWordsContainer = document.getElementById('reviewWordsContainer');
+    const closeModalBtn = document.getElementById('closeModalBtn');
+    const continueQuizBtn = document.getElementById('continueQuizBtn');
+
+    function goToNextStep() {
+      window.speechSynthesis.cancel(); // 停止朗讀
+      stopTimer(); // 停止計時器
+
+      const isEnding = (currentIdx + 1) >= totalCount;
+      if (isEnding) {
+        // ====== 新增：成就系統連動 ======
+        updateQuizGameAchievements();
+        
+        // 播放星星收集動畫
+        animateStarsCollection();
+        
+        // 延遲顯示完成訊息，讓星星動畫先播放
+        setTimeout(() => {
+          alert(`恭喜完成所有題目！總星數：${loadTotalStars()}`);
+          window.location.href = `book_edit.html?book=${encodeURIComponent(bookName)}`;
+        }, earnedStars * 200 + 2500); // 等待星星動畫完成
+      } else {
+        currentIdx++;
+        renderQuestion();
+      }
+    }
+
+    // ====== 新增：成就系統函數 ======
+    function updateQuizGameAchievements() {
+      // 更新選擇題遊戲完成次數
+      const quizGames = parseInt(localStorage.getItem('quizGamesCompleted') || '0');
+      localStorage.setItem('quizGamesCompleted', quizGames + 1);
+      
+      // 檢查並更新相關成就
+      checkAndUpdateQuizGameAchievements();
+    }
+    
+    function checkAndUpdateQuizGameAchievements() {
+      // 檢查是否有新成就達成
+      const achievements = [
+        { id: 'speed_learner', name: '快速學習者', requirement: 10 },
+        { id: 'accuracy_master', name: '準確大師', requirement: 20 },
+        { id: 'combo_king', name: '連擊之王', requirement: 15 }
+      ];
+      
+      const claimed = JSON.parse(localStorage.getItem('claimedAchievements') || '[]');
+      
+      achievements.forEach(ach => {
+        if (claimed.includes(ach.id)) return; // 已經領取過了
+        
+        // 計算通過的關卡數量
+        const fillGames = parseInt(localStorage.getItem('fillGamesCompleted') || '0');
+        const cardGames = parseInt(localStorage.getItem('cardGamesCompleted') || '0');
+        const quizGames = parseInt(localStorage.getItem('quizGamesCompleted') || '0');
+        const spellingGames = parseInt(localStorage.getItem('spellingGamesCompleted') || '0');
+        const matchingGames = parseInt(localStorage.getItem('matchingGamesCompleted') || '0');
+        const totalGames = fillGames + cardGames + quizGames + spellingGames + matchingGames;
+        
+        if (totalGames >= ach.requirement) {
+          // 顯示成就達成通知
+          showAchievementNotification(ach.name, ach.id);
+        }
+      });
+    }
+    
+    function showAchievementNotification(achievementName, achievementId) {
+      // 創建成就通知
+      const notification = document.createElement('div');
+      notification.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: linear-gradient(135deg, #ffd700, #ffed4e);
+        color: #000;
+        padding: 20px 30px;
+        border-radius: 15px;
+        font-weight: bold;
+        font-size: 1.2rem;
+        z-index: 10000;
+        box-shadow: 0 0 30px #ffd700;
+        animation: achievementPop 0.8s cubic-bezier(.68, -0.55, .27, 1.55);
+        text-align: center;
+        min-width: 300px;
+      `;
+      
+      notification.innerHTML = `
+        <div style="font-size: 3rem; margin-bottom: 10px;">🏆</div>
+        <div style="margin-bottom: 5px;">🎉 成就達成！</div>
+        <div style="font-size: 1.1rem;">${achievementName}</div>
+        <div style="font-size: 0.9rem; margin-top: 10px; color: #666;">
+          前往成就頁面領取獎勵
+        </div>
+      `;
+      
+      // 添加動畫樣式
+      const style = document.createElement('style');
+      style.textContent = `
+        @keyframes achievementPop {
+          0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+          50% { transform: translate(-50%, -50%) scale(1.1); opacity: 1; }
+          100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        }
+      `;
+      document.head.appendChild(style);
+      
+      document.body.appendChild(notification);
+      
+      // 3秒後自動移除
+      setTimeout(() => {
+        notification.remove();
+        style.remove();
+      }, 3000);
+    }
+
+    function showPreviewModal() {
+      reviewWordsContainer.innerHTML = ''; // 清空內容
+      
+      // 顯示所有即將測驗的單字
+      vocab.forEach((item, index) => {
+        const div = document.createElement('div');
+        div.className = 'word-item';
+        div.innerHTML = `
+          <div class="word-header">
+            <h3>${index + 1}. ${item.word}</h3>
+            <button class="pronounce-btn" data-word="${item.word}">🔊</button>
+          </div>
+          <p><strong>中文意思：</strong> ${item.meaning || '（無中文意思）'}</p>
+        `;
+        reviewWordsContainer.appendChild(div);
+      });
+
+      // 幫所有發音按鈕加上事件
+      reviewWordsContainer.querySelectorAll('.pronounce-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const wordToSpeak = e.currentTarget.getAttribute('data-word');
+          speak(wordToSpeak);
+        });
+      });
+      
+      // 更新標題和按鈕
+      document.getElementById('reviewModalTitle').textContent = '測驗前預習';
+      continueQuizBtn.textContent = '開始測驗';
+      reviewModal.style.display = 'block';
+
+      // 自動依序念出所有單字
+      autoPronouncePreviewWords();
+    }
+
+    function autoPronouncePreviewWords() {
+      let i = 0;
+      function speakNext() {
+        if (i < vocab.length) {
+          const word = vocab[i].word;
+          i++;
+          speak(word, speakNext);
+        }
+      }
+      speakNext(); // 開始朗讀
+    }
+
+    function startQuiz() {
+      window.speechSynthesis.cancel(); // 停止朗讀
+      stopTimer(); // 停止計時器
+      reviewModal.style.display = 'none';
+      currentIdx = 0; // 重置為第一題
+      earnedStars = 0; // 重置獲得的星星數
+      document.getElementById('currentEarnedStars').style.display = 'none'; // 隱藏當前獲得星星數
+      renderQuestion();
+    }
+
+    closeModalBtn.addEventListener('click', startQuiz);
+    continueQuizBtn.addEventListener('click', startQuiz);
+    
+    // 點擊 modal 外面也可以開始測驗
+    window.addEventListener('click', (event) => {
+      if (event.target == reviewModal) {
+        startQuiz();
+      }
+    });
+
+    /*----------------------------------------
+      (8) 初始化
+    ----------------------------------------*/
+    window.addEventListener('load', () => {
+      // 初始化音效系統
+      if (typeof SoundSystem !== 'undefined') {
+        SoundSystem.speech.init();
+      }
+      
+      // 添加跳過按鈕事件監聽器
+      skipBtn.addEventListener('click', handleSkip);
+      
+      updateStarsDisplay();
+      initCanvas();
+      animate();
+      // 先顯示預習彈窗，而不是直接開始測驗
+      showPreviewModal();
+    });
+    
+    // 頁面卸載時停止計時器
+    window.addEventListener('beforeunload', () => {
+      stopTimer();
+    });
+
+    // ===== 新增：遊戲狀態追蹤 =====
+    let gameStats = {
+      correctCount: 0,
+      totalAnswered: 0,
+      consecutiveCorrect: 0, // 連續答對次數
+      fastestAnswer: Infinity, // 最快答題時間
+      slowestAnswer: 0, // 最慢答題時間
+      totalTimeUsed: 0, // 總用時
+      perfectAnswers: 0, // 完美答題次數（5秒內答對）
+      startTime: Date.now()
+    };
+
+    // ===== 新增：星星獎勵計算函數 =====
+    function calculateStarReward(isCorrect, answerTime, consecutiveCount, wordLength, rarity) {
+      if (!isCorrect) return 0;
+      
+      let baseReward = 1; // 基礎獎勵
+      
+      // 時間獎勵：越快答對獎勵越多
+      if (answerTime <= 3) {
+        baseReward += 3; // 3秒內 +3星
+      } else if (answerTime <= 5) {
+        baseReward += 2; // 5秒內 +2星
+      } else if (answerTime <= 7) {
+        baseReward += 1; // 7秒內 +1星
+      }
+      
+      // 連擊獎勵：連續答對越多獎勵越多
+      if (consecutiveCount >= 5) {
+        baseReward += 3; // 5連擊 +3星
+      } else if (consecutiveCount >= 3) {
+        baseReward += 2; // 3連擊 +2星
+      } else if (consecutiveCount >= 2) {
+        baseReward += 1; // 2連擊 +1星
+      }
+      
+      // 單字難度獎勵：根據單字長度給予額外獎勵
+      if (wordLength >= 8) {
+        baseReward += 2; // 長單字額外獎勵
+      } else if (wordLength >= 6) {
+        baseReward += 1; // 中等長度單字獎勵
+      }
+      
+      // 選擇題遊戲特殊獎勵
+      baseReward += 1; // 選擇題遊戲額外獎勵
+      
+      return baseReward;
+    }
+    
+    // ===== 新增：顯示獎勵動畫 =====
+    function showRewardAnimation(starsEarned, reason = '') {
+      const rewardDiv = document.createElement('div');
+      rewardDiv.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: linear-gradient(135deg, rgba(255, 215, 0, 0.95), rgba(255, 170, 0, 0.95));
+        color: #000;
+        padding: 20px 30px;
+        border-radius: 15px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        z-index: 1000;
+        box-shadow: 0 0 30px #ffd700;
+        animation: rewardPop 1.2s ease-out forwards;
+        font-family: 'Orbitron', sans-serif;
+        text-align: center;
+        min-width: 300px;
+      `;
+      
+      let reasonText = '';
+      if (reason) {
+        reasonText = `<div style="font-size: 1rem; margin-top: 8px; color: #666;">${reason}</div>`;
+      }
+      
+      rewardDiv.innerHTML = `
+        <div style="font-size: 3rem; margin-bottom: 10px;">⭐</div>
+        <div style="font-size: 1.8rem; margin-bottom: 5px;">+${starsEarned} 星星</div>
+        ${reasonText}
+      `;
+      
+      // 添加動畫樣式
+      const style = document.createElement('style');
+      style.textContent = `
+        @keyframes rewardPop {
+          0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+          50% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
+          100% { transform: translate(-50%, -50%) scale(1); opacity: 0; }
+        }
+      `;
+      document.head.appendChild(style);
+      
+      document.body.appendChild(rewardDiv);
+      
+      // 播放星星音效
+      if (typeof StarRewardSystem !== 'undefined') {
+        StarRewardSystem.playStarSound();
+      }
+      
+      // 2.5秒後移除
+      setTimeout(() => {
+        if (document.body.contains(rewardDiv)) {
+          document.body.removeChild(rewardDiv);
+        }
+        if (document.head.contains(style)) {
+          document.head.removeChild(style);
+        }
+      }, 2500);
+    }
+    
+    // ===== 新增：顯示連擊通知 =====
+    function showComboNotification(comboCount) {
+      if (comboCount < 2) return;
+      
+      const comboDiv = document.createElement('div');
+      comboDiv.style.cssText = `
+        position: fixed;
+        top: 20%;
+        left: 50%;
+        transform: translateX(-50%);
+        background: linear-gradient(135deg, rgba(255, 69, 0, 0.9), rgba(255, 140, 0, 0.9));
+        color: #fff;
+        padding: 15px 25px;
+        border-radius: 25px;
+        font-size: 1.2rem;
+        font-weight: bold;
+        z-index: 1000;
+        box-shadow: 0 0 20px #ff4500;
+        animation: comboSlide 0.8s ease-out forwards;
+        font-family: 'Orbitron', sans-serif;
+      `;
+      
+      let comboText = '';
+      let comboIcon = '';
+      
+      if (comboCount >= 5) {
+        comboText = `${comboCount} 連擊！🔥 無敵連擊！`;
+        comboIcon = '🔥';
+      } else if (comboCount >= 3) {
+        comboText = `${comboCount} 連擊！⚡ 超強連擊！`;
+        comboIcon = '⚡';
+      } else {
+        comboText = `${comboCount} 連擊！✨ 連擊開始！`;
+        comboIcon = '✨';
+      }
+      
+      comboDiv.innerHTML = `${comboIcon} ${comboText} ${comboIcon}`;
+      
+      // 添加動畫樣式
+      const style = document.createElement('style');
+      style.textContent = `
+        @keyframes comboSlide {
+          0% { transform: translateX(-50%) translateY(-100%); opacity: 0; }
+          50% { transform: translateX(-50%) translateY(0); opacity: 1; }
+          100% { transform: translateX(-50%) translateY(0); opacity: 0; }
+        }
+      `;
+      document.head.appendChild(style);
+      
+      document.body.appendChild(comboDiv);
+      
+      // 2秒後移除
+      setTimeout(() => {
+        if (document.body.contains(comboDiv)) {
+          document.body.removeChild(comboDiv);
+        }
+        if (document.head.contains(style)) {
+          document.head.removeChild(style);
+        }
+      }, 2000);
+    }
+  </script>
+</body>
+</html>

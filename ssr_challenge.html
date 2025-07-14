@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <title>SSR卡片挑戰 - Typing Hero</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="responsive.css">
+  <style>
+    :root {
+      --glow-cyan: #00ffff;
+      --glow-magenta: #a259ff;
+      --glow-gold: #ffd700;
+      --glow-red: #ff6b6b;
+      --bg-dark: rgba(10, 20, 40, 0.85);
+    }
+    
+    body {
+      margin: 0;
+      font-family: 'Orbitron', sans-serif;
+      background: url('https://wallpaperaccess.com/full/192936.jpg') no-repeat center center fixed;
+      background-size: cover;
+      color: #fff;
+      text-align: center;
+    }
+
+    header {
+      background: rgba(10, 20, 40, 0.85);
+      padding: 16px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 0 24px 8px #00ffff88;
+      border-bottom: 2px solid var(--glow-cyan);
+      backdrop-filter: blur(4px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    
+    header h1 {
+      margin: 0;
+      font-size: 2.1rem;
+      color: #00ffff;
+      letter-spacing: 2px;
+      text-shadow: 0 0 12px #00ffff, 0 0 32px #a259ff;
+    }
+    
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    
+    .btn {
+      background: linear-gradient(90deg, #00ffff 0%, #a259ff 100%);
+      color: #000;
+      border: none;
+      padding: 10px 22px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: bold;
+      box-shadow: 0 0 16px #00ffff;
+      font-size: 1.1rem;
+      transition: transform 0.15s;
+    }
+    
+    .btn:hover {
+      transform: scale(1.07);
+    }
+
+    .stars-display {
+      display: inline-flex;
+      align-items: center;
+      padding: 8px 16px;
+      background: var(--bg-dark);
+      border: 2px solid var(--glow-gold);
+      border-radius: 12px;
+      font-size: 1.2rem;
+      color: var(--glow-gold);
+      font-weight: bold;
+      text-shadow: 0 0 8px var(--glow-gold);
+    }
+
+    .game-info {
+      background: rgba(10, 20, 40, 0.8);
+      border: 2px solid #00ffff;
+      border-radius: 12px;
+      padding: 16px;
+      margin: 20px auto;
+      max-width: 900px;
+      color: #fff;
+      text-align: left;
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+    
+    .game-info h3 {
+      color: #00ffff;
+      margin: 0 0 12px 0;
+      text-align: center;
+    }
+    
+    .game-info ul {
+      margin: 0;
+      padding-left: 20px;
+    }
+
+    #ssrCardGrid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      padding: 28px 20px;
+      background: rgba(10, 20, 40, 0.7);
+      border-radius: 14px;
+      max-width: 1200px;
+      margin: 0 auto;
+      border: 2px solid #00ffff;
+    }
+    
+    .ssr-card {
+      width: 200px;
+      height: 280px;
+      position: relative;
+      background: rgba(10, 20, 40, 0.85);
+      border-radius: 16px;
+      padding: 12px;
+      transition: transform 0.3s;
+      cursor: pointer;
+      animation: float 3s ease-in-out infinite;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      box-shadow: 0 0 16px #ffd70055;
+      border: 2.5px solid #ffd700;
+      margin: 0 auto;
+    }
+    
+    .ssr-card:hover {
+      transform: translateY(-10px) scale(1.06);
+      box-shadow: 0 15px 32px rgba(0,0,0,0.3), 0 0 32px #ffd700;
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+    
+    .ssr-card img {
+      width: 100%;
+      height: 55%;
+      border-radius: 10px;
+      filter: drop-shadow(0 0 12px #ffd700cc);
+      object-fit: cover;
+      background: #000;
+    }
+    
+    .ssr-card .stars {
+      margin-top: 6px;
+      font-size: 1.2rem;
+      color: #ffd700;
+      letter-spacing: 2px;
+      text-shadow: 0 0 8px #fff, 0 0 16px #ffd700;
+    }
+    
+    .ssr-card .label {
+      margin-top: 8px;
+      font-size: 1rem;
+      color: #00ffff;
+      width: 100%;
+      text-shadow: 0 0 8px #00ffff;
+      line-height: 1.2;
+      word-wrap: break-word;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    .ssr-card .label .chinese-text {
+      font-size: 1rem;
+      color: #00ffff;
+      margin-bottom: 3px;
+      font-weight: bold;
+    }
+    
+    .ssr-card .label .english-text {
+      font-size: 0.9rem;
+      color: #ffd700;
+      font-weight: 500;
+    }
+    
+    .ssr-card .category-tag {
+      margin-top: 6px;
+      font-size: 0.9rem;
+      color: #ffd700;
+    }
+    
+    .ssr-card .rank-badge {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      font-size: 1rem;
+      font-weight: bold;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: #ffd700;
+      border: 2px solid #ffd700;
+      color: #000;
+      box-shadow: 0 0 8px #ffd700;
+    }
+    
+    .ssr-card .play-button {
+      position: absolute;
+      bottom: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(90deg, #00ffff 0%, #a259ff 100%);
+      color: #000;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 0.9rem;
+      box-shadow: 0 0 12px #00ffff;
+      transition: all 0.3s ease;
+      opacity: 0;
+      transform: translateX(-50%) translateY(10px);
+    }
+    
+    .ssr-card:hover .play-button {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    @media (max-width: 768px) {
+      #ssrCardGrid {
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 15px;
+        padding: 20px 15px;
+      }
+      
+      .ssr-card {
+        width: 160px;
+        height: 240px;
+        padding: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🌟 SSR卡片挑戰</h1>
+    <div class="header-actions">
+      <span id="totalStarsCount" class="stars-display">0</span>
+      <button class="btn" onclick="location.href='cards.html'">📁 卡片倉庫</button>
+      <button class="btn" onclick="location.href='index.html'">🏠 首頁</button>
+    </div>
+  </header>
+
+  <div class="game-info" style="margin-top: -10px; margin-bottom: 20px; background: rgba(255,255,255,0.08); border: 2px solid #ffd700; color: #ffd700;">
+    <h3 style="color:#ffd700; text-align:center; margin:0 0 10px 0;">🔓 SSR卡片解鎖說明</h3>
+    <ul style="margin:0; padding-left:20px; color:#ffd700;">
+      <li>SSR卡片必須在「卡片倉庫」集滿對應碎片才能解鎖。</li>
+      <li>集滿碎片後，SSR卡片會自動解鎖並在本頁顯示。</li>
+      <li>未解鎖的SSR卡片不會出現在本頁。</li>
+      <li>碎片可透過抽卡、活動或任務獲得。</li>
+      <li>解鎖SSR卡片可在各遊戲模式中獲得特殊加成。</li>
+    </ul>
+    <div style="margin-top:8px; color:#fff; font-size:0.95rem;">本關卡重點：<br>收集並解鎖所有SSR卡片，體驗最稀有的卡牌與專屬挑戰！</div>
+  </div>
+
+  <div id="ssrCardGrid"></div>
+
+  <script src="js/sound.js"></script>
+  <script src="js/userData.js"></script>
+  <script src="js/starRewardSystem.js"></script>
+  <script src="js/cardUtils.js"></script>
+  <script src="js/cards.js"></script>
+  
+  <script>
+    window.addEventListener("load", () => {
+      if (typeof SoundSystem !== 'undefined') {
+        SoundSystem.speech.init();
+      }
+      
+      renderSSRCards();
+      updateStars();
+    });
+
+
+
+    function renderSSRCards() {
+      const grid = document.getElementById("ssrCardGrid");
+      grid.innerHTML = "";
+
+      let ownedCards = JSON.parse(localStorage.getItem('ownedCards') || '{}');
+      let ssrCards = allCards.filter(card => card.rarity === "超稀有" && ownedCards[card.word]);
+      
+      ssrCards.forEach(card => {
+        const div = document.createElement("div");
+        div.className = "ssr-card";
+
+        const gamePage = getGamePage(card.category, card.word);
+        const buttonText = getButtonText(card.category, card.zh);
+
+        const cardContent = `
+          <img src="${card.image}" alt="${card.word}">
+          <div class="stars">★★★</div>
+          <div class="label">
+            <div class="chinese-text">${card.zh}</div>
+            <div class="english-text">${card.word}</div>
+          </div>
+          <div class="category-tag">類別：${card.category}</div>
+          <div class="rank-badge">SSR</div>
+          <button class="play-button" onclick="location.href='${gamePage}'">${buttonText}</button>
+        `;
+
+        div.innerHTML = cardContent;
+        grid.appendChild(div);
+      });
+
+      console.log(`🎮 已載入 ${ssrCards.length} 張SSR卡片`);
+    }
+
+    function getGamePage(category, cardName) {
+      // 將卡片名稱轉換為小寫並移除空格，作為文件名
+      const fileName = cardName.toLowerCase().replace(/\s+/g, '_') + '.html';
+      return fileName;
+    }
+
+    function getButtonText(category, cardName) {
+      return `🎮 ${cardName}`;
+    }
+
+    function updateStars() {
+      const totalStars = parseInt(localStorage.getItem("totalStars") || "0");
+      const starsDisplay = document.getElementById('totalStarsCount');
+      if (starsDisplay) {
+        starsDisplay.textContent = `⭐ ${totalStars}`;
+      }
+    }
+
+
+  </script>
+</body>
+</html> 

@@ -1,0 +1,738 @@
+<!-- matching.html − 單字配對遊戲頁面 -->
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <title>星際英打冒險 − 單字配對遊戲</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="responsive_enhanced.css">
+  <style>
+    /*-------------------------
+      全域重設 & 字體
+    -------------------------*/
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: 'Orbitron', sans-serif;
+      background: #000;
+      color: #fff;
+      overflow: hidden;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    /*-------------------------
+      左上角 TopBar（顯示星星數 + 返回編輯頁）
+    -------------------------*/
+    #topBar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 3;
+    }
+    #topBar #starsDisplay {
+      font-size: 1.2rem;
+      color: #0ff;
+      font-weight: bold;
+    }
+    #topBar .back-btn {
+      background: #0b0c10;
+      border: 1px solid #45a29e;
+      color: #66fcf1;
+      border-radius: 6px;
+      padding: 6px 12px;
+      font-size: 0.9rem;
+      text-decoration: none;
+      transition: background 0.2s, color 0.2s;
+      cursor: pointer;
+    }
+    #topBar .back-btn:hover {
+      background: #66fcf1;
+      color: #0b0c10;
+    }
+
+    /*-------------------------
+      星空 Canvas 背景
+    -------------------------*/
+    canvas#stars {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+    }
+
+    /*-------------------------
+      主容器
+    -------------------------*/
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 1000px;
+      margin: 80px auto 40px;
+      background: rgba(0, 0, 0, 0.35);
+      padding: 24px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+      backdrop-filter: blur(6px);
+      overflow-y: auto;
+      max-height: calc(100vh - 140px);
+    }
+    .container h1 {
+      color: #66fcf1;
+      text-align: center;
+      text-shadow: 0 0 8px #66fcf1;
+      margin-bottom: 16px;
+      font-size: 2rem;
+    }
+
+    /*-------------------------
+      配對區塊 Grid
+    -------------------------*/
+    .grid-container {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+    .card {
+      background: rgba(20,20,30,0.8);
+      border: 1px solid #45a29e;
+      border-radius: 6px;
+      padding: 12px;
+      text-align: center;
+      cursor: pointer;
+      transition: background 0.2s;
+      font-size: 1rem;
+      color: #fff;
+      user-select: none;
+    }
+    .card.disabled {
+      background: rgba(50,50,60,0.5);
+      cursor: default;
+      color: #777;
+    }
+    .card.selected {
+      background: rgba(69,162,158,0.8);
+    }
+  </style>
+</head>
+<body>
+  <!-- 左上角 TopBar：顯示星星數 + 返回編輯頁面 -->
+  <div id="topBar">
+    <div id="starsDisplay">⭐<span id="totalStarsCount">0</span></div>
+    <a href="#" id="backToBook" class="back-btn">⬅ 返回編輯單字本</a>
+  </div>
+
+  <!-- 星空 Canvas -->
+  <canvas id="stars"></canvas>
+
+  <!-- 主容器：配對遊戲內容 -->
+  <div class="container">
+    <h1>單字配對遊戲</h1>
+    <div class="grid-container">
+      <!-- 英文單字區 -->
+      <div class="grid" id="engGrid"></div>
+      <!-- 中文解釋區 -->
+      <div class="grid" id="chiGrid"></div>
+    </div>
+  </div>
+
+  <script src="js/sound.js"></script>
+  <script src="js/starRewardSystem.js"></script>
+  <script src="js/achievementSystem.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // 讀取 URL 參數：book
+      const params = new URLSearchParams(location.search);
+      const bookName = params.get('book');
+      if (!bookName) {
+        alert('參數錯誤：缺少 book。');
+        history.back();
+      }
+      document.getElementById('backToBook').href = `book_edit.html?book=${encodeURIComponent(bookName)}`;
+
+      // ===== 星星計數 初始化 =====
+      const starDom = document.getElementById('totalStarsCount');
+      const raw = localStorage.getItem('totalStars');
+      let totalStars = 0;
+      if (raw !== null) {
+        const parsed = parseInt(raw, 10);
+        totalStars = isNaN(parsed) ? 0 : parsed;
+      }
+      starDom.textContent = totalStars;
+
+      // ===== 讀取單字本 =====
+      const vocab = JSON.parse(localStorage.getItem('book_' + bookName) || '[]');
+      if (!Array.isArray(vocab) || vocab.length < 3) {
+        alert('此單字本至少需要 3 筆以上單字才能進行配對遊戲。');
+        history.back();
+      }
+
+      // 取得英文字陣列和中文解釋陣列
+      const engWords = vocab.map(v => v.word);
+      const chiWords = vocab.map(v => v.meaning);
+
+      // 隨機打亂陣列
+      function shuffle(arr) {
+        for (let i = arr.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+      }
+      shuffle(engWords);
+      shuffle(chiWords);
+
+      const engGrid = document.getElementById('engGrid');
+      const chiGrid = document.getElementById('chiGrid');
+
+      // 保存目前被選中的卡片
+      let firstSelection = null; // { type: 'eng'|'chi', text: string, el: DOMElement }
+      
+      // ===== 新增：遊戲狀態追蹤 =====
+      let gameStats = {
+        correctMatches: 0,
+        totalMatches: vocab.length,
+        consecutiveCorrect: 0, // 連續答對次數
+        startTime: Date.now(),
+        matchTimes: [], // 記錄每次配對的時間
+        perfectMatches: 0 // 完美配對次數（快速配對）
+      };
+
+      // ===== 新增：星星獎勵計算函數 =====
+      function calculateStarReward(matchTime, consecutiveCount, wordLength) {
+        let baseReward = 1; // 基礎獎勵
+        
+        // 時間獎勵：越快配對獎勵越多
+        if (matchTime <= 2) {
+          baseReward += 2; // 2秒內 +2星
+        } else if (matchTime <= 4) {
+          baseReward += 1; // 4秒內 +1星
+        }
+        
+        // 連擊獎勵：連續配對越多獎勵越多
+        if (consecutiveCount >= 5) {
+          baseReward += 3; // 5連擊 +3星
+        } else if (consecutiveCount >= 3) {
+          baseReward += 2; // 3連擊 +2星
+        } else if (consecutiveCount >= 2) {
+          baseReward += 1; // 2連擊 +1星
+        }
+        
+        // 單字難度獎勵：根據單字長度給予額外獎勵
+        if (wordLength >= 8) {
+          baseReward += 1; // 長單字額外獎勵
+        }
+        
+        // 單字本類型獎勵
+        if (bookName.includes('托福') || bookName.includes('TOEFL')) {
+          baseReward += 1; // 托福單字額外獎勵
+        } else if (bookName.includes('英檢') || bookName.includes('GEPT')) {
+          baseReward += 1; // 英檢單字額外獎勵
+        }
+        
+        return baseReward;
+      }
+      
+      // ===== 新增：顯示獎勵動畫 =====
+      function showRewardAnimation(starsEarned, reason = '') {
+        const rewardDiv = document.createElement('div');
+        rewardDiv.style.cssText = `
+          position: fixed;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          background: linear-gradient(135deg, rgba(255, 215, 0, 0.95), rgba(255, 170, 0, 0.95));
+          color: #000;
+          padding: 20px 30px;
+          border-radius: 15px;
+          font-size: 1.5rem;
+          font-weight: bold;
+          z-index: 1000;
+          box-shadow: 0 0 30px #ffd700;
+          animation: rewardPop 1.2s ease-out forwards;
+          font-family: 'Orbitron', sans-serif;
+          text-align: center;
+          min-width: 300px;
+        `;
+        
+        let reasonText = '';
+        if (reason) {
+          reasonText = `<div style="font-size: 1rem; margin-top: 8px; color: #666;">${reason}</div>`;
+        }
+        
+        rewardDiv.innerHTML = `
+          <div style="font-size: 3rem; margin-bottom: 10px;">⭐</div>
+          <div style="font-size: 1.8rem; margin-bottom: 5px;">+${starsEarned} 星星</div>
+          ${reasonText}
+        `;
+        
+        // 添加動畫樣式
+        const style = document.createElement('style');
+        style.textContent = `
+          @keyframes rewardPop {
+            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+            50% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 0; }
+          }
+        `;
+        document.head.appendChild(style);
+        
+        document.body.appendChild(rewardDiv);
+        
+        // 播放星星音效
+        if (typeof StarRewardSystem !== 'undefined') {
+          StarRewardSystem.playStarSound();
+        }
+        
+        // 2.5秒後移除
+        setTimeout(() => {
+          if (document.body.contains(rewardDiv)) {
+            document.body.removeChild(rewardDiv);
+          }
+          if (document.head.contains(style)) {
+            document.head.removeChild(style);
+          }
+        }, 2500);
+      }
+      
+      // ===== 新增：顯示連擊通知 =====
+      function showComboNotification(comboCount) {
+        if (comboCount < 2) return;
+        
+        const comboDiv = document.createElement('div');
+        comboDiv.style.cssText = `
+          position: fixed;
+          top: 20%;
+          left: 50%;
+          transform: translateX(-50%);
+          background: linear-gradient(135deg, rgba(255, 69, 0, 0.9), rgba(255, 140, 0, 0.9));
+          color: #fff;
+          padding: 15px 25px;
+          border-radius: 25px;
+          font-size: 1.2rem;
+          font-weight: bold;
+          z-index: 1000;
+          box-shadow: 0 0 20px #ff4500;
+          animation: comboSlide 0.8s ease-out forwards;
+          font-family: 'Orbitron', sans-serif;
+        `;
+        
+        let comboText = '';
+        let comboIcon = '';
+        
+        if (comboCount >= 5) {
+          comboText = `${comboCount} 連擊！🔥 無敵連擊！`;
+          comboIcon = '🔥';
+        } else if (comboCount >= 3) {
+          comboText = `${comboCount} 連擊！⚡ 超強連擊！`;
+          comboIcon = '⚡';
+        } else {
+          comboText = `${comboCount} 連擊！✨ 連擊開始！`;
+          comboIcon = '✨';
+        }
+        
+        comboDiv.innerHTML = `${comboIcon} ${comboText} ${comboIcon}`;
+        
+        // 添加動畫樣式
+        const style = document.createElement('style');
+        style.textContent = `
+          @keyframes comboSlide {
+            0% { transform: translateX(-50%) translateY(-100%); opacity: 0; }
+            50% { transform: translateX(-50%) translateY(0); opacity: 1; }
+            100% { transform: translateX(-50%) translateY(0); opacity: 0; }
+          }
+        `;
+        document.head.appendChild(style);
+        
+        document.body.appendChild(comboDiv);
+        
+        // 2秒後移除
+        setTimeout(() => {
+          if (document.body.contains(comboDiv)) {
+            document.body.removeChild(comboDiv);
+          }
+          if (document.head.contains(style)) {
+            document.head.removeChild(style);
+          }
+        }, 2000);
+      }
+
+      // 建立卡片
+      function createCard(text, type) {
+        const el = document.createElement('div');
+        el.className = 'card';
+        el.textContent = text;
+        el.addEventListener('click', () => handleCardClick(type, text, el));
+        return el;
+      }
+
+      // 將卡片依序加入網格
+      engWords.forEach(w => {
+        const card = createCard(w, 'eng');
+        engGrid.appendChild(card);
+      });
+      chiWords.forEach(w => {
+        const card = createCard(w, 'chi');
+        chiGrid.appendChild(card);
+      });
+
+      function saveStars() {
+        localStorage.setItem('totalStars', totalStars);
+      }
+
+      // 卡片點擊處理
+      function handleCardClick(type, text, el) {
+        if (el.classList.contains('disabled')) return;
+        if (firstSelection === null) {
+          // 第一次選擇
+          firstSelection = { type, text, el, startTime: Date.now() };
+          el.classList.add('selected');
+        } else {
+          // 第二次選擇
+          if (firstSelection.el === el) return; // 同一張卡就不處理
+          
+          // 計算配對時間
+          const matchTime = (Date.now() - firstSelection.startTime) / 1000;
+          gameStats.matchTimes.push(matchTime);
+          
+          // 判斷是否配對成功
+          let match = false;
+          let matchedWord = null;
+          if (firstSelection.type !== type) {
+            // 找出兩者是否是對應
+            if (type === 'eng' && firstSelection.type === 'chi') {
+              // 反過來比較：先前是中文＋目前是英文
+              const pair = vocab.find(v => v.meaning === firstSelection.text && v.word === text);
+              match = Boolean(pair);
+              matchedWord = pair;
+            } else if (type === 'chi' && firstSelection.type === 'eng') {
+              // 先前是英文＋目前是中文
+              const pair = vocab.find(v => v.word === firstSelection.text && v.meaning === text);
+              match = Boolean(pair);
+              matchedWord = pair;
+            }
+          }
+          
+          if (match) {
+            // 配對成功：兩張卡都標為 disabled，加星星
+            firstSelection.el.classList.add('disabled');
+            el.classList.add('disabled');
+            
+            // ===== 新增：配對成功邏輯 =====
+            gameStats.correctMatches++;
+            gameStats.consecutiveCorrect++;
+            
+            // 檢查是否為完美配對（2秒內配對）
+            if (matchTime <= 2) {
+              gameStats.perfectMatches++;
+            }
+            
+            // 計算星星獎勵
+            const starsEarned = calculateStarReward(matchTime, gameStats.consecutiveCorrect, matchedWord.word.length);
+            
+            // 使用統一的星星系統
+            if (typeof StarRewardSystem !== 'undefined') {
+              StarRewardSystem.addStars(starsEarned);
+            } else {
+              totalStars += starsEarned;
+              saveStars();
+            }
+            
+            // 更新顯示
+            starDom.textContent = parseInt(localStorage.getItem('totalStars') || '0');
+            
+            // 顯示獎勵動畫
+            let reasonText = '';
+            if (matchTime <= 2) {
+              reasonText = '⚡ 超快速配對！';
+            } else if (matchTime <= 4) {
+              reasonText = '🎯 快速配對！';
+            }
+            if (gameStats.consecutiveCorrect >= 3) {
+              reasonText += reasonText ? ' + 連擊獎勵！' : '🔥 連擊獎勵！';
+            }
+            
+            showRewardAnimation(starsEarned, reasonText);
+            
+            // 顯示連擊通知
+            showComboNotification(gameStats.consecutiveCorrect);
+            
+            // ===== 新增：記錄答對的單字 =====
+            if (typeof VocabularyAchievementSystem !== 'undefined') {
+              VocabularyAchievementSystem.recordCorrectWord(matchedWord.word, bookName);
+            }
+            
+          } else {
+            // 配對失敗：重置連擊
+            gameStats.consecutiveCorrect = 0;
+            firstSelection.el.classList.remove('selected');
+          }
+          
+          // 清掉第一次選擇
+          firstSelection = null;
+          
+          // 檢查是否全部配完
+          if (document.querySelectorAll('.card:not(.disabled)').length === 0) {
+            // ===== 新增：顯示遊戲總結 =====
+            showGameSummary();
+            
+            // 更新配對遊戲成就統計
+            updateMatchingAchievements();
+            
+            setTimeout(() => {
+              location.href = `book_edit.html?book=${encodeURIComponent(bookName)}`;
+            }, 3000);
+          }
+        }
+      }
+      
+      // ===== 新增：顯示遊戲總結 =====
+      function showGameSummary() {
+        const totalTime = (Date.now() - gameStats.startTime) / 1000;
+        const avgMatchTime = gameStats.matchTimes.length > 0 ? 
+          (gameStats.matchTimes.reduce((a, b) => a + b, 0) / gameStats.matchTimes.length).toFixed(1) : 0;
+        
+        const summaryDiv = document.createElement('div');
+        summaryDiv.style.cssText = `
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: rgba(0, 0, 0, 0.9);
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          z-index: 10000;
+          backdrop-filter: blur(10px);
+        `;
+        
+        summaryDiv.innerHTML = `
+          <div style="
+            background: linear-gradient(135deg, rgba(10, 20, 40, 0.95), rgba(20, 40, 80, 0.95));
+            border: 3px solid #00ffff;
+            border-radius: 25px;
+            padding: 40px;
+            max-width: 600px;
+            text-align: center;
+            box-shadow: 0 0 50px #00ffff;
+            animation: summaryPop 0.8s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            color: #fff;
+            font-family: 'Orbitron', sans-serif;
+          ">
+            <div style="font-size: 4rem; margin-bottom: 20px;">🏆</div>
+            <h2 style="color: #00ffff; margin-bottom: 30px; font-size: 2rem;">配對遊戲完成！</h2>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px;">
+              <div style="background: rgba(0,255,255,0.1); padding: 15px; border-radius: 15px; border: 1px solid #00ffff;">
+                <div style="font-size: 1.5rem; color: #00ffff;">${gameStats.correctMatches}</div>
+                <div style="font-size: 0.9rem; color: #ccc;">配對成功</div>
+              </div>
+              <div style="background: rgba(0,255,255,0.1); padding: 15px; border-radius: 15px; border: 1px solid #00ffff;">
+                <div style="font-size: 1.5rem; color: #00ffff;">${totalTime.toFixed(1)}s</div>
+                <div style="font-size: 0.9rem; color: #ccc;">總用時</div>
+              </div>
+              <div style="background: rgba(0,255,255,0.1); padding: 15px; border-radius: 15px; border: 1px solid #00ffff;">
+                <div style="font-size: 1.5rem; color: #00ffff;">${avgMatchTime}s</div>
+                <div style="font-size: 0.9rem; color: #ccc;">平均配對時間</div>
+              </div>
+              <div style="background: rgba(0,255,255,0.1); padding: 15px; border-radius: 15px; border: 1px solid #00ffff;">
+                <div style="font-size: 1.5rem; color: #00ffff;">${gameStats.perfectMatches}</div>
+                <div style="font-size: 0.9rem; color: #ccc;">完美配對</div>
+              </div>
+            </div>
+            
+            <div style="
+              background: linear-gradient(90deg, #ffd700, #ffaa00);
+              border-radius: 15px;
+              padding: 20px;
+              margin: 20px 0;
+              color: #000;
+              font-weight: bold;
+              font-size: 1.3rem;
+            ">
+              ⭐ 本次獲得星星：${parseInt(localStorage.getItem('totalStars') || '0') - (totalStars - gameStats.correctMatches)} 顆 ⭐
+            </div>
+            
+            <div style="color: #ccc; font-size: 0.9rem; margin-top: 20px;">
+              3秒後返回單字本編輯頁面...
+            </div>
+          </div>
+        `;
+        
+        // 添加動畫樣式
+        const style = document.createElement('style');
+        style.textContent = `
+          @keyframes summaryPop {
+            0% { transform: scale(0.2) rotate(-15deg); opacity: 0; }
+            50% { transform: scale(1.15) rotate(3deg); }
+            100% { transform: scale(1) rotate(0deg); opacity: 1; }
+          }
+        `;
+        document.head.appendChild(style);
+        
+        document.body.appendChild(summaryDiv);
+        
+        // 點擊背景關閉
+        summaryDiv.onclick = function(e) {
+          if (e.target === summaryDiv) {
+            summaryDiv.remove();
+            style.remove();
+          }
+        };
+      }
+
+      // ===== 星空背景動畫 =====
+      const canvas = document.getElementById('stars');
+      const ctx = canvas.getContext('2d');
+      let w = canvas.width = window.innerWidth;
+      let h = canvas.height = window.innerHeight;
+      const numStars = 200;
+      const starsArr = [];
+
+      function Star() {
+        this.x = Math.random() * w;
+        this.y = Math.random() * h;
+        this.size = Math.random() * 1.5;
+        this.speed = Math.random() * 0.5 + 0.2;
+      }
+      Star.prototype.update = function() {
+        this.x -= this.speed;
+        if (this.x < 0) {
+          this.x = w;
+          this.y = Math.random() * h;
+        }
+      }
+      Star.prototype.draw = function() {
+        ctx.fillStyle = '#fff';
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      for (let i = 0; i < numStars; i++) {
+        starsArr.push(new Star());
+      }
+      function animate() {
+        ctx.clearRect(0, 0, w, h);
+        starsArr.forEach(s => {
+          s.update();
+          s.draw();
+        });
+        requestAnimationFrame(animate);
+      }
+      animate();
+
+      window.addEventListener('resize', () => {
+        w = canvas.width = window.innerWidth;
+        h = canvas.height = window.innerHeight;
+      });
+      
+      // 新增：配對遊戲成就追蹤
+      function updateMatchingAchievements() {
+        // 更新配對遊戲完成次數
+        const matchingGames = parseInt(localStorage.getItem('matchingGamesCompleted') || '0');
+        localStorage.setItem('matchingGamesCompleted', matchingGames + 1);
+        
+        // 檢查並更新相關成就
+        checkAndUpdateMatchingAchievements();
+      }
+      
+      function checkAndUpdateMatchingAchievements() {
+        // 檢查是否有新成就達成
+        const achievements = [
+          { id: 'speed_learner', name: '快速學習者', requirement: 10 },
+          { id: 'accuracy_master', name: '準確大師', requirement: 20 },
+          { id: 'combo_king', name: '連擊之王', requirement: 15 }
+        ];
+        
+        const claimed = JSON.parse(localStorage.getItem('claimedAchievements') || '[]');
+        
+        achievements.forEach(ach => {
+          if (claimed.includes(ach.id)) return; // 已經領取過了
+          
+          // 計算通過的關卡數量
+          const fillGames = parseInt(localStorage.getItem('fillGamesCompleted') || '0');
+          const cardGames = parseInt(localStorage.getItem('cardGamesCompleted') || '0');
+          const quizGames = parseInt(localStorage.getItem('quizGamesCompleted') || '0');
+          const spellingGames = parseInt(localStorage.getItem('spellingGamesCompleted') || '0');
+          const matchingGames = parseInt(localStorage.getItem('matchingGamesCompleted') || '0');
+          const totalGames = fillGames + cardGames + quizGames + spellingGames + matchingGames;
+          
+          if (totalGames >= ach.requirement) {
+            // 顯示成就達成通知
+            showAchievementNotification(ach.name, ach.id);
+          }
+        });
+      }
+      
+      function showAchievementNotification(achievementName, achievementId) {
+        // 創建成就通知
+        const notification = document.createElement('div');
+        notification.style.cssText = `
+          position: fixed;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          background: linear-gradient(135deg, #ffd700, #ffed4e);
+          color: #000;
+          padding: 20px 30px;
+          border-radius: 15px;
+          font-weight: bold;
+          font-size: 1.2rem;
+          z-index: 10000;
+          box-shadow: 0 0 30px #ffd700;
+          animation: achievementPop 0.8s cubic-bezier(.68, -0.55, .27, 1.55);
+          text-align: center;
+          min-width: 300px;
+        `;
+        
+        notification.innerHTML = `
+          <div style="font-size: 3rem; margin-bottom: 10px;">🏆</div>
+          <div style="margin-bottom: 5px;">🎉 成就達成！</div>
+          <div style="font-size: 1.1rem;">${achievementName}</div>
+          <div style="font-size: 0.9rem; margin-top: 10px; color: #666;">
+            前往成就頁面領取獎勵
+          </div>
+        `;
+        
+        // 添加動畫樣式
+        const style = document.createElement('style');
+        style.textContent = `
+          @keyframes achievementPop {
+            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+            50% { transform: translate(-50%, -50%) scale(1.1); opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+          }
+        `;
+        document.head.appendChild(style);
+        
+        document.body.appendChild(notification);
+        
+        // 3秒後自動移除
+        setTimeout(() => {
+          notification.remove();
+          style.remove();
+        }, 3000);
+      }
+    });
+  </script>
+</body>
+</html>

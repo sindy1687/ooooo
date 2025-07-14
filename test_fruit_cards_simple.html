@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>水果卡片簡單測試</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f0f0f0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: inline-block;
+            width: 180px;
+            text-align: center;
+        }
+        .card img {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        .info { background: #d1ecf1; color: #0c5460; }
+        .warning { background: #fff3cd; color: #856404; }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🍎 水果卡片簡單測試</h1>
+        
+        <div id="status"></div>
+        
+        <h2>測試操作：</h2>
+        <button onclick="checkCards()">檢查卡片資料</button>
+        <button onclick="checkLocalStorage()">檢查 localStorage</button>
+        <button onclick="addFruitCards()">添加水果卡片到已解鎖</button>
+        <button onclick="clearFruitCards()">清除水果卡片</button>
+        
+        <h2>測試結果：</h2>
+        <div id="results"></div>
+        
+        <h2>水果卡片顯示：</h2>
+        <div id="fruitCards"></div>
+    </div>
+
+    <!-- 載入必要的腳本 -->
+    <script src="js/cards.js"></script>
+    <script src="js/userData.js"></script>
+    
+    <script>
+        function updateStatus(message, type = 'info') {
+            const statusDiv = document.getElementById('status');
+            statusDiv.innerHTML = `<div class="status ${type}">${message}</div>`;
+        }
+        
+        function updateResults(content) {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = content;
+        }
+        
+        function checkCards() {
+            let results = '<h3>卡片資料檢查：</h3>';
+            
+            // 檢查 allCards
+            if (typeof window.allCards !== 'undefined') {
+                results += '<p>✅ allCards 已載入</p>';
+                results += `<p>總卡片數：${window.allCards.length}</p>`;
+                
+                // 找出水果卡片
+                const fruitCards = window.allCards.filter(card => card.category === '水果');
+                results += `<p>水果卡片數：${fruitCards.length}</p>`;
+                
+                if (fruitCards.length > 0) {
+                    results += '<p>水果卡片列表：</p><ul>';
+                    fruitCards.forEach(card => {
+                        results += `<li>${card.word} (${card.zh}) - ${card.rarity}</li>`;
+                    });
+                    results += '</ul>';
+                }
+            } else {
+                results += '<p>❌ allCards 未載入</p>';
+            }
+            
+            // 檢查 LinkageSystem
+            if (typeof window.LinkageSystem !== 'undefined') {
+                results += '<p>✅ LinkageSystem 已載入</p>';
+            } else {
+                results += '<p>❌ LinkageSystem 未載入</p>';
+            }
+            
+            updateResults(results);
+            updateStatus('卡片資料檢查完成', 'success');
+        }
+        
+        function checkLocalStorage() {
+            let results = '<h3>localStorage 檢查：</h3>';
+            
+            // 檢查 ownedCards
+            const ownedCardsStr = localStorage.getItem('ownedCards');
+            if (ownedCardsStr) {
+                try {
+                    const ownedCards = JSON.parse(ownedCardsStr);
+                    results += `<p>✅ ownedCards 存在，包含 ${Object.keys(ownedCards).length} 張卡片</p>`;
+                    
+                    // 檢查水果卡片
+                    const fruitCards = ['apple', 'banana', 'orange', 'grape', 'strawberry'];
+                    const unlockedFruits = fruitCards.filter(fruit => ownedCards[fruit]);
+                    
+                    results += `<p>已解鎖的水果卡片：${unlockedFruits.length} 張</p>`;
+                    if (unlockedFruits.length > 0) {
+                        results += '<ul>';
+                        unlockedFruits.forEach(fruit => {
+                            results += `<li>${fruit}</li>`;
+                        });
+                        results += '</ul>';
+                    }
+                    
+                    // 顯示所有已解鎖的卡片
+                    results += '<p>所有已解鎖的卡片：</p><ul>';
+                    Object.keys(ownedCards).forEach(card => {
+                        results += `<li>${card}</li>`;
+                    });
+                    results += '</ul>';
+                    
+                } catch (e) {
+                    results += `<p>❌ 解析 ownedCards 失敗：${e.message}</p>`;
+                }
+            } else {
+                results += '<p>❌ ownedCards 不存在</p>';
+            }
+            
+            // 檢查 cardShards
+            const cardShardsStr = localStorage.getItem('cardShards');
+            if (cardShardsStr) {
+                try {
+                    const cardShards = JSON.parse(cardShardsStr);
+                    results += `<p>✅ cardShards 存在，包含 ${Object.keys(cardShards).length} 種碎片</p>`;
+                } catch (e) {
+                    results += `<p>❌ 解析 cardShards 失敗：${e.message}</p>`;
+                }
+            } else {
+                results += '<p>❌ cardShards 不存在</p>';
+            }
+            
+            updateResults(results);
+            updateStatus('localStorage 檢查完成', 'success');
+        }
+        
+        function addFruitCards() {
+            const fruitCards = ['apple', 'banana', 'orange', 'grape', 'strawberry'];
+            const ownedCardsStr = localStorage.getItem('ownedCards');
+            let ownedCards = {};
+            
+            if (ownedCardsStr) {
+                try {
+                    ownedCards = JSON.parse(ownedCardsStr);
+                } catch (e) {
+                    console.error('解析 ownedCards 失敗：', e);
+                }
+            }
+            
+            // 添加水果卡片
+            fruitCards.forEach(fruit => {
+                ownedCards[fruit] = true;
+            });
+            
+            localStorage.setItem('ownedCards', JSON.stringify(ownedCards));
+            
+            updateStatus(`✅ 已添加 ${fruitCards.length} 張水果卡片到已解鎖列表`, 'success');
+            checkLocalStorage();
+            renderFruitCards();
+        }
+        
+        function clearFruitCards() {
+            const fruitCards = ['apple', 'banana', 'orange', 'grape', 'strawberry'];
+            const ownedCardsStr = localStorage.getItem('ownedCards');
+            let ownedCards = {};
+            
+            if (ownedCardsStr) {
+                try {
+                    ownedCards = JSON.parse(ownedCardsStr);
+                } catch (e) {
+                    console.error('解析 ownedCards 失敗：', e);
+                }
+            }
+            
+            // 移除水果卡片
+            fruitCards.forEach(fruit => {
+                delete ownedCards[fruit];
+            });
+            
+            localStorage.setItem('ownedCards', JSON.stringify(ownedCards));
+            
+            updateStatus(`✅ 已清除 ${fruitCards.length} 張水果卡片`, 'success');
+            checkLocalStorage();
+            renderFruitCards();
+        }
+        
+        function renderFruitCards() {
+            const fruitCardsDiv = document.getElementById('fruitCards');
+            
+            if (typeof window.allCards === 'undefined') {
+                fruitCardsDiv.innerHTML = '<p>❌ allCards 未載入</p>';
+                return;
+            }
+            
+            const fruitCards = window.allCards.filter(card => card.category === '水果');
+            const ownedCardsStr = localStorage.getItem('ownedCards');
+            let ownedCards = {};
+            
+            if (ownedCardsStr) {
+                try {
+                    ownedCards = JSON.parse(ownedCardsStr);
+                } catch (e) {
+                    console.error('解析 ownedCards 失敗：', e);
+                }
+            }
+            
+            if (fruitCards.length === 0) {
+                fruitCardsDiv.innerHTML = '<p>❌ 沒有找到水果卡片</p>';
+                return;
+            }
+            
+            let html = '';
+            fruitCards.forEach(card => {
+                const isUnlocked = ownedCards[card.word] || false;
+                html += `
+                    <div class="card" style="border: 3px solid ${isUnlocked ? '#28a745' : '#dc3545'};">
+                        <img src="${card.image}" alt="${card.zh}" onerror="this.src='https://via.placeholder.com/120x120?text=圖片載入失敗'">
+                        <h3>${card.word}</h3>
+                        <p>${card.zh}</p>
+                        <p style="color: ${isUnlocked ? 'green' : 'red'}; font-weight: bold;">
+                            ${isUnlocked ? '✅ 已解鎖' : '❌ 未解鎖'}
+                        </p>
+                    </div>
+                `;
+            });
+            
+            fruitCardsDiv.innerHTML = html;
+        }
+        
+        // 頁面載入完成後執行
+        window.addEventListener('load', function() {
+            console.log('頁面載入完成，開始測試...');
+            
+            setTimeout(() => {
+                checkCards();
+                checkLocalStorage();
+                renderFruitCards();
+            }, 1000);
+        });
+    </script>
+</body>
+</html> 

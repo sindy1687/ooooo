@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>卡片恢復鎖定問題測試</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f0f0f0;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        .info { background: #d1ecf1; color: #0c5460; }
+        .warning { background: #fff3cd; color: #856404; }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: inline-block;
+            width: 200px;
+            text-align: center;
+        }
+        .card.unlocked {
+            border: 3px solid #28a745;
+        }
+        .card.locked {
+            border: 3px solid #dc3545;
+            opacity: 0.6;
+        }
+        .debug-info {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 10px 0;
+            font-family: monospace;
+            font-size: 12px;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 卡片恢復鎖定問題測試</h1>
+        
+        <div id="status" class="status info">正在載入...</div>
+        
+        <div>
+            <button onclick="checkLinkageSystem()">🔗 檢查 LinkageSystem</button>
+            <button onclick="checkLocalStorage()">💾 檢查 localStorage</button>
+            <button onclick="checkAllCards()">🎴 檢查 allCards</button>
+            <button onclick="loadCardData()">📥 重新載入卡片資料</button>
+            <button onclick="renderTestCards()">🔄 重新渲染測試卡片</button>
+            <button onclick="addTestCards()">➕ 添加測試卡片</button>
+            <button onclick="clearTestCards()">🗑️ 清除測試卡片</button>
+        </div>
+        
+        <div id="debugInfo" class="debug-info">等待測試...</div>
+        
+        <div id="testCards"></div>
+    </div>
+
+    <!-- 載入必要的腳本 -->
+    <script src="js/userData.js"></script>
+    <script src="js/cards.js"></script>
+    
+    <script>
+        let ownedCards = {};
+        let shards = {};
+        let recentlyObtainedCards = [];
+        
+        // 檢查 LinkageSystem
+        function checkLinkageSystem() {
+            const status = document.getElementById('status');
+            const debugInfo = document.getElementById('debugInfo');
+            
+            let info = '=== LinkageSystem 檢查 ===\n';
+            
+            if (typeof LinkageSystem === 'undefined') {
+                status.className = 'status error';
+                status.textContent = '❌ LinkageSystem 未定義';
+                info += '❌ LinkageSystem 未定義\n';
+            } else {
+                status.className = 'status success';
+                status.textContent = '✅ LinkageSystem 已載入';
+                info += '✅ LinkageSystem 已載入\n';
+                
+                if (LinkageSystem.cards) {
+                    info += '✅ LinkageSystem.cards 可用\n';
+                    
+                    try {
+                        const owned = LinkageSystem.cards.getOwnedCards();
+                        const cardShards = LinkageSystem.cards.getShards();
+                        info += `✅ 已解鎖卡片數: ${Object.keys(owned).length}\n`;
+                        info += `✅ 碎片種類數: ${Object.keys(cardShards).length}\n`;
+                        info += `已解鎖卡片: ${JSON.stringify(Object.keys(owned))}\n`;
+                    } catch (e) {
+                        info += `❌ 讀取卡片資料失敗: ${e.message}\n`;
+                    }
+                } else {
+                    info += '❌ LinkageSystem.cards 不可用\n';
+                }
+            }
+            
+            debugInfo.textContent = info;
+        }
+        
+        // 檢查 localStorage
+        function checkLocalStorage() {
+            const status = document.getElementById('status');
+            const debugInfo = document.getElementById('debugInfo');
+            
+            let info = '=== localStorage 檢查 ===\n';
+            
+            const ownedCardsStr = localStorage.getItem('ownedCards');
+            const shardsStr = localStorage.getItem('cardShards');
+            const recentlyStr = localStorage.getItem('recentlyObtainedCards');
+            
+            if (ownedCardsStr) {
+                try {
+                    const owned = JSON.parse(ownedCardsStr);
+                    info += `✅ ownedCards: ${Object.keys(owned).length} 張\n`;
+                    info += `已解鎖卡片: ${JSON.stringify(Object.keys(owned))}\n`;
+                } catch (e) {
+                    info += `❌ 解析 ownedCards 失敗: ${e.message}\n`;
+                }
+            } else {
+                info += '❌ localStorage 中沒有 ownedCards\n';
+            }
+            
+            if (shardsStr) {
+                try {
+                    const cardShards = JSON.parse(shardsStr);
+                    info += `✅ cardShards: ${Object.keys(cardShards).length} 種\n`;
+                    info += `碎片資料: ${JSON.stringify(cardShards)}\n`;
+                } catch (e) {
+                    info += `❌ 解析 cardShards 失敗: ${e.message}\n`;
+                }
+            } else {
+                info += '❌ localStorage 中沒有 cardShards\n';
+            }
+            
+            if (recentlyStr) {
+                try {
+                    const recent = JSON.parse(recentlyStr);
+                    info += `✅ recentlyObtainedCards: ${recent.length} 張\n`;
+                    info += `最近獲得: ${JSON.stringify(recent)}\n`;
+                } catch (e) {
+                    info += `❌ 解析 recentlyObtainedCards 失敗: ${e.message}\n`;
+                }
+            } else {
+                info += '❌ localStorage 中沒有 recentlyObtainedCards\n';
+            }
+            
+            status.className = 'status info';
+            status.textContent = '📊 localStorage 檢查完成';
+            debugInfo.textContent = info;
+        }
+        
+        // 檢查 allCards
+        function checkAllCards() {
+            const status = document.getElementById('status');
+            const debugInfo = document.getElementById('debugInfo');
+            
+            let info = '=== allCards 檢查 ===\n';
+            
+            if (typeof window.allCards === 'undefined') {
+                status.className = 'status error';
+                status.textContent = '❌ allCards 未定義';
+                info += '❌ allCards 未定義\n';
+            } else if (!Array.isArray(window.allCards)) {
+                status.className = 'status error';
+                status.textContent = '❌ allCards 不是陣列';
+                info += '❌ allCards 不是陣列\n';
+            } else if (window.allCards.length === 0) {
+                status.className = 'status warning';
+                status.textContent = '⚠️ allCards 是空陣列';
+                info += '⚠️ allCards 是空陣列\n';
+            } else {
+                status.className = 'status success';
+                status.textContent = `✅ allCards 載入成功 (${window.allCards.length} 張)`;
+                info += `✅ allCards 載入成功: ${window.allCards.length} 張\n`;
+                
+                // 檢查水果卡片是否存在
+                const fruitCards = ['apple', 'banana', 'orange', 'grape', 'strawberry'];
+                fruitCards.forEach(fruit => {
+                    const found = window.allCards.find(card => card.word === fruit);
+                    if (found) {
+                        info += `✅ 找到水果卡片: ${fruit}\n`;
+                    } else {
+                        info += `❌ 找不到水果卡片: ${fruit}\n`;
+                    }
+                });
+                
+                // 顯示前5張卡片
+                info += '\n前5張卡片:\n';
+                window.allCards.slice(0, 5).forEach((card, index) => {
+                    info += `${index + 1}. ${card.word} (${card.zh}) - ${card.rarity}\n`;
+                });
+            }
+            
+            debugInfo.textContent = info;
+        }
+        
+        // 載入卡片資料
+        function loadCardData() {
+            const status = document.getElementById('status');
+            const debugInfo = document.getElementById('debugInfo');
+            
+            let info = '=== 載入卡片資料 ===\n';
+            
+            try {
+                if (typeof LinkageSystem !== 'undefined' && LinkageSystem.cards) {
+                    info += '✅ 使用 LinkageSystem 載入卡片資料\n';
+                    ownedCards = LinkageSystem.cards.getOwnedCards();
+                    shards = LinkageSystem.cards.getShards();
+                } else {
+                    info += '⚠️ LinkageSystem 不可用，使用 localStorage 載入\n';
+                    const ownedCardsStr = localStorage.getItem('ownedCards');
+                    const shardsStr = localStorage.getItem('cardShards');
+                    
+                    if (ownedCardsStr) {
+                        ownedCards = JSON.parse(ownedCardsStr);
+                        info += '✅ 從 localStorage 載入 ownedCards 成功\n';
+                    } else {
+                        ownedCards = {};
+                        info += '⚠️ localStorage 中沒有 ownedCards\n';
+                    }
+                    
+                    if (shardsStr) {
+                        shards = JSON.parse(shardsStr);
+                        info += '✅ 從 localStorage 載入 cardShards 成功\n';
+                    } else {
+                        shards = {};
+                        info += '⚠️ localStorage 中沒有 cardShards\n';
+                    }
+                }
+                
+                const recentlyObtainedStr = localStorage.getItem('recentlyObtainedCards');
+                if (recentlyObtainedStr) {
+                    recentlyObtainedCards = JSON.parse(recentlyObtainedStr);
+                    info += '✅ 載入 recentlyObtainedCards 成功\n';
+                } else {
+                    recentlyObtainedCards = [];
+                    info += '⚠️ localStorage 中沒有 recentlyObtainedCards\n';
+                }
+                
+                info += `\n📊 載入結果:\n`;
+                info += `已解鎖卡片: ${Object.keys(ownedCards).length} 張\n`;
+                info += `碎片種類: ${Object.keys(shards).length} 種\n`;
+                info += `最近獲得: ${recentlyObtainedCards.length} 張\n`;
+                
+                if (Object.keys(ownedCards).length > 0) {
+                    info += `已解鎖卡片列表: ${JSON.stringify(Object.keys(ownedCards))}\n`;
+                }
+                
+                status.className = 'status success';
+                status.textContent = '✅ 卡片資料載入成功';
+                
+            } catch (error) {
+                info += `❌ 載入卡片資料時發生錯誤: ${error.message}\n`;
+                status.className = 'status error';
+                status.textContent = '❌ 卡片資料載入失敗';
+            }
+            
+            debugInfo.textContent = info;
+        }
+        
+        // 渲染測試卡片
+        function renderTestCards() {
+            const testCardsDiv = document.getElementById('testCards');
+            const status = document.getElementById('status');
+            
+            if (!window.allCards || window.allCards.length === 0) {
+                status.className = 'status error';
+                status.textContent = '❌ allCards 不可用，無法渲染卡片';
+                return;
+            }
+            
+            // 重新載入卡片資料
+            loadCardData();
+            
+            let html = '<h2>🎴 測試卡片顯示</h2>';
+            
+            // 顯示水果卡片
+            const fruitCards = ['apple', 'banana', 'orange', 'grape', 'strawberry'];
+            
+            fruitCards.forEach(fruit => {
+                const card = window.allCards.find(c => c.word === fruit);
+                if (card) {
+                    const isUnlocked = ownedCards[fruit] || false;
+                    const haveShards = shards[fruit] || 0;
+                    const required = getRequiredShards(card.rarity);
+                    
+                    html += `
+                        <div class="card ${isUnlocked ? 'unlocked' : 'locked'}">
+                            <h3>${card.zh} (${card.word})</h3>
+                            <p>稀有度: ${card.rarity}</p>
+                            <p>解鎖狀態: ${isUnlocked ? '✅ 已解鎖' : '🔒 未解鎖'}</p>
+                            <p>碎片: ${haveShards}/${required}</p>
+                            <p>類別: ${card.category}</p>
+                        </div>
+                    `;
+                } else {
+                    html += `
+                        <div class="card locked">
+                            <h3>❓ ${fruit}</h3>
+                            <p style="color: red;">找不到卡片資料</p>
+                        </div>
+                    `;
+                }
+            });
+            
+            testCardsDiv.innerHTML = html;
+            status.className = 'status success';
+            status.textContent = '✅ 測試卡片渲染完成';
+        }
+        
+        // 添加測試卡片
+        function addTestCards() {
+            const status = document.getElementById('status');
+            
+            // 添加水果卡片到已解鎖列表
+            const fruitCards = ['apple', 'banana', 'orange', 'grape', 'strawberry'];
+            
+            fruitCards.forEach(fruit => {
+                ownedCards[fruit] = true;
+                shards[fruit] = 5; // 給5個碎片
+            });
+            
+            // 同步到 LinkageSystem
+            if (typeof LinkageSystem !== 'undefined' && LinkageSystem.cards) {
+                LinkageSystem.cards.setOwnedCards(ownedCards);
+                LinkageSystem.cards.setShards(shards);
+            } else {
+                // 直接更新 localStorage
+                localStorage.setItem('ownedCards', JSON.stringify(ownedCards));
+                localStorage.setItem('cardShards', JSON.stringify(shards));
+            }
+            
+            // 添加到最近獲得列表
+            recentlyObtainedCards = fruitCards;
+            localStorage.setItem('recentlyObtainedCards', JSON.stringify(recentlyObtainedCards));
+            
+            status.className = 'status success';
+            status.textContent = '✅ 測試卡片已添加';
+            
+            // 重新渲染
+            renderTestCards();
+        }
+        
+        // 清除測試卡片
+        function clearTestCards() {
+            const status = document.getElementById('status');
+            
+            // 清除水果卡片
+            const fruitCards = ['apple', 'banana', 'orange', 'grape', 'strawberry'];
+            
+            fruitCards.forEach(fruit => {
+                delete ownedCards[fruit];
+                delete shards[fruit];
+            });
+            
+            // 同步到 LinkageSystem
+            if (typeof LinkageSystem !== 'undefined' && LinkageSystem.cards) {
+                LinkageSystem.cards.setOwnedCards(ownedCards);
+                LinkageSystem.cards.setShards(shards);
+            } else {
+                // 直接更新 localStorage
+                localStorage.setItem('ownedCards', JSON.stringify(ownedCards));
+                localStorage.setItem('cardShards', JSON.stringify(shards));
+            }
+            
+            // 清除最近獲得列表
+            recentlyObtainedCards = [];
+            localStorage.setItem('recentlyObtainedCards', JSON.stringify(recentlyObtainedCards));
+            
+            status.className = 'status warning';
+            status.textContent = '🗑️ 測試卡片已清除';
+            
+            // 重新渲染
+            renderTestCards();
+        }
+        
+        // 根據稀有度回傳所需碎片數量
+        function getRequiredShards(rarity) {
+            switch(rarity) {
+                case '普通': return 1;
+                case '稀有': return 3;
+                case '超稀有': return 5;
+                default: return 1;
+            }
+        }
+        
+        // 頁面載入時自動檢查
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                checkLinkageSystem();
+                setTimeout(() => {
+                    checkAllCards();
+                    setTimeout(() => {
+                        loadCardData();
+                        setTimeout(() => {
+                            renderTestCards();
+                        }, 500);
+                    }, 500);
+                }, 500);
+            }, 1000);
+        });
+    </script>
+</body>
+</html> 

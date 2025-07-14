@@ -1,0 +1,80 @@
+﻿<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=0.5, maximum-scale=2.0, user-scalable=yes">
+    <title>第四關：星辰之塔 - be動詞混合現在</title>
+    <link rel="stylesheet" href="responsive.css">
+    <link rel="stylesheet" href="css/grammar_level4_1.css">
+</head>
+<body>
+    <div class="game-container">
+        <div class="level-header">
+            <h1 class="level-title" id="levelTitle">星辰混合現在</h1>
+            <h2 class="level-subtitle" id="levelSubtitle">be動詞混合現在</h2>
+            <p class="scene-description" id="levelDescription">探索be動詞綜合運用的奧秘</p>
+        </div>
+        
+        <div class="game-info">
+            <div class="timer">時間：<span id="timeLeft">03:00</span></div>
+            <div class="score">分數：<span id="currentScore">0</span>/100</div>
+            <div class="stars">星星：<span id="starCount">0</span> ⭐</div>
+            <button class="sound-toggle" onclick="toggleSound()" id="soundToggle">🔊</button>
+        </div>
+        
+        <div style="text-align:center;margin-bottom:20px;">
+            <button class="action-btn btn-secondary" id="pauseBtn" onclick="pauseGame()" style="margin:0 8px;">⏸ 暫停</button>
+            <button class="action-btn btn-primary" id="resumeBtn" onclick="resumeGame()" style="margin:0 8px;display:none;">▶️ 繼續</button>
+        </div>
+        
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+        </div>
+
+        <div class="guardian-statue" id="guardianStatue">🌟</div>
+
+        <div class="grammar-tip">
+            <strong>文法小提示：</strong> 混合運用：I用am，you/we/they用are，he/she/it用is；否定句加not，疑問句移至句首
+        </div>
+        
+        <div class="question-container" id="questionContainer">
+            <div class="question" id="questionText">準備開始遊戲...</div>
+            <div class="options" id="optionsContainer"></div>
+            <div class="subLevelProgress" id="subLevelProgress"></div>
+        </div>
+
+        <div class="hint-buttons">
+            <button class="hint-btn" id="wordHintBtn" onclick="useWordHint()">困難單字提示 (10⭐)</button>
+            <button class="hint-btn" id="logicHintBtn" onclick="useLogicHint()">判斷邏輯提示 (20⭐)</button>
+        </div>
+        
+        <div class="action-buttons">
+            <button class="action-btn btn-secondary" onclick="skipQuestion()">跳過此題</button>
+            <button class="action-btn btn-primary" onclick="nextQuestion()" id="nextBtn" style="display: none;">下一題</button>
+            <button class="action-btn btn-secondary" onclick="goToMenu()">返回選單</button>
+            <button class="action-btn btn-secondary" onclick="goToHome()">返回首頁</button>
+            <button class="action-btn" onclick="gemSystem.showGemShop()" style="background: linear-gradient(135deg, #00ffe0, #3ecfff); color: #222; border: 1px solid #00ffe0;">💎 寶石商店</button>
+        </div>
+    </div>
+
+    <div class="result-modal" id="resultModal">
+        <div class="result-content">
+            <h2 class="result-title" id="resultTitle">遊戲結束</h2>
+            <div class="result-score" id="resultScore">分數：0/100</div>
+            <div class="result-message" id="resultMessage">繼續努力！</div>
+            <div class="action-buttons">
+                <button class="action-btn btn-primary" onclick="restartGame()">重新開始</button>
+                <button class="action-btn btn-secondary" onclick="goToMenu()">返回選單</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 載入外部腳本 -->
+    <script src="js/userData.js"></script>
+    <script src="js/grammarLevel4_1_questions.js"></script>
+    <script src="js/starRewardSystem.js"></script>
+    <script src="js/sound.js"></script>
+    <script src="js/grammar_level4_1.js"></script>
+    <script src="js/gemSystem.js"></script>
+</body>
+</html> 

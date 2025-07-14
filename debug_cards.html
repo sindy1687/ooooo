@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <title>卡片調試 - Typing Hero</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background: #1a1a1a;
+      color: #fff;
+    }
+    .debug-info {
+      background: #2a2a2a;
+      padding: 15px;
+      margin: 10px 0;
+      border-radius: 5px;
+      border: 1px solid #444;
+    }
+    .error { border-color: #ff4444; background: #3a2a2a; }
+    .success { border-color: #44ff44; background: #2a3a2a; }
+    .warning { border-color: #ffff44; background: #3a3a2a; }
+    button {
+      background: #4a6a7c;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin: 5px;
+    }
+    button:hover { background: #5a7a8c; }
+    .log {
+      background: #000;
+      color: #0f0;
+      padding: 10px;
+      border-radius: 4px;
+      font-family: monospace;
+      max-height: 300px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+  <h1>🔍 卡片調試工具</h1>
+  
+  <div class="debug-info">
+    <h3>📊 即時狀態</h3>
+    <div id="status"></div>
+    <button onclick="checkStatus()">🔄 檢查狀態</button>
+  </div>
+  
+  <div class="debug-info">
+    <h3>💾 本地儲存</h3>
+    <div id="storage"></div>
+    <button onclick="checkStorage()">🔄 檢查儲存</button>
+  </div>
+  
+  <div class="debug-info">
+    <h3>🎴 卡片資料</h3>
+    <div id="cards"></div>
+    <button onclick="checkCards()">🔄 檢查卡片</button>
+  </div>
+  
+  <div class="debug-info">
+    <h3>📝 操作日誌</h3>
+    <div id="log" class="log"></div>
+    <button onclick="clearLog()">🗑️ 清除日誌</button>
+  </div>
+  
+  <div class="debug-info">
+    <h3>🔧 測試工具</h3>
+    <button onclick="addTestCard()">➕ 添加測試卡片</button>
+    <button onclick="clearAllCards()">🗑️ 清除所有卡片</button>
+    <button onclick="backupData()">💾 備份資料</button>
+    <button onclick="restoreData()">📥 恢復資料</button>
+  </div>
+
+  <!-- 載入必要的 JavaScript -->
+  <script src="js/sound.js"></script>
+  <script src="js/userData.js"></script>
+  <script src="js/autoSaveSystem.js"></script>
+  <script src="js/starRewardSystem.js"></script>
+  <script src="js/cardUtils.js"></script>
+  <script src="js/cardStorage.js"></script>
+  <script src="js/cards.js"></script>
+  <script src="js/achievementSystem.js"></script>
+  <script src="js/contextMenuSystem.js"></script>
+  <script src="js/enhancedSaveReminder.js"></script>
+
+  <script>
+    let logMessages = [];
+    
+    function log(message, type = 'info') {
+      const timestamp = new Date().toLocaleTimeString();
+      const logEntry = `[${timestamp}] ${message}`;
+      logMessages.push(logEntry);
+      
+      const logElement = document.getElementById('log');
+      if (logElement) {
+        logElement.textContent = logMessages.join('\n');
+        logElement.scrollTop = logElement.scrollHeight;
+      }
+      
+      console.log(logEntry);
+    }
+    
+    function clearLog() {
+      logMessages = [];
+      document.getElementById('log').textContent = '';
+    }
+    
+    function checkStatus() {
+      const statusDiv = document.getElementById('status');
+      let html = '';
+      
+      // 檢查 allCards
+      if (window.allCards && window.allCards.length > 0) {
+        html += '<div class="success">✅ allCards 已載入: ' + window.allCards.length + ' 張卡片</div>';
+        log('allCards 已載入: ' + window.allCards.length + ' 張卡片');
+      } else {
+        html += '<div class="error">❌ allCards 未載入或為空</div>';
+        log('allCards 未載入或為空', 'error');
+      }
+      
+      // 檢查 LinkageSystem
+      if (window.LinkageSystem) {
+        html += '<div class="success">✅ LinkageSystem 已載入</div>';
+        log('LinkageSystem 已載入');
+      } else {
+        html += '<div class="error">❌ LinkageSystem 未載入</div>';
+        log('LinkageSystem 未載入', 'error');
+      }
+      
+      statusDiv.innerHTML = html;
+    }
+    
+    function checkStorage() {
+      const storageDiv = document.getElementById('storage');
+      let html = '';
+      
+      const keys = ['ownedCards', 'cardShards', 'totalStars'];
+      
+      keys.forEach(key => {
+        try {
+          const value = localStorage.getItem(key);
+          if (value !== null) {
+            const data = JSON.parse(value);
+            if (typeof data === 'object') {
+              const count = Object.keys(data).length;
+              html += `<div class="success">✅ ${key}: ${count} 項資料</div>`;
+              log(`${key}: ${count} 項資料`);
+            } else {
+              html += `<div class="success">✅ ${key}: ${data}</div>`;
+              log(`${key}: ${data}`);
+            }
+          } else {
+            html += `<div class="warning">⚠️ ${key}: 不存在</div>`;
+            log(`${key}: 不存在`, 'warning');
+          }
+        } catch (error) {
+          html += `<div class="error">❌ ${key}: 解析錯誤</div>`;
+          log(`${key}: 解析錯誤 - ${error.message}`, 'error');
+        }
+      });
+      
+      storageDiv.innerHTML = html;
+    }
+    
+    function checkCards() {
+      const cardsDiv = document.getElementById('cards');
+      let html = '';
+      
+      if (!window.LinkageSystem) {
+        html += '<div class="error">❌ LinkageSystem 未載入</div>';
+        cardsDiv.innerHTML = html;
+        return;
+      }
+      
+      try {
+        const ownedCards = window.LinkageSystem.cards.getOwnedCards();
+        const shards = window.LinkageSystem.cards.getShards();
+        const totalStars = window.LinkageSystem.stars.get();
+        
+        const ownedCount = Object.keys(ownedCards).length;
+        const shardCount = Object.keys(shards).length;
+        const totalShards = Object.values(shards).reduce((sum, count) => sum + count, 0);
+        
+        html += `<div class="success">📊 已擁有卡片: ${ownedCount} 張</div>`;
+        html += `<div class="success">💎 碎片種類: ${shardCount} 種</div>`;
+        html += `<div class="success">💎 總碎片數: ${totalShards} 個</div>`;
+        html += `<div class="success">⭐ 總星星數: ${totalStars} 顆</div>`;
+        
+        log(`卡片統計: 已擁有 ${ownedCount} 張，碎片種類 ${shardCount} 種，總碎片 ${totalShards} 個，星星 ${totalStars} 顆`);
+        
+      } catch (error) {
+        html += `<div class="error">❌ 檢查卡片資料時發生錯誤: ${error.message}</div>`;
+        log(`檢查卡片資料時發生錯誤: ${error.message}`, 'error');
+      }
+      
+      cardsDiv.innerHTML = html;
+    }
+    
+    function addTestCard() {
+      if (!window.allCards || window.allCards.length === 0) {
+        log('無法添加測試卡片：allCards 未載入', 'error');
+        return;
+      }
+      
+      if (!window.LinkageSystem) {
+        log('無法添加測試卡片：LinkageSystem 未載入', 'error');
+        return;
+      }
+      
+      try {
+        const testCard = window.allCards[0];
+        window.LinkageSystem.cards.addCard(testCard.word);
+        window.LinkageSystem.cards.addShard(testCard.word, 3);
+        
+        log(`已添加測試卡片: ${testCard.word}`);
+        checkCards();
+        
+      } catch (error) {
+        log(`添加測試卡片失敗: ${error.message}`, 'error');
+      }
+    }
+    
+    function clearAllCards() {
+      if (!confirm('確定要清除所有卡片嗎？')) {
+        return;
+      }
+      
+      if (!window.LinkageSystem) {
+        log('無法清除卡片：LinkageSystem 未載入', 'error');
+        return;
+      }
+      
+      try {
+        window.LinkageSystem.cards.setOwnedCards({});
+        window.LinkageSystem.cards.setShards({});
+        window.LinkageSystem.stars.set(0);
+        
+        log('已清除所有卡片');
+        checkCards();
+        
+      } catch (error) {
+        log(`清除卡片失敗: ${error.message}`, 'error');
+      }
+    }
+    
+    function backupData() {
+      if (!window.LinkageSystem) {
+        log('無法備份資料：LinkageSystem 未載入', 'error');
+        return;
+      }
+      
+      try {
+        const backup = {
+          ownedCards: window.LinkageSystem.cards.getOwnedCards(),
+          shards: window.LinkageSystem.cards.getShards(),
+          totalStars: window.LinkageSystem.stars.get(),
+          timestamp: new Date().toISOString()
+        };
+        
+        localStorage.setItem('cardBackup', JSON.stringify(backup));
+        log('資料備份完成');
+        
+      } catch (error) {
+        log(`備份失敗: ${error.message}`, 'error');
+      }
+    }
+    
+    function restoreData() {
+      try {
+        const backupStr = localStorage.getItem('cardBackup');
+        if (!backupStr) {
+          log('沒有找到備份資料', 'warning');
+          return;
+        }
+        
+        const backup = JSON.parse(backupStr);
+        
+        if (window.LinkageSystem) {
+          window.LinkageSystem.cards.setOwnedCards(backup.ownedCards);
+          window.LinkageSystem.cards.setShards(backup.shards);
+          window.LinkageSystem.stars.set(backup.totalStars);
+        }
+        
+        log('資料恢復完成');
+        checkCards();
+        
+      } catch (error) {
+        log(`恢復失敗: ${error.message}`, 'error');
+      }
+    }
+    
+    // 監聽 localStorage 變化
+    window.addEventListener('storage', function(e) {
+      log(`localStorage 變化: ${e.key} = ${e.newValue}`);
+    });
+    
+    // 頁面載入時自動檢查
+    window.addEventListener('load', function() {
+      log('調試工具已載入');
+      
+      setTimeout(() => {
+        checkStatus();
+        checkStorage();
+        checkCards();
+      }, 2000);
+    });
+  </script>
+</body>
+</html> 

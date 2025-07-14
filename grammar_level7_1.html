@@ -1,0 +1,1191 @@
+﻿<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第七關：動詞高手 - 一般動詞現在式疑問句</title>
+    <link rel="stylesheet" href="responsive.css">
+    <style>
+        html, body {
+            height: 100%;
+        }
+        body {
+            font-family: 'Microsoft JhengHei', Arial, sans-serif;
+            background: linear-gradient(135deg, #0f2027 0%, #2c5364 100%);
+            min-height: 100vh;
+            margin: 0;
+            color: #e0eaff;
+            position: relative;
+            overflow-x: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 20px 0;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: url('images/cards/galaxy(1).gif') repeat center center, radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
+            opacity: 0.5;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .game-container {
+            background: rgba(30, 40, 70, 0.7);
+            border-radius: 24px;
+            padding: 36px;
+            box-shadow: 0 8px 40px #00ffe055, 0 1.5px 8px #0ff2  inset;
+            max-width: 820px;
+            width: 95%;
+            text-align: center;
+            backdrop-filter: blur(8px);
+            border: 1.5px solid #3ecfff55;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .level-header {
+            margin-bottom: 32px;
+        }
+
+        .level-title {
+            font-size: 2.7em;
+            color: #7eeeff;
+            margin-bottom: 10px;
+            text-shadow: 0 0 16px #00ffe0, 0 2px 8px #0ff2;
+            letter-spacing: 2px;
+        }
+
+        .level-subtitle {
+            font-size: 1.3em;
+            color: #aeefff;
+            margin-bottom: 15px;
+            text-shadow: 0 0 8px #00ffe0;
+        }
+
+        .scene-description {
+            font-size: 1.1em;
+            color: #b2cfff;
+            font-style: italic;
+            text-shadow: 0 0 6px #00ffe0;
+        }
+
+        .game-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 15px;
+            background: linear-gradient(90deg, #232b3a 60%, #1b2735 100%);
+            border-radius: 15px;
+            box-shadow: 0 2px 12px #00ffe033;
+        }
+
+        .timer, .score, .stars {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #00ffe0;
+            text-shadow: 0 0 8px #00ffe0;
+        }
+
+        .stars { color: #ffe066; text-shadow: 0 0 8px #ffe066; }
+
+        .sound-toggle {
+            background: none;
+            border: none;
+            font-size: 1.7em;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            color: #7eeeff;
+            box-shadow: 0 0 8px #00ffe0;
+        }
+
+        .sound-toggle:hover {
+            background: rgba(0,255,255,0.08);
+            transform: scale(1.1);
+            box-shadow: 0 0 16px #00ffe0;
+        }
+
+        .sound-toggle.muted { opacity: 0.5; }
+
+        .question-container {
+            background: rgba(20, 30, 50, 0.85);
+            border-radius: 18px;
+            padding: 32px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 24px #00ffe022;
+            border: 1px solid #3ecfff33;
+        }
+
+        .question {
+            font-size: 2em;
+            margin-bottom: 30px;
+            color: #e0eaff;
+            line-height: 1.4;
+            text-shadow: 0 0 8px #00ffe0;
+        }
+
+        .options {
+            display: flex;
+            gap: 18px;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        .option {
+            background: linear-gradient(135deg, #0ff 0%, #3ecfff 100%);
+            color: #222;
+            border: none;
+            padding: 16px 24px;
+            border-radius: 12px;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 12px #00ffe055;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .option:hover {
+            transform: translateY(-2px) scale(1.04);
+            box-shadow: 0 8px 32px #00ffe0cc;
+            background: linear-gradient(135deg, #3ecfff 0%, #0ff 100%);
+        }
+
+        .option.correct {
+            background: linear-gradient(135deg, #1e90ff 0%, #00ffe0 100%);
+            color: #fff;
+            font-weight: bold;
+            text-shadow: 0 0 12px #00ffe0, 0 0 4px #fff;
+            box-shadow: 0 0 24px #00ffe0cc, 0 0 8px #1e90ff;
+            border: 2px solid #00ffe0;
+        }
+
+        .option.incorrect {
+            background: linear-gradient(135deg, #7f53ac 0%, #ff6a88 100%);
+            color: #fff;
+            font-weight: bold;
+            text-shadow: 0 0 12px #ff6a88, 0 0 4px #fff;
+            box-shadow: 0 0 24px #ff6a88cc, 0 0 8px #7f53ac;
+            border: 2px solid #ff6a88;
+        }
+
+        .hint-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 18px;
+            margin-bottom: 20px;
+        }
+
+        .hint-btn {
+            background: linear-gradient(135deg, #00ffe0, #3ecfff);
+            color: #222;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 12px #00ffe055;
+        }
+
+        .hint-btn:hover {
+            transform: translateY(-1px) scale(1.04);
+            box-shadow: 0 8px 24px #00ffe0cc;
+            background: linear-gradient(135deg, #3ecfff, #00ffe0);
+        }
+
+        .hint-btn:disabled {
+            background: #3ecfff55;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .grammar-tip {
+            background: linear-gradient(135deg, #3ecfff, #00ffe0);
+            color: #222;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            font-size: 1.1em;
+            font-weight: bold;
+            box-shadow: 0 2px 12px #00ffe055;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 12px;
+            background: #1b2735;
+            border-radius: 6px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 12px #00ffe033;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00ffe0, #3ecfff);
+            transition: width 0.3s ease;
+            box-shadow: 0 0 12px #00ffe0;
+        }
+
+        .result-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 20, 40, 0.8);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .result-content {
+            background: rgba(30, 40, 70, 0.95);
+            padding: 40px;
+            border-radius: 24px;
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 8px 40px #00ffe055;
+            border: 1.5px solid #3ecfff55;
+            backdrop-filter: blur(8px);
+        }
+
+        .result-title {
+            font-size: 2em;
+            margin-bottom: 20px;
+            color: #7eeeff;
+            text-shadow: 0 0 16px #00ffe0, 0 2px 8px #0ff2;
+        }
+
+        .result-score {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            color: #ffe066;
+            text-shadow: 0 0 8px #ffe066;
+        }
+
+        .result-message {
+            font-size: 1.2em;
+            margin-bottom: 30px;
+            color: #aeefff;
+            text-shadow: 0 0 8px #00ffe0;
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 18px;
+        }
+
+        .action-btn {
+            padding: 12px 28px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            background: linear-gradient(135deg, #00ffe0, #3ecfff);
+            color: #222;
+            box-shadow: 0 2px 12px #00ffe055;
+        }
+
+        .action-btn:hover {
+            background: linear-gradient(135deg, #3ecfff, #00ffe0);
+            box-shadow: 0 8px 24px #00ffe0cc;
+            color: #111;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #7eeeff, #00ffe0);
+            color: #222;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #232b3a, #1b2735);
+            color: #7eeeff;
+            border: 1.5px solid #3ecfff55;
+        }
+
+        .btn-secondary:hover {
+            background: linear-gradient(135deg, #3ecfff, #232b3a);
+            color: #fff;
+        }
+
+        .guardian-statue {
+            width: 90px;
+            height: 90px;
+            background: linear-gradient(135deg, #00ffe0, #3ecfff);
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5em;
+            box-shadow: 0 0 32px #00ffe0cc;
+            transition: all 0.3s ease;
+        }
+
+        .guardian-statue.shine {
+            animation: shine 0.5s ease;
+        }
+
+        @keyframes shine {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); box-shadow: 0 0 40px #00ffe0; }
+            100% { transform: scale(1); }
+        }
+
+        .falling-leaf {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: #00ffe0;
+            border-radius: 50% 0 50% 0;
+            animation: fall 2s linear;
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(-100px) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+        }
+
+        @media (max-width: 768px) {
+            .game-container {
+                padding: 20px;
+                width: 98%;
+            }
+
+            .level-title {
+                font-size: 2em;
+            }
+
+            .question {
+                font-size: 1.5em;
+            }
+
+            .options {
+                flex-direction: column;
+            }
+
+            .game-info {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+
+        /* 新增：困難單字提示區塊科技風格 */
+        #wordHintDiv {
+            margin: 18px 0;
+            background: rgba(20,40,70,0.92);
+            border: 1.5px solid #00ffe0;
+            border-radius: 12px;
+            padding: 16px 18px;
+            text-align: left;
+            box-shadow: 0 0 18px #00ffe088, 0 1.5px 8px #0ff2 inset;
+        }
+        #wordHintDiv strong {
+            color: #00ffe0;
+            font-size: 1.1em;
+            letter-spacing: 1px;
+            text-shadow: 0 0 8px #00ffe0;
+        }
+        #wordHintDiv .word-block {
+            display: inline-block;
+            margin: 4px 12px 4px 0;
+            padding: 6px 12px;
+            background: linear-gradient(135deg, #232b3a 60%, #1b2735 100%);
+            color: #7eeeff;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 1.08em;
+            box-shadow: 0 0 8px #00ffe0cc;
+            transition: box-shadow 0.2s;
+        }
+        #wordHintDiv .word-block:hover {
+            box-shadow: 0 0 18px #00ffe0, 0 0 8px #7eeeff;
+        }
+        #wordHintDiv .zh {
+            color: #fffbe6;
+            font-size: 1em;
+            margin-left: 8px;
+            text-shadow: 0 0 4px #00ffe0;
+        }
+
+        /* 新增：邏輯提示區塊科技風格 */
+        #logicHintDiv {
+            background: rgba(20,40,70,0.92);
+            border: 1.5px solid #38ffb0;
+            border-radius: 12px;
+            margin: 20px 0;
+            padding: 14px 18px;
+            font-size: 1.05em;
+            color: #e0fff7;
+            box-shadow: 0 0 18px #38ffb088, 0 1.5px 8px #38ffb055 inset;
+            text-align: left;
+            display: none;
+        }
+        #logicHintDiv strong {
+            color: #38ffb0;
+            font-size: 1.08em;
+            letter-spacing: 1px;
+            text-shadow: 0 0 8px #38ffb0;
+        }
+        #logicHintDiv:hover {
+            box-shadow: 0 0 24px #38ffb0, 0 0 8px #7eeeff;
+        }
+
+        /* 新增：答案解釋區塊科技風格 */
+        .answer-explanation {
+            margin: 12px 0 0 0;
+            padding: 16px 18px;
+            background: rgba(20,40,70,0.92);
+            border: 1.5px solid #00ffe0;
+            border-radius: 12px;
+            color: #7eeeff;
+            font-size: 1.18em;
+            font-weight: bold;
+            text-shadow: 0 0 8px #00ffe0, 0 0 2px #fff;
+            box-shadow: 0 0 18px #00ffe088, 0 1.5px 8px #0ff2 inset;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="level-header">
+            <h1 class="level-title" id="levelTitle">動詞高手</h1>
+            <h2 class="level-subtitle" id="levelSubtitle">一般動詞現在式疑問句</h2>
+            <p class="scene-description" id="levelDescription">掌握疑問句的構造技巧</p>
+        </div>
+
+        <div class="game-info">
+            <div class="timer">時間：<span id="timeLeft">03:00</span></div>
+            <div class="score">分數：<span id="currentScore">0</span>/100</div>
+            <div class="stars">星星：<span id="starCount">0</span> ⭐</div>
+            <button class="sound-toggle" onclick="toggleSound()" id="soundToggle">🔊</button>
+        </div>
+        <div style="text-align:center;margin-bottom:20px;">
+            <button class="action-btn btn-secondary" id="pauseBtn" onclick="pauseGame()" style="margin:0 8px;">⏸ 暫停</button>
+            <button class="action-btn btn-primary" id="resumeBtn" onclick="resumeGame()" style="margin:0 8px;display:none;">▶️ 繼續</button>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+        </div>
+
+        <div class="guardian-statue" id="guardianStatue">🌟</div>
+
+        <div class="grammar-tip">
+            <strong>文法小提示：</strong> 一般動詞現在式疑問句：Do/Does + 主詞 + 原形動詞？
+        </div>
+
+        <div class="question-container" id="questionContainer">
+            <div class="question" id="questionText">準備開始遊戲...</div>
+            <div class="options" id="optionsContainer"></div>
+            <div class="subLevelProgress" id="subLevelProgress"></div>
+        </div>
+
+        <div class="hint-buttons">
+            <button class="hint-btn" id="wordHintBtn" onclick="useWordHint()">困難單字提示 (10⭐)</button>
+            <button class="hint-btn" id="logicHintBtn" onclick="useLogicHint()">判斷邏輯提示 (20⭐)</button>
+            </div>
+        
+        <div class="action-buttons">
+            <button class="action-btn btn-secondary" onclick="skipQuestion()">跳過此題</button>
+            <button class="action-btn btn-primary" onclick="nextQuestion()" id="nextBtn" style="display: none;">下一題</button>
+            <button class="action-btn btn-secondary" onclick="goToMenu()">返回選單</button>
+            <button class="action-btn btn-secondary" onclick="goToHome()">返回首頁</button>
+            <button class="action-btn" onclick="gemSystem.showGemShop()" style="background: linear-gradient(135deg, #00ffe0, #3ecfff); color: #222; border: 1px solid #00ffe0;">💎 寶石商店</button>
+        </div>
+            </div>
+
+    <div class="result-modal" id="resultModal">
+        <div class="result-content">
+            <h2 class="result-title" id="resultTitle">遊戲結束</h2>
+            <div class="result-score" id="resultScore">分數：0/100</div>
+            <div class="result-message" id="resultMessage">繼續努力！</div>
+            <div class="action-buttons">
+                <button class="action-btn btn-primary" onclick="restartGame()">重新開始</button>
+                <button class="action-btn btn-secondary" onclick="goToMenu()">返回選單</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/userData.js"></script>
+    <script src="js/grammarLevel7_1_questions.js"></script>
+    <script src="js/starRewardSystem.js"></script>
+    <script src="js/gemSystem.js"></script>
+    <script>
+        // 遊戲狀態
+        let gameState = {
+            currentLevel: 'level7',
+            currentSubLevel: 'sub1',
+            currentQuestion: 0,
+            score: 0,
+            stars: 0,
+            timeLeft: 180,
+            questions: [],
+            currentQuestionData: null,
+            timer: null,
+            isGameActive: false,
+            isSoundEnabled: true,
+            logicHintUsed: 0 // 判斷邏輯提示使用次數
+        };
+
+        // 音效物件
+        let sounds = {};
+
+        // 載入音效
+        function loadSounds() {
+            try {
+                sounds = {
+                    correct: new Audio('sound/correct.mp3'),
+                    wrong: new Audio('sound/wrong.mp3'),
+                    click: new Audio('sound/click.mp3'),
+                    complete: new Audio('sound/complete.mp3'),
+                    unlock: new Audio('sound/unlock.mp3'),
+                    shine: new Audio('sound/shine.mp3')
+                };
+                Object.values(sounds).forEach(sound => {
+                    sound.load();
+                    sound.volume = 0.4;
+                    sound.preload = 'auto';
+                });
+                // 背景音樂
+                if (!window.bgMusic) {
+                    window.bgMusic = new Audio('sound/午後放鬆時光（純音樂）.mp3');
+                    window.bgMusic.loop = true;
+                    window.bgMusic.volume = 0.25;
+                }
+                // 自動播放背景音樂（需用戶互動觸發）
+                document.body.addEventListener('click', function playBGOnce() {
+                    if (gameState.isSoundEnabled) {
+                        window.bgMusic.play().catch(()=>{});
+                    }
+                    document.body.removeEventListener('click', playBGOnce);
+                });
+                // 若已啟用音效則自動播放
+                if (gameState.isSoundEnabled) {
+                    setTimeout(()=>{ window.bgMusic.play().catch(()=>{}); }, 500);
+                } else {
+                    window.bgMusic.pause();
+                }
+            } catch (error) {
+                console.log('音效載入失敗:', error);
+                gameState.isSoundEnabled = false;
+            }
+        }
+
+        // 播放音效
+        function playSound(soundName) {
+            if (!gameState.isSoundEnabled || !sounds[soundName]) {
+                return;
+            }
+
+            try {
+                const sound = sounds[soundName];
+                sound.pause();
+                sound.currentTime = 0;
+                sound.play().catch(error => {
+                    console.log('音效播放失敗:', error);
+                });
+            } catch (error) {
+                console.log('音效播放錯誤:', error);
+            }
+        }
+
+        // 切換音效開關
+        function toggleSound() {
+            gameState.isSoundEnabled = !gameState.isSoundEnabled;
+            const soundToggle = document.getElementById('soundToggle');
+            
+            if (gameState.isSoundEnabled) {
+                soundToggle.textContent = '🔊';
+                soundToggle.classList.remove('muted');
+                if (window.bgMusic) window.bgMusic.play().catch(()=>{});
+            } else {
+                soundToggle.textContent = '🔇';
+                soundToggle.classList.add('muted');
+                if (window.bgMusic) window.bgMusic.pause();
+            }
+            
+            saveUserData();
+        }
+
+        // 載入用戶數據
+        function loadUserData() {
+            try {
+                // 從LinkageSystem載入星星數據
+                if (typeof LinkageSystem !== 'undefined' && LinkageSystem.stars) {
+                    gameState.stars = LinkageSystem.stars.get();
+                } else {
+                    // 備用方案：從localStorage載入
+                    gameState.stars = parseInt(localStorage.getItem('totalStars') || '0');
+                }
+                
+                // 載入音效設定
+                const savedData = localStorage.getItem('grammarGameData');
+                if (savedData) {
+                    const userData = JSON.parse(savedData);
+                    gameState.isSoundEnabled = userData.isSoundEnabled !== false;
+                }
+                
+                // 初始化音效開關狀態
+                const soundToggle = document.getElementById('soundToggle');
+                if (gameState.isSoundEnabled) {
+                    soundToggle.textContent = '🔊';
+                    soundToggle.classList.remove('muted');
+                } else {
+                    soundToggle.textContent = '🔇';
+                    soundToggle.classList.add('muted');
+                }
+            } catch (error) {
+                console.log('載入用戶數據失敗:', error);
+            }
+        }
+
+        // 保存用戶數據
+        function saveUserData() {
+            try {
+                // 同步星星數據到LinkageSystem
+                if (typeof LinkageSystem !== 'undefined' && LinkageSystem.stars) {
+                    LinkageSystem.stars.set(gameState.stars);
+                } else {
+                    // 備用方案：直接保存到localStorage
+                    localStorage.setItem('totalStars', gameState.stars.toString());
+                }
+                
+                // 保存音效設定
+                const userData = {
+                    isSoundEnabled: gameState.isSoundEnabled,
+                    lastPlayed: new Date().toISOString()
+                };
+                localStorage.setItem('grammarGameData', JSON.stringify(userData));
+            } catch (error) {
+                console.log('保存用戶數據失敗:', error);
+            }
+        }
+
+        // 更新關卡顯示
+        function updateLevelDisplay() {
+            const currentSubLevelData = LEVEL_CONFIG[gameState.currentSubLevel];
+            document.getElementById('levelTitle').textContent = currentSubLevelData.name;
+            document.getElementById('levelSubtitle').textContent = '一般動詞現在式問句';
+            document.getElementById('levelDescription').textContent = currentSubLevelData.description;
+        }
+
+        // 初始化遊戲
+        function initGame() {
+            loadSounds();
+            loadUserData();
+            // 使用新題庫系統
+            const currentSubLevelData = LEVEL_CONFIG[gameState.currentSubLevel];
+            gameState.questions = getRandomQuestions(gameState.currentSubLevel, 10);
+            gameState.logicHintUsed = 0;
+            updateLevelDisplay();
+            startGame();
+        }
+
+        // 開始遊戲
+        function startGame() {
+            gameState.isGameActive = true;
+            gameState.currentQuestion = 0;
+            gameState.score = 0;
+            gameState.timeLeft = 180;
+            
+            updateDisplay();
+            loadQuestion();
+            startTimer();
+        }
+
+        // 載入題目
+        function loadQuestion() {
+            if (gameState.currentQuestion >= gameState.questions.length) {
+                endGame();
+                return;
+            }
+
+            gameState.currentQuestionData = gameState.questions[gameState.currentQuestion];
+            document.getElementById('questionText').textContent = gameState.currentQuestionData.question;
+            const optionsContainer = document.getElementById('optionsContainer');
+            optionsContainer.innerHTML = '';
+            gameState.currentQuestionData.options.forEach((option, index) => {
+                const button = document.createElement('button');
+                button.className = 'option';
+                button.textContent = option;
+                button.onclick = () => selectAnswer(index);
+                optionsContainer.appendChild(button);
+            });
+            // 隱藏下一題按鈕
+            document.getElementById('nextBtn').style.display = 'none';
+            // 隱藏所有提示區塊
+            hideAllHints();
+            // 重置困難單字提示狀態
+            resetWordHintState();
+            // 顯示小關進度
+            let progressDiv = document.getElementById('subLevelProgress');
+            if (!progressDiv) {
+                progressDiv = document.createElement('div');
+                progressDiv.id = 'subLevelProgress';
+                progressDiv.style.cssText = 'margin: 10px 0 0 0; font-size: 1.1em; color: #4a5568; font-weight: bold;';
+                document.getElementById('questionContainer').appendChild(progressDiv);
+            }
+            progressDiv.textContent = `本小關進度：第${gameState.currentQuestion + 1} / ${gameState.questions.length}題`;
+            updateProgress();
+        }
+
+        // 選擇答案
+        function selectAnswer(selectedIndex) {
+            if (!gameState.isGameActive) return;
+            playSound('click');
+            const options = document.querySelectorAll('.option');
+            const correctIndex = gameState.currentQuestionData.correct;
+            // 禁用所有選項
+            options.forEach(option => option.style.pointerEvents = 'none');
+            if (selectedIndex === correctIndex) {
+                // 答對
+                options[selectedIndex].classList.add('correct');
+                gameState.score += 10;
+                gameState.stars += 2; // 答對獲得2顆星星
+                if (typeof StarRewardSystem !== 'undefined') StarRewardSystem.addStars(2);
+                // 檢查是否困難題（hard）
+                if (gameState.currentQuestionData.difficulty === 'hard' || gameState.currentQuestionData.isHard) {
+                    gameState.stars += 3;
+                    if (typeof StarRewardSystem !== 'undefined') StarRewardSystem.addStars(3);
+                }
+                // 守護者雕像發光
+                const statue = document.getElementById('guardianStatue');
+                statue.classList.add('shine');
+                setTimeout(() => statue.classList.remove('shine'), 500);
+                playSound('correct');
+                // 答對直接進入下一題
+                setTimeout(() => {
+                    gameState.currentQuestion++;
+                    loadQuestion();
+                }, 1000);
+            } else {
+                // 答錯
+                options[selectedIndex].classList.add('incorrect');
+                options[correctIndex].classList.add('correct');
+                createFallingLeaf();
+                playSound('wrong');
+                // 答錯顯示解釋和下一題按鈕
+                setTimeout(() => {
+                    showExplanation();
+                    document.getElementById('nextBtn').style.display = 'inline-block';
+                }, 1500);
+            }
+            updateDisplay();
+            saveUserData();
+        }
+
+        // 顯示解釋
+        function showExplanation() {
+            const questionText = document.getElementById('questionText');
+            const originalText = questionText.textContent;
+            questionText.innerHTML = `
+                <div style="margin-bottom: 15px;">${originalText}</div>
+                <div class="answer-explanation">${gameState.currentQuestionData.explanation}</div>
+            `;
+            setTimeout(() => {
+                gameState.currentQuestion++;
+                loadQuestion();
+            }, 2000);
+        }
+
+        // 困難單字提示狀態
+        let wordHintState = {
+            currentIndex: 0,
+            totalWords: 0,
+            words: []
+        };
+
+        // 重置困難單字提示狀態
+        function resetWordHintState() {
+            wordHintState.currentIndex = 0;
+            wordHintState.totalWords = 0;
+            wordHintState.words = [];
+            
+            // 重置按鈕狀態
+            const wordHintBtn = document.getElementById('wordHintBtn');
+            if (wordHintBtn) {
+                wordHintBtn.textContent = '困難單字提示 (10⭐)';
+                wordHintBtn.disabled = false;
+            }
+        }
+
+        // 使用困難單字提示
+        function useWordHint() {
+            // 初始化時檢查星星並設置狀態
+            if (wordHintState.currentIndex === 0) {
+                if (gameState.stars < 10) {
+                    alert('星星不足！');
+                    return;
+                }
+                
+                // 第一次點擊扣除星星
+                playSound('click');
+                gameState.stars -= 10;
+                updateDisplay();
+                saveUserData();
+                
+                // 設置困難單字列表
+                const difficultWords = gameState.currentQuestionData.difficultWords || [];
+                wordHintState.words = difficultWords.map(word => ({
+                    en: word,
+                    zh: DIFFICULT_WORDS_TRANSLATION[word] || word
+                }));
+                wordHintState.totalWords = wordHintState.words.length;
+                
+                if (wordHintState.totalWords === 0) {
+                    let hintDiv = document.getElementById('wordHintDiv');
+                    if (!hintDiv) {
+                        hintDiv = document.createElement('div');
+                        hintDiv.id = 'wordHintDiv';
+                        
+                        // 插入到hint-buttons區域上方
+                        const hintButtons = document.querySelector('.hint-buttons');
+                        if (hintButtons) {
+                            hintButtons.parentNode.insertBefore(hintDiv, hintButtons);
+                        } else {
+                            // 備用方案：插入到questionContainer後面
+                            const questionContainer = document.getElementById('questionContainer');
+                            questionContainer.parentNode.insertBefore(hintDiv, questionContainer.nextSibling);
+                        }
+                    }
+                    hintDiv.innerHTML = '<strong>本題無困難單字。</strong>';
+                    hintDiv.style.display = 'block';
+                    
+                    // 禁用按鈕
+                    const wordHintBtn = document.getElementById('wordHintBtn');
+                    wordHintBtn.textContent = '本題無困難單字';
+                    wordHintBtn.disabled = true;
+                    return;
+                }
+            }
+            
+            // 顯示當前困難單字
+            if (wordHintState.currentIndex < wordHintState.totalWords) {
+                const currentWord = wordHintState.words[wordHintState.currentIndex];
+                
+                let hintDiv = document.getElementById('wordHintDiv');
+                if (!hintDiv) {
+                    hintDiv = document.createElement('div');
+                    hintDiv.id = 'wordHintDiv';
+                    
+                    // 插入到hint-buttons區域上方
+                    const hintButtons = document.querySelector('.hint-buttons');
+                    if (hintButtons) {
+                        hintButtons.parentNode.insertBefore(hintDiv, hintButtons);
+                    } else {
+                        // 備用方案：插入到questionContainer後面
+                        const questionContainer = document.getElementById('questionContainer');
+                        questionContainer.parentNode.insertBefore(hintDiv, questionContainer.nextSibling);
+                    }
+                }
+                
+                // 累積顯示已點擊的困難單字
+                const displayedWords = wordHintState.words.slice(0, wordHintState.currentIndex + 1);
+                hintDiv.innerHTML = `<strong>困難單字：</strong><br>` +
+                    displayedWords.map(w => `<span class='word-block'>${w.en}</span> <span class='zh'>${w.zh}</span>`).join('<br>');
+                hintDiv.style.display = 'block';
+                
+                wordHintState.currentIndex++;
+                
+                // 更新按鈕狀態
+                const wordHintBtn = document.getElementById('wordHintBtn');
+                if (wordHintState.currentIndex < wordHintState.totalWords) {
+                    wordHintBtn.textContent = `困難單字提示 (${wordHintState.currentIndex}/${wordHintState.totalWords})`;
+                } else {
+                    wordHintBtn.textContent = '已顯示完畢';
+                    wordHintBtn.disabled = true;
+                }
+            }
+        }
+
+        // 使用判斷邏輯提示
+        function useLogicHint() {
+            if (gameState.stars < 20) {
+                alert('星星不足！');
+                return;
+            }
+            playSound('click');
+            gameState.stars -= 20;
+            updateDisplay();
+            saveUserData();
+            
+            // 處理提示區塊 - 插入到hint-buttons區域上方
+            let logicHintDiv = document.getElementById('logicHintDiv');
+            if (!logicHintDiv) {
+                logicHintDiv = document.createElement('div');
+                logicHintDiv.id = 'logicHintDiv';
+                
+                // 找到hint-buttons區域，插入到它的前面
+                const hintButtons = document.querySelector('.hint-buttons');
+                if (hintButtons) {
+                    hintButtons.parentNode.insertBefore(logicHintDiv, hintButtons);
+                } else {
+                    // 備用方案：插入到questionContainer後面
+                    const questionContainer = document.getElementById('questionContainer');
+                    questionContainer.parentNode.insertBefore(logicHintDiv, questionContainer.nextSibling);
+                }
+            }
+            
+            // 顯示提示區塊
+            logicHintDiv.style.display = 'block';
+            // 使用題目專屬的判斷提示
+            let logicHint = gameState.currentQuestionData.logicHint || '一般動詞現在式疑問句：Do/Does + 主詞 + 原形動詞？';
+            logicHintDiv.innerHTML = `<strong>判斷邏輯提示：</strong>${logicHint}`;
+        }
+
+        // 跳過此題
+        function skipQuestion() {
+            if (confirm('確定要跳過這題嗎？跳過後無法返回。')) {
+                playSound('click');
+                gameState.currentQuestion++;
+                loadQuestion();
+            }
+        }
+
+        // 下一題
+        function nextQuestion() {
+            playSound('click');
+            gameState.currentQuestion++;
+            loadQuestion();
+            document.getElementById('nextBtn').style.display = 'none';
+        }
+
+        // 開始計時器
+        function startTimer() {
+            gameState.timer = setInterval(() => {
+                gameState.timeLeft--;
+                updateDisplay();
+                
+                if (gameState.timeLeft <= 0) {
+                    endGame();
+                }
+            }, 1000);
+        }
+
+        // 暫停/繼續功能
+        function pauseGame() {
+            clearInterval(gameState.timer);
+            document.getElementById('pauseBtn').style.display = 'none';
+            document.getElementById('resumeBtn').style.display = 'inline-block';
+        }
+        function resumeGame() {
+            startTimer();
+            document.getElementById('pauseBtn').style.display = 'inline-block';
+            document.getElementById('resumeBtn').style.display = 'none';
+        }
+
+        // 更新顯示
+        function updateDisplay() {
+            document.getElementById('timeLeft').textContent = formatTime(gameState.timeLeft);
+            const maxScore = gameState.questions.length * 10;
+            document.getElementById('currentScore').textContent = `${gameState.score}/${maxScore}`;
+            document.getElementById('starCount').textContent = gameState.stars;
+            
+            // 更新進度條
+            const progress = (gameState.currentQuestion / gameState.questions.length) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+            
+            // 更新計時器顏色
+            const timerElement = document.getElementById('timeLeft');
+            if (gameState.timeLeft <= 30) {
+                timerElement.style.color = '#e53e3e';
+            } else if (gameState.timeLeft <= 60) {
+                timerElement.style.color = '#ed8936';
+            } else {
+                timerElement.style.color = '#2d3748';
+            }
+            
+            // 同步更新LinkageSystem的星星顯示
+            if (typeof LinkageSystem !== 'undefined' && LinkageSystem.stars) {
+                LinkageSystem.stars.updateDisplay();
+            }
+        }
+
+        // 隱藏所有提示區塊
+        function hideAllHints() {
+            // 隱藏單字提示
+            const wordHintDiv = document.getElementById('wordHintDiv');
+            if (wordHintDiv) {
+                wordHintDiv.style.display = 'none';
+            }
+            // 隱藏判斷邏輯提示
+            const logicHintDiv = document.getElementById('logicHintDiv');
+            if (logicHintDiv) {
+                logicHintDiv.style.display = 'none';
+            }
+        }
+
+        // 更新進度
+        function updateProgress() {
+            const progress = (gameState.currentQuestion / gameState.questions.length) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+
+        // 結束遊戲
+        function endGame() {
+            gameState.isGameActive = false;
+            clearInterval(gameState.timer);
+            const resultModal = document.getElementById('resultModal');
+            const resultTitle = document.getElementById('resultTitle');
+            const resultScore = document.getElementById('resultScore');
+            const resultMessage = document.getElementById('resultMessage');
+            const maxScore = gameState.questions.length * 10;
+            resultScore.textContent = `分數：${gameState.score}/${maxScore}`;
+            // 判斷目前小關
+            let nextSub = null;
+            if (gameState.currentSubLevel === 'sub1') nextSub = 'sub2';
+            else if (gameState.currentSubLevel === 'sub2') nextSub = 'sub3';
+            // 通關判斷
+            if (gameState.score >= maxScore * 0.7) {
+                if (nextSub) {
+                    resultTitle.textContent = '階段完成！';
+                    resultTitle.style.color = '#38a169';
+                    resultMessage.textContent = `你完成了${LEVEL_CONFIG[gameState.currentSubLevel].name}！點擊下方按鈕進入下一階段。`;
+                } else {
+                    resultTitle.textContent = '恭喜通關！';
+                    resultTitle.style.color = '#38a169';
+                    resultMessage.textContent = `你成功完成了${LEVEL_CONFIG[gameState.currentSubLevel].name}！獲得「❓ 疑問探索石」1顆！`;
+                    // 獎勵寶石
+                    if (typeof gemSystem !== 'undefined') {
+                        gemSystem.addGem('question_master', 1);
+                    }
+                    playSound('complete');
+                    playSound('unlock');
+                    
+                    // 播放通關背景音樂並暫停背景音樂
+                    try {
+                        // 暫停背景音樂
+                        if (window.bgMusic) {
+                            window.bgMusic.pause();
+                        }
+                        
+                        if (!window.kidsHappyMusic) {
+                            window.kidsHappyMusic = new Audio('sound/kids-happy-background-music-366043.mp3');
+                            window.kidsHappyMusic.volume = 0.7;
+                        }
+                        window.kidsHappyMusic.pause();
+                        window.kidsHappyMusic.currentTime = 0;
+                        const playPromise = window.kidsHappyMusic.play();
+                        if (playPromise !== undefined) {
+                            playPromise.catch(error => {
+                                resultMessage.innerHTML += '<br><span style="color:#ff6b6b;font-size:1rem;">🎵 通關音樂播放失敗，請檢查瀏覽器設定</span>';
+                                console.warn('通關音樂播放失敗', error);
+                            });
+                        }
+                    } catch (e) {
+                        resultMessage.innerHTML += '<br><span style="color:#ff6b6b;font-size:1rem;">🎵 通關音樂播放失敗，請檢查瀏覽器設定</span>';
+                        console.warn('通關音樂播放失敗', e);
+                    }
+                }
+            } else {
+                resultTitle.textContent = '挑戰失敗';
+                resultTitle.style.color = '#e53e3e';
+                resultMessage.textContent = `分數未達${Math.ceil(maxScore * 0.7)}分，請再接再厲！`;
+            }
+            saveUserData();
+            // 顯示下一階段按鈕
+            const actionBtns = resultModal.querySelector('.action-buttons');
+            let nextBtn = document.getElementById('nextStageBtn');
+            if (nextBtn) nextBtn.remove();
+            if (nextSub && gameState.score >= maxScore * 0.7) {
+                nextBtn = document.createElement('button');
+                nextBtn.id = 'nextStageBtn';
+                nextBtn.className = 'action-btn btn-primary';
+                nextBtn.textContent = '進入下一階段';
+                nextBtn.onclick = function() {
+                    playSound('click');
+                    gameState.currentSubLevel = nextSub;
+                    document.getElementById('resultModal').style.display = 'none';
+                    initGame();
+                };
+                actionBtns.appendChild(nextBtn);
+            }
+            resultModal.style.display = 'flex';
+        }
+
+        // 重新開始遊戲
+        function restartGame() {
+            playSound('click');
+            document.getElementById('resultModal').style.display = 'none';
+            initGame();
+        }
+
+        // 返回選單
+        function goToMenu() {
+            playSound('click');
+            window.location.href = 'grammar_tower_select.html';
+        }
+
+        // 返回首頁
+        function goToHome() {
+            playSound('click');
+            window.location.href = 'index.html';
+        }
+
+        // 工具函數
+        function shuffleArray(array) {
+            const shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const remainingSeconds = seconds % 60;
+            return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
+        }
+
+        function createFallingLeaf() {
+            const leaf = document.createElement('div');
+            leaf.className = 'falling-leaf';
+            leaf.style.left = Math.random() * window.innerWidth + 'px';
+            document.body.appendChild(leaf);
+            
+            setTimeout(() => {
+                document.body.removeChild(leaf);
+            }, 2000);
+        }
+
+        function playSound(soundType) {
+            // 使用已載入的音效
+            if (sounds[soundType]) {
+                try {
+                    const sound = sounds[soundType];
+                    sound.pause();
+                    sound.currentTime = 0;
+                    sound.play().catch(error => {
+                        console.log('音效播放失敗:', error);
+                    });
+                } catch (error) {
+                    console.log('音效播放錯誤:', error);
+                }
+            }
+        }
+
+        // 頁面載入完成後初始化遊戲
+        window.onload = function() {
+            initGame();
+        };
+    </script>
+</body>
+</html> 

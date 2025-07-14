@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>文法塔關卡選擇</title>
+    <link rel="stylesheet" href="responsive.css">
+    <style>
+        body {
+            font-family: 'Microsoft JhengHei', Arial, sans-serif;
+            background: linear-gradient(135deg, #0f2027 0%, #2c5364 100%);
+            min-height: 100vh;
+            margin: 0;
+            color: #e0eaff;
+            position: relative;
+            overflow-x: hidden;
+        }
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: url('images/cards/galaxy.gif') repeat center center, radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
+            opacity: 0.5;
+            z-index: 0;
+            pointer-events: none;
+        }
+        .container {
+            max-width: 700px;
+            margin: 40px auto;
+            background: rgba(30, 40, 70, 0.7);
+            border-radius: 24px;
+            box-shadow: 0 8px 40px #00ffe055, 0 1.5px 8px #0ff2  inset;
+            padding: 40px 28px;
+            backdrop-filter: blur(8px);
+            border: 1.5px solid #3ecfff55;
+        }
+        h1 {
+            text-align: center;
+            color: #7eeeff;
+            margin-bottom: 32px;
+            font-size: 2.3em;
+            text-shadow: 0 0 16px #00ffe0, 0 2px 8px #0ff2;
+            letter-spacing: 2px;
+        }
+        .level-list {
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+        }
+        .level-card {
+            background: linear-gradient(90deg, #232b3a 60%, #1b2735 100%);
+            border-radius: 18px;
+            box-shadow: 0 4px 24px #00ffe022;
+            padding: 28px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            border: 1.5px solid #3ecfff33;
+            position: relative;
+        }
+        .level-title {
+            font-size: 1.5em;
+            color: #7eeeff;
+            margin-bottom: 8px;
+            text-shadow: 0 0 8px #00ffe0;
+            letter-spacing: 1px;
+        }
+        .level-desc {
+            font-size: 1.1em;
+            color: #b2cfff;
+            margin-bottom: 16px;
+            text-shadow: 0 0 6px #00ffe0;
+        }
+        .start-btn {
+            background: linear-gradient(135deg, #00ffe0, #3ecfff);
+            color: #222;
+            border: none;
+            border-radius: 10px;
+            padding: 12px 32px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: bold;
+            box-shadow: 0 2px 12px #00ffe055;
+        }
+        .start-btn:hover {
+            background: linear-gradient(135deg, #3ecfff, #00ffe0);
+            transform: translateY(-2px) scale(1.04);
+            box-shadow: 0 8px 24px #00ffe0cc;
+            color: #111;
+        }
+
+        /* ========== 語法關卡選擇頁面響應式設計 ========== */
+        
+        /* 平板適配 (1024px以下) */
+        @media (max-width: 1024px) {
+            .container {
+                max-width: 95%;
+                padding: 32px 24px;
+                margin: 20px auto;
+            }
+            
+            h1 {
+                font-size: 2.1em;
+                letter-spacing: 1.5px;
+                margin-bottom: 28px;
+            }
+            
+            .level-list {
+                gap: 24px;
+            }
+            
+            .level-card {
+                padding: 24px 18px;
+            }
+            
+            .level-title {
+                font-size: 1.4em;
+            }
+            
+            .level-desc {
+                font-size: 1.05em;
+                margin-bottom: 14px;
+            }
+            
+            .start-btn {
+                padding: 11px 28px;
+                font-size: 1.05em;
+            }
+        }
+        
+        /* 手機橫屏 (768px以下) */
+        @media (max-width: 768px) {
+            .container {
+                max-width: 98%;
+                padding: 24px 16px;
+                margin: 15px auto;
+                border-radius: 18px;
+            }
+            
+            h1 {
+                font-size: 1.9em;
+                letter-spacing: 1px;
+                margin-bottom: 24px;
+            }
+            
+            .level-list {
+                gap: 20px;
+            }
+            
+            .level-card {
+                padding: 20px 16px;
+                border-radius: 14px;
+            }
+            
+            .level-title {
+                font-size: 1.3em;
+                margin-bottom: 6px;
+            }
+            
+            .level-desc {
+                font-size: 1em;
+                margin-bottom: 12px;
+                line-height: 1.5;
+            }
+            
+            .start-btn {
+                padding: 10px 24px;
+                font-size: 1em;
+                border-radius: 8px;
+            }
+        }
+        
+        /* 手機豎屏 (600px以下) */
+        @media (max-width: 600px) {
+            .container {
+                margin: 10px auto;
+                padding: 20px 12px;
+            }
+            
+            h1 {
+                font-size: 1.7em;
+                margin-bottom: 20px;
+            }
+            
+            .level-list {
+                gap: 16px;
+            }
+            
+            .level-card {
+                padding: 18px 14px;
+            }
+            
+            .level-title {
+                font-size: 1.25em;
+                margin-bottom: 5px;
+            }
+            
+            .level-desc {
+                font-size: 0.95em;
+                margin-bottom: 10px;
+            }
+            
+            .start-btn {
+                padding: 9px 20px;
+                font-size: 0.95em;
+                width: 100%;
+                max-width: 200px;
+            }
+        }
+        
+        /* 超小螢幕 (480px以下) */
+        @media (max-width: 480px) {
+            .container {
+                margin: 5px auto;
+                padding: 16px 8px;
+                border-radius: 12px;
+            }
+            
+            h1 {
+                font-size: 1.5em;
+                margin-bottom: 16px;
+                letter-spacing: 0.5px;
+            }
+            
+            .level-list {
+                gap: 14px;
+            }
+            
+            .level-card {
+                padding: 16px 12px;
+                border-radius: 10px;
+            }
+            
+            .level-title {
+                font-size: 1.15em;
+                margin-bottom: 4px;
+            }
+            
+            .level-desc {
+                font-size: 0.9em;
+                margin-bottom: 8px;
+                line-height: 1.4;
+            }
+            
+            .start-btn {
+                padding: 8px 16px;
+                font-size: 0.9em;
+                width: 100%;
+                max-width: 180px;
+            }
+        }
+        
+        /* 觸控裝置優化 */
+        @media (hover: none) {
+            .start-btn:hover {
+                transform: none;
+                background: linear-gradient(135deg, #00ffe0, #3ecfff);
+            }
+            
+            .start-btn:active {
+                transform: scale(0.98);
+                background: linear-gradient(135deg, #3ecfff, #00ffe0);
+                box-shadow: 0 4px 16px #00ffe0aa;
+            }
+        }
+        
+        /* 橫屏模式特別處理 */
+        @media (orientation: landscape) and (max-height: 600px) {
+            .container {
+                margin: 5px auto;
+                padding: 16px;
+            }
+            
+            h1 {
+                font-size: 1.6em;
+                margin-bottom: 12px;
+            }
+            
+            .level-list {
+                gap: 12px;
+            }
+            
+            .level-card {
+                padding: 14px 16px;
+            }
+        }
+
+        /* ========== 語法關卡選擇頁面響應式設計 ========== */
+        
+        /* 平板適配 (1024px以下) */
+        @media (max-width: 1024px) {
+            .container {
+                max-width: 95%;
+                padding: 32px 24px;
+                margin: 20px auto;
+            }
+            
+            h1 {
+                font-size: 2.1em;
+                letter-spacing: 1.5px;
+                margin-bottom: 28px;
+            }
+            
+            .level-list {
+                gap: 24px;
+            }
+            
+            .level-card {
+                padding: 24px 18px;
+            }
+            
+            .level-title {
+                font-size: 1.4em;
+            }
+            
+            .level-desc {
+                font-size: 1.05em;
+                margin-bottom: 14px;
+            }
+            
+            .start-btn {
+                padding: 11px 28px;
+                font-size: 1.05em;
+            }
+        }
+        
+        /* 手機橫屏 (768px以下) */
+        @media (max-width: 768px) {
+            .container {
+                max-width: 98%;
+                padding: 24px 16px;
+                margin: 15px auto;
+                border-radius: 18px;
+            }
+            
+            h1 {
+                font-size: 1.9em;
+                letter-spacing: 1px;
+                margin-bottom: 24px;
+            }
+            
+            .level-list {
+                gap: 20px;
+            }
+            
+            .level-card {
+                padding: 20px 16px;
+                border-radius: 14px;
+            }
+            
+            .level-title {
+                font-size: 1.3em;
+                margin-bottom: 6px;
+            }
+            
+            .level-desc {
+                font-size: 1em;
+                margin-bottom: 12px;
+                line-height: 1.5;
+            }
+            
+            .start-btn {
+                padding: 10px 24px;
+                font-size: 1em;
+                border-radius: 8px;
+            }
+        }
+        
+        /* 手機豎屏 (600px以下) */
+        @media (max-width: 600px) {
+            .container {
+                margin: 10px auto;
+                padding: 20px 12px;
+            }
+            
+            h1 {
+                font-size: 1.7em;
+                margin-bottom: 20px;
+            }
+            
+            .level-list {
+                gap: 16px;
+            }
+            
+            .level-card {
+                padding: 18px 14px;
+            }
+            
+            .level-title {
+                font-size: 1.25em;
+                margin-bottom: 5px;
+            }
+            
+            .level-desc {
+                font-size: 0.95em;
+                margin-bottom: 10px;
+            }
+            
+            .start-btn {
+                padding: 9px 20px;
+                font-size: 0.95em;
+                width: 100%;
+                max-width: 200px;
+            }
+        }
+        
+        /* 超小螢幕 (480px以下) */
+        @media (max-width: 480px) {
+            .container {
+                margin: 5px auto;
+                padding: 16px 8px;
+                border-radius: 12px;
+            }
+            
+            h1 {
+                font-size: 1.5em;
+                margin-bottom: 16px;
+                letter-spacing: 0.5px;
+            }
+            
+            .level-list {
+                gap: 14px;
+            }
+            
+            .level-card {
+                padding: 16px 12px;
+                border-radius: 10px;
+            }
+            
+            .level-title {
+                font-size: 1.15em;
+                margin-bottom: 4px;
+            }
+            
+            .level-desc {
+                font-size: 0.9em;
+                margin-bottom: 8px;
+                line-height: 1.4;
+            }
+            
+            .start-btn {
+                padding: 8px 16px;
+                font-size: 0.9em;
+                width: 100%;
+                max-width: 180px;
+            }
+        }
+        
+        /* 觸控裝置優化 */
+        @media (hover: none) {
+            .start-btn:hover {
+                transform: none;
+                background: linear-gradient(135deg, #00ffe0, #3ecfff);
+            }
+            
+            .start-btn:active {
+                transform: scale(0.98);
+                background: linear-gradient(135deg, #3ecfff, #00ffe0);
+                box-shadow: 0 4px 16px #00ffe0aa;
+            }
+        }
+        
+        /* 橫屏模式特別處理 */
+        @media (orientation: landscape) and (max-height: 600px) {
+            .container {
+                margin: 5px auto;
+                padding: 16px;
+            }
+            
+            h1 {
+                font-size: 1.6em;
+                margin-bottom: 12px;
+            }
+            
+            .level-list {
+                gap: 12px;
+            }
+            
+            .level-card {
+                padding: 14px 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏛️ 文法塔 關卡選擇</h1>
+        <div class="level-list">
+            <div class="level-card">
+                <div class="level-title">第一關：喚醒樹木守護者</div>
+                <div class="level-desc">主題：<b>be動詞肯定句</b><br>挑戰be動詞(am/is/are)的肯定句型，通過三小關即可獲得「Be動詞寶石」。</div>
+                <button class="start-btn" onclick="location.href='grammar_level1_1.html'">開始挑戰</button>
+            </div>
+            <div class="level-card">
+                <div class="level-title">第二關：挑戰黑暗迷霧</div>
+                <div class="level-desc">主題：<b>be動詞否定句</b><br>學會be動詞(am/is/are)的否定句型，破解黑暗迷霧的謎題！</div>
+                <button class="start-btn" onclick="location.href='grammar_level2_1.html'">開始挑戰</button>
+            </div>
+            <div class="level-card">
+                <div class="level-title">第三關：征服星辰之塔</div>
+                <div class="level-desc">主題：<b>be動詞疑問句</b><br>挑戰be動詞(am/is/are)的疑問句型，解鎖星辰之塔的秘密！</div>
+                <button class="start-btn" onclick="location.href='grammar_level3_1.html'">開始挑戰</button>
+            </div>
+            <div class="level-card">
+                <div class="level-title">第四關：探索時空隧道</div>
+                <div class="level-desc">主題：<b>be動詞混合題</b><br>學會be動詞的各種句型，穿越時空隧道！</div>
+                <button class="start-btn" onclick="location.href='grammar_level4_1.html'">開始挑戰</button>
+            </div>
+            <div class="level-card">
+                <div class="level-title">第五關：破解魔法陣</div>
+                <div class="level-desc">主題：<b>一般動詞現在式肯定句</b><br>掌握一般動詞的現在式肯定句型，破解古老魔法陣！</div>
+                <button class="start-btn" onclick="location.href='grammar_level5_1.html'">開始挑戰</button>
+            </div>
+            <div class="level-card">
+                <div class="level-title">第六關：守護水晶神殿</div>
+                <div class="level-desc">主題：<b>現在進行式</b><br>運用現在進行式(be + V-ing)，守護神聖的水晶神殿！</div>
+                <button class="start-btn" onclick="location.href='grammar_level6_1.html'">開始挑戰</button>
+            </div>
+            <div class="level-card">
+                <div class="level-title">第七關：召喚風暴精靈</div>
+                <div class="level-desc">主題：<b>一般動詞現在式問句</b><br>學會一般動詞的現在式問句(Do/Does)，召喚強大的風暴精靈！</div>
+                <button class="start-btn" onclick="location.href='grammar_level7_1.html'">開始挑戰</button>
+            </div>
+            <div class="level-card">
+                <div class="level-title">第八關：穿越暗影森林</div>
+                <div class="level-desc">主題：<b>一般動詞現在式短答句</b><br>掌握一般動詞的短答句，安全穿越神秘的暗影森林！</div>
+                <button class="start-btn" onclick="location.href='grammar_level8_1.html'">開始挑戰</button>
+            </div>
+            <div class="level-card">
+                <div class="level-title">第九關：喚醒龍之傳說</div>
+                <div class="level-desc">主題：<b>現在式與現在進行式混合題</b><br>學會現在式與進行式的混合運用，喚醒沉睡的古龍！</div>
+                <button class="start-btn" onclick="location.href='grammar_level9_1.html'">開始挑戰</button>
+            </div>
+            <div class="level-card">
+                <div class="level-title">第十關：掌控元素之力</div>
+                <div class="level-desc">主題：<b>WH問句</b><br>運用WH問句(What/Where/Who/How)，掌控四大元素之力！</div>
+                <button class="start-btn" onclick="location.href='grammar_level10_1.html'">開始挑戰</button>
+            </div>
+            <div class="level-card">
+                <div class="level-title">第十一關：解封禁忌咒語</div>
+                <div class="level-desc">主題：<b>一般動詞現在式否定句</b><br>學會一般動詞的否定句(don't/doesn't)，解封強大的禁忌咒語！</div>
+                <button class="start-btn" onclick="location.href='grammar_level11_1.html'">開始挑戰</button>
+            </div>
+            <div class="level-card">
+                <div class="level-title">第十二關：征服星際戰艦</div>
+                <div class="level-desc">主題：<b>一般動詞現在式問句</b><br>掌握一般動詞的問句(Do/Does)，征服星際戰艦！</div>
+                <button class="start-btn" onclick="location.href='grammar_level12_1.html'">開始挑戰</button>
+            </div>
+            <div class="level-card">
+                <div class="level-title">第十三關：開啟次元之門</div>
+                <div class="level-desc">主題：<b>be動詞過去式肯定句</b><br>學會be動詞的過去式(was/were)，開啟通往其他次元的大門！</div>
+                <button class="start-btn" onclick="location.href='grammar_level13_1.html'">開始挑戰</button>
+            </div>
+            <div class="level-card">
+                <div class="level-title">第十四關：編織時空織錦</div>
+                <div class="level-desc">主題：<b>be動詞過去式問句</b><br>運用be動詞的過去式問句，編織神奇的時空織錦！</div>
+                <button class="start-btn" onclick="location.href='grammar_level14_1.html'">開始挑戰</button>
+            </div>
+            <div class="level-card">
+                <div class="level-title">第十五關：掌握命運之輪</div>
+                <div class="level-desc">主題：<b>一般動詞過去式肯定句</b><br>學會一般動詞的過去式，掌握命運之輪的力量！</div>
+                <button class="start-btn" onclick="location.href='grammar_level15_1.html'">開始挑戰</button>
+            </div>
+            <div class="level-card">
+                <div class="level-title">第十六關：成為文法之王</div>
+                <div class="level-desc">主題：<b>一般動詞過去式否定句</b><br>運用一般動詞的過去式否定句，成為真正的文法之王！</div>
+                <button class="start-btn" onclick="location.href='grammar_level16_1.html'">開始挑戰</button>
+            </div>
+            <div class="level-card">
+                <div class="level-title">第十七關：破解時間密碼</div>
+                <div class="level-desc">主題：<b>一般動詞過去式問句</b><br>掌握過去式問句(Did + 原形動詞)，破解遠古時間密碼！</div>
+                <button class="start-btn" onclick="location.href='grammar_level17_1.html'">開始挑戰</button>
+            </div>
+            <div class="level-card">
+                <div class="level-title">第十八關：時空交錯挑戰</div>
+                <div class="level-desc">主題：<b>未來式肯定句</b><br>學會未來式肯定句(will + 原形動詞)，在時空中穿梭！</div>
+                <button class="start-btn" onclick="location.href='grammar_level18_1.html'">開始挑戰</button>
+            </div>
+            <div class="level-card">
+                <div class="level-title">第十九關：預見未來之光</div>
+                <div class="level-desc">主題：<b>未來式否定句</b><br>學會未來式否定句(will not)，預見光明的未來！</div>
+                <button class="start-btn" onclick="location.href='grammar_level19_1.html'">開始挑戰</button>
+            </div>
+            <div class="level-card">
+                <div class="level-title">第二十關：否定未來陰霾</div>
+                <div class="level-desc">主題：<b>未來式疑問句</b><br>掌握未來式疑問句(Will + 主詞 + 原形動詞)，驅散未來的陰霾！</div>
+                <button class="start-btn" onclick="location.href='grammar_level20_1.html'">開始挑戰</button>
+            </div>
+            <div class="level-card">
+                <div class="level-title">第二十一關：探問未來奧秘</div>
+                <div class="level-desc">主題：<b>未來式混合題</b><br>運用未來式的各種句型，探問未來的無盡奧秘！</div>
+                <button class="start-btn" onclick="location.href='grammar_level21_1.html'">開始挑戰</button>
+            </div>
+            <div class="level-card">
+                <div class="level-title">第二十二關：比較級之力</div>
+                <div class="level-desc">主題：<b>比較級</b><br>掌握形容詞和副詞的比較級變化規則，成為語法比較級大師！</div>
+                <button class="start-btn" onclick="location.href='grammar_level22_1.html'">開始挑戰</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

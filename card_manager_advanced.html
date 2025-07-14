@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <title>進階卡片管理系統 - Typing Hero</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="responsive_enhanced.css">
+  <style>
+    :root {
+      --glow-cyan: #00ffff;
+      --glow-magenta: #a259ff;
+      --glow-gold: #ffd700;
+      --glow-red: #ff6b6b;
+      --bg-dark: rgba(10, 20, 40, 0.85);
+    }
+    
+    body {
+      margin: 0;
+      font-family: 'Orbitron', sans-serif;
+      background: url('https://wallpaperaccess.com/full/192936.jpg') no-repeat center center fixed;
+      background-size: cover;
+      color: #fff;
+      min-height: 100vh;
+    }
+    
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    header {
+      background: rgba(10, 20, 40, 0.85);
+      padding: 20px;
+      border-radius: 15px;
+      margin-bottom: 30px;
+      box-shadow: 0 0 24px 8px #00ffff88;
+      border: 2px solid var(--glow-cyan);
+    }
+    
+    h1 {
+      text-align: center;
+      color: var(--glow-cyan);
+      text-shadow: 0 0 12px #00ffff;
+      margin: 0;
+    }
+    
+    .main-content {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+    }
+    
+    .card-form {
+      background: rgba(10, 20, 40, 0.85);
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 0 24px 8px #00ffff88;
+      border: 2px solid var(--glow-cyan);
+      height: fit-content;
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--glow-cyan);
+      font-weight: bold;
+    }
+    
+    input, textarea, select {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid var(--glow-cyan);
+      border-radius: 8px;
+      background: rgba(10, 20, 40, 0.7);
+      color: #fff;
+      font-family: 'Orbitron', sans-serif;
+      box-sizing: border-box;
+    }
+    
+    input:focus, textarea:focus, select:focus {
+      outline: none;
+      border-color: var(--glow-gold);
+      box-shadow: 0 0 12px var(--glow-gold);
+    }
+    
+    .btn {
+      background: linear-gradient(90deg, #00ffff 0%, #a259ff 100%);
+      color: #000;
+      border: none;
+      padding: 15px 30px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 1.1rem;
+      box-shadow: 0 0 16px #00ffff;
+      transition: transform 0.15s, box-shadow 0.15s;
+      margin: 10px 5px;
+    }
+    
+    .btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 32px #00ffff;
+    }
+    
+    .btn-danger {
+      background: linear-gradient(90deg, #ff6b6b 0%, #ff8e8e 100%);
+    }
+    
+    .btn-success {
+      background: linear-gradient(90deg, #00ff00 0%, #00cc00 100%);
+    }
+    
+    .preview-section {
+      background: rgba(10, 20, 40, 0.85);
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 0 24px 8px #00ffff88;
+      border: 2px solid var(--glow-cyan);
+      margin-bottom: 30px;
+    }
+    
+    .card-preview {
+      display: inline-block;
+      width: 300px;
+      height: 400px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 15px;
+      padding: 20px;
+      box-sizing: border-box;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+    }
+    
+    .card-preview img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 10px;
+      margin-bottom: 15px;
+    }
+    
+    .card-preview h3 {
+      margin: 0 0 10px 0;
+      color: #fff;
+      font-size: 1.2rem;
+    }
+    
+    .card-preview p {
+      margin: 0;
+      color: #ccc;
+      font-size: 0.9rem;
+      line-height: 1.4;
+    }
+    
+    .rarity-badge {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      padding: 5px 10px;
+      border-radius: 15px;
+      font-size: 0.8rem;
+      font-weight: bold;
+    }
+    
+    .rarity-common { background: #666; }
+    .rarity-rare { background: #0066ff; }
+    .rarity-super-rare { background: #ffd700; color: #000; }
+    
+    .success-message {
+      background: rgba(0, 255, 0, 0.2);
+      border: 2px solid #00ff00;
+      color: #00ff00;
+      padding: 15px;
+      border-radius: 8px;
+      margin: 20px 0;
+      text-align: center;
+    }
+    
+    .error-message {
+      background: rgba(255, 0, 0, 0.2);
+      border: 2px solid #ff0000;
+      color: #ff0000;
+      padding: 15px;
+      border-radius: 8px;
+      margin: 20px 0;
+      text-align: center;
+    }
+    
+    .cards-list {
+      background: rgba(10, 20, 40, 0.85);
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 0 24px 8px #00ffff88;
+      border: 2px solid var(--glow-cyan);
+      max-height: 600px;
+      overflow-y: auto;
+    }
+    
+    .card-item {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 10px;
+      padding: 15px;
+      margin-bottom: 15px;
+      box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+    
+    .card-item img {
+      width: 80px;
+      height: 80px;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+    
+    .card-info {
+      flex: 1;
+    }
+    
+    .card-info h4 {
+      margin: 0 0 5px 0;
+      color: #fff;
+    }
+    
+    .card-info p {
+      margin: 0;
+      color: #ccc;
+      font-size: 0.8rem;
+    }
+    
+    .card-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    
+    .btn-small {
+      padding: 5px 10px;
+      font-size: 0.8rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🎴 進階卡片管理系統</h1>
+    </header>
+    
+    <div class="main-content">
+      <div class="left-panel">
+        <div class="card-form">
+          <h2>新增卡片</h2>
+          <form id="cardForm">
+            <div class="form-group">
+              <label for="word">英文單字：</label>
+              <input type="text" id="word" required>
+            </div>
+            
+            <div class="form-group">
+              <label for="zh">中文翻譯：</label>
+              <input type="text" id="zh" required>
+            </div>
+            
+            <div class="form-group">
+              <label for="image">圖片網址：</label>
+              <input type="url" id="image" required placeholder="https://example.com/image.jpg">
+            </div>
+            
+            <div class="form-group">
+              <label for="rarity">稀有度：</label>
+              <select id="rarity" required>
+                <option value="普通">普通</option>
+                <option value="稀有">稀有</option>
+                <option value="超稀有">超稀有</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label for="category">類別：</label>
+              <input type="text" id="category" required placeholder="例如：迪士尼、動物、食物等">
+            </div>
+            
+            <div class="form-group">
+              <label for="description">描述：</label>
+              <textarea id="description" rows="3" required placeholder="卡片的詳細描述..."></textarea>
+            </div>
+            
+            <div class="form-group">
+              <label for="effectType">效果類型（可選）：</label>
+              <select id="effectType">
+                <option value="">無效果</option>
+                <option value="time_extend">延長時間</option>
+                <option value="shield">護盾</option>
+                <option value="energy_restore">恢復能量</option>
+                <option value="hint">提示</option>
+                <option value="skip_level">跳過關卡</option>
+              </select>
+            </div>
+            
+            <div class="form-group" id="effectValueGroup" style="display: none;">
+              <label for="effectValue">效果數值：</label>
+              <input type="number" id="effectValue" min="1" max="100">
+            </div>
+            
+            <div class="form-group" id="effectDescGroup" style="display: none;">
+              <label for="effectDesc">效果描述：</label>
+              <input type="text" id="effectDesc" placeholder="例如：增加答題時間 60 秒">
+            </div>
+            
+            <button type="submit" class="btn">新增卡片</button>
+            <button type="button" class="btn" onclick="previewCard()">預覽卡片</button>
+            <button type="button" class="btn btn-danger" onclick="clearForm()">清除表單</button>
+          </form>
+        </div>
+        
+        <div class="preview-section">
+          <h2>卡片預覽</h2>
+          <div id="cardPreview" class="card-preview" style="display: none;">
+            <img id="previewImage" src="" alt="卡片圖片">
+            <h3 id="previewWord"></h3>
+            <p id="previewZh"></p>
+            <p id="previewDesc"></p>
+            <div id="previewRarity" class="rarity-badge"></div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="right-panel">
+        <div class="cards-list">
+          <h2>現有卡片管理</h2>
+          <div style="margin-bottom: 20px;">
+            <button class="btn" onclick="loadExistingCards()">載入現有卡片</button>
+            <button class="btn btn-success" onclick="saveToCardsJs()">儲存到 cards.js</button>
+            <button class="btn btn-danger" onclick="clearAllCards()">清空所有卡片</button>
+            <label for="importFile" class="btn" style="background:linear-gradient(90deg,#ffd700 0%,#a259ff 100%);color:#000;">匯入 cards.js</label>
+            <input type="file" id="importFile" accept=".js" style="display:none" onchange="importCardsFile(event)">
+          </div>
+          
+          <div id="existingCardsList"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 載入現有的 cards.js 檔案
+    let existingCards = [];
+    
+    // 效果類型變更時顯示/隱藏相關欄位
+    document.getElementById('effectType').addEventListener('change', function() {
+      const effectValueGroup = document.getElementById('effectValueGroup');
+      const effectDescGroup = document.getElementById('effectDescGroup');
+      
+      if (this.value) {
+        effectValueGroup.style.display = 'block';
+        effectDescGroup.style.display = 'block';
+      } else {
+        effectValueGroup.style.display = 'none';
+        effectDescGroup.style.display = 'none';
+      }
+    });
+    
+    // 預覽卡片
+    function previewCard() {
+      const word = document.getElementById('word').value;
+      const zh = document.getElementById('zh').value;
+      const image = document.getElementById('image').value;
+      const description = document.getElementById('description').value;
+      const rarity = document.getElementById('rarity').value;
+      
+      if (!word || !zh || !image || !description) {
+        alert('請填寫所有必要欄位');
+        return;
+      }
+      
+      const preview = document.getElementById('cardPreview');
+      const previewImage = document.getElementById('previewImage');
+      const previewWord = document.getElementById('previewWord');
+      const previewZh = document.getElementById('previewZh');
+      const previewDesc = document.getElementById('previewDesc');
+      const previewRarity = document.getElementById('previewRarity');
+      
+      previewImage.src = image;
+      previewWord.textContent = word;
+      previewZh.textContent = zh;
+      previewDesc.textContent = description;
+      previewRarity.textContent = rarity;
+      previewRarity.className = `rarity-badge rarity-${rarity === '普通' ? 'common' : rarity === '稀有' ? 'rare' : 'super-rare'}`;
+      
+      preview.style.display = 'inline-block';
+    }
+    
+    // 清除表單
+    function clearForm() {
+      document.getElementById('cardForm').reset();
+      document.getElementById('cardPreview').style.display = 'none';
+      document.getElementById('effectValueGroup').style.display = 'none';
+      document.getElementById('effectDescGroup').style.display = 'none';
+    }
+    
+    // 載入現有卡片
+    async function loadExistingCards() {
+      try {
+        const response = await fetch('js/cards.js');
+        const text = await response.text();
+        
+        // 解析 baseCards 陣列
+        const baseCardsMatch = text.match(/const baseCards = (\[[\s\S]*?\]);/);
+        if (baseCardsMatch) {
+          const baseCardsStr = baseCardsMatch[1];
+          existingCards = eval(baseCardsStr);
+          displayExistingCards();
+          showMessage(`成功載入 ${existingCards.length} 張卡片`, 'success');
+        }
+      } catch (error) {
+        console.error('載入卡片失敗:', error);
+        showMessage('載入現有卡片失敗: ' + error.message, 'error');
+      }
+    }
+    
+    // 顯示現有卡片
+    function displayExistingCards() {
+      const list = document.getElementById('existingCardsList');
+      list.innerHTML = '';
+      
+      existingCards.forEach((card, index) => {
+        const cardElement = document.createElement('div');
+        cardElement.className = 'card-item';
+        cardElement.innerHTML = `
+          <img src="${card.image}" alt="${card.word}" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjE1MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMzMzIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iI2NjYyIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkltYWdlIE5vdCBGb3VuZDwvdGV4dD48L3N2Zz4='">
+          <div class="card-info">
+            <h4>${card.word} (${card.zh})</h4>
+            <p>稀有度: ${card.rarity} | 類別: ${card.category}</p>
+            <p>${card.description}</p>
+          </div>
+          <div class="card-actions">
+            <button class="btn btn-small btn-danger" onclick="deleteCard(${index})">刪除</button>
+            <button class="btn btn-small" onclick="editCard(${index})">編輯</button>
+          </div>
+        `;
+        list.appendChild(cardElement);
+      });
+    }
+    
+    // 刪除卡片
+    function deleteCard(index) {
+      if (confirm('確定要刪除這張卡片嗎？')) {
+        existingCards.splice(index, 1);
+        displayExistingCards();
+        showMessage('卡片已刪除', 'success');
+      }
+    }
+    
+    // 編輯卡片
+    function editCard(index) {
+      const card = existingCards[index];
+      document.getElementById('word').value = card.word;
+      document.getElementById('zh').value = card.zh;
+      document.getElementById('image').value = card.image;
+      document.getElementById('rarity').value = card.rarity;
+      document.getElementById('category').value = card.category;
+      document.getElementById('description').value = card.description;
+      
+      if (card.effect) {
+        document.getElementById('effectType').value = card.effect.type;
+        document.getElementById('effectValue').value = card.effect.value;
+        document.getElementById('effectDesc').value = card.effect.description;
+        document.getElementById('effectValueGroup').style.display = 'block';
+        document.getElementById('effectDescGroup').style.display = 'block';
+      }
+      
+      // 更新表單提交行為為更新模式
+      const form = document.getElementById('cardForm');
+      form.dataset.editIndex = index;
+      
+      showMessage(`正在編輯: ${card.word}`, 'success');
+    }
+    
+    // 清空所有卡片
+    function clearAllCards() {
+      if (confirm('確定要清空所有卡片嗎？此操作無法復原！')) {
+        existingCards = [];
+        displayExistingCards();
+        showMessage('所有卡片已清空', 'success');
+      }
+    }
+    
+    // 表單提交
+    document.getElementById('cardForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const formData = {
+        word: document.getElementById('word').value,
+        zh: document.getElementById('zh').value,
+        image: document.getElementById('image').value,
+        rarity: document.getElementById('rarity').value,
+        category: document.getElementById('category').value,
+        description: document.getElementById('description').value
+      };
+      
+      const effectType = document.getElementById('effectType').value;
+      if (effectType) {
+        formData.effect = {
+          type: effectType,
+          value: parseInt(document.getElementById('effectValue').value) || 1,
+          description: document.getElementById('effectDesc').value
+        };
+      }
+      
+      const editIndex = this.dataset.editIndex;
+      
+      if (editIndex !== undefined) {
+        // 更新現有卡片
+        existingCards[editIndex] = formData;
+        delete this.dataset.editIndex;
+        showMessage(`卡片 ${formData.word} 已更新！`, 'success');
+      } else {
+        // 新增卡片
+        existingCards.push(formData);
+        showMessage(`卡片 ${formData.word} 已新增！`, 'success');
+      }
+      
+      clearForm();
+      displayExistingCards();
+    });
+    
+    // 儲存到 cards.js
+    function saveToCardsJs() {
+      try {
+        const cardsData = `// cards.js
+
+// ===============================
+// 1. 原始卡片資料（baseCards）
+//    只包含：word, zh, image, rarity, category, description, effect
+// ===============================
+const baseCards = ${JSON.stringify(existingCards, null, 2)};
+
+// ===============================
+// 2. 卡片增強系統
+// ===============================
+(function enhanceRareCards() {
+  baseCards.forEach(card => {
+    if (card.rarity === "超稀有") {
+      if (!card.effect) {
+        card.effect = {
+          type: "time_extend",
+          value: 60,
+          description: "增加答題時間 60 秒"
+        };
+      }
+    }
+  });
+})();
+
+// ===============================
+// 3. 卡片管理函數
+// ===============================
+function getCardsByRarity(rarity) {
+  return baseCards.filter(card => card.rarity === rarity);
+}
+
+function getCardsByCategory(category) {
+  return baseCards.filter(card => card.category === category);
+}
+
+function searchCards(keyword) {
+  return baseCards.filter(card => 
+    card.word.toLowerCase().includes(keyword.toLowerCase()) ||
+    card.zh.includes(keyword)
+  );
+}
+
+// ===============================
+// 4. 匯出卡片資料
+// ===============================
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = { baseCards, getCardsByRarity, getCardsByCategory, searchCards };
+}`;
+
+        // 下載檔案
+        const blob = new Blob([cardsData], { type: 'text/javascript' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'cards.js';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        
+        showMessage('cards.js 檔案已下載，請手動替換原檔案', 'success');
+      } catch (error) {
+        console.error('儲存失敗:', error);
+        showMessage('儲存失敗: ' + error.message, 'error');
+      }
+    }
+    
+    // 顯示訊息
+    function showMessage(message, type) {
+      const messageDiv = document.createElement('div');
+      messageDiv.className = type === 'success' ? 'success-message' : 'error-message';
+      messageDiv.textContent = message;
+      
+      const container = document.querySelector('.container');
+      container.insertBefore(messageDiv, container.firstChild);
+      
+      setTimeout(() => {
+        messageDiv.remove();
+      }, 5000);
+    }
+    
+    // 頁面載入時自動載入現有卡片
+    window.addEventListener('load', loadExistingCards);
+    
+    // 匯入 cards.js 檔案
+    function importCardsFile(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const text = e.target.result;
+        const baseCardsMatch = text.match(/const baseCards = (\[[\s\S]*?\]);/);
+        if (baseCardsMatch) {
+          try {
+            const baseCardsStr = baseCardsMatch[1];
+            existingCards = eval(baseCardsStr);
+            displayExistingCards();
+            showMessage(`成功匯入 ${existingCards.length} 張卡片`, 'success');
+          } catch (err) {
+            showMessage('匯入失敗：檔案格式錯誤', 'error');
+          }
+        } else {
+          showMessage('匯入失敗：找不到 baseCards 陣列', 'error');
+        }
+      };
+      reader.readAsText(file, 'utf-8');
+    }
+  </script>
+</body>
+</html> 

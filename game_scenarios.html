@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <title>遊戲場景 - Typing Hero</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="responsive.css">
+  <style>
+    /* ====== 全域樣式 ====== */
+    body {
+      margin: 0;
+      font-family: 'Orbitron', sans-serif;
+      background: url('https://wallpaperaccess.com/full/192936.jpg') no-repeat center center fixed;
+      background-size: cover;
+      color: #fff;
+      text-align: center;
+      overflow-y: auto;
+    }
+
+    header {
+      background: rgba(10, 20, 40, 0.85);
+      padding: 16px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 0 24px 8px #00ffff88, 0 0 40px 0 #a259ff33 inset;
+      border-bottom: 2px solid #00ffff;
+      backdrop-filter: blur(4px);
+      position: relative;
+      z-index: 10;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 2.1rem;
+      color: #00ffff;
+      letter-spacing: 2px;
+      text-shadow: 0 0 12px #00ffff, 0 0 32px #a259ff;
+    }
+
+    .btn {
+      background: linear-gradient(90deg, #00ffff 0%, #a259ff 100%);
+      color: #000;
+      border: none;
+      padding: 10px 22px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: bold;
+      box-shadow: 0 0 16px #00ffff, 0 0 24px #a259ff99;
+      margin-left: 8px;
+      font-size: 1.1rem;
+      letter-spacing: 1px;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+
+    .btn:hover {
+      transform: scale(1.07);
+      box-shadow: 0 0 32px #00ffff, 0 0 48px #a259ffcc;
+    }
+
+    /* ====== 場景選擇區域 ====== */
+    .scenario-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+      padding: 32px 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .scenario-card {
+      background: rgba(10, 20, 40, 0.85);
+      border: 2px solid #00ffff;
+      border-radius: 16px;
+      padding: 24px;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(8px);
+    }
+
+    .scenario-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: linear-gradient(45deg, transparent 30%, rgba(0, 255, 255, 0.1) 50%, transparent 70%);
+      transform: translateX(-100%);
+      transition: transform 0.6s ease;
+    }
+
+    .scenario-card:hover::before {
+      transform: translateX(100%);
+    }
+
+    .scenario-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 0 32px #00ffff, 0 0 48px #a259ffcc;
+      border-color: #a259ff;
+    }
+
+    .scenario-icon {
+      font-size: 3rem;
+      margin-bottom: 16px;
+      display: block;
+    }
+
+    .scenario-title {
+      font-size: 1.5rem;
+      color: #00ffff;
+      margin-bottom: 12px;
+      text-shadow: 0 0 8px #00ffff;
+    }
+
+    .scenario-desc {
+      color: #ccc;
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+
+    .scenario-stats {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+      color: #ffd700;
+    }
+
+    /* ====== 收集挑戰場景 ====== */
+    .collection-challenge {
+      border-color: #00ffff;
+    }
+
+    .collection-challenge .scenario-icon {
+      color: #00ffff;
+    }
+
+    /* ====== 稀有度追求場景 ====== */
+    .rarity-hunt {
+      border-color: #ffd700;
+    }
+
+    .rarity-hunt .scenario-icon {
+      color: #ffd700;
+    }
+
+    /* ====== 成就解鎖場景 ====== */
+    .achievement-unlock {
+      border-color: #a259ff;
+    }
+
+    .achievement-unlock .scenario-icon {
+      color: #a259ff;
+    }
+
+    /* ====== 社交場景 ====== */
+    .social-scenario {
+      border-color: #ff6b6b;
+    }
+
+    .social-scenario .scenario-icon {
+      color: #ff6b6b;
+    }
+
+    /* ====== 進度條樣式 ====== */
+    .progress-bar {
+      width: 100%;
+      height: 8px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+      overflow: hidden;
+      margin: 8px 0;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #00ffff 0%, #a259ff 100%);
+      border-radius: 4px;
+      transition: width 0.3s ease;
+    }
+
+    /* ====== 通知系統 ====== */
+    .notification {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(10, 20, 40, 0.95);
+      border: 2px solid #00ffff;
+      border-radius: 12px;
+      padding: 16px 24px;
+      color: #fff;
+      font-weight: bold;
+      z-index: 10000;
+      animation: slideDown 0.3s ease-out;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    @keyframes slideDown {
+      from { transform: translateX(-50%) translateY(-100%); opacity: 0; }
+      to { transform: translateX(-50%) translateY(0); opacity: 1; }
+    }
+
+    /* ====== 星空背景動畫 ====== */
+    .stars-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .star {
+      position: absolute;
+      background: #fff;
+      border-radius: 50%;
+      animation: twinkle 3s infinite;
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.3; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.2); }
+    }
+  </style>
+</head>
+<body>
+  <!-- 星空背景 -->
+  <div class="stars-bg" id="starsBg"></div>
+
+  <header>
+    <h1>🎮 遊戲場景</h1>
+    <div>
+      <button class="btn" onclick="location.href='index.html'">🏠 首頁</button>
+      <button class="btn" onclick="location.href='cards.html'">📁 卡片收藏</button>
+      <button class="btn" onclick="location.href='gacha.html'">🎴 抽卡</button>
+      <button class="btn" onclick="location.href='social_share.html'">👥 社交</button>
+      <button class="btn" onclick="location.href='visual_enhancement.html'">✨ 視覺</button>
+    </div>
+  </header>
+
+  <div class="scenario-grid">
+    <!-- 收集挑戰場景 -->
+    <div class="scenario-card collection-challenge" onclick="enterCollectionChallenge()">
+      <span class="scenario-icon">🎯</span>
+      <div class="scenario-title">收集挑戰</div>
+      <div class="scenario-desc">
+        努力收集所有卡片，完成你的收藏夢想！挑戰不同的收集目標，獲得豐厚獎勵。
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="collectionProgress" style="width: 0%"></div>
+      </div>
+      <div class="scenario-stats">
+        <span>已收集: <span id="collectedCount">0</span>/<span id="totalCount">0</span></span>
+        <span>完成度: <span id="collectionPercent">0</span>%</span>
+      </div>
+    </div>
+
+    <!-- 稀有度追求場景 -->
+    <div class="scenario-card rarity-hunt" onclick="enterRarityHunt()">
+      <span class="scenario-icon">⭐</span>
+      <div class="scenario-title">稀有度追求</div>
+      <div class="scenario-desc">
+        特別追求超稀有卡片，挑戰極限收集！SSR卡片等你來收集，展現你的運氣與實力。
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="rarityProgress" style="width: 0%"></div>
+      </div>
+      <div class="scenario-stats">
+        <span>SSR: <span id="ssrCount">0</span>/<span id="ssrTotal">0</span></span>
+        <span>稀有度: <span id="rarityPercent">0</span>%</span>
+      </div>
+    </div>
+
+    <!-- 成就解鎖場景 -->
+    <div class="scenario-card achievement-unlock" onclick="enterAchievementUnlock()">
+      <span class="scenario-icon">🏆</span>
+      <div class="scenario-title">成就解鎖</div>
+      <div class="scenario-desc">
+        完成各種收集成就，獲得榮譽與獎勵！挑戰自我，解鎖更多成就徽章。
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="achievementProgress" style="width: 0%"></div>
+      </div>
+      <div class="scenario-stats">
+        <span>成就: <span id="achievementCount">0</span>/<span id="achievementTotal">5</span></span>
+        <span>完成度: <span id="achievementPercent">0</span>%</span>
+      </div>
+    </div>
+
+    <!-- 社交場景 -->
+    <div class="scenario-card social-scenario" onclick="enterSocialScenario()">
+      <span class="scenario-icon">👥</span>
+      <div class="scenario-title">社交分享</div>
+      <div class="scenario-desc">
+        與朋友分享你的收集成果，比較進度，討論卡片設計！建立你的收藏社群。
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="socialProgress" style="width: 0%"></div>
+      </div>
+      <div class="scenario-stats">
+        <span>分享次數: <span id="shareCount">0</span></span>
+        <span>社群等級: <span id="socialLevel">新手</span></span>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/sound.js"></script>
+  <script src="js/userData.js"></script>
+  <script src="js/cards.js"></script>
+  <script>
+    // 載入卡片數據
+    let allCards = window.allCards || [];
+    let ownedCards = JSON.parse(localStorage.getItem('ownedCards') || '{}');
+    let shards = JSON.parse(localStorage.getItem('cardShards') || '{}');
+    let achievementData = JSON.parse(localStorage.getItem('achievement_rewards') || '{}');
+    let socialData = JSON.parse(localStorage.getItem('social_data') || '{}');
+
+    // 初始化星空背景
+    function initStars() {
+      const starsBg = document.getElementById('starsBg');
+      const starCount = 100;
+
+      for (let i = 0; i < starCount; i++) {
+        const star = document.createElement('div');
+        star.className = 'star';
+        star.style.left = Math.random() * 100 + '%';
+        star.style.top = Math.random() * 100 + '%';
+        star.style.width = Math.random() * 3 + 1 + 'px';
+        star.style.height = star.style.width;
+        star.style.animationDelay = Math.random() * 3 + 's';
+        star.style.animationDuration = (Math.random() * 2 + 2) + 's';
+        starsBg.appendChild(star);
+      }
+    }
+
+    // 更新收集挑戰統計
+    function updateCollectionStats() {
+      const totalCards = allCards.length;
+      const collectedCount = Object.keys(ownedCards).length;
+      const percent = totalCards > 0 ? Math.round((collectedCount / totalCards) * 100) : 0;
+
+      document.getElementById('collectedCount').textContent = collectedCount;
+      document.getElementById('totalCount').textContent = totalCards;
+      document.getElementById('collectionPercent').textContent = percent;
+      document.getElementById('collectionProgress').style.width = percent + '%';
+    }
+
+    // 更新稀有度追求統計
+    function updateRarityStats() {
+      const ssrCards = allCards.filter(card => card.rarity === '超稀有');
+      const collectedSSR = ssrCards.filter(card => ownedCards[card.word]).length;
+      const percent = ssrCards.length > 0 ? Math.round((collectedSSR / ssrCards.length) * 100) : 0;
+
+      document.getElementById('ssrCount').textContent = collectedSSR;
+      document.getElementById('ssrTotal').textContent = ssrCards.length;
+      document.getElementById('rarityPercent').textContent = percent;
+      document.getElementById('rarityProgress').style.width = percent + '%';
+    }
+
+    // 更新成就統計
+    function updateAchievementStats() {
+      const achievements = [
+        'first_card', 'ten_cards', 'twenty_cards', 'fifty_cards', 'hundred_cards'
+      ];
+      const completedCount = achievements.filter(id => achievementData[id]).length;
+      const percent = Math.round((completedCount / achievements.length) * 100);
+
+      document.getElementById('achievementCount').textContent = completedCount;
+      document.getElementById('achievementPercent').textContent = percent;
+      document.getElementById('achievementProgress').style.width = percent + '%';
+    }
+
+    // 更新社交統計
+    function updateSocialStats() {
+      const shareCount = socialData.shareCount || 0;
+      const socialLevel = getSocialLevel(shareCount);
+
+      document.getElementById('shareCount').textContent = shareCount;
+      document.getElementById('socialLevel').textContent = socialLevel;
+      document.getElementById('socialProgress').style.width = Math.min(shareCount * 10, 100) + '%';
+    }
+
+    // 獲取社交等級
+    function getSocialLevel(shareCount) {
+      if (shareCount >= 50) return '傳奇';
+      if (shareCount >= 30) return '大師';
+      if (shareCount >= 20) return '專家';
+      if (shareCount >= 10) return '熟練';
+      if (shareCount >= 5) return '進階';
+      return '新手';
+    }
+
+    // 顯示通知
+    function showNotification(message, type = 'info') {
+      const notification = document.createElement('div');
+      notification.className = 'notification';
+      notification.textContent = message;
+      
+      if (type === 'success') {
+        notification.style.borderColor = '#4caf50';
+      } else if (type === 'warning') {
+        notification.style.borderColor = '#ff9800';
+      }
+      
+      document.body.appendChild(notification);
+      
+      setTimeout(() => {
+        notification.remove();
+      }, 3000);
+    }
+
+    // 進入收集挑戰場景
+    function enterCollectionChallenge() {
+      const collectedCount = Object.keys(ownedCards).length;
+      const totalCards = allCards.length;
+      
+      if (collectedCount === totalCards) {
+        showNotification('🎉 恭喜！你已經收集完所有卡片！', 'success');
+      } else {
+        showNotification(`📊 收集進度：${collectedCount}/${totalCards}，繼續加油！`, 'info');
+        setTimeout(() => {
+          location.href = 'cards.html';
+        }, 1500);
+      }
+    }
+
+    // 進入稀有度追求場景
+    function enterRarityHunt() {
+      const ssrCards = allCards.filter(card => card.rarity === '超稀有');
+      const collectedSSR = ssrCards.filter(card => ownedCards[card.word]).length;
+      
+      if (collectedSSR === ssrCards.length) {
+        showNotification('🌟 太厲害了！你已經收集完所有SSR卡片！', 'success');
+      } else {
+        showNotification(`⭐ SSR收集：${collectedSSR}/${ssrCards.length}，挑戰極限！`, 'info');
+        setTimeout(() => {
+          location.href = 'gacha.html';
+        }, 1500);
+      }
+    }
+
+    // 進入成就解鎖場景
+    function enterAchievementUnlock() {
+      const achievements = [
+        { id: 'first_card', title: '初次收集', desc: '解鎖第一張卡片' },
+        { id: 'ten_cards', title: '收藏家', desc: '解鎖10張卡片' },
+        { id: 'twenty_cards', title: '卡片大師', desc: '解鎖20張卡片' },
+        { id: 'fifty_cards', title: '卡片專家', desc: '解鎖50張卡片' },
+        { id: 'hundred_cards', title: '卡片傳奇', desc: '解鎖100張卡片' }
+      ];
+      
+      const completedAchievements = achievements.filter(a => achievementData[a.id]);
+      const nextAchievement = achievements.find(a => !achievementData[a.id]);
+      
+      if (nextAchievement) {
+        showNotification(`🏆 下一個成就：${nextAchievement.title} - ${nextAchievement.desc}`, 'info');
+      } else {
+        showNotification('🎊 恭喜！你已經完成所有成就！', 'success');
+      }
+    }
+
+    // 進入社交場景
+    function enterSocialScenario() {
+      const shareCount = socialData.shareCount || 0;
+      const socialLevel = getSocialLevel(shareCount);
+      
+      showNotification(`👥 社交等級：${socialLevel}，分享次數：${shareCount}`, 'info');
+      
+      // 模擬分享功能
+      setTimeout(() => {
+        const newShareCount = shareCount + 1;
+        socialData.shareCount = newShareCount;
+        localStorage.setItem('social_data', JSON.stringify(socialData));
+        updateSocialStats();
+        showNotification('📤 分享成功！獲得社交經驗！', 'success');
+      }, 2000);
+    }
+
+    // 頁面載入時初始化
+    window.addEventListener('load', () => {
+      // 檢查成就系統
+      checkAchievements();
+      
+      // 初始化音效系統
+      if (typeof SoundSystem !== 'undefined') {
+        SoundSystem.init();
+      }
+      
+      // 初始化星空背景
+      initStars();
+      
+      // 更新所有統計
+      updateCollectionStats();
+      updateRarityStats();
+      updateAchievementStats();
+      updateSocialStats();
+      
+      // 顯示歡迎訊息
+      setTimeout(() => {
+        showNotification('🎮 歡迎來到遊戲場景！選擇你喜歡的挑戰！', 'info');
+      }, 1000);
+    });
+  </script>
+</body>
+</html> 

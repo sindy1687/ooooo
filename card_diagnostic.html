@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>卡片資料診斷工具</title>
+    <style>
+        body {
+            font-family: 'Inter', 'Noto Sans TC', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            color: white;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #ffd700;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+        
+        .diagnostic-section {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .diagnostic-section h2 {
+            color: #00ffff;
+            margin-top: 0;
+            border-bottom: 2px solid #00ffff;
+            padding-bottom: 10px;
+        }
+        
+        .status {
+            padding: 10px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-weight: bold;
+        }
+        
+        .status.success {
+            background: rgba(0, 255, 0, 0.2);
+            border: 1px solid #00ff00;
+            color: #00ff00;
+        }
+        
+        .status.warning {
+            background: rgba(255, 255, 0, 0.2);
+            border: 1px solid #ffff00;
+            color: #ffff00;
+        }
+        
+        .status.error {
+            background: rgba(255, 0, 0, 0.2);
+            border: 1px solid #ff0000;
+            color: #ff0000;
+        }
+        
+        .card-list {
+            max-height: 300px;
+            overflow-y: auto;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+        }
+        
+        .card-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px;
+            margin: 5px 0;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            border-left: 4px solid #00ffff;
+        }
+        
+        .card-item.problem {
+            border-left-color: #ff0000;
+            background: rgba(255, 0, 0, 0.1);
+        }
+        
+        .card-item.fixed {
+            border-left-color: #00ff00;
+            background: rgba(0, 255, 0, 0.1);
+        }
+        
+        .button {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            margin: 5px;
+            transition: all 0.3s ease;
+        }
+        
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .button.danger {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+        }
+        
+        .button.success {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .stat-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #ffd700;
+        }
+        
+        .stat-label {
+            color: #ccc;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 卡片資料診斷工具</h1>
+        
+        <div class="diagnostic-section">
+            <h2>📊 系統狀態檢查</h2>
+            <div id="systemStatus"></div>
+            <button class="button" onclick="runDiagnostic()">🔍 執行診斷</button>
+            <button class="button success" onclick="fixProblems()">🔧 自動修復</button>
+            <button class="button danger" onclick="resetCardData()">🗑️ 重置卡片資料</button>
+        </div>
+        
+        <div class="diagnostic-section">
+            <h2>📈 統計資料</h2>
+            <div class="stats-grid" id="statsGrid"></div>
+        </div>
+        
+        <div class="diagnostic-section">
+            <h2>⚠️ 發現的問題</h2>
+            <div id="problemsList"></div>
+        </div>
+        
+        <div class="diagnostic-section">
+            <h2>✅ 修復結果</h2>
+            <div id="fixResults"></div>
+        </div>
+    </div>
+
+    <script src="js/userData.js"></script>
+    <script src="js/cardStorage.js"></script>
+    <script>
+        let diagnosticResults = {
+            problems: [],
+            fixed: [],
+            stats: {}
+        };
+
+        function runDiagnostic() {
+            diagnosticResults = {
+                problems: [],
+                fixed: [],
+                stats: {}
+            };
+            
+            console.log('🔍 開始執行卡片資料診斷...');
+            
+            // 檢查系統是否載入
+            checkSystemLoaded();
+            
+            // 檢查卡片資料完整性
+            checkCardDataIntegrity();
+            
+            // 檢查碎片資料一致性
+            checkShardConsistency();
+            
+            // 檢查已解鎖卡片狀態
+            checkUnlockedCards();
+            
+            // 更新顯示
+            updateDisplay();
+        }
+
+        function checkSystemLoaded() {
+            const status = document.getElementById('systemStatus');
+            
+            if (typeof LinkageSystem === 'undefined') {
+                diagnosticResults.problems.push({
+                    type: 'system',
+                    message: 'LinkageSystem 未載入',
+                    severity: 'error'
+                });
+                status.innerHTML = '<div class="status error">❌ 系統未正確載入</div>';
+                return;
+            }
+            
+            if (typeof window.allCards === 'undefined' || !window.allCards.length) {
+                diagnosticResults.problems.push({
+                    type: 'system',
+                    message: '卡片資料未載入',
+                    severity: 'error'
+                });
+                status.innerHTML = '<div class="status error">❌ 卡片資料未載入</div>';
+                return;
+            }
+            
+            status.innerHTML = '<div class="status success">✅ 系統正常載入</div>';
+        }
+
+        function checkCardDataIntegrity() {
+            console.log('🔍 檢查卡片資料完整性...');
+            
+            const ownedCards = LinkageSystem.cards.getOwnedCards();
+            const shards = LinkageSystem.cards.getShards();
+            
+            diagnosticResults.stats = {
+                totalCards: window.allCards.length,
+                ownedCards: Object.keys(ownedCards).length,
+                totalShards: Object.values(shards).reduce((sum, count) => sum + (parseInt(count) || 0), 0),
+                shardTypes: Object.keys(shards).length
+            };
+            
+            // 檢查是否有卡片在 ownedCards 中但不在 allCards 中
+            const invalidOwnedCards = Object.keys(ownedCards).filter(cardWord => 
+                !window.allCards.find(card => card.word === cardWord)
+            );
+            
+            if (invalidOwnedCards.length > 0) {
+                diagnosticResults.problems.push({
+                    type: 'integrity',
+                    message: `發現 ${invalidOwnedCards.length} 張無效的已擁有卡片`,
+                    details: invalidOwnedCards,
+                    severity: 'warning'
+                });
+            }
+            
+            // 檢查是否有碎片但卡片不存在
+            const invalidShards = Object.keys(shards).filter(cardWord => 
+                !window.allCards.find(card => card.word === cardWord)
+            );
+            
+            if (invalidShards.length > 0) {
+                diagnosticResults.problems.push({
+                    type: 'integrity',
+                    message: `發現 ${invalidShards.length} 個無效的碎片記錄`,
+                    details: invalidShards,
+                    severity: 'warning'
+                });
+            }
+        }
+
+        function checkShardConsistency() {
+            console.log('🔍 檢查碎片資料一致性...');
+            
+            const ownedCards = LinkageSystem.cards.getOwnedCards();
+            const shards = LinkageSystem.cards.getShards();
+            
+            // 檢查已解鎖卡片是否有多餘碎片
+            const unlockedWithExcessShards = [];
+            
+            Object.keys(ownedCards).forEach(cardWord => {
+                const card = window.allCards.find(c => c.word === cardWord);
+                if (!card) return;
+                
+                const required = getRequiredShards(card.rarity);
+                const haveShards = shards[cardWord] || 0;
+                
+                if (haveShards > required) {
+                    unlockedWithExcessShards.push({
+                        card: card,
+                        required: required,
+                        have: haveShards,
+                        excess: haveShards - required
+                    });
+                }
+            });
+            
+            if (unlockedWithExcessShards.length > 0) {
+                diagnosticResults.problems.push({
+                    type: 'consistency',
+                    message: `發現 ${unlockedWithExcessShards.length} 張已解鎖卡片有多餘碎片`,
+                    details: unlockedWithExcessShards,
+                    severity: 'warning'
+                });
+            }
+        }
+
+        function checkUnlockedCards() {
+            console.log('🔍 檢查已解鎖卡片狀態...');
+            
+            const ownedCards = LinkageSystem.cards.getOwnedCards();
+            const shards = LinkageSystem.cards.getShards();
+            
+            // 檢查應該解鎖但未解鎖的卡片
+            const shouldBeUnlocked = [];
+            
+            window.allCards.forEach(card => {
+                const required = getRequiredShards(card.rarity);
+                const haveShards = shards[card.word] || 0;
+                const isOwned = ownedCards[card.word] || false;
+                
+                if (haveShards >= required && !isOwned) {
+                    shouldBeUnlocked.push({
+                        card: card,
+                        required: required,
+                        have: haveShards
+                    });
+                }
+            });
+            
+            if (shouldBeUnlocked.length > 0) {
+                diagnosticResults.problems.push({
+                    type: 'unlock',
+                    message: `發現 ${shouldBeUnlocked.length} 張卡片應該解鎖但未解鎖`,
+                    details: shouldBeUnlocked,
+                    severity: 'error'
+                });
+            }
+            
+            // 檢查已解鎖但碎片不足的卡片
+            const unlockedWithInsufficientShards = [];
+            
+            Object.keys(ownedCards).forEach(cardWord => {
+                const card = window.allCards.find(c => c.word === cardWord);
+                if (!card) return;
+                
+                const required = getRequiredShards(card.rarity);
+                const haveShards = shards[cardWord] || 0;
+                
+                if (haveShards < required) {
+                    unlockedWithInsufficientShards.push({
+                        card: card,
+                        required: required,
+                        have: haveShards
+                    });
+                }
+            });
+            
+            if (unlockedWithInsufficientShards.length > 0) {
+                diagnosticResults.problems.push({
+                    type: 'unlock',
+                    message: `發現 ${unlockedWithInsufficientShards.length} 張已解鎖卡片碎片不足`,
+                    details: unlockedWithInsufficientShards,
+                    severity: 'warning'
+                });
+            }
+        }
+
+        function fixProblems() {
+            console.log('🔧 開始自動修復...');
+            
+            const fixResults = [];
+            
+            diagnosticResults.problems.forEach(problem => {
+                if (problem.type === 'unlock') {
+                    // 修復應該解鎖但未解鎖的卡片
+                    problem.details.forEach(item => {
+                        LinkageSystem.cards.addCard(item.card.word);
+                        fixResults.push(`✅ 解鎖卡片: ${item.card.zh} (${item.card.word})`);
+                    });
+                }
+                
+                if (problem.type === 'integrity') {
+                    // 清理無效的碎片記錄
+                    if (problem.message.includes('無效的碎片記錄')) {
+                        const shards = LinkageSystem.cards.getShards();
+                        problem.details.forEach(cardWord => {
+                            delete shards[cardWord];
+                            fixResults.push(`🗑️ 清理無效碎片: ${cardWord}`);
+                        });
+                        LinkageSystem.cards.setShards(shards);
+                    }
+                    
+                    // 清理無效的已擁有卡片
+                    if (problem.message.includes('無效的已擁有卡片')) {
+                        const ownedCards = LinkageSystem.cards.getOwnedCards();
+                        problem.details.forEach(cardWord => {
+                            delete ownedCards[cardWord];
+                            fixResults.push(`🗑️ 清理無效卡片: ${cardWord}`);
+                        });
+                        LinkageSystem.cards.setOwnedCards(ownedCards);
+                    }
+                }
+            });
+            
+            diagnosticResults.fixed = fixResults;
+            
+            // 重新執行診斷
+            setTimeout(() => {
+                runDiagnostic();
+            }, 100);
+        }
+
+        function resetCardData() {
+            if (!confirm('⚠️ 確定要重置所有卡片資料嗎？\n\n這將會：\n• 清除所有已解鎖的卡片\n• 清除所有碎片\n• 無法復原\n\n確定要繼續嗎？')) {
+                return;
+            }
+            
+            // 清除卡片資料
+            localStorage.removeItem('ownedCards');
+            localStorage.removeItem('cardShards');
+            localStorage.removeItem('recentlyObtainedCards');
+            localStorage.removeItem('newCardTimestamps');
+            
+            // 重新載入頁面
+            location.reload();
+        }
+
+        function updateDisplay() {
+            // 更新統計資料
+            const statsGrid = document.getElementById('statsGrid');
+            if (diagnosticResults.stats) {
+                statsGrid.innerHTML = `
+                    <div class="stat-card">
+                        <div class="stat-number">${diagnosticResults.stats.totalCards || 0}</div>
+                        <div class="stat-label">總卡片數</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">${diagnosticResults.stats.ownedCards || 0}</div>
+                        <div class="stat-label">已解鎖卡片</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">${diagnosticResults.stats.totalShards || 0}</div>
+                        <div class="stat-label">總碎片數</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">${diagnosticResults.stats.shardTypes || 0}</div>
+                        <div class="stat-label">碎片種類</div>
+                    </div>
+                `;
+            }
+            
+            // 更新問題列表
+            const problemsList = document.getElementById('problemsList');
+            if (diagnosticResults.problems.length === 0) {
+                problemsList.innerHTML = '<div class="status success">✅ 沒有發現問題</div>';
+            } else {
+                problemsList.innerHTML = diagnosticResults.problems.map(problem => `
+                    <div class="card-item ${problem.severity === 'error' ? 'problem' : 'warning'}">
+                        <div>
+                            <strong>${problem.message}</strong>
+                            ${problem.details ? `<br><small>${JSON.stringify(problem.details)}</small>` : ''}
+                        </div>
+                        <div style="color: ${problem.severity === 'error' ? '#ff0000' : '#ffff00'}">
+                            ${problem.severity === 'error' ? '❌ 錯誤' : '⚠️ 警告'}
+                        </div>
+                    </div>
+                `).join('');
+            }
+            
+            // 更新修復結果
+            const fixResults = document.getElementById('fixResults');
+            if (diagnosticResults.fixed.length === 0) {
+                fixResults.innerHTML = '<div class="status">尚未執行修復</div>';
+            } else {
+                fixResults.innerHTML = diagnosticResults.fixed.map(result => `
+                    <div class="card-item fixed">
+                        <div>${result}</div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function getRequiredShards(rarity) {
+            switch (rarity) {
+                case '超稀有': return 5;
+                case '稀有': return 3;
+                case '普通': return 1;
+                default: return 1;
+            }
+        }
+
+        // 頁面載入時自動執行診斷
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                runDiagnostic();
+            }, 1000);
+        });
+    </script>
+</body>
+</html> 

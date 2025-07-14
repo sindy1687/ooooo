@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <title>單字翻牌複習</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="responsive_enhanced.css">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Orbitron', sans-serif;
+      color: #fff;
+      background: linear-gradient(to bottom, #020111 0%, #000010 100%);
+    }
+    .container {
+      max-width: 700px;
+      margin: 40px auto;
+      padding: 20px;
+      background: rgba(10, 20, 40, 0.7);
+      border-radius: 16px;
+      box-shadow: 0 0 32px #00ffff44, 0 0 80px #a259ff22 inset;
+      backdrop-filter: blur(8px);
+    }
+    h1 {
+      text-align: center;
+      color: #00ffff;
+      margin-bottom: 20px;
+      font-size: 2rem;
+      text-shadow: 0 0 12px #00ffff, 0 0 32px #a259ff;
+    }
+    #cardContainer {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 18px 12px;
+      margin: 20px 0;
+    }
+    .review-card {
+      width: 100%;
+      height: 110px;
+      perspective: 1200px;
+      cursor: pointer;
+      position: relative;
+      border-radius: 16px;
+      box-shadow: 0 0 32px #00ffff44, 0 0 80px #a259ff22 inset;
+      background: transparent;
+      transition: transform 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .card-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      text-align: center;
+      transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      transform-style: preserve-3d;
+      border-radius: 16px;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .card-front, .card-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      backface-visibility: hidden;
+      border-radius: 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+    .card-front {
+      background: linear-gradient(135deg, #00ffff 0%, #a259ff 100%);
+      color: #ffd700;
+      font-size: 1.7rem;
+      font-family: 'Orbitron', sans-serif;
+      font-weight: bold;
+      letter-spacing: 1px;
+      text-shadow: 0 0 4px #ffd70099;
+      z-index: 2;
+    }
+    .card-back {
+      background: linear-gradient(135deg, #ffd700 0%, #ffaa00 100%);
+      color: #222;
+      font-size: 2rem;
+      font-family: 'Orbitron', sans-serif;
+      font-weight: bold;
+      letter-spacing: 1px;
+      text-shadow: 0 0 4px #ffd70055;
+      transform: rotateY(180deg);
+      z-index: 3;
+    }
+    .review-card.flipped .card-inner {
+      transform: rotateY(180deg);
+    }
+    .card-word {
+      font-size: 1.7rem;
+      font-family: 'Orbitron', sans-serif;
+      font-weight: bold;
+      text-shadow: 0 0 4px #ffd70099;
+      margin: 0 2px;
+      padding: 0;
+      line-height: 1.1;
+      word-break: break-word;
+    }
+    .card-en {
+      font-size: 2rem;
+      font-family: 'Orbitron', sans-serif;
+      color: #222;
+      font-weight: bold;
+      text-shadow: 0 0 4px #ffd70033;
+      line-height: 1.1;
+      word-break: break-all;
+      margin: 0;
+      padding: 0;
+    }
+    .review-card.completed {
+      opacity: 0.9;
+    }
+    .review-card.completed .card-front,
+    .review-card.completed .card-back {
+      background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+    }
+    #reviewProgress {
+      text-align:center;
+      margin-bottom:8px;
+      color: #a0a0ff;
+    }
+    #startBtn {
+      background: linear-gradient(90deg, #00ff00 0%, #00cc00 100%);
+      opacity: 0.5;
+      pointer-events: none;
+      font-size: 1.2rem;
+      font-family: 'Orbitron', sans-serif;
+      border-radius: 10px;
+      padding: 10px 30px;
+      margin: 20px auto 0 auto;
+      display: block;
+      border: none;
+      color: #000;
+      font-weight: bold;
+      box-shadow: 0 0 16px #00ff00, 0 0 24px #00cc0099;
+      transition: opacity 0.2s;
+      cursor: pointer;
+    }
+    #startBtn.enabled {
+      opacity: 1;
+      pointer-events: auto;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🃏 單字翻牌複習</h1>
+    <div id="reviewProgress"></div>
+    <div id="cardContainer"></div>
+    <button id="startBtn">🚀 開始挑戰</button>
+  </div>
+  <script src="js/vocabData.js"></script>
+  <script src="js/sound.js"></script>
+  <script>
+    // TTS voices 載入
+    // 使用新的發音系統，移除舊的語音載入邏輯
+
+    function speak(text) {
+      if (!text) return;
+      SoundSystem.speech.speakWord(text);
+    }
+
+    // 取得分類參數
+    const params = new URLSearchParams(location.search);
+    const categoryKey = params.get('category') || 'aries';
+    let words = vocabData[categoryKey] || [];
+    words = words.slice(0, 20);
+    let reviewFlippedArr = Array(words.length).fill(false);
+    function renderReviewCards() {
+      const cardContainer = document.getElementById('cardContainer');
+      cardContainer.innerHTML = '';
+      words.forEach((word, idx) => {
+        const cardDiv = document.createElement('div');
+        cardDiv.className = 'review-card' + (reviewFlippedArr[idx] ? ' flipped completed' : '');
+        cardDiv.innerHTML = `
+          <div class="card-inner">
+            <div class="card-front">
+              <span class='card-word'>${word.zh}</span>
+            </div>
+            <div class="card-back">
+              <span class='card-en'>${word.en}</span>
+            </div>
+          </div>
+        `;
+        cardDiv.addEventListener('click', function() {
+          if (!reviewFlippedArr[idx]) {
+            reviewFlippedArr[idx] = true;
+            cardDiv.classList.add('flipped', 'completed');
+            speak(word.en); // 翻牌時自動播放英文發音
+            checkAllFlipped();
+          }
+        });
+        cardContainer.appendChild(cardDiv);
+      });
+      updateProgress();
+    }
+    function updateProgress() {
+      const flippedCount = reviewFlippedArr.filter(f => f).length;
+      document.getElementById('reviewProgress').textContent = `已複習 ${flippedCount} / ${words.length} 單字`;
+    }
+    function checkAllFlipped() {
+      const anyFlipped = reviewFlippedArr.some(f => f);
+      const startBtn = document.getElementById('startBtn');
+      if (anyFlipped) {
+        startBtn.classList.add('enabled');
+      }
+      updateProgress();
+    }
+    document.getElementById('startBtn').addEventListener('click', function() {
+      if (!reviewFlippedArr.some(f => f)) return;
+      // 跳轉回 quiz.html，帶上分類與 reviewed 參數
+      window.location.href = `quiz.html?category=${categoryKey}&reviewed=1`;
+    });
+    renderReviewCards();
+  </script>
+</body>
+</html> 

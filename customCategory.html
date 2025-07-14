@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <title>自訂關卡管理 - 英打小英雄</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    /* 基本頁面樣式，與其他頁面保持一致 */
+    body {
+      margin: 0;
+      font-family: 'Orbitron', sans-serif;
+      background: #000010;
+      color: #fff;
+      text-align: center;
+      padding: 20px;
+    }
+    h1 {
+      color: #0ff;
+      margin-bottom: 20px;
+    }
+    .btn {
+      background: #0ff;
+      color: #001122;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      box-shadow: 0 0 8px #0ff;
+      font-size: 1rem;
+    }
+    #container {
+      max-width: 800px;
+      margin: 0 auto;
+      text-align: left;
+    }
+    #categoryName {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 16px;
+      border-radius: 8px;
+      border: 1px solid #0ff;
+      background: #111;
+      color: #fff;
+      box-sizing: border-box;
+      font-size: 1rem;
+    }
+    #wordList {
+      max-height: 400px;
+      overflow-y: auto;
+      background: #111;
+      padding: 10px;
+      border: 1px solid #0ff;
+      border-radius: 8px;
+      margin-bottom: 16px;
+    }
+    #wordList label {
+      display: flex;
+      align-items: center;
+      padding: 6px 0;
+      border-bottom: 1px solid #222;
+    }
+    #wordList label:last-child {
+      border-bottom: none;
+    }
+    #wordList input[type="checkbox"] {
+      margin-right: 8px;
+    }
+    #message {
+      margin-top: 10px;
+      min-height: 1.2em;
+      color: #ff6;
+      font-size: 1rem;
+    }
+  </style>
+</head>
+<body>
+
+  <button class="btn" style="position:absolute; top:20px; left:20px;"
+          onclick="location.href='index.html'">🏠 回首頁</button>
+  <h1>🛠 自訂關卡管理</h1>
+
+  <div id="container">
+    <label for="categoryName">請輸入關卡名稱：</label>
+    <input type="text" id="categoryName" placeholder="例如：我的單字挑戰" />
+
+    <div id="wordList">
+      <!-- 這裡會動態列出 dictionary 中所有單字 (checkbox) -->
+    </div>
+
+    <button class="btn" onclick="saveCustomCategory()">儲存關卡</button>
+    <div id="message"></div>
+  </div>
+
+  <script>
+    // 讀取 localStorage.dictionary
+    function loadDictionary() {
+      return JSON.parse(localStorage.getItem('dictionary') || '[]');
+    }
+
+    // 讀取 localStorage.customCategories
+    function loadCustomCategories() {
+      const raw = localStorage.getItem('customCategories');
+      try {
+        return raw ? JSON.parse(raw) : [];
+      } catch (e) {
+        console.error('解析 customCategories 失敗', e);
+        return [];
+      }
+    }
+
+    function saveCustomCategories(arr) {
+      localStorage.setItem('customCategories', JSON.stringify(arr));
+    }
+
+    // 顯示 dictionary 裡的每個 {en, zh}，加上 checkbox
+    function renderWordCheckboxes() {
+      const dict = loadDictionary();
+      const container = document.getElementById('wordList');
+      container.innerHTML = '';
+
+      if (dict.length === 0) {
+        container.innerHTML = '<p>目前「單字本」沒有任何單字<br>請先到「單字本」頁面新增單字。</p>';
+        return;
+      }
+
+      dict.forEach((item, index) => {
+        const label = document.createElement('label');
+        const cb = document.createElement('input');
+        cb.type = 'checkbox';
+        cb.value = index; // 用索引值標記
+        label.appendChild(cb);
+        label.appendChild(document.createTextNode(item.en + ' – ' + item.zh));
+        container.appendChild(label);
+      });
+    }
+
+    // 儲存自訂關卡
+    function saveCustomCategory() {
+      const nameInput = document.getElementById('categoryName');
+      const name = nameInput.value.trim();
+      if (!name) {
+        showMessage('⚠️ 請先輸入關卡名稱', true);
+        return;
+      }
+
+      const checkboxes = document.querySelectorAll('#wordList input[type="checkbox"]');
+      const dict = loadDictionary();
+      const selectedWords = [];
+
+      checkboxes.forEach(cb => {
+        if (cb.checked) {
+          const idx = parseInt(cb.value, 10);
+          if (dict[idx]) {
+            selectedWords.push({ en: dict[idx].en, zh: dict[idx].zh });
+          }
+        }
+      });
+
+      if (selectedWords.length === 0) {
+        showMessage('⚠️ 請至少勾選一個單字', true);
+        return;
+      }
+
+      // 讀現有 customCategories，避免重複名稱
+      const customCats = loadCustomCategories();
+      const exists = customCats.some(cat => cat.name.toLowerCase() === name.toLowerCase());
+      if (exists) {
+        showMessage(`⚠️ 已有相同名稱 "${name}" 的自訂關卡`, true);
+        return;
+      }
+
+      // 新增並儲存
+      customCats.push({ name: name, words: selectedWords });
+      saveCustomCategories(customCats);
+
+      showMessage(`✅ 已成功建立關卡 "${name}" (${selectedWords.length} 筆單字)`);
+      // 清空輸入與勾選
+      nameInput.value = '';
+      checkboxes.forEach(cb => cb.checked = false);
+    }
+
+    function showMessage(msg, isError = false) {
+      const el = document.getElementById('message');
+      el.textContent = msg;
+      el.style.color = isError ? '#f55' : '#6f6';
+      setTimeout(() => { el.textContent = ''; }, 3000);
+    }
+
+    // 頁面載入就 render
+    window.addEventListener('load', () => {
+      renderWordCheckboxes();
+    });
+  </script>
+
+</body>
+</html>

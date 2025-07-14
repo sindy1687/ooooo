@@ -1,0 +1,31 @@
+{
+  "ownedCards": {
+    "apple": true,
+    "banana": true,
+    "cat": true,
+    "dog": true,
+    "elephant": true
+  },
+  "cardShards": {
+    "fish": 3,
+    "giraffe": 2,
+    "house": 1,
+    "ice": 4,
+    "jacket": 2
+  },
+  "cardStats": {
+    "totalDraws": 15,
+    "rarityCount": {
+      "普通": 8,
+      "稀有": 5,
+      "超稀有": 2
+    },
+    "categoryCount": {
+      "動物": 6,
+      "食物": 4,
+      "物品": 5
+    }
+  },
+  "exportTime": "2024-01-01T12:00:00.000Z",
+  "version": "1.0"
+} 

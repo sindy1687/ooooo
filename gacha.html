@@ -1,0 +1,3276 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <title>星辰祈願 - Typing Hero</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Noto+Sans+TC:wght@400;500;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="responsive.css">
+  <link rel="stylesheet" href="responsive_enhanced.css">
+  <style>
+    /* 防止水平滾動 */
+    html {
+      overflow-x: hidden;
+    }
+    
+    /* 確保所有元素都在視窗範圍內 */
+    * {
+      box-sizing: border-box;
+      max-width: 100%;
+    }
+    
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', 'Noto Sans TC', 'Microsoft JhengHei', '微軟正黑體', 'PingFang TC', 'Helvetica Neue', Arial, sans-serif;
+      background: url('https://cdn-prd.ggac.com/ggac/work/image/2024/6/3/695158cd-1871-4803-88ab-beb43f6e11e5-2048x.jpg') no-repeat center center fixed;
+      background-size: cover;
+      background-repeat: no-repeat;
+      color: #fff;
+      text-align: center;
+      min-height: 100vh;
+      width: 100%;
+      overflow-x: hidden;
+      font-size: 16px;
+      line-height: 1.6;
+      font-weight: 400;
+      letter-spacing: 0.3px;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 35px;
+      box-shadow: 0 0 35px 15px #00ffff88, 0 0 50px 0 #a0a0ff33 inset;
+      border-bottom: 3px solid #00ffff;
+      backdrop-filter: blur(12px);
+      position: relative;
+      z-index: 10;
+      background: rgba(10, 20, 40, 0.95);
+    }
+    header h1 {
+      font-size: 2.8rem;
+      color: #00ffff;
+      margin: 0;
+      letter-spacing: 4px;
+      text-shadow: 0 0 20px #00ffff, 0 0 40px #a259ff, 0 0 8px #000;
+      font-weight: 900;
+      font-family: 'Orbitron', 'Inter', sans-serif;
+    }
+    .btn {
+      padding: 14px 28px;
+      margin: 0 10px;
+      border: none;
+      border-radius: 16px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+      position: relative;
+      overflow: hidden;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      backdrop-filter: blur(10px);
+      border: 2px solid transparent;
+    }
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.6s;
+    }
+    .btn:hover::before {
+      left: 100%;
+    }
+    .home-btn {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+    .home-btn:hover {
+      transform: translateY(-4px) scale(1.05);
+      box-shadow: 0 12px 30px rgba(102, 126, 234, 0.5);
+      border-color: rgba(255, 255, 255, 0.4);
+    }
+    .cards-btn {
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      color: white;
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+    .cards-btn:hover {
+      transform: translateY(-4px) scale(1.05);
+      box-shadow: 0 12px 30px rgba(245, 87, 108, 0.5);
+      border-color: rgba(255, 255, 255, 0.4);
+    }
+    .draw-btn {
+      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      color: white;
+      font-size: 20px;
+      padding: 18px 36px;
+      border-radius: 20px;
+      box-shadow: 0 8px 25px rgba(79, 172, 254, 0.4);
+      border-color: rgba(255, 255, 255, 0.3);
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+    .draw-btn:hover {
+      transform: translateY(-5px) scale(1.08);
+      box-shadow: 0 15px 35px rgba(79, 172, 254, 0.6);
+      border-color: rgba(255, 255, 255, 0.5);
+    }
+    .draw-btn:active {
+      transform: translateY(-2px) scale(1.02);
+    }
+    .draw-btn:disabled {
+      background: linear-gradient(135deg, #bdc3c7 0%, #95a5a6 100%);
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      border-color: transparent;
+    }
+    .wish-btn {
+      background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+      color: #8b4513;
+      font-weight: 700;
+      border-color: rgba(139, 69, 19, 0.3);
+    }
+    .wish-btn:hover {
+      transform: translateY(-3px) scale(1.03);
+      box-shadow: 0 10px 25px rgba(252, 182, 159, 0.5);
+      border-color: rgba(139, 69, 19, 0.5);
+    }
+    .wish-btn.active {
+      background: linear-gradient(135deg, #ffd700 0%, #ffa500 100%);
+      color: #8b4513;
+      box-shadow: 0 8px 20px rgba(255, 215, 0, 0.5);
+      border-color: rgba(139, 69, 19, 0.6);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0% { box-shadow: 0 8px 20px rgba(255, 215, 0, 0.5); }
+      50% { box-shadow: 0 8px 20px rgba(255, 215, 0, 0.8); }
+      100% { box-shadow: 0 8px 20px rgba(255, 215, 0, 0.5); }
+    }
+    .filter-btn {
+      background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+      color: #2c3e50;
+      font-weight: 600;
+      padding: 12px 24px;
+      border-radius: 12px;
+      margin: 6px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+      border-color: rgba(44, 62, 80, 0.2);
+    }
+    .filter-btn:hover {
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+      border-color: rgba(44, 62, 80, 0.4);
+    }
+    .filter-btn.active {
+      background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+      color: white;
+      box-shadow: 0 6px 18px rgba(116, 185, 255, 0.5);
+      border-color: rgba(255, 255, 255, 0.3);
+      animation: glow 2s ease-in-out infinite alternate;
+    }
+    @keyframes glow {
+      from { box-shadow: 0 6px 18px rgba(116, 185, 255, 0.5); }
+      to { box-shadow: 0 6px 18px rgba(116, 185, 255, 0.8); }
+    }
+    .close-btn {
+      background: linear-gradient(135deg, #ff7675 0%, #d63031 100%);
+      color: white;
+      border-radius: 50%;
+      width: 45px;
+      height: 45px;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      border-color: rgba(255, 255, 255, 0.3);
+    }
+    .close-btn:hover {
+      transform: scale(1.15) rotate(90deg);
+      box-shadow: 0 8px 20px rgba(214, 48, 49, 0.5);
+      border-color: rgba(255, 255, 255, 0.5);
+    }
+    main {
+      border-radius: 20px;
+      margin: 35px auto 0 auto;
+      max-width: 1200px;
+      width: 95%;
+      box-shadow: none;
+      padding-bottom: 40px;
+      position: relative;
+    }
+    main:before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: url('https://png.pngtree.com/thumb_back/fw800/background/20230613/pngtree-cosmic-starry-sky-background-image_2890957.jpg') repeat center center;
+      opacity: 0.2;
+      border-radius: 20px;
+      pointer-events: none;
+      z-index: 0;
+    }
+    main > * { position: relative; z-index: 1; }
+    h2 {
+      color: #a0a0ff;
+      text-shadow: 0 0 20px #00ffff, 0 0 40px #a259ff, 0 0 8px #000;
+      font-size: 1.8rem;
+      margin-top: 30px;
+      margin-bottom: 25px;
+      font-weight: 700;
+      letter-spacing: 2px;
+    }
+    #cardGrid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 18px;
+      padding: 28px 20px 10px 20px;
+      justify-content: center;
+      overflow-x: auto;
+      box-sizing: border-box;
+      background: rgba(10, 20, 40, 0.7);
+      border-radius: 14px;
+      box-shadow: 0 0 32px #00ffff33, 0 0 80px #a259ff22 inset;
+      position: relative;
+      max-width: 1000px;
+      width: 95%;
+      margin: 0 auto;
+      border: 2px solid #00ffff;
+    }
+    #cardGrid:before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: url('https://png.pngtree.com/thumb_back/fw800/background/20230613/pngtree-cosmic-starry-sky-background-image_2890957.jpg') repeat center center,
+                  linear-gradient(to bottom, rgba(10, 20, 40, 0.5) 0%, rgba(10, 20, 40, 0.9) 100%);
+      background-blend-mode: overlay;
+      opacity: 0.2;
+      border-radius: 14px;
+      pointer-events: none;
+      z-index: 0;
+    }
+    #cardGrid > * { position: relative; z-index: 1; }
+    .card {
+      width: 170px;
+      height: 260px;
+      position: relative;
+      background: rgba(10, 20, 40, 0.85);
+      border-radius: 16px;
+      padding: 10px;
+      transition: transform 0.3s, box-shadow 0.3s;
+      cursor: pointer;
+      animation: float 3s ease-in-out infinite;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: center;
+      box-shadow: 0 0 16px #00ffff55, 0 0 32px #a259ff33;
+      border: 2.5px solid #00ffff;
+      backdrop-filter: blur(8px);
+      font-size: 1.1rem;
+    }
+    .card:hover {
+      transform: translateY(-10px) scale(1.06) rotate(-2deg);
+      box-shadow: 0 15px 32px rgba(0,0,0,0.3), 0 0 32px #00ffff, 0 0 48px #a259ffcc;
+    }
+    .card.enlarged {
+      z-index: 100;
+      transform: scale(2.5) !important;
+      box-shadow: 0 0 80px #fff, 0 0 120px #a259ffcc, 0 0 40px #00ffff;
+      transition: all 0.4s ease;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+    .card img, .card video, .wish-card-style .card-media {
+      width: 95%;
+      height: 150px;
+      max-height: 150px;
+      display: block;
+      margin: 0 auto 8px auto;
+      border-radius: 10px;
+      object-fit: cover;
+      background: #000;
+    }
+    .stars {
+      margin-top: 4px;
+      font-size: 1.1rem;
+      color: #ffd700;
+      line-height: 1;
+      letter-spacing: 2px;
+      text-shadow: 0 0 8px #fff, 0 0 16px #00ffff;
+    }
+    .card .label {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 6px;
+      margin-bottom: 0;
+      padding: 0;
+      line-height: 1.1;
+    }
+    .chinese-text {
+      font-size: 1.08em;
+      font-weight: bold;
+      margin-bottom: 2px;
+      letter-spacing: 1px;
+    }
+    .english-text {
+      font-size: 0.98em;
+      color: #ffd700cc;
+      margin-top: 0;
+      letter-spacing: 0.5px;
+    }
+    .card .category-tag {
+      margin-top: 4px;
+      font-size: 0.85em;
+      color: #ffd700;
+      text-shadow: 0 0 6px #fff, 0 0 12px #00ffff;
+    }
+    .rank-badge {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      font-size: 0.95rem;
+      font-weight: bold;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      z-index: 10;
+      background: linear-gradient(90deg, #00ffff 0%, #a259ff 100%);
+      color: #000;
+      box-shadow: 0 0 8px #00ffff, 0 0 16px #a259ff;
+    }
+    .card.common .rank-badge {
+      background: #00ffff;
+      border: 2px solid #00ffff;
+      color: #000;
+    }
+    .card.rare .rank-badge {
+      background: #a259ff;
+      border: 2px solid #a259ff;
+      color: #fff;
+    }
+    .card.epic .rank-badge {
+      background: #ffd700;
+      border: 2px solid #ffd700;
+      color: #000;
+    }
+    .shard-count {
+      position: absolute;
+      bottom: 6px;
+      left: 6px;
+      background: rgba(0, 255, 255, 0.85);
+      color: #000;
+      padding: 3px 7px;
+      font-size: 0.85rem;
+      border-radius: 6px;
+      box-shadow: 0 0 8px #00ffff;
+      font-weight: bold;
+    }
+    .card.unlocked .shard-count {
+      background: rgba(120, 255, 180, 0.85);
+      color: #003c00;
+    }
+    .common { border: 2.5px solid #00ffff; }
+    .rare   { border: 2.5px solid #a259ff; }
+    .epic   { border: 2.5px solid #ffd700; box-shadow: 0 0 16px #ffd700; }
+
+    #starCount {
+      position: fixed;
+      bottom: 15px;
+      right: 15px;
+      background: rgba(10, 20, 40, 0.95);
+      padding: 12px 18px;
+      border-radius: 15px;
+      box-shadow: 0 0 20px #ffd700, 0 0 40px #00ffff;
+      border: 3px solid #00ffff;
+      color: #ffd700;
+      font-size: 1.4rem;
+      font-weight: bold;
+      backdrop-filter: blur(8px);
+      z-index: 1000;
+      font-family: 'JetBrains Mono', 'Inter', monospace;
+    }
+
+    #overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background: rgba(0, 0, 0, 0.7);
+      display: none;
+      z-index: 900;
+    }
+    #modal {
+      position: fixed;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      background: rgba(10, 20, 40, 0.98);
+      padding: 25px;
+      border-radius: 18px;
+      box-shadow: 0 0 40px #00ffff99, 0 0 100px #a259ff44 inset;
+      z-index: 1000;
+      transition: all 0.4s ease;
+      color: #fff;
+      max-width: 90%;
+      width: 450px;
+      box-sizing: border-box;
+      border: 3px solid #00ffff;
+      backdrop-filter: blur(12px);
+    }
+    #modal.show {
+      transform: translate(-50%, -50%) scale(1);
+    }
+    #modal .modal-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    #modal img {
+      width: 100%;
+      max-width: 250px;
+      border-radius: 12px;
+      margin-bottom: 15px;
+      box-shadow: 0 0 20px #00ffff88;
+      background: #000;
+      border: 2px solid #00ffff;
+    }
+    #modal h2 {
+      margin: 15px 0;
+      color: #00ffff;
+      font-size: 1.4rem;
+      text-shadow: 0 0 15px #00ffff, 0 0 35px #a259ff;
+      font-weight: 700;
+      font-family: 'Inter', 'Noto Sans TC', sans-serif;
+    }
+    #modal .description {
+      margin: 15px 0;
+      text-align: left;
+      line-height: 1.6;
+      font-size: 1rem;
+      max-height: 200px;
+      overflow-y: auto;
+      color: #e0e0e0;
+      text-shadow: 0 0 8px #000a;
+      padding: 10px;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 8px;
+      border: 1px solid rgba(0, 255, 255, 0.3);
+      font-family: 'Inter', 'Noto Sans TC', sans-serif;
+    }
+    .sound-btn-modal {
+      background: linear-gradient(135deg, #00ffff 0%, #a259ff 100%);
+      color: #000;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 1.1rem;
+      margin-top: 15px;
+      box-shadow: 0 0 15px #00ffff88;
+      font-weight: bold;
+      transition: all 0.3s ease;
+      font-family: 'Inter', 'Noto Sans TC', sans-serif;
+    }
+    .sound-btn-modal:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 25px #00ffffcc;
+    }
+
+    .gacha-animation {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.95);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 2000;
+      padding: 20px;
+      box-sizing: border-box;
+      backdrop-filter: blur(8px);
+      pointer-events: auto;
+    }
+
+    .gacha-content {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      max-width: 100%;
+      max-height: 100%;
+      pointer-events: none;
+    }
+
+    .gacha-circle {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: min(45vw, 45vh);
+      height: min(45vw, 45vh);
+      max-width: 450px;
+      max-height: 450px;
+      border: 5px solid #00ffff;
+      border-radius: 50%;
+      animation: circlePulse 2s infinite;
+      box-shadow: 0 0 30px #00ffff, 0 0 60px #a259ff;
+    }
+
+    .gacha-rays {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: min(55vw, 55vh);
+      height: min(55vw, 55vh);
+      max-width: 550px;
+      max-height: 550px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #00ffff88 0%, #a259ff44 40%, transparent 70%);
+      opacity: 0.8;
+      animation: raysPulse 2s infinite;
+    }
+
+    .gacha-card {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      width: min(45vw, 45vh);
+      height: min(65vw, 65vh);
+      max-width: 450px;
+      max-height: 650px;
+      animation: cardAppear 2s forwards;
+      perspective: 1500px;
+      background: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+    }
+    
+    .card-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transition: transform 0.8s cubic-bezier(0.7, 0, 0.3, 1);
+      transform-style: preserve-3d;
+    }
+
+    .card-inner.is-flipped {
+      transform: rotateY(180deg);
+    }
+
+    .card-front, .card-back {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
+      border-radius: 15px;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      box-sizing: border-box;
+    }
+
+    .card-back {
+      background-image: url('img/card_back.jpeg');
+      border: 3px solid #555;
+      background-size: cover;
+      background-position: center;
+      transform: rotateY(0deg);
+    }
+
+    .card-front {
+      transform: rotateY(180deg);
+      background-color: #000;
+      border: 3px solid #fff;
+      position: relative;
+      overflow: hidden;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+
+    .card-front-content {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      justify-content: space-between;
+      color: white;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+      padding: 15px;
+      box-sizing: border-box;
+    }
+
+    /* 抽卡動畫中的影片樣式 */
+    .card-front-video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 10px;
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 1;
+      filter: drop-shadow(0 0 12px #00ffffcc);
+    }
+
+    .card-front-title {
+      font-size: 1.2rem;
+      font-weight: bold;
+      margin-bottom: 5px;
+      z-index: 3;
+      position: relative;
+    }
+
+    .card-front-info {
+      font-size: 0.9rem;
+      opacity: 0.9;
+      z-index: 3;
+      position: relative;
+    }
+
+    @keyframes cardAppear {
+      0% { transform: translate(-50%, -50%) scale(0); }
+      50% { transform: translate(-50%, -50%) scale(1.3); }
+      100% { transform: translate(-50%, -50%) scale(1); }
+    }
+
+    @keyframes circlePulse {
+      0% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+      50% { transform: translate(-50%, -50%) scale(1.3); opacity: 0.6; }
+      100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+    }
+
+    @keyframes raysPulse {
+      0% { transform: translate(-50%, -50%) scale(0.8); opacity: 0; }
+      50% { transform: translate(-50%, -50%) scale(1.4); opacity: 0.4; }
+      100% { transform: translate(-50%, -50%) scale(0.8); opacity: 0; }
+    }
+
+    .gacha-animation.rare .gacha-circle,
+    .gacha-animation.rare .gacha-rays {
+      border-color: #a259ff;
+      background: radial-gradient(circle, transparent 30%, #a259ff 70%);
+      box-shadow: 0 0 30px #a259ff, 0 0 60px #ff6bff;
+    }
+
+    .gacha-animation.common .card-front, .gacha-animation.common .card-back { border-color: #00ffff; }
+    .gacha-animation.rare .card-front, .gacha-animation.rare .card-back { border-color: #a259ff; }
+    .gacha-animation.epic .card-front, .gacha-animation.epic .card-back { border-color: #ffd700; }
+
+    .gacha-animation.epic .gacha-circle,
+    .gacha-animation.epic .gacha-rays {
+      border-color: #ffd700;
+      background: radial-gradient(circle, transparent 30%, #ffd700 70%);
+      box-shadow: 0 0 30px #ffd700, 0 0 60px #ffaa00;
+    }
+
+    @media (max-aspect-ratio: 1/1) {
+      .gacha-card {
+        width: min(60vw, 60vh);
+        height: min(90vw, 90vh);
+      }
+      .gacha-circle {
+        width: min(60vw, 60vh);
+        height: min(60vw, 60vh);
+      }
+      .gacha-rays {
+        width: min(70vw, 70vh);
+        height: min(70vw, 70vh);
+      }
+    }
+
+    /* 美化滾動條 */
+    body::-webkit-scrollbar, #cardGrid::-webkit-scrollbar {
+      height: 10px;
+      width: 10px;
+      background: rgba(0,0,0,0.08);
+      border-radius: 8px;
+    }
+    body::-webkit-scrollbar-thumb, #cardGrid::-webkit-scrollbar-thumb {
+      background: linear-gradient(90deg, #00ffff88, #a259ff88);
+      border-radius: 8px;
+      box-shadow: 0 0 4px #00ffff88;
+    }
+    body::-webkit-scrollbar-thumb:hover, #cardGrid::-webkit-scrollbar-thumb:hover {
+      background: linear-gradient(90deg, #00ffffcc, #a259ffcc);
+    }
+    body, #cardGrid {
+      scrollbar-width: thin;
+      scrollbar-color: #00ffff88 #00000011;
+    }
+
+    /* 新增：許願池樣式 */
+    .wish-section {
+      background: rgba(20, 40, 80, 0.9);
+      border: 2px solid #ffd700;
+      border-radius: 15px;
+      padding: 20px;
+      margin: 20px auto;
+      max-width: 800px;
+      box-shadow: 0 0 25px #ffd70033;
+      backdrop-filter: blur(8px);
+      animation: wishSectionGlow 3s ease-in-out infinite;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .wish-section::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(45deg, transparent, rgba(255, 215, 0, 0.1), transparent);
+      animation: wishShimmer 4s linear infinite;
+      pointer-events: none;
+    }
+
+    @keyframes wishSectionGlow {
+      0%, 100% { 
+        box-shadow: 0 0 25px #ffd70033, 0 0 50px #ffd70022;
+        border-color: #ffd700;
+      }
+      50% { 
+        box-shadow: 0 0 35px #ffd70055, 0 0 70px #ffd70033;
+        border-color: #ffaa00;
+      }
+    }
+
+    @keyframes wishShimmer {
+      0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+      100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+    }
+
+    .wish-section h3 {
+      color: #ffd700;
+      font-size: 1.6rem;
+      font-weight: bold;
+      margin-bottom: 15px;
+      text-shadow: 0 0 15px #ffd700, 0 0 30px #ffaa00;
+      letter-spacing: 2px;
+      text-align: center;
+      animation: wishTitlePulse 2s ease-in-out infinite;
+      position: relative;
+      z-index: 1;
+      font-family: 'Orbitron', 'Inter', sans-serif;
+    }
+
+    @keyframes wishTitlePulse {
+      0%, 100% { 
+        transform: scale(1);
+        text-shadow: 0 0 15px #ffd700, 0 0 30px #ffaa00;
+      }
+      50% { 
+        transform: scale(1.05);
+        text-shadow: 0 0 20px #ffd700, 0 0 40px #ffaa00, 0 0 60px #ffd700;
+      }
+    }
+
+    .wish-controls {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 15px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .wish-select {
+      background: rgba(0, 0, 0, 0.7);
+      border: 2px solid #00ffff;
+      border-radius: 12px;
+      padding: 12px 18px;
+      color: #fff;
+      font-size: 1.1rem;
+      font-family: 'Inter', 'Noto Sans TC', sans-serif;
+      min-width: 220px;
+      cursor: pointer;
+      box-shadow: 0 0 20px #00ffff33;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .wish-select::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.2), transparent);
+      transition: left 0.5s ease;
+    }
+
+    .wish-select:hover::before {
+      left: 100%;
+    }
+
+    .wish-select:focus {
+      outline: none;
+      box-shadow: 0 0 30px #00ffff66, 0 0 50px #00ffff33;
+      border-color: #00ffff;
+      transform: scale(1.02);
+    }
+
+    .wish-select option {
+      background: rgba(10, 20, 40, 0.95);
+      color: #fff;
+      padding: 10px;
+      font-size: 1rem;
+      font-family: 'Inter', 'Noto Sans TC', sans-serif;
+    }
+
+    .wish-btn {
+      background: linear-gradient(135deg, #ffd700 0%, #ffaa00 100%);
+      color: #000;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: bold;
+      box-shadow: 0 0 20px #ffd70066;
+      font-size: 1.1rem;
+      letter-spacing: 1px;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      font-family: 'Inter', 'Noto Sans TC', sans-serif;
+    }
+
+    .wish-btn::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      transition: width 0.3s ease, height 0.3s ease;
+    }
+
+    .wish-btn:hover::before {
+      width: 300px;
+      height: 300px;
+    }
+
+    .wish-btn:hover {
+      transform: scale(1.08) translateY(-2px);
+      box-shadow: 0 0 30px #ffd70099, 0 0 50px #ffd70066;
+    }
+
+    .wish-btn:active {
+      transform: scale(0.95);
+    }
+
+    .current-wish {
+      background: rgba(0, 0, 0, 0.5);
+      border: 2px solid #ffd700;
+      border-radius: 12px;
+      padding: 18px;
+      text-align: center;
+      min-height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffd700;
+      font-weight: bold;
+      text-shadow: 0 0 10px #ffd700;
+      position: relative;
+      z-index: 1;
+      animation: wishCardGlow 2s ease-in-out infinite;
+    }
+
+    @keyframes wishCardGlow {
+      0%, 100% { 
+        box-shadow: 0 0 15px #ffd70033;
+        border-color: #ffd700;
+      }
+      50% { 
+        box-shadow: 0 0 25px #ffd70055, 0 0 40px #ffd70033;
+        border-color: #ffaa00;
+      }
+    }
+
+    .wish-card {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      background: rgba(255, 215, 0, 0.15);
+      border-radius: 10px;
+      padding: 15px;
+      box-shadow: 0 0 20px #ffd70033;
+      animation: wishCardFloat 3s ease-in-out infinite;
+      border: 1px solid rgba(255, 215, 0, 0.3);
+    }
+
+    @keyframes wishCardFloat {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+    }
+
+    .wish-card img {
+      width: 55px;
+      height: 55px;
+      border-radius: 10px;
+      object-fit: cover;
+      border: 2px solid #ffd700;
+      box-shadow: 0 0 15px #ffd70066;
+      animation: wishImageGlow 2s ease-in-out infinite;
+    }
+
+    @keyframes wishImageGlow {
+      0%, 100% { 
+        box-shadow: 0 0 15px #ffd70066;
+        border-color: #ffd700;
+      }
+      50% { 
+        box-shadow: 0 0 25px #ffd70099, 0 0 35px #ffd70066;
+        border-color: #ffaa00;
+      }
+    }
+
+    .wish-card-info {
+      text-align: left;
+    }
+
+    .wish-card-name {
+      font-size: 1.2rem;
+      margin-bottom: 6px;
+      color: #ffd700;
+      text-shadow: 0 0 8px #ffd700;
+      font-weight: bold;
+      font-family: 'Inter', 'Noto Sans TC', sans-serif;
+    }
+
+    .wish-card-rarity {
+      font-size: 1rem;
+      opacity: 0.9;
+      color: #e0e0e0;
+      margin-bottom: 5px;
+      font-family: 'Inter', 'Noto Sans TC', sans-serif;
+    }
+
+    .wish-bonus {
+      color: #00ff00;
+      font-size: 1rem;
+      margin-top: 5px;
+      font-weight: bold;
+      text-shadow: 0 0 8px #00ff00;
+      animation: wishBonusPulse 1.5s ease-in-out infinite;
+      font-family: 'JetBrains Mono', 'Inter', monospace;
+    }
+
+    @keyframes wishBonusPulse {
+      0%, 100% { 
+        opacity: 1;
+        text-shadow: 0 0 8px #00ff00;
+      }
+      50% { 
+        opacity: 0.8;
+        text-shadow: 0 0 12px #00ff00, 0 0 20px #00ff00;
+      }
+    }
+    #music-toggle-btn {
+      background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+      color: white;
+      border-radius: 50%;
+      width: 45px;
+      height: 45px;
+      padding: 0;
+      font-size: 20px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      margin-right: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    #music-toggle-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 6px 15px rgba(46, 204, 113, 0.4);
+    }
+
+    /* 新卡片亮光動畫 */
+    @keyframes newCardGlow {
+      0% {
+        box-shadow: 0 0 0px 0px #fff, 0 0 20px 8px #ffd700, 0 0 40px 16px #a259ff;
+        border-color: #fff;
+      }
+      50% {
+        box-shadow: 0 0 20px 8px #fff, 0 0 40px 16px #ffd700, 0 0 80px 32px #a259ff;
+        border-color: #ffd700;
+      }
+      100% {
+        box-shadow: 0 0 0px 0px #fff, 0 0 20px 8px #ffd700, 0 0 40px 16px #a259ff;
+        border-color: #fff;
+      }
+    }
+    .new-card-glow {
+      animation: newCardGlow 1.2s ease-in-out 0s 2 alternate;
+      border-width: 4px !important;
+      border-color: #ffd700 !important;
+      box-shadow: 0 0 20px 8px #ffd700, 0 0 40px 16px #a259ff;
+    }
+
+    /* 響應式設計 */
+    /* 大螢幕優化 */
+    @media (min-width: 1200px) {
+      main {
+        max-width: 1400px;
+        padding-bottom: 50px;
+      }
+      
+      #cardGrid {
+        max-width: 1200px;
+        grid-template-columns: repeat(6, 1fr);
+        gap: 22px;
+        padding: 35px 25px 15px 25px;
+      }
+      
+      header h1 {
+        font-size: 3.2rem;
+      }
+      
+      .wish-section {
+        max-width: 1000px;
+        padding: 25px;
+      }
+    }
+
+    /* 平板橫向 */
+    @media (max-width: 1024px) {
+      main {
+        width: 98%;
+        margin: 25px auto 0 auto;
+      }
+      
+      #cardGrid {
+        width: 98%;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+        padding: 25px 15px 8px 15px;
+      }
+      
+      header {
+        padding: 18px 25px;
+      }
+      
+      header h1 {
+        font-size: 2.4rem;
+      }
+      
+      .wish-section {
+        width: 98%;
+        padding: 18px;
+        margin: 18px auto;
+      }
+      
+      .wish-controls {
+        flex-direction: column;
+        gap: 12px;
+      }
+      
+      .wish-select {
+        min-width: 280px;
+      }
+    }
+
+    /* 平板直向 */
+    @media (max-width: 768px) {
+      main {
+        width: 100%;
+        margin: 20px auto 0 auto;
+      }
+      
+      #cardGrid {
+        width: 100%;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 14px;
+        padding: 20px 10px 5px 10px;
+      }
+      
+      .card {
+        width: 130px;
+        height: 200px;
+        padding: 8px;
+        font-size: 1rem;
+      }
+      
+      header {
+        padding: 15px 20px;
+        flex-direction: column;
+        gap: 15px;
+      }
+      
+      header h1 {
+        font-size: 2rem;
+        margin-bottom: 10px;
+      }
+      
+      .wish-section {
+        width: 100%;
+        padding: 15px;
+        margin: 15px auto;
+      }
+      
+      .wish-section h3 {
+        font-size: 1.4rem;
+      }
+      
+      .wish-select {
+        min-width: 250px;
+        font-size: 1rem;
+        padding: 10px 15px;
+      }
+      
+      .btn {
+        padding: 12px 20px;
+        font-size: 14px;
+      }
+      
+      #starCount {
+        bottom: 12px;
+        right: 12px;
+        padding: 10px 15px;
+        font-size: 1.2rem;
+      }
+      
+      #music-toggle-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 18px;
+      }
+    }
+
+    /* 手機橫向 */
+    @media (max-width: 600px) {
+      #cardGrid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+        padding: 18px 8px 5px 8px;
+      }
+      
+      .card {
+        width: 110px;
+        height: 160px;
+        padding: 6px;
+        font-size: 0.95rem;
+      }
+      
+      .card img {
+        height: 45%;
+      }
+      
+      .card .label {
+        font-size: 0.8rem;
+        min-height: 2rem;
+      }
+      
+      header h1 {
+        font-size: 1.8rem;
+      }
+      
+      .wish-section {
+        padding: 12px;
+        margin: 12px auto;
+      }
+      
+      .wish-section h3 {
+        font-size: 1.2rem;
+      }
+      
+      .wish-select {
+        min-width: 200px;
+        font-size: 0.9rem;
+        padding: 8px 12px;
+      }
+      
+      .btn {
+        padding: 10px 16px;
+        font-size: 13px;
+      }
+    }
+
+    /* 小螢幕手機 */
+    @media (max-width: 480px) {
+      main {
+        margin: 15px auto 0 auto;
+      }
+      
+      #cardGrid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+        padding: 15px 5px 5px 5px;
+      }
+      
+      .card {
+        width: 110px;
+        height: 160px;
+        padding: 5px;
+        font-size: 0.95rem;
+      }
+      
+      .card img {
+        height: 40%;
+        margin-bottom: 5px;
+      }
+      
+      .card .label {
+        font-size: 0.75rem;
+        min-height: 1.8rem;
+        margin-top: 3px;
+      }
+      
+      .card .category-tag {
+        font-size: 0.7rem;
+        margin-top: 2px;
+      }
+      
+      header {
+        padding: 12px 15px;
+      }
+      
+      header h1 {
+        font-size: 1.6rem;
+      }
+      
+      .wish-section {
+        padding: 10px;
+        margin: 10px auto;
+      }
+      
+      .wish-section h3 {
+        font-size: 1.1rem;
+        margin-bottom: 12px;
+      }
+      
+      .wish-select {
+        min-width: 180px;
+        font-size: 0.85rem;
+        padding: 8px 10px;
+      }
+      
+      .btn {
+        padding: 8px 14px;
+        font-size: 12px;
+      }
+      
+      #starCount {
+        bottom: 10px;
+        right: 10px;
+        padding: 8px 12px;
+        font-size: 1rem;
+      }
+      
+      #music-toggle-btn {
+        width: 35px;
+        height: 35px;
+        font-size: 16px;
+      }
+      
+      .rank-badge {
+        width: 28px;
+        height: 28px;
+        font-size: 0.8rem;
+      }
+      
+      .shard-count {
+        font-size: 0.7rem;
+        padding: 2px 5px;
+      }
+    }
+
+    /* 極小螢幕 */
+    @media (max-width: 360px) {
+      #cardGrid {
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        padding: 12px 3px 3px 3px;
+      }
+      
+      .card {
+        width: 100px;
+        height: 150px;
+        padding: 4px;
+      }
+      
+      .card img {
+        height: 35%;
+        margin-bottom: 3px;
+      }
+      
+      .card .label {
+        font-size: 0.7rem;
+        min-height: 1.5rem;
+        margin-top: 2px;
+      }
+      
+      header h1 {
+        font-size: 1.4rem;
+      }
+      
+      .wish-section {
+        padding: 8px;
+        margin: 8px auto;
+      }
+      
+      .wish-select {
+        min-width: 160px;
+        font-size: 0.8rem;
+        padding: 6px 8px;
+      }
+      
+      .btn {
+        padding: 6px 12px;
+        font-size: 11px;
+      }
+    }
+
+    /* 新增 wish-card-outer, wish-card-inner, wish-card-style, wish-bonus-block, wish-bonus-icon, wish-bonus-text 樣式 */
+    .wish-card-outer {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      width: 100%;
+      margin: 0 auto;
+      padding: 12px 0 8px 0;
+    }
+    .wish-card-inner {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 18px;
+      max-width: 260px;
+      width: 100%;
+    }
+    .wish-card-style {
+      width: 240px;
+      min-width: 160px;
+      max-width: 90vw;
+      height: 320px;
+      min-height: 160px;
+      padding: 16px 10px 16px 10px;
+      border: 2px solid #ffd700;
+      background: rgba(255,255,255,0.92);
+      border-radius: 18px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: box-shadow 0.2s, transform 0.2s;
+      position: relative;
+      font-size: 0.85em; /* 新增這行或調小原本的字體 */
+    }
+    .wish-card-style:hover {
+      box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+      transform: scale(1.03);
+      border-color: #ffcc33;
+    }
+    .wish-card-style .card-media {
+      width: 90%;
+      height: 70%;
+      max-height: none;
+      min-height: 70%;
+      border-radius: 12px;
+      object-fit: cover;
+      margin-bottom: 8px;
+      background: #eee;
+      box-shadow: 0 2px 8px #ffd70022;
+    }
+    .wish-card-style .label {
+      margin-top: 4px;
+      margin-bottom: 0;
+      padding: 0;
+      line-height: 1.08;
+      color: #111 !important;
+      font-weight: 600;
+      font-size: 1.08em; /* 或 0.85rem 視覺上再微調 */
+    }
+    .wish-card-style .chinese-text {
+      font-size: 1.12em;
+      margin-bottom: 2px;
+      color: #0055aa !important;
+      text-shadow: 0 1px 4px #fff, 0 0 2px #0055aa44;
+    }
+    .wish-card-style .english-text {
+      font-size: 1em;
+      color: #333 !important;
+      text-shadow: 0 1px 4px #fff, 0 0 2px #3333;
+    }
+    .wish-card-style .category-tag {
+      margin-top: 6px;
+      font-size: 0.95em; /* 或 0.65rem 視覺上再微調 */
+      color: #b8860b !important;
+      text-shadow: none;
+      font-weight: bold;
+    }
+    .wish-card-style .stars {
+      margin-top: 8px;
+      font-size: 1.1em; /* 或 0.75rem 視覺上再微調 */
+      color: #ffd700 !important;
+      text-shadow: 0 0 8px #fff, 0 0 12px #ffd700;
+      font-weight: bold;
+    }
+    .wish-card-style .rank-badge {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      font-size: 1.05rem;
+      background: #fffbe6;
+      color: #ffd700;
+      border: 1.5px solid #ffd700;
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 8px #ffd70022;
+      z-index: 2;
+    }
+    .wish-bonus-block {
+      margin-top: 12px;
+      background: linear-gradient(90deg, #ffd70022 0%, #00ffff22 100%);
+      border-radius: 12px;
+      padding: 12px 20px;
+      font-size: 1.05rem;
+      color: #ffd700;
+      font-weight: bold;
+      box-shadow: 0 0 12px #ffd70033;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      justify-content: center;
+      letter-spacing: 1px;
+    }
+    .wish-bonus-icon {
+      font-size: 1.2em;
+      margin-right: 4px;
+    }
+    .wish-bonus-text {
+      color: #ffd700;
+      font-weight: bold;
+      text-shadow: 0 0 8px #ffd70088;
+    }
+    @media (max-width: 600px) {
+      .wish-card-inner { max-width: 98vw; }
+      .wish-card-style { width: 98vw; min-width: 0; height: 180px; min-height: 100px; font-size: 1rem; }
+      .wish-card-style .label { font-size: 0.85rem; }
+      .wish-card-style .category-tag { font-size: 0.65rem; }
+      .wish-card-style .stars { font-size: 0.75rem; }
+    }
+    .unlock-status-icon {
+      position: absolute;
+      bottom: 8px;
+      right: 8px;
+      font-size: 1.3em;
+      opacity: 0.85;
+      z-index: 2;
+      pointer-events: none;
+      text-shadow: 0 0 6px #000, 0 0 2px #fff;
+    }
+    .card.unlocked .unlock-status-icon { color: #00ff99; }
+    .card.locked .unlock-status-icon { color: #ff6666; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🌌 星辰祈願</h1>
+    <div style="display: flex; align-items: center;">
+      <button id="music-toggle-btn" class="btn">🔊</button>
+      
+      <button class="btn home-btn" onclick="location.href='index.html'">🏠 回首頁</button>
+      <button class="btn cards-btn" onclick="location.href='cards.html'">📁 卡片倉庫</button>
+    </div>
+  </header>
+
+  <!-- 新增：許願池選擇區域 -->
+  <div class="wish-section">
+    <h3>🌟 星辰祈願</h3>
+    <div class="wish-controls" style="display:flex;flex-direction:column;align-items:center;gap:10px;">
+      <input id="wishSearchGlobal" class="wish-select" style="margin-bottom:8px;max-width:400px;" placeholder="搜尋卡片/類別/名稱...">
+      <div style="display:flex;gap:18px;flex-wrap:wrap;justify-content:center;align-items:flex-start;width:100%;">
+        <div style="display:flex;flex-direction:column;align-items:center;min-width:180px;">
+          <div style="font-weight:bold;color:#ffd700;margin-bottom:4px;">SSR 許願</div>
+          <select id="wishPoolSSR" class="wish-select"></select>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;min-width:180px;">
+          <div style="font-weight:bold;color:#a259ff;margin-bottom:4px;">R 許願</div>
+          <select id="wishPoolR" class="wish-select"></select>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;min-width:180px;">
+          <div style="font-weight:bold;color:#00ffff;margin-bottom:4px;">A 許願</div>
+          <select id="wishPoolA" class="wish-select"></select>
+        </div>
+        <button id="setWishBtn" class="wish-btn" style="height:48px;align-self:center;">設定許願</button>
+      </div>
+    </div>
+    <div id="currentWish" class="current-wish"></div>
+  </div>
+
+  <!-- 移除分頁按鈕 -->
+  <main>
+    <h2>點擊按鈕開始抽卡！</h2>
+    <!-- 新增：分類分頁按鈕區塊 -->
+    <div id="categoryTabs" style="margin-bottom: 18px;"></div>
+    <div style="margin-bottom: 32px;">
+      <button class="btn" onclick="drawCard()">🔮 抽一張（需 20 星）</button>
+      <button class="btn" onclick="drawTen()">🌟 十連抽（需 200 星）</button>
+    </div>
+    <div id="cardGrid"></div>
+    <div id="starCount">⭐<span id="stars">0</span></div>
+  </main>
+
+  <div id="overlay"></div>
+  <div id="modal">
+    <div class="modal-content">
+      <div class="close-btn" onclick="closeModal()">✕</div>
+      <img id="modalImg" src="" alt="卡片圖片">
+      <h2 id="modalTitle">卡片標題</h2>
+      <div class="description" id="modalDesc">卡片描述</div>
+      <button class="sound-btn-modal" onclick="playModalAudio()">🔊 播放</button>
+    </div>
+  </div>
+
+  <!-- 新增全螢幕抽卡動畫 -->
+  <div id="gachaAnimation" class="gacha-animation">
+    <div class="gacha-content">
+      <div class="gacha-circle"></div>
+      <div class="gacha-rays"></div>
+      <div class="gacha-card">
+        <div class="card-inner">
+          <div class="card-front"></div>
+          <div class="card-back"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 背景音樂 -->
+  <audio id="bgm" src="sound/午後放鬆時光（純音樂）.mp3" loop></audio>
+  <!-- 抽卡背景音樂 -->
+  <audio id="gachaBg" src="sound/gacha_bg.mp3" loop></audio>
+  <!-- 抽卡音效 -->
+  <audio id="drawSoundA" src="sound/TAK.mp3" preload="auto"></audio> <!-- 普通(A)卡音效 -->
+  <audio id="drawSoundR" src="sound/TAK.mp3" preload="auto"></audio> <!-- 稀有(R)卡音效 -->
+  <audio id="ssrSound" src="sound/shine.mp3" preload="auto"></audio> <!-- 超稀有(SSR)卡音效 -->
+
+  <script src="js/cards.js"></script>
+  <script src="js/userData.js"></script>
+  <script src="js/starRewardSystem.js"></script>
+  <script src="js/autoSaveSystem.js"></script>
+  <script src="js/contextMenuSystem.js"></script>
+  <script>
+    // 頁面載入時自動檢查每日簽到獎勵
+    document.addEventListener('DOMContentLoaded', function() {
+      // 延遲一點時間確保所有系統都已載入
+      setTimeout(() => {
+        checkDailyReward();
+      }, 1000);
+
+      // --- 背景音樂控制 ---
+      const bgm = document.getElementById('bgm');
+      const musicToggleBtn = document.getElementById('music-toggle-btn');
+
+      function toggleMusic() {
+        if (isMusicPlaying) {
+          bgm.pause();
+          musicToggleBtn.textContent = '🔇';
+          isMusicPlaying = false;
+        } else {
+          // 嘗試播放，如果失敗會在控制台顯示錯誤
+          bgm.play().then(() => {
+            musicToggleBtn.textContent = '🔊';
+            isMusicPlaying = true;
+          }).catch(e => {
+            console.error("無法播放音樂:", e);
+            musicToggleBtn.textContent = '🔇';
+            isMusicPlaying = false;
+          });
+        }
+      }
+
+      musicToggleBtn.addEventListener('click', toggleMusic);
+
+      // 頁面載入時不自動播放背景音樂，等使用者點擊音樂按鈕或互動時才播放
+      musicToggleBtn.textContent = '🔇';
+      isMusicPlaying = false;
+    });
+
+    // 背景音樂狀態管理
+    let bgmWasPlaying = false; // 記錄抽卡前背景音樂是否在播放
+    let isMusicPlaying = false; // 全局音樂播放狀態
+
+    // 暫停背景音樂並記錄狀態
+    function pauseBGM() {
+      const bgm = document.getElementById('bgm');
+      const musicToggleBtn = document.getElementById('music-toggle-btn');
+      
+      if (bgm && !bgm.paused) {
+        bgmWasPlaying = true;
+        isMusicPlaying = false;
+        bgm.pause();
+        if (musicToggleBtn) {
+          musicToggleBtn.textContent = '🔇';
+        }
+      } else {
+        bgmWasPlaying = false;
+      }
+    }
+
+    // 恢復背景音樂（根據抽卡前的狀態）
+    function resumeBGM() {
+      const bgm = document.getElementById('bgm');
+      const musicToggleBtn = document.getElementById('music-toggle-btn');
+      
+      if (bgm && bgmWasPlaying) {
+        bgm.play().then(() => {
+          isMusicPlaying = true;
+          if (musicToggleBtn) {
+            musicToggleBtn.textContent = '🔊';
+          }
+        }).catch(e => {
+          console.error("無法恢復背景音樂:", e);
+          isMusicPlaying = false;
+          if (musicToggleBtn) {
+            musicToggleBtn.textContent = '🔇';
+          }
+        });
+      }
+    }
+
+    // 取得已擁有卡片
+    let ownedCards = LinkageSystem.cards.getOwnedCards();
+
+    // 星星設定
+    let stars = LinkageSystem.stars.get();
+
+    // 新增：許願池系統
+    let currentWishCard = null;
+
+    const rankMap = { '普通': 'A', '稀有': 'R', '超稀有': 'SSR' };
+
+    // 保底計數器和設定
+    let pityCounter = 0; // 一般保底計數器（50抽必得SSR）
+    let wishPityCounter = 0; // 許願保底計數器（70抽必得許願SSR）
+    const PITY_THRESHOLD = 50; // 一般保底閾值
+    const WISH_PITY_THRESHOLD = 70; // 許願保底閾值
+    
+    // 載入保底計數器
+    function loadPityCounters() {
+      const savedPity = localStorage.getItem('pityCounter');
+      const savedWishPity = localStorage.getItem('wishPityCounter');
+      if (savedPity) pityCounter = parseInt(savedPity);
+      if (savedWishPity) wishPityCounter = parseInt(savedWishPity);
+    }
+    
+    // 儲存保底計數器
+    function savePityCounters() {
+      localStorage.setItem('pityCounter', pityCounter.toString());
+      localStorage.setItem('wishPityCounter', wishPityCounter.toString());
+    }
+    
+    // 增加保底計數器
+    function incrementPityCounters() {
+      pityCounter++;
+      wishPityCounter++;
+      savePityCounters();
+    }
+    
+    // 重置保底計數器
+    function resetPityCounters() {
+      pityCounter = 0;
+      wishPityCounter = 0;
+      savePityCounters();
+    }
+    
+    // 重置許願保底計數器
+    function resetWishPityCounter() {
+      wishPityCounter = 0;
+      savePityCounters();
+    }
+
+    // 在 initializeWishPool 之前補上 getRarityEmoji 函數
+    function getRarityEmoji(rarity) {
+      if (rarity === '超稀有') return '🌟';
+      if (rarity === '稀有') return '🔷';
+      if (rarity === '普通') return '⚪';
+      return '';
+    }
+
+    // 新增：初始化許願池選項（可選所有稀有度）
+    // === 刪除 initializeWishPool 函數定義及所有呼叫 ===
+    // （請直接移除 function initializeWishPool(...) { ... } 及所有 initializeWishPool(...) 呼叫）
+    // ... existing code ...
+
+    // 新增：設定許願卡片
+    function setWishCard() {
+      const card = getCurrentWishCard();
+      if (!card) {
+        LinkageSystem.notifications.show('請先選擇要許願的卡片！', 'warning');
+        return;
+      }
+      currentWishCard = card;
+      localStorage.setItem('currentWishCard', JSON.stringify(card));
+      LinkageSystem.notifications.show(`✨ 已設定許願：${card.zh}！`, 'success');
+    }
+
+    // 新增：清除許願卡片
+    function clearWishCard() {
+      currentWishCard = null;
+      localStorage.removeItem('currentWishCard');
+      updateWishDisplay();
+      
+      LinkageSystem.notifications.show('🗑️ 已清除 SSR 許願設定', 'info');
+    }
+
+    // 新增：更新許願顯示
+    function updateWishDisplay() {
+      const card = getCurrentWishCard();
+      const currentWishDiv = document.getElementById('currentWish');
+      if (!currentWishDiv) return;
+      if (!card) {
+        currentWishDiv.innerHTML = '目前沒有設定許願';
+        return;
+      }
+      const rarityClass = card.rarity === '普通' ? 'common' : card.rarity === '稀有' ? 'rare' : 'epic';
+      const isImageMP4 = card.image && card.image.endsWith('.mp4');
+      let cardMedia = isImageMP4
+        ? `<video class="card-media" autoplay loop muted playsinline style="width: 100%; height: 50%; object-fit: cover; border-radius: 10px;">
+            <source src="${card.image}" type="video/mp4">您的瀏覽器不支援影片播放</video>`
+        : `<img class="card-media" src="${card.image}" alt="${card.word}">`;
+      let starIcons = card.rarity === '普通' ? '★' : card.rarity === '稀有' ? '★★' : '★★★';
+      currentWishDiv.innerHTML = `
+        <div class="wish-card-outer">
+          <div class="wish-card-inner">
+            <div class="card ${rarityClass} wish-card-style" style="margin:0 auto;">
+              ${cardMedia}
+              <div class="stars">${starIcons}</div>
+              <div class="label">
+                <div class="chinese-text">${card.zh}</div>
+                <div class="english-text">${card.word}</div>
+              </div>
+              <div class="category-tag">類別：${card.category}</div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // 許願加成機率（依稀有度）
+    function getWishBonus(rarity) {
+      if (rarity === '超稀有') return 2; // SSR 2%
+      if (rarity === '稀有') return 4;   // R卡 4%
+      if (rarity === '普通') return 6;   // A卡 6%
+      return 0;
+    }
+
+    // 檢查是否抽中許願卡片
+    function checkWishCard() {
+      if (!currentWishCard) return false;
+      const wishBonus = getWishBonus(currentWishCard.rarity);
+      const random = Math.random() * 100;
+      return random < wishBonus;
+    }
+
+    // 更新畫面上星星數
+    function updateStars() {
+      LinkageSystem.stars.updateDisplay();
+    }
+
+    // 頁面載入時初始化
+    window.addEventListener("load", () => {
+      // 載入星星數量
+      stars = LinkageSystem.stars.get();
+      updateStars();
+
+      // 載入保底計數器
+      loadPityCounters();
+
+      // 載入許願卡片設定
+      const savedWishCard = localStorage.getItem('currentWishCard');
+      if (savedWishCard) {
+        try {
+          currentWishCard = JSON.parse(savedWishCard);
+        } catch (e) {
+          console.error('載入許願卡片失敗:', e);
+          localStorage.removeItem('currentWishCard');
+        }
+      }
+
+      // 初始化許願池選項
+      // === 刪除 initializeWishPool 函數定義及所有呼叫 ===
+      // （請直接移除 function initializeWishPool(...) { ... } 及所有 initializeWishPool(...) 呼叫）
+      // ... existing code ...
+
+      // 首次來到頁面就給 150 顆星（只執行一次）
+      if (!localStorage.getItem("firstGachaGifted")) {
+        LinkageSystem.stars.add(150);
+        localStorage.setItem("firstGachaGifted", "true");
+        LinkageSystem.notifications.show('🎁 首次見面禮！獲得 150 顆星星！', 'success');
+      }
+      
+      // 顯示保底機制公告
+      showPityAnnouncement();
+    });
+    
+    // 保底機制公告
+    function showPityAnnouncement() {
+      if (!localStorage.getItem('pityAnnouncementShown')) {
+        const announcement = `
+          <div style="text-align: center; padding: 20px;">
+            <h3 style="color: #ffd700; margin-bottom: 15px;">🎯 保底機制說明</h3>
+            <div style="color: #fff; line-height: 1.6;">
+              <p><strong>⭐ 一般保底：</strong>50抽內必得SSR卡片</p>
+              <p><strong>🎯 許願保底：</strong>70抽內必得許願SSR卡片</p>
+              <p><strong>✨ 許願加成：</strong>設定許願SSR後，抽中機率提升2%</p>
+              <p style="color: #ffaa00; margin-top: 15px;">💡 設定許願SSR可大幅提升抽中機率！</p>
+            </div>
+          </div>
+        `;
+        
+        LinkageSystem.notifications.show(announcement, 'info');
+        localStorage.setItem('pityAnnouncementShown', 'true');
+      }
+    }
+
+    // [FINAL VERSION] 統一處理抽卡結果的核心邏輯
+    function processDraw(card) {
+      const isOwned = LinkageSystem.cards.isCardOwned(card.word);
+      
+      if (!isOwned) {
+        // 新卡片，直接解鎖
+        LinkageSystem.cards.addCard(card.word);
+        addNewCard(card.word);
+        return { 
+          type: 'new_card_unlocked', 
+          card: card
+        };
+      } else {
+        // 已解鎖，給星星獎勵
+        let starReward = 0;
+        switch(card.rarity) {
+          case '超稀有': starReward = 10; break; // SSR 給 10 星星
+          case '稀有': starReward = 5; break;    // R 給 5 星星
+          case '普通': starReward = 2; break;    // A 給 2 星星
+        }
+        LinkageSystem.stars.add(starReward);
+        return { type: 'duplicate', card: card, stars: starReward };
+      }
+    }
+
+    // [FINAL VERSION] 處理單抽結果的通知
+    function handleSingleDrawResult(result) {
+      if (result.type === 'duplicate') {
+        LinkageSystem.notifications.show(`抽到重複卡片 ${result.card.zh}，轉換為 ⭐ ${result.stars}！`, 'info');
+      } else if (result.type === 'new_card_unlocked') {
+        LinkageSystem.notifications.show(`🎉 恭喜！解鎖新卡片： ${result.card.zh}！`, 'success');
+      }
+    }
+
+    function drawCard() {
+      console.log('drawCard 函數被調用');
+      console.log('allCards:', allCards);
+      console.log('stars:', stars);
+      
+      if (!Array.isArray(allCards) || allCards.length === 0) {
+        console.log('卡片資料未載入或為空');
+        return LinkageSystem.notifications.show("卡片資料尚未載入，請稍後再試。", 'warning');
+      }
+      if (stars < 20) {
+        console.log('星星不足，當前星星:', stars);
+        return LinkageSystem.notifications.show("星星不足！（需要 20 顆）", 'warning');
+      }
+      
+      // 暫停背景音樂並記錄狀態
+      pauseBGM();
+      
+      // 播放抽卡背景音樂
+      const gachaBg = document.getElementById('gachaBg');
+      if (gachaBg) {
+        gachaBg.currentTime = 0;
+        gachaBg.play().catch(e => console.error("無法播放抽卡背景音樂:", e));
+      }
+      
+      console.log('開始抽卡，扣除 20 星星');
+      LinkageSystem.stars.subtract(20);
+      stars = LinkageSystem.stars.get();
+
+      let selectedCard; // 將變數宣告移到函數開頭
+      let isWishSuccess = false; // 新增：記錄是否許願成功
+
+      // 保底檢查：優先檢查許願保底（70抽必得許願SSR）
+      if (wishPityCounter >= WISH_PITY_THRESHOLD && currentWishCard) {
+        selectedCard = currentWishCard;
+        isWishSuccess = true;
+        resetWishPityCounter(); // 重置許願保底計數器
+        console.log('🎯 許願保底觸發！70抽必得許願SSR:', selectedCard.zh);
+      }
+      // 一般保底檢查（50抽必得SSR）
+      else if (pityCounter >= PITY_THRESHOLD) {
+        const ssrCards = allCards.filter(card => card.rarity === '超稀有');
+        selectedCard = ssrCards.length ? ssrCards[Math.floor(Math.random() * ssrCards.length)] : allCards[Math.floor(Math.random() * allCards.length)];
+        resetPityCounters(); // 重置所有保底計數器
+        console.log('⭐ 一般保底觸發！50抽必得SSR:', selectedCard.zh);
+      }
+      // 檢查是否抽中許願卡片（2%機率）
+      else if (checkWishCard() && currentWishCard) {
+        selectedCard = currentWishCard;
+        isWishSuccess = true;
+        resetWishPityCounter(); // 重置許願保底計數器
+        console.log('✨ 許願成功，抽中:', selectedCard.zh);
+      }
+      // 正常抽卡邏輯
+      else {
+        const random = Math.random() * 100;
+        console.log('隨機數:', random);
+        
+        if (random < 3) { // 3% 機率抽到 SSR
+          const ssrCards = allCards.filter(card => card.rarity === '超稀有');
+          selectedCard = ssrCards.length ? ssrCards[Math.floor(Math.random() * ssrCards.length)] : allCards[Math.floor(Math.random() * allCards.length)];
+          console.log('抽中 SSR:', selectedCard.zh);
+        } else {
+          // 從非 SSR 卡片中隨機抽取
+          const nonSsrCards = allCards.filter(card => card.rarity !== '超稀有');
+          selectedCard = nonSsrCards.length ? nonSsrCards[Math.floor(Math.random() * nonSsrCards.length)] : allCards[Math.floor(Math.random() * allCards.length)];
+          console.log('抽中普通/稀有卡:', selectedCard.zh);
+        }
+      }
+      
+      // 增加保底計數器（除了保底觸發的情況）
+      if (!isWishSuccess && selectedCard.rarity !== '超稀有') {
+        incrementPityCounters();
+      }
+
+      console.log('最終選中的卡片:', selectedCard);
+      
+      // 傳遞許願成功狀態給動畫函數
+      showCard(selectedCard, isWishSuccess);
+      
+      // 在動畫播放後處理結果（調整延遲時間以配合新的動畫節奏）
+      setTimeout(() => {
+        const result = processDraw(selectedCard);
+        handleSingleDrawResult(result);
+        
+        // 抽卡完成後恢復原本的背景音樂
+        setTimeout(() => {
+          // 停止抽卡背景音樂
+          const gachaBg = document.getElementById('gachaBg');
+          if (gachaBg) {
+            gachaBg.pause();
+          }
+          // 恢復原本的背景音樂
+          resumeBGM();
+        }, 1000);
+      }, 2500);
+    }
+
+    function drawTen() {
+      if (!Array.isArray(allCards) || allCards.length === 0) {
+        return LinkageSystem.notifications.show("卡片資料尚未載入，請稍後再試。", 'warning');
+      }
+      if (stars < 200) {
+        return LinkageSystem.notifications.show("星星不足！（十連抽需要 200 顆）", 'warning');
+      }
+      
+      // 暫停背景音樂並記錄狀態
+      pauseBGM();
+      
+      // 播放抽卡背景音樂
+      const gachaBg = document.getElementById('gachaBg');
+      if (gachaBg) {
+        gachaBg.currentTime = 0;
+        gachaBg.play().catch(e => console.error("無法播放抽卡背景音樂:", e));
+      }
+      
+      LinkageSystem.stars.subtract(200);
+      stars = LinkageSystem.stars.get();
+      
+      const drawnCards = [];
+      let hasWishCard = false; // 記錄十連抽中是否有許願卡
+      
+      // 十連抽：使用保底邏輯
+      for (let i = 0; i < 10; i++) {
+        let selectedCard;
+        let isWishSuccess = false;
+        
+        // 保底檢查：優先檢查許願保底（70抽必得許願SSR）
+        if (wishPityCounter >= WISH_PITY_THRESHOLD && currentWishCard && !hasWishCard) {
+          selectedCard = currentWishCard;
+          isWishSuccess = true;
+          hasWishCard = true;
+          resetWishPityCounter();
+          console.log('🎯 十連抽許願保底觸發！70抽必得許願SSR:', selectedCard.zh);
+        }
+        // 一般保底檢查（50抽必得SSR）
+        else if (pityCounter >= PITY_THRESHOLD) {
+          const ssrCards = allCards.filter(card => card.rarity === '超稀有');
+          selectedCard = ssrCards.length ? ssrCards[Math.floor(Math.random() * ssrCards.length)] : allCards[Math.floor(Math.random() * allCards.length)];
+          resetPityCounters();
+          console.log('⭐ 十連抽一般保底觸發！50抽必得SSR:', selectedCard.zh);
+        }
+        // 檢查是否抽中許願卡片（2%機率）
+        else if (checkWishCard() && currentWishCard && !hasWishCard) {
+          selectedCard = currentWishCard;
+          isWishSuccess = true;
+          hasWishCard = true;
+          resetWishPityCounter();
+          console.log('✨ 十連抽許願成功，抽中:', selectedCard.zh);
+        }
+        // 正常抽卡邏輯
+        else {
+          const random = Math.random() * 100;
+          if (random < 3) { // 3% 機率抽到 SSR
+            const ssrCards = allCards.filter(card => card.rarity === '超稀有');
+            selectedCard = ssrCards.length ? ssrCards[Math.floor(Math.random() * ssrCards.length)] : allCards[Math.floor(Math.random() * allCards.length)];
+          } else {
+            const nonSsrCards = allCards.filter(card => card.rarity !== '超稀有');
+            selectedCard = nonSsrCards.length ? nonSsrCards[Math.floor(Math.random() * nonSsrCards.length)] : allCards[Math.floor(Math.random() * allCards.length)];
+          }
+        }
+        
+        // 增加保底計數器（除了保底觸發和SSR的情況）
+        if (!isWishSuccess && selectedCard.rarity !== '超稀有') {
+          incrementPityCounters();
+        }
+        
+        drawnCards.push({ card: selectedCard, isWishSuccess });
+      }
+
+      const drawSequence = async () => {
+        let newCards = [];
+        let totalBonusStars = 0;
+        let duplicateCardsLog = {};
+        
+        for (let i = 0; i < drawnCards.length; i++) {
+          const { card, isWishSuccess } = drawnCards[i];
+          
+          // 使用可等待的動畫函數，傳遞許願成功狀態
+          await showCardAsync(card, isWishSuccess);
+          
+          const result = processDraw(card);
+
+          if (result.type === 'duplicate') {
+            totalBonusStars += result.stars;
+            if (!duplicateCardsLog[result.card.zh]) {
+              duplicateCardsLog[result.card.zh] = { count: 0, rarity: result.card.rarity };
+            }
+            duplicateCardsLog[result.card.zh].count++;
+          } else if (result.type === 'new_card_unlocked') {
+            newCards.push(result.card.zh);
+          }
+          // 每張卡之間短暫暫停，讓玩家能看清（增加間隔時間）
+          await new Promise(resolve => setTimeout(resolve, 800));
+        }
+
+        // 顯示摘要通知
+        let summaryMessage = `<h3 style="margin-top:0; margin-bottom:10px; border-bottom:1px solid #ffd70044; padding-bottom:5px;">十連抽結果</h3>`;
+        if (newCards.length > 0) {
+            summaryMessage += `<p style="margin:4px 0; color:#76ff76;">🎉 新解鎖: ${newCards.join(', ')}</p>`;
+        }
+        
+        const duplicateEntries = Object.entries(duplicateCardsLog);
+        if (duplicateEntries.length > 0) {
+            const duplicatesText = duplicateEntries.map(([name, data]) => `${name} (${data.rarity}) x${data.count}`).join(', ');
+            summaryMessage += `<p style="margin:4px 0; color:#ffaa00;">🔄 重複轉換: ${duplicatesText}</p>`;
+        }
+        
+        if (totalBonusStars > 0) {
+            summaryMessage += `<p style="margin:4px 0; color:#ffd700;">⭐ 重複獎勵: +${totalBonusStars} 星星</p>`;
+        }
+        
+        LinkageSystem.notifications.show(summaryMessage, 'success');
+      
+      // 十連抽完成後恢復原本的背景音樂
+      setTimeout(() => {
+        // 停止抽卡背景音樂
+        const gachaBg = document.getElementById('gachaBg');
+        if (gachaBg) {
+          gachaBg.pause();
+        }
+        // 恢復原本的背景音樂
+        resumeBGM();
+      }, 1000);
+    };
+
+    drawSequence();
+    }
+
+    // 新增：可等待的動畫函數（用於十連抽）
+    function showCardAsync(card, isWishSuccess = false) {
+      return new Promise((resolve) => {
+        const gachaAnimation = document.getElementById('gachaAnimation');
+        const cardInner = gachaAnimation.querySelector('.card-inner');
+        const cardFront = gachaAnimation.querySelector('.card-front');
+
+        // 1. 重設狀態
+        gachaAnimation.style.display = 'flex';
+        gachaAnimation.className = 'gacha-animation'; // 重設稀有度 class
+        cardInner.classList.remove('is-flipped');
+        cardInner.style.transition = 'transform 0.8s cubic-bezier(0.7, 0, 0.3, 1)';
+        
+        // 2. 如果是許願成功，在動畫開始時顯示通知
+        if (isWishSuccess) {
+          LinkageSystem.notifications.show(`🎯 許願成功！抽中 ${card.zh}！`, 'success');
+        }
+        
+        // 3. 播放對應音效
+        try {
+          const soundMap = {
+            '普通': document.getElementById('drawSoundA'),
+            '稀有': document.getElementById('drawSoundR'),
+            '超稀有': document.getElementById('ssrSound')
+          };
+          const soundToPlay = soundMap[card.rarity];
+          if (soundToPlay) {
+            soundToPlay.currentTime = 0;
+            soundToPlay.play().catch(e => console.error(`${card.rarity} 音效播放失敗:`, e));
+          }
+        } catch (error) {
+          console.error("音效播放時發生錯誤:", error);
+        }
+        
+        // 4. 設定卡面內容與稀有度樣式
+        // 檢查是否為 MP4 影片
+        const isImageMP4 = card.image && card.image.endsWith('.mp4');
+        
+        if (isImageMP4) {
+          // 如果是 MP4 影片，創建 video 元素
+          cardFront.innerHTML = `
+            <div class="card-front-content">
+              <div class="card-front-title">${card.zh} (${card.word})</div>
+              <div class="card-front-info">${card.category} | ${card.rarity}</div>
+              <video class="card-front-video" autoplay loop muted playsinline style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;">
+                <source src="${card.image}" type="video/mp4">
+                您的瀏覽器不支援影片播放
+              </video>
+            </div>
+          `;
+        } else {
+          // 如果是圖片，使用背景圖片
+          cardFront.style.backgroundImage = `url('${card.image}')`;
+          cardFront.style.setProperty('--card-image', `url('${card.image}')`);
+          
+          // 清空並重新創建卡片內容
+          cardFront.innerHTML = `
+            <div class="card-front-content">
+              <div class="card-front-title">${card.zh} (${card.word})</div>
+              <div class="card-front-info">${card.category} | ${card.rarity}</div>
+            </div>
+          `;
+        }
+        
+        const rarityClass = getRarityClass(card.rarity);
+        if (rarityClass) {
+          gachaAnimation.classList.add(rarityClass);
+        }
+
+              // 5. 檢查卡片是否已解鎖
+      const isUnlocked = LinkageSystem.cards.isCardOwned(card.word);
+      
+      // 添加調試資訊
+      console.log('🔍 抽卡調試：', card.word);
+      console.log('- isUnlocked:', isUnlocked);
+      console.log('- ownedCards:', LinkageSystem.cards.getOwnedCards());
+      console.log('- localStorage ownedCards:', localStorage.getItem('ownedCards'));
+      
+      // 手動檢查卡片是否存在
+      const ownedCards = LinkageSystem.cards.getOwnedCards();
+      const manualCheck = ownedCards.hasOwnProperty(card.word);
+      console.log('- 手動檢查 hasOwnProperty:', manualCheck);
+      console.log('- 卡片是否存在於 ownedCards:', card.word in ownedCards);
+      console.log('- ownedCards[card.word]:', ownedCards[card.word]);
+      
+      // 顯示卡片狀態
+      let unlockIcon = isUnlocked
+        ? '<span class="unlock-status-icon">✔</span>'
+        : '<span class="unlock-status-icon">✖</span>';
+
+        // 6. 根據稀有度設定不同的動畫延遲時間
+        let flipDelay = 1500;
+        let closeDelay = 4000;
+
+        if (card.rarity === '超稀有') {
+          flipDelay = 2200;
+          closeDelay = 5000;
+        }
+
+        // 7. 添加 skip 按鈕
+        let animationAccelerated = false;
+        let flipTimeout, closeTimeout;
+        
+              // 創建 skip 按鈕
+      const skipButton = document.createElement('button');
+      skipButton.textContent = '⏭️';
+      skipButton.style.cssText = `
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+        color: white;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 50%;
+        font-size: 14px;
+        font-weight: bold;
+        cursor: pointer;
+        z-index: 9999;
+        pointer-events: auto;
+        box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+        transition: all 0.3s ease;
+        font-family: 'Inter', 'Noto Sans TC', sans-serif;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+      `;
+        
+        // 添加更大的點擊區域
+        skipButton.setAttribute('data-clickable', 'true');
+        skipButton.style.position = 'relative';
+        
+        // 創建一個更大的點擊區域
+        const clickArea = document.createElement('div');
+        clickArea.style.cssText = `
+          position: absolute;
+          top: -10px;
+          left: -10px;
+          right: -10px;
+          bottom: -10px;
+          background: transparent;
+          cursor: pointer;
+          z-index: 9998;
+        `;
+        
+        // 將點擊事件綁定到更大的區域
+        clickArea.addEventListener('click', (e) => {
+          e.stopPropagation();
+          e.preventDefault();
+          skipButton.click(); // 觸發按鈕的點擊事件
+        });
+        
+        skipButton.appendChild(clickArea);
+        
+        // skip 按鈕懸停效果
+        skipButton.addEventListener('mouseenter', () => {
+          skipButton.style.transform = 'scale(1.1)';
+          skipButton.style.boxShadow = '0 6px 20px rgba(255, 107, 107, 0.6)';
+          skipButton.style.borderColor = 'rgba(255, 255, 255, 0.6)';
+        });
+        
+        skipButton.addEventListener('mouseleave', () => {
+          skipButton.style.transform = 'scale(1)';
+          skipButton.style.boxShadow = '0 4px 15px rgba(255, 107, 107, 0.4)';
+          skipButton.style.borderColor = 'rgba(255, 255, 255, 0.3)';
+        });
+        
+        // 添加脈衝動畫效果
+        skipButton.style.animation = 'skipPulse 2s ease-in-out infinite';
+        
+        // 創建脈衝動畫樣式
+        const pulseStyle = document.createElement('style');
+        pulseStyle.textContent = `
+          @keyframes skipPulse {
+            0% { 
+              box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+              transform: scale(1);
+            }
+            50% { 
+              box-shadow: 0 6px 25px rgba(255, 107, 107, 0.7);
+              transform: scale(1.05);
+            }
+            100% { 
+              box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+              transform: scale(1);
+            }
+          }
+        `;
+        document.head.appendChild(pulseStyle);
+        
+        // skip 按鈕點擊事件
+        skipButton.addEventListener('click', (e) => {
+          e.stopPropagation(); // 防止觸發加速動畫
+          e.preventDefault(); // 防止預設行為
+          if (animationAccelerated) return;
+          
+          animationAccelerated = true;
+          console.log('⏭️ 玩家點擊 SKIP 按鈕！');
+          console.log('⏭️ 按鈕元素:', skipButton);
+          console.log('⏭️ 事件對象:', e);
+          
+          // 清除原有的定時器
+          if (flipTimeout) clearTimeout(flipTimeout);
+          if (closeTimeout) clearTimeout(closeTimeout);
+          
+          // 立即執行翻面
+          cardInner.classList.add('is-flipped');
+          
+          // 立即完成動畫
+          setTimeout(() => {
+            finishAnimation();
+          }, 100);
+        });
+        
+        // 添加按鈕創建成功的日誌
+        console.log('⏭️ SKIP 按鈕已創建:', skipButton);
+        console.log('⏭️ 按鈕樣式:', skipButton.style.cssText);
+        
+        // 添加 skip 按鈕到動畫區域
+        gachaAnimation.appendChild(skipButton);
+        
+        // 添加提示文字
+        const hintText = document.createElement('div');
+        hintText.textContent = '💡 點擊 SKIP 跳過動畫';
+        hintText.style.cssText = `
+          position: absolute;
+          top: 15px;
+          left: 15px;
+          background: rgba(0,0,0,0.7);
+          color: white;
+          padding: 5px 10px;
+          border-radius: 15px;
+          font-size: 12px;
+          z-index: 1000;
+          animation: fadeInOut 2s ease-in-out;
+        `;
+        
+        // 添加淡入淡出動畫
+        const style = document.createElement('style');
+        style.textContent = `
+          @keyframes fadeInOut {
+            0% { opacity: 0; }
+            20% { opacity: 1; }
+            80% { opacity: 1; }
+            100% { opacity: 0; }
+          }
+        `;
+        document.head.appendChild(style);
+        
+        gachaAnimation.appendChild(hintText);
+        
+        // 2秒後移除提示
+        setTimeout(() => {
+          if (hintText.parentNode) {
+            hintText.remove();
+          }
+          if (style.parentNode) {
+            style.remove();
+          }
+        }, 2000);
+
+        // 8. 執行翻面動畫
+        flipTimeout = setTimeout(() => {
+          if (!animationAccelerated) {
+            cardInner.classList.add('is-flipped');
+          }
+        }, flipDelay);
+
+        // 9. 動畫結束後，隱藏動畫並將卡片加入主畫面
+        closeTimeout = setTimeout(() => {
+          if (!animationAccelerated) {
+            finishAnimation();
+          }
+        }, closeDelay);
+        
+        // 完成動畫的函數
+        function finishAnimation() {
+          gachaAnimation.style.display = 'none';
+          gachaAnimation.onclick = null;
+          gachaAnimation.style.cursor = 'default';
+          
+          // 移除 skip 按鈕
+          if (skipButton.parentNode) {
+            skipButton.remove();
+          }
+          
+          const grid = document.getElementById("cardGrid");
+          const div = document.createElement("div");
+
+          div.className = `card ${getRarityClass(card.rarity)}${isUnlocked ? " unlocked" : ""}`;
+
+          if (card.rarity === "普通") div.style.background = 'linear-gradient(135deg, rgba(0, 255, 255, 0.1), rgba(0, 255, 255, 0.05))';
+          else if (card.rarity === "稀有") div.style.background = 'linear-gradient(135deg, rgba(162, 89, 255, 0.1), rgba(162, 89, 255, 0.05))';
+          else if (card.rarity === "超稀有") div.style.background = 'linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(255, 215, 0, 0.05))';
+
+          let starIcons = "";
+          if (card.rarity === "普通") starIcons = "★";
+          else if (card.rarity === "稀有") starIcons = "★★";
+          else if (card.rarity === "超稀有") starIcons = "★★★";
+
+          // 支援MP4顯示
+          let cardMedia = '';
+          if (card.image && card.image.endsWith('.mp4')) {
+            cardMedia = `<video src="${card.image}" autoplay loop muted playsinline style="width:100%;height:120px;object-fit:cover;border-radius:10px;"></video>`;
+          } else {
+            cardMedia = `<img src="${card.image}" alt="${card.word}">`;
+          }
+
+          div.innerHTML = `
+            ${cardMedia}
+            <div class="stars">${starIcons}</div>
+            <div class="label">
+              <div class="chinese-text">${card.zh}</div>
+              <div class="english-text">${card.word}</div>
+            </div>
+            <div class="category-tag">類別：${card.category}</div>
+            <div class="rank-badge">${rankMap[card.rarity] || ""}</div>
+            ${unlockIcon}
+          `;
+          if (isUnlocked) {
+            // 新增：如果是新卡片，給予亮光動畫
+            let recentCards = [];
+            try { recentCards = JSON.parse(localStorage.getItem('recentlyObtainedCards') || '[]'); } catch(e){}
+            if (recentCards.includes(card.word)) {
+              div.classList.add('new-card-glow');
+              // 2.5秒後自動移除亮光
+              setTimeout(()=>div.classList.remove('new-card-glow'), 2500);
+            }
+            div.onclick = (e) => openModal(card);
+          }
+          grid.prepend(div);
+          
+          // 解析 Promise
+          resolve();
+        }
+      });
+    }
+
+    function showCard(card, isWishSuccess = false) {
+      const gachaAnimation = document.getElementById('gachaAnimation');
+      const cardInner = gachaAnimation.querySelector('.card-inner');
+      const cardFront = gachaAnimation.querySelector('.card-front');
+
+      // 1. 重設狀態
+      gachaAnimation.style.display = 'flex';
+      gachaAnimation.className = 'gacha-animation'; // 重設稀有度 class
+      cardInner.classList.remove('is-flipped');
+      cardInner.style.transition = 'transform 0.8s cubic-bezier(0.7, 0, 0.3, 1)';
+      
+      // 2. 如果是許願成功，在動畫開始時顯示通知
+      if (isWishSuccess) {
+        LinkageSystem.notifications.show(`🎯 許願成功！抽中 ${card.zh}！`, 'success');
+      }
+      
+      // 3. 播放對應音效
+      try {
+        const soundMap = {
+          '普通': document.getElementById('drawSoundA'),
+          '稀有': document.getElementById('drawSoundR'),
+          '超稀有': document.getElementById('ssrSound')
+        };
+        const soundToPlay = soundMap[card.rarity];
+        if (soundToPlay) {
+          soundToPlay.currentTime = 0;
+          soundToPlay.play().catch(e => console.error(`${card.rarity} 音效播放失敗:`, e));
+        }
+      } catch (error) {
+        console.error("音效播放時發生錯誤:", error);
+      }
+      
+      // 4. 設定卡面內容與稀有度樣式
+      // 檢查是否為 MP4 影片
+      const isImageMP4 = card.image && card.image.endsWith('.mp4');
+      
+      if (isImageMP4) {
+        // 如果是 MP4 影片，創建 video 元素
+        cardFront.innerHTML = `
+          <div class="card-front-content">
+            <div class="card-front-title">${card.zh} (${card.word})</div>
+            <div class="card-front-info">${card.category} | ${card.rarity}</div>
+            <video class="card-front-video" autoplay loop muted playsinline style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;">
+              <source src="${card.image}" type="video/mp4">
+              您的瀏覽器不支援影片播放
+            </video>
+          </div>
+        `;
+      } else {
+        // 如果是圖片，使用背景圖片
+        cardFront.style.backgroundImage = `url('${card.image}')`;
+        cardFront.style.setProperty('--card-image', `url('${card.image}')`);
+        
+        // 清空並重新創建卡片內容
+        cardFront.innerHTML = `
+          <div class="card-front-content">
+            <div class="card-front-title">${card.zh} (${card.word})</div>
+            <div class="card-front-info">${card.category} | ${card.rarity}</div>
+          </div>
+        `;
+      }
+      
+      const rarityClass = getRarityClass(card.rarity);
+      if (rarityClass) {
+        gachaAnimation.classList.add(rarityClass);
+      }
+
+      // 5. 檢查卡片是否已解鎖
+      const isUnlocked = LinkageSystem.cards.isCardOwned(card.word);
+      
+      // 添加調試資訊
+      console.log('🔍 抽卡調試：', card.word);
+      console.log('- isUnlocked:', isUnlocked);
+      console.log('- ownedCards:', LinkageSystem.cards.getOwnedCards());
+      console.log('- localStorage ownedCards:', localStorage.getItem('ownedCards'));
+      
+      // 手動檢查卡片是否存在
+      const ownedCards = LinkageSystem.cards.getOwnedCards();
+      const manualCheck = ownedCards.hasOwnProperty(card.word);
+      console.log('- 手動檢查 hasOwnProperty:', manualCheck);
+      console.log('- 卡片是否存在於 ownedCards:', card.word in ownedCards);
+      console.log('- ownedCards[card.word]:', ownedCards[card.word]);
+      
+      // 顯示卡片狀態
+      let unlockIcon = isUnlocked
+        ? '<span class="unlock-status-icon">✔</span>'
+        : '<span class="unlock-status-icon">✖</span>';
+
+      // 6. 根據稀有度設定不同的動畫延遲時間
+      let flipDelay = 1500;
+      let closeDelay = 4000;
+
+      if (card.rarity === '超稀有') {
+        flipDelay = 2200;
+        closeDelay = 5000;
+      }
+
+      // 7. 添加 skip 按鈕
+      let animationAccelerated = false;
+      let flipTimeout, closeTimeout;
+      
+      // 創建 skip 按鈕
+      const skipButton = document.createElement('button');
+      skipButton.textContent = '⏭️';
+      skipButton.style.cssText = `
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+        color: white;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 50%;
+        font-size: 14px;
+        font-weight: bold;
+        cursor: pointer;
+        z-index: 9999;
+        pointer-events: auto;
+        box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+        transition: all 0.3s ease;
+        font-family: 'Inter', 'Noto Sans TC', sans-serif;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+      `;
+      
+      // 添加更大的點擊區域
+      skipButton.setAttribute('data-clickable', 'true');
+      skipButton.style.position = 'relative';
+      
+      // 創建一個更大的點擊區域
+      const clickArea = document.createElement('div');
+      clickArea.style.cssText = `
+        position: absolute;
+        top: -5px;
+        left: -5px;
+        right: -5px;
+        bottom: -5px;
+        background: transparent;
+        cursor: pointer;
+        z-index: 9998;
+      `;
+      
+      // 將點擊事件綁定到更大的區域
+      clickArea.addEventListener('click', (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        skipButton.click(); // 觸發按鈕的點擊事件
+      });
+      
+      skipButton.appendChild(clickArea);
+      
+      // skip 按鈕懸停效果
+      skipButton.addEventListener('mouseenter', () => {
+        skipButton.style.transform = 'scale(1.1)';
+        skipButton.style.boxShadow = '0 6px 20px rgba(255, 107, 107, 0.6)';
+        skipButton.style.borderColor = 'rgba(255, 255, 255, 0.6)';
+      });
+      
+      skipButton.addEventListener('mouseleave', () => {
+        skipButton.style.transform = 'scale(1)';
+        skipButton.style.boxShadow = '0 4px 15px rgba(255, 107, 107, 0.4)';
+        skipButton.style.borderColor = 'rgba(255, 255, 255, 0.3)';
+      });
+      
+      // 添加脈衝動畫效果 (第二個 showCard 函數)
+      skipButton.style.animation = 'skipPulse 2s ease-in-out infinite';
+      
+      // 創建脈衝動畫樣式 (第二個 showCard 函數)
+      const pulseStyle2 = document.createElement('style');
+      pulseStyle2.textContent = `
+        @keyframes skipPulse {
+          0% { 
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+            transform: scale(1);
+          }
+          50% { 
+            box-shadow: 0 6px 25px rgba(255, 107, 107, 0.7);
+            transform: scale(1.05);
+          }
+          100% { 
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+            transform: scale(1);
+          }
+        }
+      `;
+      document.head.appendChild(pulseStyle2);
+      
+      // skip 按鈕點擊事件
+      skipButton.addEventListener('click', (e) => {
+        e.stopPropagation(); // 防止觸發加速動畫
+        e.preventDefault(); // 防止預設行為
+        if (animationAccelerated) return;
+        
+        animationAccelerated = true;
+        console.log('⏭️ 玩家點擊 SKIP 按鈕！');
+        console.log('⏭️ 按鈕元素:', skipButton);
+        console.log('⏭️ 事件對象:', e);
+        
+        // 清除原有的定時器
+        if (flipTimeout) clearTimeout(flipTimeout);
+        if (closeTimeout) clearTimeout(closeTimeout);
+        
+        // 立即執行翻面
+        cardInner.classList.add('is-flipped');
+        
+        // 立即完成動畫
+        setTimeout(() => {
+          finishAnimation();
+        }, 100);
+      });
+      
+      // 添加按鈕創建成功的日誌 (第二個 showCard 函數)
+      console.log('⏭️ SKIP 按鈕已創建 (showCard 第二個):', skipButton);
+      console.log('⏭️ 按鈕樣式 (showCard 第二個):', skipButton.style.cssText);
+      
+      // 添加 skip 按鈕到動畫區域
+      gachaAnimation.appendChild(skipButton);
+      
+      // 添加提示文字
+      const hintText = document.createElement('div');
+      hintText.textContent = '💡 點擊右上角跳過動畫';
+      hintText.style.cssText = `
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        background: rgba(0,0,0,0.7);
+        color: white;
+        padding: 5px 10px;
+        border-radius: 15px;
+        font-size: 12px;
+        z-index: 1000;
+        animation: fadeInOut 2s ease-in-out;
+      `;
+      
+      // 添加淡入淡出動畫
+      const style = document.createElement('style');
+      style.textContent = `
+        @keyframes fadeInOut {
+          0% { opacity: 0; }
+          20% { opacity: 1; }
+          80% { opacity: 1; }
+          100% { opacity: 0; }
+        }
+      `;
+      document.head.appendChild(style);
+      
+      gachaAnimation.appendChild(hintText);
+      
+      // 2秒後移除提示
+      setTimeout(() => {
+        if (hintText.parentNode) {
+          hintText.remove();
+        }
+        if (style.parentNode) {
+          style.remove();
+        }
+      }, 2000);
+
+      // 8. 執行翻面動畫
+      flipTimeout = setTimeout(() => {
+        if (!animationAccelerated) {
+          cardInner.classList.add('is-flipped');
+        }
+      }, flipDelay);
+
+      // 9. 動畫結束後，隱藏動畫並將卡片加入主畫面
+      closeTimeout = setTimeout(() => {
+        if (!animationAccelerated) {
+          finishAnimation();
+        }
+      }, closeDelay);
+      
+      
+      // 完成動畫的函數
+      function finishAnimation() {
+        gachaAnimation.style.display = 'none';
+        gachaAnimation.onclick = null;
+        gachaAnimation.style.cursor = 'default';
+        
+        // 移除 skip 按鈕
+        if (skipButton.parentNode) {
+          skipButton.remove();
+        }
+        
+        const grid = document.getElementById("cardGrid");
+        const div = document.createElement("div");
+
+        div.className = `card ${getRarityClass(card.rarity)}${isUnlocked ? " unlocked" : ""}`;
+
+        if (card.rarity === "普通") div.style.background = 'linear-gradient(135deg, rgba(0, 255, 255, 0.1), rgba(0, 255, 255, 0.05))';
+        else if (card.rarity === "稀有") div.style.background = 'linear-gradient(135deg, rgba(162, 89, 255, 0.1), rgba(162, 89, 255, 0.05))';
+        else if (card.rarity === "超稀有") div.style.background = 'linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(255, 215, 0, 0.05))';
+
+        let starIcons = "";
+        if (card.rarity === "普通") starIcons = "★";
+        else if (card.rarity === "稀有") starIcons = "★★";
+        else if (card.rarity === "超稀有") starIcons = "★★★";
+
+                  // 支援MP4顯示
+          let cardMedia = '';
+          if (card.image && card.image.endsWith('.mp4')) {
+            cardMedia = `<video src="${card.image}" autoplay loop muted playsinline style="width:100%;height:120px;object-fit:cover;border-radius:10px;"></video>`;
+          } else {
+            cardMedia = `<img src="${card.image}" alt="${card.word}">`;
+          }
+
+          div.innerHTML = `
+            ${cardMedia}
+            <div class="stars">${starIcons}</div>
+            <div class="label">
+              <div class="chinese-text">${card.zh}</div>
+              <div class="english-text">${card.word}</div>
+            </div>
+            <div class="category-tag">類別：${card.category}</div>
+            <div class="rank-badge">${rankMap[card.rarity] || ""}</div>
+            ${unlockIcon}
+          `;
+        if (isUnlocked) {
+          // 新增：如果是新卡片，給予亮光動畫
+          let recentCards = [];
+          try { recentCards = JSON.parse(localStorage.getItem('recentlyObtainedCards') || '[]'); } catch(e){}
+          if (recentCards.includes(card.word)) {
+            div.classList.add('new-card-glow');
+            // 2.5秒後自動移除亮光
+            setTimeout(()=>div.classList.remove('new-card-glow'), 2500);
+          }
+          div.onclick = (e) => openModal(card);
+        }
+        grid.prepend(div);
+      }
+    }
+
+    function getRarityClass(r) {
+      return r === "普通" ? "common" : r === "稀有" ? "rare" : "epic";
+    }
+
+    function openModal(card) {
+      document.getElementById("overlay").style.display = "block";
+      const modal = document.getElementById("modal");
+      const modalImg = document.getElementById("modalImg");
+      const modalTitle = document.getElementById("modalTitle");
+      const modalDesc = document.getElementById("modalDesc");
+      const soundBtn = document.querySelector(".sound-btn-modal");
+      // 顯示大圖
+      modalImg.src = card.image;
+      // 顯示名稱
+      modalTitle.textContent = `${card.zh} (${card.word})`;
+      // 顯示描述+類別+稀有度+碎片數量
+      const required = getRequiredShards(card.rarity);
+      const haveShards = LinkageSystem.cards.getShardCount(card.word);
+      const isUnlocked = LinkageSystem.cards.isCardOwned(card.word);
+      let shardInfo = '';
+      if (isUnlocked) {
+        if (haveShards > 0) {
+          shardInfo = `<div style='color:#ffd700;margin-top:8px;'>多餘碎片：${haveShards}</div>`;
+        } else {
+          shardInfo = `<div style='color:#00ff99;margin-top:8px;'>已解鎖</div>`;
+        }
+      } else {
+        shardInfo = `<div style='color:#00ffff;margin-top:8px;'>碎片進度：${haveShards}/${required}</div>`;
+      }
+      modalDesc.innerHTML = `
+        <div style='margin-bottom:8px;'>${card.description || ''}</div>
+        <div style='color:#ffd700;'>類別：${card.category}　|　稀有度：${card.rarity}</div>
+        ${shardInfo}
+      `;
+      // 音效
+      if (card.audio) {
+        const modalAudio = document.getElementById("modalAudio");
+        modalAudio.src = card.audio;
+        soundBtn.onclick = playModalAudio;
+      } else {
+        soundBtn.onclick = () => {
+          SoundSystem.speech.speakWord(card.word);
+          setTimeout(() => {
+            SoundSystem.speech.speak(card.zh, { lang: 'zh-TW' });
+          }, 500);
+        };
+      }
+      soundBtn.style.display = "inline-flex";
+      modal.classList.add("show");
+    }
+
+    function closeModal() {
+      document.getElementById("modal").classList.remove("show");
+      document.getElementById("overlay").style.display = "none";
+      speechSynthesis.cancel();
+    }
+
+    function playModalAudio() {
+      const audioElem = document.getElementById("modalAudio");
+      if (audioElem && audioElem.src) {
+        audioElem.play();
+      }
+    }
+
+    // 添加新卡片標記功能
+    function addNewCard(word) {
+      // 添加新卡片到最近獲得列表
+      let recentCards = JSON.parse(localStorage.getItem('recentlyObtainedCards') || '[]');
+      if (!recentCards.includes(word)) {
+        recentCards.push(word);
+        // 只保留最近20張新卡片
+        if (recentCards.length > 20) {
+          recentCards = recentCards.slice(-20);
+        }
+        localStorage.setItem('recentlyObtainedCards', JSON.stringify(recentCards));
+        console.log(`🎉 新卡片已標記: ${word}`);
+      }
+    }
+
+    // 更新卡片遊戲成就統計
+    function updateCardGameAchievements() {
+      // 更新卡片遊戲完成次數
+      const cardGames = parseInt(localStorage.getItem('cardGamesCompleted') || '0');
+      localStorage.setItem('cardGamesCompleted', cardGames + 1);
+      
+      // 檢查並更新相關成就
+      checkAndUpdateCardGameAchievements();
+    }
+    
+    function checkAndUpdateCardGameAchievements() {
+      // 檢查是否有新成就達成
+      const achievements = [
+        { id: 'speed_learner', name: '快速學習者', requirement: 10 },
+        { id: 'accuracy_master', name: '準確大師', requirement: 20 },
+        { id: 'combo_king', name: '連擊之王', requirement: 15 }
+      ];
+      
+      const claimed = JSON.parse(localStorage.getItem('claimedAchievements') || '[]');
+      
+      achievements.forEach(ach => {
+        if (claimed.includes(ach.id)) return; // 已經領取過了
+        
+        // 計算通過的關卡數量
+        const fillGames = parseInt(localStorage.getItem('fillGamesCompleted') || '0');
+        const cardGames = parseInt(localStorage.getItem('cardGamesCompleted') || '0');
+        const quizGames = parseInt(localStorage.getItem('quizGamesCompleted') || '0');
+        const spellingGames = parseInt(localStorage.getItem('spellingGamesCompleted') || '0');
+        const matchingGames = parseInt(localStorage.getItem('matchingGamesCompleted') || '0');
+        const totalGames = fillGames + cardGames + quizGames + spellingGames + matchingGames;
+        
+        if (totalGames >= ach.requirement) {
+          // 顯示成就達成通知
+          showAchievementNotification(ach.name, ach.id);
+        }
+      });
+    }
+    
+    function showAchievementNotification(achievementName, achievementId) {
+      // 創建成就通知
+      const notification = document.createElement('div');
+      notification.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: linear-gradient(135deg, #ffd700, #ffed4e);
+        color: #000;
+        padding: 20px 30px;
+        border-radius: 15px;
+        font-weight: bold;
+        font-size: 1.2rem;
+        z-index: 10000;
+        box-shadow: 0 0 30px #ffd700;
+        animation: achievementPop 0.8s cubic-bezier(.68, -0.55, .27, 1.55);
+        text-align: center;
+        min-width: 300px;
+      `;
+      
+      notification.innerHTML = `
+        <div style="font-size: 3rem; margin-bottom: 10px;">🏆</div>
+        <div style="margin-bottom: 5px;">🎉 成就達成！</div>
+        <div style="font-size: 1.1rem;">${achievementName}</div>
+        <div style="font-size: 0.9rem; margin-top: 10px; color: #666;">
+          前往成就頁面領取獎勵
+        </div>
+      `;
+      
+      // 添加動畫樣式
+      const style = document.createElement('style');
+      style.textContent = `
+        @keyframes achievementPop {
+          0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+          50% { transform: translate(-50%, -50%) scale(1.1); opacity: 1; }
+          100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        }
+      `;
+      document.head.appendChild(style);
+      
+      document.body.appendChild(notification);
+      
+      // 3秒後自動移除
+      setTimeout(() => {
+        notification.remove();
+        style.remove();
+      }, 3000);
+    }
+
+    // ✨ 新增：星星外掛 (開發者作弊碼) ✨
+    // 在頁面中直接輸入 money999 然後按下 Enter 即可增加 999 星星
+    let cheatCodeBuffer = '';
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        if (cheatCodeBuffer.toLowerCase() === 'money999') {
+          LinkageSystem.stars.add(999);
+          LinkageSystem.notifications.show('💰 成功儲值 999 星星！', 'success');
+        }
+        cheatCodeBuffer = ''; // 每次按 Enter 都重置
+      } else if (e.key === 'Backspace') {
+        // 支援退格鍵
+        cheatCodeBuffer = cheatCodeBuffer.slice(0, -1);
+      } else if (e.key.length === 1) {
+        // 只記錄單一字符的按鍵
+        cheatCodeBuffer += e.key;
+      }
+      
+      // 避免字串無限增長
+      if (cheatCodeBuffer.length > 100) {
+        cheatCodeBuffer = '';
+      }
+    });
+
+    // =================== 已移除資料管理系統 ===================
+    // 資料管理功能已整合到統一自動儲存系統中
+    // 請使用主頁的「💾 自動儲存」按鈕進入 autoSaveManager.html
+
+    // =================== 使用統一自動儲存系統 ===================
+    // 舊版自動儲存系統已移除，現在使用 js/autoSaveSystem.js 提供的統一系統
+    
+    // 更新自動儲存狀態顯示 (為了與舊版UI兼容)
+    function updateAutoSaveStatus(message = '') {
+      if (typeof window.UnifiedAutoSave === 'undefined') return;
+      
+      const statusElement = document.getElementById('autoSaveStatus');
+      const toggleButton = document.getElementById('autoSaveToggle');
+      
+      if (!statusElement || !toggleButton) return;
+      
+      const status = window.UnifiedAutoSave.getStatus();
+      
+      if (status.enabled) {
+        toggleButton.innerHTML = '⏸️ 停用自動儲存';
+        toggleButton.style.background = 'linear-gradient(90deg, #ff6b6b 0%, #e74c3c 100%)';
+        
+        let statusText = '🟢 自動儲存：已啟用';
+        statusText += ` | 最後備份：${status.lastSaveTime}`;
+        
+        if (message) {
+          statusText += ` | ${message}`;
+        }
+        
+        statusElement.textContent = statusText;
+      } else {
+        toggleButton.innerHTML = '🔄 啟用自動儲存';
+        toggleButton.style.background = 'linear-gradient(90deg, #00ffff 0%, #a259ff 100%)';
+        statusElement.textContent = '🔴 自動儲存：已停用';
+      }
+    }
+    
+    // 切換自動儲存狀態 (使用統一系統)
+    function toggleAutoSave() {
+      if (typeof window.UnifiedAutoSave === 'undefined') {
+        console.error('❌ 自動儲存系統未載入，請重新整理頁面');
+        return;
+      }
+      
+      const newState = window.UnifiedAutoSave.toggleAutoSave();
+      updateAutoSaveStatus();
+    }
+    
+    // 上傳到雲端 (使用統一系統)
+    async function uploadToCloud(isAutoSave = false) {
+      if (typeof window.UnifiedAutoSave === 'undefined') {
+        console.error('❌ 自動儲存系統未載入，請重新整理頁面');
+        return;
+      }
+      
+      if (isAutoSave) return; // 自動儲存由統一系統處理
+      
+      // 手動上傳
+      window.UnifiedAutoSave.performImmediateSave();
+    }
+    
+    // 從雲端下載 (使用統一系統)  
+    async function downloadFromCloud() {
+      if (typeof window.UnifiedAutoSave === 'undefined') {
+        console.error('❌ 自動儲存系統未載入，請重新整理頁面');
+        return;
+      }
+      
+      window.UnifiedAutoSave.loadFromCloud();
+    }
+    
+
+
+    // 頁面載入時初始化狀態顯示
+    setTimeout(() => {
+      updateAutoSaveStatus();
+    }, 2000);
+
+    // ====== 分類分頁功能 ======
+    function renderCategoryTabs() {
+      // 已移除
+    }
+    function filterCardsByCategory(category) {
+      // 已移除
+    }
+    // 頁面載入時自動渲染分頁
+    window.addEventListener('load', () => {
+      // renderCategoryTabs();
+      // filterCardsByCategory('全部');
+    });
+
+    // 新增：許願選單即時預覽功能
+    function updateWishPreview() {
+      const card = getCurrentWishCard();
+      const previewDiv = document.getElementById('wishPreview');
+      if (!previewDiv) return;
+      if (!card) {
+        previewDiv.innerHTML = '';
+        return;
+      }
+      const rarityClass = card.rarity === '普通' ? 'common' : card.rarity === '稀有' ? 'rare' : 'epic';
+      const isImageMP4 = card.image && card.image.endsWith('.mp4');
+      let cardMedia = isImageMP4
+        ? `<video class="card-media" autoplay loop muted playsinline style="width: 100%; height: 50%; object-fit: cover; border-radius: 10px;">
+            <source src="${card.image}" type="video/mp4">您的瀏覽器不支援影片播放</video>`
+        : `<img class="card-media" src="${card.image}" alt="${card.word}">`;
+      let starIcons = card.rarity === '普通' ? '★' : card.rarity === '稀有' ? '★★' : '★★★';
+      previewDiv.innerHTML = `
+        <div class="wish-card-outer">
+          <div class="wish-card-inner">
+            <div class="card ${rarityClass} wish-card-style" style="margin:0 auto;">
+              ${cardMedia}
+              <div class="stars">${starIcons}</div>
+              <div class="label">
+                <div class="chinese-text">${card.zh}</div>
+                <div class="english-text">${card.word}</div>
+              </div>
+              <div class="category-tag">類別：${card.category}</div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+    // 綁定選單 change 事件
+    window.addEventListener('DOMContentLoaded', function() {
+      const wishSelect = document.getElementById('wishPool');
+      if (wishSelect) {
+        wishSelect.addEventListener('change', updateWishPreview);
+        setTimeout(updateWishPreview, 500); // 頁面初始時也顯示一次
+      }
+    });
+
+    // 搜尋input事件
+    window.addEventListener('DOMContentLoaded', function() {
+      const wishSearch = document.getElementById('wishSearch');
+      if (wishSearch) {
+        wishSearch.addEventListener('input', function() {
+          // === 刪除 initializeWishPool 函數定義及所有呼叫 ===
+          // （請直接移除 function initializeWishPool(...) { ... } 及所有 initializeWishPool(...) 呼叫）
+          // ... existing code ...
+        });
+      }
+    });
+
+    console.log(allCards);
+
+    // 4. 綁定事件
+    // 將以下內容搬到 window.addEventListener('load', ...)
+    window.addEventListener('load', function() {
+      const wishSearchGlobal = document.getElementById('wishSearchGlobal');
+      function refreshAllWishSelects() {
+        const val = wishSearchGlobal ? wishSearchGlobal.value : '';
+        fillWishSelect('超稀有','wishPoolSSR',val);
+        fillWishSelect('稀有','wishPoolR',val);
+        fillWishSelect('普通','wishPoolA',val);
+        updateWishPreview();
+      }
+      refreshAllWishSelects();
+      if (wishSearchGlobal) {
+        wishSearchGlobal.value = '';
+        wishSearchGlobal.addEventListener('input', refreshAllWishSelects);
+      }
+      // 選單事件
+      ['wishPoolSSR','wishPoolR','wishPoolA'].forEach(id => {
+        const sel = document.getElementById(id);
+        if (sel) {
+          sel.addEventListener('change', function() {
+            clearOtherWishSelects(id);
+            updateWishPreview();
+          });
+        }
+      });
+      updateWishPreview();
+    });
+
+    // 2. 初始化三個選單
+    function fillWishSelect(rarity, selectId, globalSearchValue) {
+      const select = document.getElementById(selectId);
+      if (!select) return;
+      select.innerHTML = '<option value="">請選擇卡片</option>';
+      if (!Array.isArray(allCards) || allCards.length === 0) return;
+      let hasOption = false;
+      let filterText = globalSearchValue ? globalSearchValue.trim().toLowerCase() : '';
+      const cards = allCards.filter(card => card.rarity === rarity);
+      cards.sort((a, b) => a.category.localeCompare(b.category));
+      cards.forEach(card => {
+        if (filterText) {
+          const text = `${card.category} ${card.zh} ${card.word}`.toLowerCase();
+          if (!text.includes(filterText)) return;
+        }
+        const option = document.createElement('option');
+        option.value = card.word;
+        option.textContent = `${getRarityEmoji(card.rarity)} [${card.category}] ${card.zh} (${card.word})`;
+        select.appendChild(option);
+        hasOption = true;
+      });
+      if (!hasOption) {
+        const noOption = document.createElement('option');
+        noOption.value = '';
+        noOption.disabled = true;
+        noOption.selected = true;
+        noOption.textContent = '沒有符合的卡片';
+        select.appendChild(noOption);
+      }
+    }
+    function clearOtherWishSelects(exceptId) {
+      ['wishPoolSSR','wishPoolR','wishPoolA'].forEach(id => {
+        if (id !== exceptId) {
+          const sel = document.getElementById(id);
+          if (sel) sel.value = '';
+        }
+      });
+    }
+    function getCurrentWishCard() {
+      const ssr = document.getElementById('wishPoolSSR').value;
+      const r = document.getElementById('wishPoolR').value;
+      const a = document.getElementById('wishPoolA').value;
+      const word = ssr || r || a;
+      if (!word) return null;
+      return allCards.find(card => card.word === word);
+    }
+    function updateWishPreview() {
+      const card = getCurrentWishCard();
+      const previewDiv = document.getElementById('wishPreview');
+      if (!previewDiv) return;
+      if (!card) {
+        previewDiv.innerHTML = '';
+        return;
+      }
+      const rarityClass = card.rarity === '普通' ? 'common' : card.rarity === '稀有' ? 'rare' : 'epic';
+      const isImageMP4 = card.image && card.image.endsWith('.mp4');
+      let cardMedia = isImageMP4
+        ? `<video class="card-media" autoplay loop muted playsinline style="width: 100%; height: 50%; object-fit: cover; border-radius: 10px;">
+            <source src="${card.image}" type="video/mp4">您的瀏覽器不支援影片播放</video>`
+        : `<img class="card-media" src="${card.image}" alt="${card.word}">`;
+      let starIcons = card.rarity === '普通' ? '★' : card.rarity === '稀有' ? '★★' : '★★★';
+      previewDiv.innerHTML = `
+        <div class="wish-card-outer">
+          <div class="wish-card-inner">
+            <div class="card ${rarityClass} wish-card-style" style="margin:0 auto;">
+              ${cardMedia}
+              <div class="stars">${starIcons}</div>
+              <div class="label">
+                <div class="chinese-text">${card.zh}</div>
+                <div class="english-text">${card.word}</div>
+              </div>
+              <div class="category-tag">類別：${card.category}</div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    const setWishBtn = document.getElementById('setWishBtn');
+    if (setWishBtn) {
+      setWishBtn.addEventListener('click', setWishCard);
+    }
+
+    // 綁定選單
+    ['wishPoolSSR','wishPoolR','wishPoolA'].forEach(id => {
+      const sel = document.getElementById(id);
+      if (sel) {
+        sel.addEventListener('change', function() {
+          clearOtherWishSelects(id);
+          updateWishDisplay();
+        });
+      }
+    });
+    // 綁定搜尋
+    const wishSearchGlobal = document.getElementById('wishSearchGlobal');
+    if (wishSearchGlobal) {
+      wishSearchGlobal.addEventListener('input', updateWishDisplay);
+    }
+  </script>
+</body>
+</html>

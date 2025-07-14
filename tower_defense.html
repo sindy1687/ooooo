@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <title>神魔之塔 - 卡牌打掛系統</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="card-style.css">
+  <link rel="stylesheet" href="responsive.css">
+  <style>
+    :root {
+      --glow-cyan: #00ffff;
+      --glow-magenta: #a259ff;
+      --glow-gold: #ffd700;
+      --glow-red: #ff6b6b;
+      --glow-green: #00ff88;
+      --bg-dark: rgba(10, 20, 40, 0.85);
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Orbitron', sans-serif;
+      background: linear-gradient(135deg, #0a1428 0%, #1a2a4a 50%, #0a1428 100%);
+      color: #fff;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    /* 背景動畫效果 */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        radial-gradient(circle at 20% 80%, rgba(0, 255, 255, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(162, 89, 255, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(255, 215, 0, 0.05) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .header {
+      background: rgba(10, 20, 40, 0.95);
+      padding: 20px;
+      text-align: center;
+      border-bottom: 3px solid var(--glow-cyan);
+      box-shadow: 0 0 30px rgba(0, 255, 255, 0.3);
+      backdrop-filter: blur(10px);
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 2.5rem;
+      background: linear-gradient(45deg, var(--glow-cyan), var(--glow-magenta), var(--glow-gold));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+      animation: glow 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes glow {
+      from { filter: brightness(1); }
+      to { filter: brightness(1.2); }
+    }
+
+    .game-container {
+      display: grid;
+      grid-template-columns: 300px 1fr 400px;
+      gap: 20px;
+      padding: 20px;
+      height: calc(100vh - 120px);
+    }
+
+    /* 左側隊伍面板 */
+    .team-panel {
+      background: rgba(10, 20, 40, 0.8);
+      border: 2px solid var(--glow-cyan);
+      border-radius: 15px;
+      padding: 20px;
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+    }
+
+    .team-panel h3 {
+      color: var(--glow-cyan);
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 1.3rem;
+    }
+
+    .team-slots {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .team-slot {
+      width: 120px;
+      height: 160px;
+      border: 2px dashed var(--glow-cyan);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 255, 255, 0.1);
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .team-slot:hover {
+      border-color: var(--glow-gold);
+      background: rgba(255, 215, 0, 0.1);
+      transform: scale(1.05);
+    }
+
+    .team-slot.filled {
+      border-style: solid;
+      background: rgba(0, 255, 255, 0.2);
+    }
+
+    .team-slot .card {
+      width: 100%;
+      height: 100%;
+      transform: scale(0.8);
+    }
+
+    .team-stats {
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 10px;
+      padding: 15px;
+      margin-top: 20px;
+    }
+
+    .stat-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      font-size: 0.9rem;
+    }
+
+    .stat-label {
+      color: var(--glow-cyan);
+    }
+
+    .stat-value {
+      color: var(--glow-gold);
+      font-weight: bold;
+    }
+
+    /* 中央戰鬥區域 */
+    .battle-area {
+      background: rgba(10, 20, 40, 0.6);
+      border: 2px solid var(--glow-magenta);
+      border-radius: 15px;
+      padding: 20px;
+      box-shadow: 0 0 20px rgba(162, 89, 255, 0.2);
+      backdrop-filter: blur(10px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .battle-field {
+      height: 400px;
+      background: linear-gradient(180deg, rgba(0, 0, 0, 0.5) 0%, rgba(20, 40, 80, 0.3) 100%);
+      border-radius: 10px;
+      position: relative;
+      margin-bottom: 20px;
+      border: 1px solid rgba(162, 89, 255, 0.3);
+    }
+
+    .enemy-area {
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 10px;
+    }
+
+    .player-area {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 10px;
+    }
+
+    .enemy-card, .player-card {
+      width: 80px;
+      height: 120px;
+      border: 2px solid var(--glow-red);
+      border-radius: 8px;
+      background: rgba(255, 107, 107, 0.2);
+      position: relative;
+      transition: all 0.3s ease;
+    }
+
+    .player-card {
+      border-color: var(--glow-green);
+      background: rgba(0, 255, 136, 0.2);
+    }
+
+    .enemy-card.attacking {
+      animation: attack 0.5s ease-in-out;
+    }
+
+    .player-card.attacking {
+      animation: attack 0.5s ease-in-out;
+    }
+
+    @keyframes attack {
+      0%, 100% { transform: translateX(0); }
+      50% { transform: translateX(20px); }
+    }
+
+    .health-bar {
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: rgba(255, 0, 0, 0.5);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .health-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--glow-green), #00ff00);
+      transition: width 0.3s ease;
+    }
+
+    .battle-controls {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .battle-btn {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      font-family: 'Orbitron', sans-serif;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .battle-btn.attack {
+      background: linear-gradient(45deg, var(--glow-red), #ff4444);
+      color: white;
+      box-shadow: 0 0 15px rgba(255, 107, 107, 0.5);
+    }
+
+    .battle-btn.skill {
+      background: linear-gradient(45deg, var(--glow-magenta), #8844ff);
+      color: white;
+      box-shadow: 0 0 15px rgba(162, 89, 255, 0.5);
+    }
+
+    .battle-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    /* 右側卡牌庫 */
+    .card-library {
+      background: rgba(10, 20, 40, 0.8);
+      border: 2px solid var(--glow-gold);
+      border-radius: 15px;
+      padding: 20px;
+      box-shadow: 0 0 20px rgba(255, 215, 0, 0.2);
+      backdrop-filter: blur(10px);
+      overflow-y: auto;
+      min-width: 340px;
+      max-width: 440px;
+    }
+
+    .card-library h3 {
+      color: var(--glow-gold);
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 1.3rem;
+    }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 18px;
+      max-height: 600px;
+      overflow-y: auto;
+    }
+
+    .card-grid .card {
+      width: 140px;
+      height: 190px;
+      transform: scale(0.9);
+      margin: 0 auto;
+    }
+
+    .card-grid .card:hover {
+      transform: scale(1.02);
+    }
+
+    /* 技能效果動畫 */
+    .skill-effect {
+      position: absolute;
+      pointer-events: none;
+      z-index: 100;
+    }
+
+    .fire-effect {
+      background: radial-gradient(circle, #ff6b6b, transparent);
+      animation: fireExplosion 1s ease-out;
+    }
+
+    .ice-effect {
+      background: radial-gradient(circle, #00ffff, transparent);
+      animation: iceFreeze 1s ease-out;
+    }
+
+    .lightning-effect {
+      background: radial-gradient(circle, #ffff00, transparent);
+      animation: lightningStrike 0.5s ease-out;
+    }
+
+    @keyframes fireExplosion {
+      0% { transform: scale(0); opacity: 1; }
+      100% { transform: scale(2); opacity: 0; }
+    }
+
+    @keyframes iceFreeze {
+      0% { transform: scale(0); opacity: 1; }
+      50% { transform: scale(1.5); opacity: 0.8; }
+      100% { transform: scale(2); opacity: 0; }
+    }
+
+    @keyframes lightningStrike {
+      0% { transform: scale(0); opacity: 1; }
+      50% { transform: scale(1.2); opacity: 0.8; }
+      100% { transform: scale(1.5); opacity: 0; }
+    }
+
+    /* 戰鬥日誌 */
+    .battle-log {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 250px;
+      height: 150px;
+      background: rgba(0, 0, 0, 0.8);
+      border: 1px solid var(--glow-cyan);
+      border-radius: 8px;
+      padding: 10px;
+      font-size: 0.8rem;
+      overflow-y: auto;
+      color: #fff;
+    }
+
+    .log-entry {
+      margin-bottom: 5px;
+      padding: 2px 5px;
+      border-radius: 3px;
+    }
+
+    .log-entry.player {
+      background: rgba(0, 255, 136, 0.2);
+      color: var(--glow-green);
+    }
+
+    .log-entry.enemy {
+      background: rgba(255, 107, 107, 0.2);
+      color: var(--glow-red);
+    }
+
+    .log-entry.skill {
+      background: rgba(162, 89, 255, 0.2);
+      color: var(--glow-magenta);
+    }
+
+    .log-entry.system {
+      background: rgba(255, 215, 0, 0.2);
+      color: var(--glow-gold);
+    }
+
+    /* 響應式設計 */
+    @media (max-width: 1200px) {
+      .game-container {
+        grid-template-columns: 200px 1fr 320px;
+      }
+      .card-library {
+        min-width: 220px;
+        max-width: 340px;
+      }
+      .card-grid .card {
+        width: 110px;
+        height: 150px;
+      }
+    }
+
+    @media (max-width: 900px) {
+      .game-container {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto auto;
+      }
+      .team-panel, .card-library {
+        order: 2;
+      }
+      .battle-area {
+        order: 1;
+      }
+      .card-library {
+        min-width: 100%;
+        max-width: 100%;
+      }
+      .card-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+      .card-grid .card {
+        width: 100px;
+        height: 130px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="player-status-bar" style="background:rgba(10,20,40,0.95);border-bottom:2px solid #ffd700;padding:10px 0;text-align:center;font-family:'Orbitron',sans-serif;font-size:1.1rem;letter-spacing:1px;box-shadow:0 2px 12px #ffd70033;">
+    <span id="status-coins" style="margin:0 18px;color:#ffd700;">金幣：0</span>
+    <span id="status-stars" style="margin:0 18px;color:#00ffff;">星星：0</span>
+    <span id="status-exp" style="margin:0 18px;color:#a259ff;">經驗值：0</span>
+    <span id="status-stage" style="margin:0 18px;color:#fff;">關卡：1</span>
+  </div>
+  <div class="header">
+    <h1>神魔之塔 - 卡牌打掛系統</h1>
+  </div>
+
+  <div class="game-container">
+    <!-- 左側隊伍面板 -->
+    <div class="team-panel">
+      <h3>隊伍編組</h3>
+      <div class="team-slots">
+        <div class="team-slot" data-slot="0">
+          <span>拖放卡牌</span>
+        </div>
+        <div class="team-slot" data-slot="1">
+          <span>拖放卡牌</span>
+        </div>
+        <div class="team-slot" data-slot="2">
+          <span>拖放卡牌</span>
+        </div>
+        <div class="team-slot" data-slot="3">
+          <span>拖放卡牌</span>
+        </div>
+      </div>
+      
+      <div class="team-stats">
+        <div class="stat-item">
+          <span class="stat-label">總攻擊力:</span>
+          <span class="stat-value" id="total-attack">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">總防禦力:</span>
+          <span class="stat-value" id="total-defense">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">總生命值:</span>
+          <span class="stat-value" id="total-hp">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">隊伍技能:</span>
+          <span class="stat-value" id="team-skill">無</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 中央戰鬥區域 -->
+    <div class="battle-area">
+      <!-- 劇情顯示區塊 -->
+      <div id="story-box" style="display:none;margin-bottom:16px;padding:18px 24px;background:rgba(0,0,0,0.7);border:2px solid #ffd700;border-radius:12px;color:#fff;font-size:1.1rem;box-shadow:0 0 16px #ffd70055;text-align:center;line-height:1.7;"></div>
+      <div class="battle-field">
+        <div class="enemy-area" id="enemy-area">
+          <!-- 敵人卡牌會在這裡生成 -->
+        </div>
+        
+        <div class="player-area" id="player-area">
+          <!-- 玩家卡牌會在這裡顯示 -->
+        </div>
+
+        <!-- 戰鬥日誌 -->
+        <div class="battle-log" id="battle-log">
+          <div class="log-entry system">戰鬥開始！</div>
+        </div>
+      </div>
+
+      <div class="battle-controls">
+        <button class="battle-btn attack" onclick="startBattle()">開始戰鬥</button>
+        <button class="battle-btn skill" onclick="useTeamSkill()">隊伍技能</button>
+        <button class="battle-btn attack" onclick="autoBattle()">自動戰鬥</button>
+      </div>
+    </div>
+
+    <!-- 右側卡牌庫 -->
+    <div class="card-library">
+      <h3>卡牌庫</h3>
+      <div class="card-grid" id="card-grid">
+        <!-- 卡牌會在這裡動態生成 -->
+      </div>
+    </div>
+  </div>
+
+  <script src="js/cards.js"></script>
+  <script src="tower_defense.js"></script>
+  <!-- 單字聽寫練習彈窗 -->
+  <div id="vocab-practice-modal" style="display:none;position:fixed;z-index:9999;left:0;top:0;width:100vw;height:100vh;background:rgba(0,0,0,0.65);align-items:center;justify-content:center;">
+    <div style="background:#181c2a;padding:32px 28px 24px 28px;border-radius:18px;box-shadow:0 0 32px #ffd70099;max-width:350px;margin:auto;text-align:center;">
+      <div style="font-size:1.2rem;color:#ffd700;margin-bottom:12px;">單字聽寫練習</div>
+      <div id="vocab-practice-instruction" style="color:#fff;margin-bottom:10px;">請聽單字，輸入正確英文拼字</div>
+      <button id="vocab-practice-play" style="margin-bottom:10px;">🔊 再聽一次</button>
+      <input id="vocab-practice-input" type="text" style="width:80%;padding:8px 6px;font-size:1.1rem;border-radius:6px;border:1px solid #ffd700;margin-bottom:10px;" autocomplete="off" />
+      <div>
+        <button id="vocab-practice-submit" style="padding:8px 18px;border-radius:6px;background:#ffd700;color:#181c2a;font-weight:bold;font-size:1rem;border:none;">送出</button>
+      </div>
+      <div id="vocab-practice-feedback" style="margin-top:10px;font-size:1rem;"></div>
+    </div>
+  </div>
+</body>
+</html> 
