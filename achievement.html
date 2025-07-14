@@ -1,0 +1,2381 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <title>成就徽章 - Typing Hero</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="responsive_enhanced.css">
+  <style>
+    /* 響應式設計變數 */
+    :root {
+      --mobile-padding: 12px;
+      --tablet-padding: 16px;
+      --desktop-padding: 20px;
+      --mobile-font-size: 0.9rem;
+      --tablet-font-size: 1rem;
+      --desktop-font-size: 1.1rem;
+    }
+    
+    body {
+      margin: 0;
+      font-family: 'Orbitron', 'Microsoft JhengHei', '微軟正黑體', sans-serif;
+      background: url('https://wallpaperaccess.com/full/192936.jpg') no-repeat center center fixed;
+      background-size: cover;
+      color: #fff;
+      text-align: center;
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+    header {
+      background: rgba(10, 20, 40, 0.9);
+      padding: 20px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 0 30px 12px #00ffff88, 0 0 50px 0 #a259ff33 inset;
+      border-bottom: 3px solid #00ffff;
+      backdrop-filter: blur(8px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 2.4rem;
+      color: #00ffff;
+      letter-spacing: 3px;
+      text-shadow: 0 0 15px #00ffff, 0 0 35px #a259ff;
+      font-weight: 700;
+    }
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+    
+    /* 總星星顯示樣式 */
+    .total-stars-display {
+      background: rgba(10, 20, 40, 0.85);
+      padding: 8px 16px;
+      border-radius: 20px;
+      color: #ffd700;
+      font-weight: bold;
+      box-shadow: 0 0 15px #ffd700, 0 0 30px #00ffff;
+      border: 2px solid #00ffff;
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-right: 16px;
+      animation: starGlow 2s ease-in-out infinite alternate;
+    }
+    
+    .total-stars-display .star-icon {
+      font-size: 1.2rem;
+      filter: drop-shadow(0 0 8px #ffd700);
+    }
+    
+    .total-stars-display .star-count {
+      font-family: 'Orbitron', 'Microsoft JhengHei', sans-serif;
+      text-shadow: 0 0 8px #ffd700;
+    }
+    
+    @keyframes starGlow {
+      0% { box-shadow: 0 0 15px #ffd700, 0 0 30px #00ffff; }
+      100% { box-shadow: 0 0 25px #ffd700, 0 0 40px #00ffff; }
+    }
+    .btn {
+      background: linear-gradient(135deg, #00ffff 0%, #a259ff 100%);
+      color: #000;
+      border: none;
+      padding: 12px 26px;
+      border-radius: 15px;
+      cursor: pointer;
+      font-weight: 700;
+      box-shadow: 0 0 20px #00ffff, 0 0 30px #a259ff99;
+      margin-left: 8px;
+      font-size: 1.2rem;
+      letter-spacing: 1.5px;
+      transition: all 0.3s ease;
+      font-family: 'Orbitron', 'Microsoft JhengHei', sans-serif;
+    }
+    .btn:hover {
+      transform: scale(1.08);
+      box-shadow: 0 0 35px #00ffff, 0 0 50px #a259ffcc;
+    }
+    .achievement-section {
+      background: rgba(10, 20, 40, 0.9);
+      border: 3px solid #00ffff;
+      border-radius: 20px;
+      max-width: 800px;
+      margin: 40px auto 0 auto;
+      padding: 30px 20px 40px 20px;
+      box-shadow: 0 0 40px #00ffff33, 0 0 100px #a259ff22 inset;
+      backdrop-filter: blur(8px);
+    }
+    .achievement-section h2 {
+      color: #ffd700;
+      margin-bottom: 25px;
+      text-shadow: 0 0 15px #ffd700, 0 0 35px #00ffff;
+      font-size: 2.2rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+    }
+    .achievement-badges {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      max-width: 100%;
+    }
+    .badge-row {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .badge {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: 2px solid;
+      position: relative;
+      margin-bottom: 4px;
+    }
+    .badge.locked {
+      background: rgba(128, 128, 128, 0.3);
+      border-color: #666;
+      color: #666;
+      cursor: default;
+      filter: grayscale(1);
+    }
+    .badge.unlocked {
+      cursor: pointer;
+      animation: badgeGlow 2s ease-in-out infinite alternate;
+    }
+    .badge.unlocked:hover {
+      transform: scale(1.2);
+      box-shadow: 0 0 20px currentColor;
+    }
+    @keyframes badgeGlow {
+      0% { box-shadow: 0 0 12px currentColor; }
+      100% { box-shadow: 0 0 20px currentColor, 0 0 30px currentColor; }
+    }
+    .badge-desc {
+      font-size: 0.85rem;
+      color: #ffd700;
+      margin-top: 2px;
+      text-shadow: 0 0 6px #ffd700, 0 0 12px #ffaa00;
+      min-width: 80px;
+      max-width: 120px;
+      margin-left: auto;
+      margin-right: auto;
+      word-break: break-all;
+    }
+    .reward-stars {
+      color: #ffd700;
+      font-weight: bold;
+      text-shadow: 0 0 8px #ffd700;
+      font-size: 0.9rem;
+    }
+    
+    /* 新增：成就解說樣式 */
+    .achievement-detail {
+      background: rgba(20, 40, 80, 0.95);
+      border: 2px solid #00ffff;
+      border-radius: 15px;
+      padding: 18px;
+      margin: 0;
+      box-shadow: 0 0 25px #00ffff33, 0 0 50px #a259ff22 inset;
+      backdrop-filter: blur(8px);
+      height: fit-content;
+      display: flex;
+      flex-direction: column;
+      transition: all 0.3s ease;
+    }
+    
+    .achievement-detail:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 35px #00ffff44, 0 0 60px #a259ff33 inset;
+    }
+    
+    .achievement-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 12px;
+      position: relative;
+    }
+    
+    .achievement-icon {
+      font-size: 2rem;
+      filter: drop-shadow(0 0 12px currentColor);
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    
+    .achievement-info {
+      flex: 1;
+      text-align: left;
+      min-width: 0;
+    }
+    
+    .achievement-name {
+      font-size: 1.3rem;
+      font-weight: bold;
+      color: #00ffff;
+      margin-bottom: 5px;
+      text-shadow: 0 0 12px #00ffff;
+      line-height: 1.3;
+      letter-spacing: 1px;
+    }
+    
+    .achievement-description {
+      color: #e0e0e0;
+      font-size: 0.95rem;
+      margin-bottom: 10px;
+      line-height: 1.4;
+      letter-spacing: 0.5px;
+    }
+    
+    .progress-container {
+      background: rgba(0, 0, 0, 0.4);
+      border-radius: 10px;
+      padding: 3px;
+      margin: 8px 0;
+    }
+    
+    .progress-bar {
+      height: 8px;
+      border-radius: 6px;
+      background: linear-gradient(90deg, #00ffff, #a259ff);
+      transition: width 0.5s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .progress-bar::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      animation: shimmer 2s infinite;
+    }
+    
+    @keyframes shimmer {
+      0% { left: -100%; }
+      100% { left: 100%; }
+    }
+    
+    .progress-text {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      margin-top: 6px;
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+    
+    .progress-text .current-progress,
+    .progress-text .required-progress {
+      margin: 0 2px;
+      font-size: 1.1em;
+    }
+    
+    .progress-text span {
+      display: inline-block;
+    }
+    
+    .current-progress {
+      color: #00ffff;
+      font-weight: bold;
+      text-shadow: 0 0 6px #00ffff;
+    }
+    
+    .required-progress {
+      color: #ffd700;
+      text-shadow: 0 0 6px #ffd700;
+    }
+    
+    .reward-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #ffd700;
+      font-weight: bold;
+      text-shadow: 0 0 8px #ffd700;
+      font-size: 0.95rem;
+      margin-top: 8px;
+    }
+    
+    .claimed-badge {
+      opacity: 0.6;
+      position: relative;
+    }
+    
+    .claimed-badge::after {
+      content: '✓';
+      position: absolute;
+      top: -4px;
+      right: -4px;
+      background: #00ff00;
+      color: #000;
+      border-radius: 50%;
+      width: 16px;
+      height: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: bold;
+      box-shadow: 0 0 8px #00ff00;
+    }
+    
+    .achievement-status {
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: bold;
+      margin-left: auto;
+      flex-shrink: 0;
+      text-shadow: 0 0 4px currentColor;
+    }
+    
+    .status-locked {
+      background: rgba(255, 0, 0, 0.3);
+      color: #ff6b6b;
+      border: 1px solid #ff6b6b;
+      box-shadow: 0 0 8px #ff6b6b33;
+    }
+    
+    .status-unlocked {
+      background: rgba(0, 255, 0, 0.3);
+      color: #00ff00;
+      border: 1px solid #00ff00;
+      box-shadow: 0 0 8px #00ff0033;
+    }
+    
+    .status-claimed {
+      background: rgba(255, 215, 0, 0.3);
+      color: #ffd700;
+      border: 1px solid #ffd700;
+      box-shadow: 0 0 8px #ffd70033;
+    }
+    
+    .toggle-details {
+      background: rgba(0, 255, 255, 0.15);
+      border: 2px solid #00ffff;
+      color: #00ffff;
+      padding: 8px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      margin-top: 8px;
+      transition: all 0.3s ease;
+      font-weight: bold;
+      text-shadow: 0 0 6px #00ffff;
+    }
+    
+    .toggle-details:hover {
+      background: rgba(0, 255, 255, 0.25);
+      box-shadow: 0 0 15px #00ffff;
+      transform: scale(1.02);
+    }
+    
+    .achievement-details {
+      display: none;
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px solid rgba(0, 255, 255, 0.4);
+      font-size: 0.85rem;
+      color: #e0e0e0;
+      line-height: 1.4;
+    }
+    
+    .achievement-details.show {
+      display: block;
+    }
+    
+    /* 新增：分類篩選樣式 */
+    .filter-section {
+      background: rgba(20, 40, 80, 0.9);
+      border: 2px solid #00ffff;
+      border-radius: 15px;
+      padding: 20px;
+      margin: 20px auto;
+      max-width: 800px;
+      box-shadow: 0 0 25px #00ffff33;
+      backdrop-filter: blur(8px);
+    }
+    
+    .filter-title {
+      color: #00ffff;
+      font-size: 1.4rem;
+      font-weight: bold;
+      margin-bottom: 15px;
+      text-shadow: 0 0 12px #00ffff;
+      letter-spacing: 1px;
+    }
+    
+    .filter-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      justify-content: center;
+    }
+    
+    .filter-btn {
+      background: rgba(0, 255, 255, 0.15);
+      border: 2px solid #00ffff;
+      color: #00ffff;
+      padding: 12px 20px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 1.1rem;
+      transition: all 0.3s ease;
+      font-weight: bold;
+      letter-spacing: 1px;
+      text-shadow: 0 0 8px #00ffff;
+      position: relative;
+    }
+    
+    .filter-btn:hover {
+      background: rgba(0, 255, 255, 0.25);
+      box-shadow: 0 0 20px #00ffff;
+      transform: scale(1.05);
+    }
+    
+    .filter-btn.active {
+      background: linear-gradient(90deg, #00ffff, #a259ff);
+      color: #000;
+      box-shadow: 0 0 25px #00ffff;
+      font-weight: 700;
+    }
+    
+    .filter-btn.all {
+      background: linear-gradient(90deg, #ffd700, #ffaa00);
+      color: #000;
+      border-color: #ffd700;
+      text-shadow: none;
+    }
+    
+    .filter-btn.all:hover {
+      box-shadow: 0 0 25px #ffd700;
+    }
+    
+    .filter-btn.all.active {
+      background: linear-gradient(90deg, #ffd700, #ffaa00);
+      box-shadow: 0 0 30px #ffd700;
+    }
+    
+    /* 新增：成就數量泡泡樣式 */
+    .achievement-badge {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      background: linear-gradient(135deg, #ff6b6b, #ff4757);
+      color: white;
+      border-radius: 50%;
+      min-width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: bold;
+      box-shadow: 0 0 10px rgba(255, 107, 107, 0.6);
+      border: 2px solid white;
+      animation: badgePulse 2s ease-in-out infinite;
+      z-index: 10;
+    }
+    
+    @keyframes badgePulse {
+      0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 0 10px rgba(255, 107, 107, 0.6);
+      }
+      50% {
+        transform: scale(1.1);
+        box-shadow: 0 0 15px rgba(255, 107, 107, 0.8);
+      }
+    }
+    
+    .achievement-badge.hidden {
+      display: none;
+    }
+    
+    .stats-section {
+      background: rgba(20, 40, 80, 0.9);
+      border: 2px solid #ffd700;
+      border-radius: 15px;
+      padding: 20px;
+      margin: 20px auto;
+      max-width: 800px;
+      box-shadow: 0 0 25px #ffd70033;
+      backdrop-filter: blur(8px);
+    }
+    
+    .stats-title {
+      color: #ffd700;
+      font-size: 1.4rem;
+      font-weight: bold;
+      margin-bottom: 15px;
+      text-shadow: 0 0 12px #ffd700;
+      letter-spacing: 1px;
+    }
+    
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+    }
+    
+    .stat-item {
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid #ffd700;
+      border-radius: 10px;
+      padding: 15px;
+      text-align: center;
+      box-shadow: 0 0 15px #ffd70022;
+    }
+    
+    .stat-value {
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: #ffd700;
+      text-shadow: 0 0 10px #ffd700;
+      margin-bottom: 5px;
+    }
+    
+    .stat-label {
+      font-size: 1rem;
+      color: #e0e0e0;
+      text-shadow: 0 0 6px #e0e0e0;
+    }
+    
+    .group-hidden {
+      display: none;
+    }
+    
+    .claim-btn {
+      background: linear-gradient(90deg, #00ff00, #00cc00);
+      color: #000;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 0.85rem;
+      margin-top: 6px;
+      box-shadow: 0 0 12px #00ff00;
+      transition: all 0.3s ease;
+    }
+    
+    .claim-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 20px #00ff00;
+    }
+    
+    /* 新增：背景音樂按鈕樣式 */
+    #muteToggle {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 1001;
+      background: rgba(10, 20, 40, 0.85);
+      color: #fff;
+      border: 2px solid #00ffff;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      font-size: 1.5rem;
+      cursor: pointer;
+      box-shadow: 0 0 16px #00ffff;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    #muteToggle:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 32px #00ffff;
+    }
+
+    /* 新增：成就達成彈窗樣式 */
+    .achievement-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.85);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      backdrop-filter: blur(12px);
+      animation: modalFadeIn 0.4s ease-out;
+    }
+    
+    @keyframes modalFadeIn {
+      from {
+        opacity: 0;
+        transform: scale(0.7);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+    
+    .achievement-modal-content {
+      background: linear-gradient(135deg, rgba(10, 20, 40, 0.98), rgba(20, 40, 80, 0.98));
+      border: 3px solid #00ffff;
+      border-radius: 25px;
+      padding: 0;
+      max-width: 520px;
+      width: 90%;
+      position: relative;
+      box-shadow: 0 0 50px #00ffff, 0 0 100px #a259ff, 0 0 150px rgba(0, 255, 255, 0.4);
+      animation: modalPop 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+      overflow: hidden;
+    }
+    
+    @keyframes modalPop {
+      0% {
+        transform: scale(0.2) rotate(-15deg);
+        opacity: 0;
+      }
+      50% {
+        transform: scale(1.15) rotate(3deg);
+      }
+      100% {
+        transform: scale(1) rotate(0deg);
+        opacity: 1;
+      }
+    }
+    
+    .achievement-modal-header {
+      background: linear-gradient(90deg, #00ffff, #a259ff);
+      padding: 25px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .achievement-modal-header::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      animation: shimmer 3s infinite;
+    }
+    
+    .achievement-modal-icon {
+      font-size: 5rem;
+      margin-bottom: 15px;
+      filter: drop-shadow(0 0 25px currentColor);
+      animation: iconFloat 3s ease-in-out infinite;
+      position: relative;
+      z-index: 1;
+    }
+    
+    @keyframes iconFloat {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      25% { transform: translateY(-8px) rotate(2deg); }
+      50% { transform: translateY(-15px) rotate(0deg); }
+      75% { transform: translateY(-8px) rotate(-2deg); }
+    }
+    
+    .achievement-modal-title {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #000;
+      margin: 0;
+      text-shadow: 0 0 15px rgba(255, 255, 255, 0.7);
+      position: relative;
+      z-index: 1;
+      letter-spacing: 1px;
+    }
+    
+    .achievement-modal-body {
+      padding: 30px;
+      text-align: center;
+    }
+    
+    .achievement-modal-description {
+      font-size: 1.2rem;
+      color: #ddd;
+      margin-bottom: 25px;
+      line-height: 1.6;
+      font-weight: 500;
+    }
+    
+    .achievement-modal-reward {
+      background: linear-gradient(90deg, #ffd700, #ffaa00);
+      border-radius: 20px;
+      padding: 20px;
+      margin: 25px 0;
+      color: #000;
+      font-weight: bold;
+      font-size: 1.4rem;
+      box-shadow: 0 0 30px #ffd700;
+      animation: rewardGlow 2s ease-in-out infinite alternate;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .achievement-modal-reward::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      animation: shimmer 2s infinite;
+    }
+    
+    @keyframes rewardGlow {
+      from { 
+        box-shadow: 0 0 30px #ffd700, 0 0 40px #ffaa00;
+        transform: scale(1);
+      }
+      to { 
+        box-shadow: 0 0 40px #ffd700, 0 0 50px #ffaa00, 0 0 60px #ff8800;
+        transform: scale(1.02);
+      }
+    }
+    
+    .achievement-modal-stars {
+      font-size: 1.6rem;
+      margin-right: 10px;
+      animation: starTwinkle 1.5s ease-in-out infinite;
+    }
+    
+    @keyframes starTwinkle {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.7; transform: scale(1.1); }
+    }
+    
+    .achievement-modal-total {
+      background: rgba(0, 255, 255, 0.15);
+      border: 2px solid #00ffff;
+      border-radius: 15px;
+      padding: 15px;
+      margin: 20px 0;
+      color: #00ffff;
+      font-weight: bold;
+      font-size: 1.1rem;
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+    }
+    
+    .achievement-modal-close {
+      background: linear-gradient(90deg, #00ffff, #a259ff);
+      color: #000;
+      border: none;
+      padding: 15px 35px;
+      border-radius: 30px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 15px;
+      box-shadow: 0 0 25px #00ffff;
+      transition: all 0.3s ease;
+      font-family: 'Orbitron', sans-serif;
+      letter-spacing: 1px;
+    }
+    
+    .achievement-modal-close:hover {
+      transform: scale(1.08);
+      box-shadow: 0 0 40px #00ffff, 0 0 50px #a259ff;
+    }
+    
+    .achievement-modal-close:active {
+      transform: scale(0.95);
+    }
+    
+    .achievement-modal-particles {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    
+    .particle {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      background: #ffd700;
+      border-radius: 50%;
+      animation: particleFloat 4s ease-out forwards;
+      box-shadow: 0 0 10px currentColor;
+    }
+    
+    @keyframes particleFloat {
+      0% {
+        opacity: 1;
+        transform: translateY(0) scale(1) rotate(0deg);
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(-150px) scale(0) rotate(360deg);
+      }
+    }
+    
+    .confetti {
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      animation: confettiFall 3s ease-out forwards;
+      border-radius: 2px;
+    }
+    
+    @keyframes confettiFall {
+      0% {
+        opacity: 1;
+        transform: translateY(-50px) rotate(0deg) scale(1);
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(100vh) rotate(720deg) scale(0.5);
+      }
+    }
+
+    /* 新增：影片按鈕樣式 */
+    .video-button {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 32px;
+      height: 32px;
+      background: rgba(255, 0, 0, 0.8);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 15;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 8px rgba(255, 0, 0, 0.5);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+    }
+    
+    .video-button:hover {
+      transform: scale(1.1);
+      background: rgba(255, 0, 0, 1);
+      box-shadow: 0 0 16px rgba(255, 0, 0, 0.8);
+      border-color: rgba(255, 255, 255, 0.8);
+    }
+    
+    .video-icon {
+      color: white;
+      font-size: 14px;
+      font-weight: bold;
+      text-shadow: 0 0 4px rgba(0, 0, 0, 0.8);
+    }
+
+    /* 新增：影片 Modal 樣式 */
+    .video-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.9);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+      backdrop-filter: blur(8px);
+    }
+    
+    .video-modal-content {
+      background: rgba(10, 20, 40, 0.95);
+      border: 2px solid #00ffff;
+      border-radius: 16px;
+      width: 90%;
+      max-width: 800px;
+      max-height: 90vh;
+      overflow: hidden;
+      box-shadow: 0 0 32px #00ffff, 0 0 48px #a259ffcc;
+    }
+    
+    .video-modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 20px;
+      background: rgba(0, 255, 255, 0.1);
+      border-bottom: 1px solid rgba(0, 255, 255, 0.3);
+    }
+    
+    .video-modal-header h3 {
+      color: #00ffff;
+      margin: 0;
+      font-size: 1.2rem;
+      text-shadow: 0 0 8px #00ffff;
+    }
+    
+    .video-modal-close {
+      background: rgba(255, 0, 0, 0.8);
+      color: white;
+      border: none;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 18px;
+      font-weight: bold;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .video-modal-close:hover {
+      background: rgba(255, 0, 0, 1);
+      transform: scale(1.1);
+      box-shadow: 0 0 12px rgba(255, 0, 0, 0.8);
+    }
+    
+    .video-modal-body {
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 400px;
+    }
+    
+    .video-modal-body iframe,
+    .video-modal-body video {
+      width: 100%;
+      height: 400px;
+      border-radius: 12px;
+      border: 2px solid rgba(0, 255, 255, 0.3);
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+    }
+    
+    .video-modal-body iframe {
+      background: #000;
+    }
+    
+    .video-modal-body video {
+      background: #000;
+    }
+
+    /* 新增：成就卡片中的影片按鈕 */
+    .achievement-detail .video-button {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 28px;
+      height: 28px;
+      background: rgba(255, 0, 0, 0.8);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 15;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 8px rgba(255, 0, 0, 0.5);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+    }
+    
+    .achievement-detail .video-button:hover {
+      transform: scale(1.1);
+      background: rgba(255, 0, 0, 1);
+      box-shadow: 0 0 16px rgba(255, 0, 0, 0.8);
+      border-color: rgba(255, 255, 255, 0.8);
+    }
+    
+    .achievement-detail .video-icon {
+      color: white;
+      font-size: 12px;
+      font-weight: bold;
+      text-shadow: 0 0 4px rgba(0, 0, 0, 0.8);
+    }
+    
+    /* ========== 響應式設計 ========== */
+    
+    /* 平板設備 (768px - 1024px) */
+    @media (max-width: 1024px) {
+      header {
+        padding: 16px 20px;
+      }
+      
+      .total-stars-display {
+        padding: 6px 12px;
+        font-size: 1rem;
+      }
+      
+      header h1 {
+        font-size: 2rem;
+      }
+      
+      .header-actions {
+        gap: 16px;
+      }
+      
+      .btn {
+        padding: 10px 20px;
+        font-size: 1rem;
+      }
+      
+      .achievement-section {
+        max-width: 90%;
+        padding: 25px 15px 35px 15px;
+      }
+      
+      .achievement-section h2 {
+        font-size: 1.8rem;
+      }
+      
+      .achievement-badges {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 14px;
+      }
+      
+      .achievement-name {
+        font-size: 1.2rem;
+      }
+      
+      .achievement-description {
+        font-size: 0.9rem;
+      }
+    }
+    
+    /* 手機設備 (480px - 768px) */
+    @media (max-width: 768px) {
+      header {
+        padding: 12px 15px;
+        flex-direction: column;
+        gap: 15px;
+      }
+      
+      .total-stars-display {
+        padding: 5px 10px;
+        font-size: 0.9rem;
+        margin-right: 0;
+        margin-bottom: 10px;
+      }
+      
+      header h1 {
+        font-size: 1.6rem;
+        letter-spacing: 2px;
+      }
+      
+      .header-actions {
+        gap: 10px;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      
+      .btn {
+        padding: 8px 16px;
+        font-size: 0.9rem;
+        margin-left: 4px;
+        margin-right: 4px;
+      }
+      
+      .achievement-section {
+        max-width: 95%;
+        margin: 20px auto 0 auto;
+        padding: 20px 12px 30px 12px;
+      }
+      
+      .achievement-section h2 {
+        font-size: 1.5rem;
+        margin-bottom: 20px;
+      }
+      
+      .achievement-badges {
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 12px;
+      }
+      
+      .achievement-detail {
+        padding: 15px;
+      }
+      
+      .achievement-header {
+        gap: 10px;
+        margin-bottom: 10px;
+      }
+      
+      .achievement-icon {
+        font-size: 1.6rem;
+      }
+      
+      .achievement-name {
+        font-size: 1.1rem;
+      }
+      
+      .achievement-description {
+        font-size: 0.85rem;
+      }
+      
+      .stats-section, .filter-section {
+        max-width: 95%;
+        margin: 15px auto;
+        padding: 15px 12px;
+      }
+      
+      .stats-title, .filter-title {
+        font-size: 1.2rem;
+      }
+      
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+      }
+      
+      .filter-buttons {
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      
+      .filter-btn {
+        padding: 6px 12px;
+        font-size: 0.8rem;
+      }
+    }
+    
+    /* 小手機設備 (320px - 480px) */
+    @media (max-width: 480px) {
+      header {
+        padding: 10px 12px;
+      }
+      
+      .total-stars-display {
+        padding: 4px 8px;
+        font-size: 0.8rem;
+      }
+      
+      header h1 {
+        font-size: 1.4rem;
+        letter-spacing: 1px;
+      }
+      
+      .header-actions {
+        gap: 6px;
+      }
+      
+      .btn {
+        padding: 6px 12px;
+        font-size: 0.8rem;
+        margin-left: 2px;
+        margin-right: 2px;
+      }
+      
+      .achievement-section {
+        max-width: 98%;
+        margin: 15px auto 0 auto;
+        padding: 15px 10px 25px 10px;
+      }
+      
+      .achievement-section h2 {
+        font-size: 1.3rem;
+        margin-bottom: 15px;
+      }
+      
+      .achievement-badges {
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+      
+      .achievement-detail {
+        padding: 12px;
+      }
+      
+      .achievement-header {
+        gap: 8px;
+        margin-bottom: 8px;
+      }
+      
+      .achievement-icon {
+        font-size: 1.4rem;
+      }
+      
+      .achievement-name {
+        font-size: 1rem;
+      }
+      
+      .achievement-description {
+        font-size: 0.8rem;
+      }
+      
+      .stats-section, .filter-section {
+        max-width: 98%;
+        margin: 10px auto;
+        padding: 12px 10px;
+      }
+      
+      .stats-title, .filter-title {
+        font-size: 1.1rem;
+      }
+      
+      .stats-grid {
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+      
+      .filter-buttons {
+        gap: 6px;
+      }
+      
+      .filter-btn {
+        padding: 5px 10px;
+        font-size: 0.75rem;
+      }
+      
+      .achievement-modal-content {
+        max-width: 95%;
+        padding: 20px 15px;
+      }
+      
+      .achievement-modal-title {
+        font-size: 1.2rem;
+      }
+      
+      .achievement-modal-description {
+        font-size: 0.9rem;
+      }
+    }
+    
+    /* 橫向手機 (landscape) */
+    @media (max-width: 768px) and (orientation: landscape) {
+      header {
+        flex-direction: row;
+        padding: 8px 15px;
+      }
+      
+      .total-stars-display {
+        margin-right: 12px;
+        margin-bottom: 0;
+      }
+      
+      header h1 {
+        font-size: 1.4rem;
+      }
+      
+      .achievement-section {
+        margin: 10px auto 0 auto;
+        padding: 15px 12px 20px 12px;
+      }
+      
+      .achievement-badges {
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 10px;
+      }
+    }
+    
+    /* 觸控設備優化 */
+    @media (hover: none) and (pointer: coarse) {
+      .btn:hover, .achievement-detail:hover {
+        transform: none;
+      }
+      
+      .btn:active, .achievement-detail:active {
+        transform: scale(0.95);
+      }
+      
+      .badge.unlocked:hover {
+        transform: none;
+      }
+      
+      .badge.unlocked:active {
+        transform: scale(1.1);
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- 點擊音效 -->
+  <audio id="clickSfx" src="sound/click.mp3" preload="auto"></audio>
+  
+  <!-- 背景音樂 -->
+  <audio id="bgm" src="sound/午後放鬆時光（純音樂）.mp3" loop></audio>
+  <button id="muteToggle">🔇</button>
+
+  <header>
+    <h1>🏆 成就徽章</h1>
+    <div class="header-actions">
+      <div class="total-stars-display">
+        <span class="star-icon">⭐</span>
+        <span class="star-count" id="totalStarsDisplay">0</span>
+      </div>
+      <button class="btn" onclick="location.href='index.html'">🏠 首頁</button>
+      <button class="btn" onclick="location.href='cards.html'">📁 卡片倉庫</button>
+      <button class="btn" onclick="location.href='atlas.html'">🌠 星座圖鑑</button>
+    </div>
+  </header>
+  
+  <!-- 新增：成就達成彈窗 -->
+  <div id="achievementModal" class="achievement-modal">
+    <div class="achievement-modal-content">
+      <div class="achievement-modal-particles" id="particles"></div>
+      <div class="achievement-modal-header">
+        <div class="achievement-modal-icon" id="modalIcon">🏆</div>
+        <h2 class="achievement-modal-title" id="modalTitle">成就達成！</h2>
+      </div>
+      <div class="achievement-modal-body">
+        <div class="achievement-modal-description" id="modalDescription">
+          恭喜您達成了一個新的成就！
+        </div>
+        <div class="achievement-modal-reward" id="modalReward">
+          <span class="achievement-modal-stars">⭐</span>
+          <span id="modalRewardText">獎勵星星：0 顆</span>
+        </div>
+        <div class="achievement-modal-total" id="modalTotal">
+          當前星星總數：0 顆
+        </div>
+        <button class="achievement-modal-close" onclick="closeAchievementModal()">
+          🎉 太棒了！
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- 新增：統計資訊區域 -->
+  <div class="stats-section">
+    <div class="stats-title">📊 成就統計</div>
+    <div class="stats-grid" id="statsGrid">
+      <!-- 統計資訊將由JavaScript動態生成 -->
+    </div>
+  </div>
+  
+  <!-- 新增：分類篩選區域 -->
+  <div class="filter-section">
+    <div class="filter-title">🔍 分類篩選</div>
+    <div class="filter-buttons" id="filterButtons">
+      <!-- 篩選按鈕將由JavaScript動態生成 -->
+    </div>
+  </div>
+  
+  <div class="achievement-section">
+    <h2>所有成就徽章</h2>
+    <div id="achievementBadges" class="achievement-badges"></div>
+  </div>
+  <script src="js/cards.js"></script>
+  <script src="js/userData.js"></script>
+  <script>
+    // 頁面載入時自動檢查每日簽到獎勵
+    document.addEventListener('DOMContentLoaded', function() {
+      // 延遲一點時間確保所有系統都已載入
+      setTimeout(() => {
+        checkDailyReward();
+      }, 1000);
+    });
+
+    // 這裡複製 cards.html 內的 achievements 陣列
+    const achievements = [
+      { id: 'bronze', name: '銅牌收集者', requirement: 10, reward: 5, icon: '🥉', type: 'collection', description: '收集10張卡片，開始你的收集之旅' },
+      { id: 'silver', name: '銀牌收集者', requirement: 25, reward: 15, icon: '🥈', type: 'collection', description: '收集25張卡片，展現你的收集實力' },
+      { id: 'gold', name: '金牌收集者', requirement: 50, reward: 30, icon: '🥇', type: 'collection', description: '收集50張卡片，成為真正的收集者' },
+      { id: 'platinum', name: '白金收集者', requirement: 100, reward: 60, icon: '💎', type: 'collection', description: '收集100張卡片，達到白金等級' },
+      { id: 'diamond', name: '鑽石收集者', requirement: 200, reward: 120, icon: '💠', type: 'collection', description: '收集200張卡片，獲得鑽石榮耀' },
+      { id: 'master', name: '收集大師', requirement: 500, reward: 300, icon: '👑', type: 'collection', description: '收集500張卡片，成為收集大師' },
+      { id: 'common_master', name: '普通卡大師', requirement: 50, reward: 20, icon: '📚', type: 'rarity', rarity: '普通', description: '收集50張普通卡片，掌握基礎詞彙' },
+      { id: 'rare_master', name: '稀有卡大師', requirement: 30, reward: 40, icon: '🔮', type: 'rarity', rarity: '稀有', description: '收集30張稀有卡片，擴展詞彙範圍' },
+      { id: 'epic_master', name: '超稀有大師', requirement: 20, reward: 80, icon: '🌟', type: 'rarity', rarity: '超稀有', description: '收集20張超稀有卡片，掌握高級詞彙' },
+      { id: 'shard_collector', name: '碎片收集者', requirement: 100, reward: 25, icon: '💎', type: 'shards', description: '收集100個碎片，開始碎片收集之路' },
+      { id: 'shard_hoarder', name: '碎片囤積者', requirement: 500, reward: 100, icon: '🏦', type: 'shards', description: '收集500個碎片，成為碎片囤積者' },
+      { id: 'shard_master', name: '碎片大師', requirement: 1000, reward: 200, icon: '💍', type: 'shards', description: '收集1000個碎片，成為碎片大師' },
+      { id: 'first_card', name: '初學者', requirement: 1, reward: 1, icon: '🎯', type: 'special', description: '獲得第一張卡片，開始學習之旅' },
+      { id: 'lucky_starter', name: '幸運新手', requirement: 5, reward: 5, icon: '🍀', type: 'special', description: '獲得5張卡片，展現你的幸運' },
+      { id: 'dedicated', name: '專注學習者', requirement: 25, reward: 20, icon: '📖', type: 'special', description: '獲得25張卡片，展現你的專注' },
+      { id: 'persistent', name: '堅持不懈', requirement: 75, reward: 60, icon: '💪', type: 'special', description: '獲得75張卡片，展現你的堅持' },
+      { id: 'vocabulary_king', name: '詞彙之王', requirement: 150, reward: 150, icon: '👑', type: 'special', description: '獲得150張卡片，成為詞彙之王' },
+      { id: 'language_legend', name: '語言傳奇', requirement: 300, reward: 300, icon: '🏆', type: 'special', description: '獲得300張卡片，成為語言傳奇' },
+      { id: 'daily_1', name: '每日簽到1天', requirement: 1, reward: 2, icon: '📅', type: 'daily', description: '連續簽到1天，養成好習慣' },
+      { id: 'daily_7', name: '每日簽到7天', requirement: 7, reward: 10, icon: '📆', type: 'daily', description: '連續簽到7天，堅持一週' },
+      { id: 'daily_30', name: '每日簽到30天', requirement: 30, reward: 50, icon: '🗓️', type: 'daily', description: '連續簽到30天，堅持一個月' },
+      { id: 'daily_100', name: '每日簽到100天', requirement: 100, reward: 200, icon: '📊', type: 'daily', description: '連續簽到100天，成為忠實用戶' },
+      { id: 'star_collector', name: '星星收集者', requirement: 100, reward: 10, icon: '⭐', type: 'stars', description: '收集100顆星星，開始星星收集' },
+      { id: 'star_hoarder', name: '星星囤積者', requirement: 500, reward: 50, icon: '✨', type: 'stars', description: '收集500顆星星，成為星星囤積者' },
+      { id: 'star_master', name: '星星大師', requirement: 1000, reward: 100, icon: '🌟', type: 'stars', description: '收集1000顆星星，成為星星大師' },
+      { id: 'star_legend', name: '星星傳奇', requirement: 5000, reward: 500, icon: '💫', type: 'stars', description: '收集5000顆星星，成為星星傳奇' },
+      { id: 'speed_learner', name: '快速學習者', requirement: 10, reward: 15, icon: '⚡', type: 'performance', description: '通過10個關卡，展現快速學習能力' },
+      { id: 'accuracy_master', name: '準確大師', requirement: 20, reward: 25, icon: '🎯', type: 'performance', description: '通過20個關卡，展現準確的學習能力' },
+      { id: 'combo_king', name: '連擊之王', requirement: 15, reward: 30, icon: '🔥', type: 'performance', description: '通過15個關卡，展現連擊能力' },
+      // 新增：關卡成就
+      { id: 'fill_beginner', name: '填空新手', requirement: 1, reward: 5, icon: '📝', type: 'fill', description: '完成第一次填空挑戰' },
+      { id: 'fill_regular', name: '填空常客', requirement: 10, reward: 20, icon: '📋', type: 'fill', description: '完成10次填空挑戰' },
+      { id: 'fill_expert', name: '填空專家', requirement: 50, reward: 80, icon: '📊', type: 'fill', description: '完成50次填空挑戰' },
+      { id: 'fill_master', name: '填空大師', requirement: 100, reward: 150, icon: '🏆', type: 'fill', description: '完成100次填空挑戰' },
+      { id: 'fill_perfect', name: '完美填空', requirement: 1, reward: 30, icon: '💯', type: 'fill', description: '在填空挑戰中獲得滿分' },
+      { id: 'fill_speed', name: '快速填空', requirement: 5, reward: 25, icon: '⚡', type: 'fill', description: '在5次填空挑戰中平均時間少於15秒' },
+      { id: 'fill_streak', name: '連續填空', requirement: 7, reward: 40, icon: '🔥', type: 'fill', description: '連續7天完成填空挑戰' },
+      { id: 'fill_vocab', name: '詞彙填空', requirement: 100, reward: 60, icon: '📚', type: 'fill', description: '在填空挑戰中答對100個單字' },
+      // 新增：單字達人成就
+      { id: 'vocab_beginner', name: '單字新手', requirement: 10, reward: 15, icon: '📖', type: 'vocabulary', description: '答對10個單字本的單字，開始單字學習之旅' },
+      { id: 'vocab_regular', name: '單字常客', requirement: 50, reward: 40, icon: '📚', type: 'vocabulary', description: '答對50個單字本的單字，展現學習熱情' },
+      { id: 'vocab_expert', name: '單字專家', requirement: 100, reward: 80, icon: '🎓', type: 'vocabulary', description: '答對100個單字本的單字，成為單字專家' },
+      { id: 'vocab_master', name: '單字大師', requirement: 200, reward: 150, icon: '👑', type: 'vocabulary', description: '答對200個單字本的單字，成為單字大師' },
+      { id: 'vocab_400', name: '單字達人', requirement: 400, reward: 250, icon: '🏅', type: 'vocabulary', description: '答對400個單字本的單字，展現卓越的詞彙能力' },
+      { id: 'vocab_800', name: '單字王者', requirement: 800, reward: 400, icon: '👑', type: 'vocabulary', description: '答對800個單字本的單字，成為單字學習的王者' },
+      { id: 'vocab_1000', name: '單字至尊', requirement: 1000, reward: 600, icon: '💎', type: 'vocabulary', description: '答對1000個單字本的單字，達到單字學習的巔峰境界' },
+      { id: 'vocab_1200', name: '單字神話', requirement: 1200, reward: 800, icon: '🌟', type: 'vocabulary', description: '答對1200個單字本的單字，創造單字學習的神話傳說' },
+      { id: 'vocab_legend', name: '單字傳奇', requirement: 500, reward: 300, icon: '🏆', type: 'vocabulary', description: '答對500個單字本的單字，成為單字傳奇' },
+      // 希臘神祇關卡成就
+      { id: 'pass_zeus', name: '通過宙斯關卡', requirement: 1, reward: 100, icon: '⚡', type: 'greek', description: '通過宙斯關卡，掌握天空與雷電的力量', rewardRange: [100,150] },
+      { id: 'pass_hera', name: '通過赫拉關卡', requirement: 1, reward: 100, icon: '👑', type: 'greek', description: '通過赫拉關卡，感受婚姻與家庭的神聖', rewardRange: [100,150] },
+      { id: 'pass_poseidon', name: '通過波塞頓關卡', requirement: 1, reward: 100, icon: '🌊', type: 'greek', description: '通過波塞頓關卡，掌控海洋與地震的力量', rewardRange: [100,150] },
+      { id: 'pass_demeter', name: '通過得墨忒耳關卡', requirement: 1, reward: 100, icon: '🌾', type: 'greek', description: '通過得墨忒耳關卡，體驗農業與豐饒的祝福', rewardRange: [100,150] },
+      { id: 'pass_athena', name: '通過雅典娜關卡', requirement: 1, reward: 100, icon: '🦉', type: 'greek', description: '通過雅典娜關卡，獲得智慧與戰略的啟發', rewardRange: [100,150] },
+      { id: 'pass_apollo', name: '通過阿波羅關卡', requirement: 1, reward: 100, icon: '☀️', type: 'greek', description: '通過阿波羅關卡，沐浴光明與音樂的洗禮', rewardRange: [100,150] },
+      { id: 'pass_aphrodite', name: '通過阿芙蘿黛蒂關卡', requirement: 1, reward: 100, icon: '💕', type: 'greek', description: '通過阿芙蘿黛蒂關卡，感受愛與美的力量', rewardRange: [100,150] },
+      { id: 'pass_ares', name: '通過阿瑞斯關卡', requirement: 1, reward: 100, icon: '⚔️', type: 'greek', description: '通過阿瑞斯關卡，體驗戰爭與勇氣的考驗', rewardRange: [100,150] },
+      { id: 'pass_artemis', name: '通過阿提密斯關卡', requirement: 1, reward: 100, icon: '🏹', type: 'greek', description: '通過阿提密斯關卡，掌握狩獵與月亮的奧秘', rewardRange: [100,150] },
+      { id: 'pass_hades', name: '通過哈迪斯關卡', requirement: 1, reward: 100, icon: '💀', type: 'greek', description: '通過哈迪斯關卡，探索冥界與死亡的領域', rewardRange: [100,150] },
+      { id: 'pass_hephaestus', name: '通過赫菲斯托斯關卡', requirement: 1, reward: 100, icon: '🔨', type: 'greek', description: '通過赫菲斯托斯關卡，學習鍛造與工藝的技藝', rewardRange: [100,150] },
+      { id: 'pass_hermes', name: '通過赫爾墨斯關卡', requirement: 1, reward: 100, icon: '⚡', type: 'greek', description: '通過赫爾墨斯關卡，體驗速度與信使的使命', rewardRange: [100,150] },
+      { id: 'pass_hestia', name: '通過赫斯提亞關卡', requirement: 1, reward: 100, icon: '🔥', type: 'greek', description: '通過赫斯提亞關卡，感受爐火與家庭的溫暖', rewardRange: [100,150] },
+      { id: 'pass_dionysus', name: '通過狄俄尼索斯關卡', requirement: 1, reward: 100, icon: '🍷', type: 'greek', description: '通過狄俄尼索斯關卡，體驗酒神與狂歡的樂趣', rewardRange: [100,150] },
+      { id: 'pass_eros', name: '通過厄洛斯關卡', requirement: 1, reward: 100, icon: '💘', type: 'greek', description: '通過厄洛斯關卡，感受愛神與慾望的魔力', rewardRange: [100,150] },
+      { id: 'pass_persephone', name: '通過珀耳塞福涅關卡', requirement: 1, reward: 100, icon: '🌸', type: 'greek', description: '通過珀耳塞福涅關卡，探索春神與冥后的雙重身份', rewardRange: [100,150] },
+    ];
+    // 取得本地進度
+    let ownedCards = JSON.parse(localStorage.getItem('ownedCards') || '{}');
+    let shards = JSON.parse(localStorage.getItem('cardShards') || '{}');
+    // 各類型分組
+    const groupTitles = {
+      collection: '📚 收集進度',
+      rarity: '🎯 稀有度專精',
+      shards: '💎 碎片系統',
+      special: '🏆 特殊成就',
+      daily: '📅 每日簽到',
+      stars: '⭐ 星星收集',
+      performance: '⚡ 遊戲表現',
+      fill: '📝 填空挑戰',
+      vocabulary: '📖 單字達人',
+      zodiac: '🌠 星座關卡',
+      greek: '🏛️ 希臘神祇',
+      ssr_special: '🌟 SSR 專區'
+    };
+    
+    // 新增：當前選中的分類
+    let currentFilter = 'all';
+    
+    // 新增：成就彈窗相關函數
+    function showAchievementModal(achievement, reward, totalStars) {
+      // 播放星星音效
+      playStarSound();
+      
+      const modal = document.getElementById('achievementModal');
+      const icon = document.getElementById('modalIcon');
+      const title = document.getElementById('modalTitle');
+      const description = document.getElementById('modalDescription');
+      const rewardText = document.getElementById('modalRewardText');
+      const totalText = document.getElementById('modalTotal');
+      
+      // 更新彈窗內容
+      icon.textContent = achievement.icon;
+      title.textContent = achievement.name;
+      description.textContent = achievement.description;
+      rewardText.textContent = `獎勵星星：${reward} 顆`;
+      totalText.textContent = `當前星星總數：${totalStars} 顆`;
+      
+      // 顯示彈窗
+      modal.style.display = 'flex';
+      
+      // 創建粒子效果
+      createParticles();
+      createConfetti();
+      
+      // 添加點擊外部關閉功能
+      modal.onclick = function(e) {
+        if (e.target === modal) {
+          closeAchievementModal();
+        }
+      };
+    }
+    
+    function closeAchievementModal() {
+      const modal = document.getElementById('achievementModal');
+      modal.style.display = 'none';
+      
+      // 清除粒子
+      const particles = document.getElementById('particles');
+      particles.innerHTML = '';
+      
+      // 移除點擊事件
+      modal.onclick = null;
+    }
+    
+    function createParticles() {
+      const particlesContainer = document.getElementById('particles');
+      particlesContainer.innerHTML = '';
+      
+      const colors = ['#ffd700', '#00ffff', '#a259ff', '#ff6b6b', '#00ff00', '#ffaa00'];
+      const shapes = ['circle', 'square', 'triangle'];
+      
+      for (let i = 0; i < 30; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.style.left = Math.random() * 100 + '%';
+        particle.style.top = Math.random() * 100 + '%';
+        particle.style.animationDelay = Math.random() * 3 + 's';
+        particle.style.animationDuration = (3 + Math.random() * 2) + 's';
+        
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        particle.style.backgroundColor = color;
+        particle.style.boxShadow = `0 0 15px ${color}`;
+        
+        // 隨機大小
+        const size = 4 + Math.random() * 6;
+        particle.style.width = size + 'px';
+        particle.style.height = size + 'px';
+        
+        particlesContainer.appendChild(particle);
+      }
+    }
+    
+    function createConfetti() {
+      const particlesContainer = document.getElementById('particles');
+      const colors = ['#ffd700', '#00ffff', '#a259ff', '#ff6b6b', '#00ff00', '#ffaa00', '#ff8800'];
+      
+      for (let i = 0; i < 25; i++) {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti';
+        confetti.style.left = Math.random() * 100 + '%';
+        confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        confetti.style.animationDelay = Math.random() * 2 + 's';
+        confetti.style.animationDuration = (2 + Math.random() * 2) + 's';
+        
+        // 隨機形狀
+        const shape = Math.random() > 0.5 ? 'circle' : 'square';
+        if (shape === 'circle') {
+          confetti.style.borderRadius = '50%';
+        }
+        
+        // 隨機大小
+        const size = 8 + Math.random() * 8;
+        confetti.style.width = size + 'px';
+        confetti.style.height = size + 'px';
+        
+        particlesContainer.appendChild(confetti);
+      }
+    }
+    
+    function playStarSound() {
+      try {
+        const starSound = new Audio('sound/shine.mp3');
+        starSound.currentTime = 0;
+        starSound.volume = 0.6;
+        starSound.play().catch(e => {
+          console.log('無法播放星星音效:', e);
+        });
+      } catch (e) {
+        console.log('星星音效播放失敗:', e);
+      }
+    }
+    
+    // 新增：渲染統計資訊
+    function renderStats() {
+      const statsGrid = document.getElementById('statsGrid');
+      const claimed = getClaimedAchievements();
+      
+      const totalAchievements = achievements.length;
+      const unlockedAchievements = achievements.filter(ach => checkAchievementUnlocked(ach)).length;
+      const claimedAchievements = claimed.length;
+      const totalRewards = claimed.reduce((sum, id) => {
+        const ach = achievements.find(a => a.id === id);
+        return sum + (ach ? ach.reward : 0);
+      }, 0);
+      
+      const stats = [
+        { number: totalAchievements, label: '總成就數' },
+        { number: unlockedAchievements, label: '已達成' },
+        { number: claimedAchievements, label: '已領取' },
+        { number: totalRewards, label: '總獎勵星星' }
+      ];
+      
+      statsGrid.innerHTML = '';
+      stats.forEach(stat => {
+        const statItem = document.createElement('div');
+        statItem.className = 'stat-item';
+        statItem.innerHTML = `
+          <div class="stat-value">${stat.number}</div>
+          <div class="stat-label">${stat.label}</div>
+        `;
+        statsGrid.appendChild(statItem);
+      });
+    }
+    
+    // 新增：更新總星星顯示
+    function updateTotalStarsDisplay() {
+      const totalStars = parseInt(localStorage.getItem('totalStars') || '0');
+      const starsDisplay = document.getElementById('totalStarsDisplay');
+      if (starsDisplay) {
+        starsDisplay.textContent = totalStars;
+      }
+    }
+    
+    // 新增：渲染篩選按鈕
+    function renderFilterButtons() {
+      const filterButtons = document.getElementById('filterButtons');
+      filterButtons.innerHTML = '';
+      
+      // 全部按鈕
+      const allBtn = document.createElement('button');
+      allBtn.className = 'filter-btn all active';
+      allBtn.textContent = '🏆 全部成就';
+      allBtn.onclick = () => setFilter('all');
+      
+      // 添加全部成就的數量泡泡
+      const allCount = getUnclaimedAchievementsCount();
+      if (allCount > 0) {
+        const allBadge = document.createElement('div');
+        allBadge.className = 'achievement-badge';
+        allBadge.textContent = allCount;
+        allBadge.id = 'badge-all';
+        allBtn.appendChild(allBadge);
+      }
+      
+      filterButtons.appendChild(allBtn);
+      
+      // 原有分類按鈕
+      Object.entries(groupTitles).forEach(([type, title]) => {
+        const btn = document.createElement('button');
+        btn.className = 'filter-btn';
+        btn.textContent = title;
+        btn.onclick = () => setFilter(type);
+        
+        // 添加該分類的數量泡泡
+        const typeCount = getUnclaimedAchievementsCountByType(type);
+        if (typeCount > 0) {
+          const typeBadge = document.createElement('div');
+          typeBadge.className = 'achievement-badge';
+          typeBadge.textContent = typeCount;
+          typeBadge.id = `badge-${type}`;
+          btn.appendChild(typeBadge);
+        }
+        
+        filterButtons.appendChild(btn);
+      });
+    }
+    
+    // 新增：計算所有未領取成就數量
+    function getUnclaimedAchievementsCount() {
+      const claimed = getClaimedAchievements();
+      return achievements.filter(ach => 
+        checkAchievementUnlocked(ach) && !claimed.includes(ach.id)
+      ).length;
+    }
+    
+    // 新增：計算特定類型未領取成就數量
+    function getUnclaimedAchievementsCountByType(type) {
+      const claimed = getClaimedAchievements();
+      return achievements.filter(ach => 
+        ach.type === type && checkAchievementUnlocked(ach) && !claimed.includes(ach.id)
+      ).length;
+    }
+    
+    // 新增：更新所有泡泡數量
+    function updateAllBadges() {
+      // 更新全部成就泡泡
+      const allBadge = document.getElementById('badge-all');
+      const allCount = getUnclaimedAchievementsCount();
+      
+      if (allCount > 0) {
+        if (allBadge) {
+          allBadge.textContent = allCount;
+        } else {
+          // 如果沒有泡泡但現在有成就，創建泡泡
+          const allBtn = document.querySelector('.filter-btn.all');
+          if (allBtn) {
+            const newBadge = document.createElement('div');
+            newBadge.className = 'achievement-badge';
+            newBadge.textContent = allCount;
+            newBadge.id = 'badge-all';
+            allBtn.appendChild(newBadge);
+          }
+        }
+      } else if (allBadge) {
+        allBadge.remove();
+      }
+      
+      // 更新各分類泡泡
+      Object.entries(groupTitles).forEach(([type, title]) => {
+        const typeBadge = document.getElementById(`badge-${type}`);
+        const typeCount = getUnclaimedAchievementsCountByType(type);
+        
+        if (typeCount > 0) {
+          if (typeBadge) {
+            typeBadge.textContent = typeCount;
+          } else {
+            // 如果沒有泡泡但現在有成就，創建泡泡
+            const typeBtns = document.querySelectorAll('.filter-btn:not(.all)');
+            typeBtns.forEach(btn => {
+              if (btn.textContent === title) {
+                const newBadge = document.createElement('div');
+                newBadge.className = 'achievement-badge';
+                newBadge.textContent = typeCount;
+                newBadge.id = `badge-${type}`;
+                btn.appendChild(newBadge);
+              }
+            });
+          }
+        } else if (typeBadge) {
+          typeBadge.remove();
+        }
+      });
+    }
+    
+    // 新增：設置篩選條件
+    function setFilter(filterType) {
+      currentFilter = filterType;
+      
+      // 更新按鈕狀態
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      
+      // 找到對應按鈕並設為active
+      if (filterType === 'all') {
+        document.querySelector('.filter-btn.all').classList.add('active');
+      } else {
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+          if (btn.textContent === groupTitles[filterType]) {
+            btn.classList.add('active');
+          }
+        });
+      }
+      
+      // 重新渲染成就
+      renderBadges();
+    }
+    
+    function getCardsByRarity(rarity) {
+      if (!window.allCards) return [];
+      return allCards.filter(card => card.rarity === rarity && ownedCards[card.word]);
+    }
+    
+    // 新增：計算成就進度
+    function getAchievementProgress(ach) {
+      let current = 0;
+      switch (ach.type) {
+        case 'collection':
+        case 'special':
+          current = Object.keys(ownedCards).length;
+          break;
+        case 'rarity':
+          current = getCardsByRarity(ach.rarity).length;
+          break;
+        case 'shards':
+          current = Object.values(shards).reduce((sum, c) => sum + c, 0);
+          break;
+        case 'daily':
+          current = parseInt(localStorage.getItem('loginDays') || '0');
+          break;
+        case 'stars':
+          current = parseInt(localStorage.getItem('totalStars') || '0');
+          break;
+        case 'performance':
+          // 計算通過的關卡數量（基於不同遊戲類型的完成次數）
+          const fillGames = parseInt(localStorage.getItem('fillGamesCompleted') || '0');
+          const cardGames = parseInt(localStorage.getItem('cardGamesCompleted') || '0');
+          const quizGames = parseInt(localStorage.getItem('quizGamesCompleted') || '0');
+          const spellingGames = parseInt(localStorage.getItem('spellingGamesCompleted') || '0');
+          const matchingGames = parseInt(localStorage.getItem('matchingGamesCompleted') || '0');
+          const timeChallengeGames = parseInt(localStorage.getItem('timeChallengeGamesCompleted') || '0');
+          current = fillGames + cardGames + quizGames + spellingGames + matchingGames + timeChallengeGames;
+          break;
+        case 'fill':
+          switch (ach.id) {
+            case 'fill_beginner':
+            case 'fill_regular':
+            case 'fill_expert':
+            case 'fill_master':
+              current = parseInt(localStorage.getItem('fillGamesCompleted') || '0');
+              break;
+            case 'fill_perfect':
+              current = parseInt(localStorage.getItem('fillPerfectScores') || '0');
+              break;
+            case 'fill_speed':
+              current = parseInt(localStorage.getItem('fillSpeedGames') || '0');
+              break;
+            case 'fill_streak':
+              current = parseInt(localStorage.getItem('fillStreakDays') || '0');
+              break;
+            case 'fill_vocab':
+              current = parseInt(localStorage.getItem('fillCorrectWords') || '0');
+              break;
+            default:
+              current = 0;
+          }
+          break;
+        case 'zodiac':
+          // 星座關卡成就：檢查該星座是否已通過
+          const zodiacKey = ach.id.replace('pass_', '');
+          const passedAtlas = JSON.parse(localStorage.getItem('passed_atlas') || '[]');
+          current = passedAtlas.includes(zodiacKey) ? 1 : 0;
+          break;
+        case 'greek':
+          // 希臘神祇關卡成就：檢查該神祇關卡是否已通過
+          const greekKey = ach.id.replace('pass_', '');
+          const passedGreek = JSON.parse(localStorage.getItem('passed_greek') || '[]');
+          current = passedGreek.includes(greekKey) ? 1 : 0;
+          break;
+        case 'vocabulary':
+          // 單字達人成就：計算答對的單字本單字數量
+          current = parseInt(localStorage.getItem('vocabularyCorrectWords') || '0');
+          break;
+        case 'ssr_special':
+          // SSR 特殊成就：檢查是否已解鎖該 SSR 卡片
+          const cardWord = ach.id.replace('ssr_', '');
+          current = ownedCards[cardWord] ? 1 : 0;
+          break;
+        default:
+          current = 0;
+      }
+      return Math.min(current, ach.requirement);
+    }
+    
+    // 新增：取得進度百分比
+    function getProgressPercentage(ach) {
+      const current = getAchievementProgress(ach);
+      return Math.min((current / ach.requirement) * 100, 100);
+    }
+    
+    function checkAchievementUnlocked(ach) {
+      switch (ach.type) {
+        case 'collection':
+        case 'special':
+          return Object.keys(ownedCards).length >= ach.requirement;
+        case 'rarity':
+          return getCardsByRarity(ach.rarity).length >= ach.requirement;
+        case 'shards':
+          return Object.values(shards).reduce((sum, c) => sum + c, 0) >= ach.requirement;
+        case 'daily':
+          return parseInt(localStorage.getItem('loginDays') || '0') >= ach.requirement;
+        case 'stars':
+          return parseInt(localStorage.getItem('totalStars') || '0') >= ach.requirement;
+        case 'performance':
+          // 計算通過的關卡數量（基於不同遊戲類型的完成次數）
+          const fillGames = parseInt(localStorage.getItem('fillGamesCompleted') || '0');
+          const cardGames = parseInt(localStorage.getItem('cardGamesCompleted') || '0');
+          const quizGames = parseInt(localStorage.getItem('quizGamesCompleted') || '0');
+          const spellingGames = parseInt(localStorage.getItem('spellingGamesCompleted') || '0');
+          const matchingGames = parseInt(localStorage.getItem('matchingGamesCompleted') || '0');
+          const timeChallengeGames = parseInt(localStorage.getItem('timeChallengeGamesCompleted') || '0');
+          return (fillGames + cardGames + quizGames + spellingGames + matchingGames + timeChallengeGames) >= ach.requirement;
+        case 'fill':
+          switch (ach.id) {
+            case 'fill_beginner':
+            case 'fill_regular':
+            case 'fill_expert':
+            case 'fill_master':
+              return parseInt(localStorage.getItem('fillGamesCompleted') || '0') >= ach.requirement;
+            case 'fill_perfect':
+              return parseInt(localStorage.getItem('fillPerfectScores') || '0') >= ach.requirement;
+            case 'fill_speed':
+              return parseInt(localStorage.getItem('fillSpeedGames') || '0') >= ach.requirement;
+            case 'fill_streak':
+              return parseInt(localStorage.getItem('fillStreakDays') || '0') >= ach.requirement;
+            case 'fill_vocab':
+              return parseInt(localStorage.getItem('fillCorrectWords') || '0') >= ach.requirement;
+            default:
+              return false;
+          }
+        case 'zodiac':
+          // 星座關卡成就：檢查該星座是否已通過
+          const zodiacKey = ach.id.replace('pass_', '');
+          const passedAtlas = JSON.parse(localStorage.getItem('passed_atlas') || '[]');
+          return passedAtlas.includes(zodiacKey);
+        case 'greek':
+          // 希臘神祇關卡成就：檢查該神祇關卡是否已通過
+          const greekKey = ach.id.replace('pass_', '');
+          const passedGreek = JSON.parse(localStorage.getItem('passed_greek') || '[]');
+          return passedGreek.includes(greekKey);
+        case 'vocabulary':
+          // 單字達人成就：計算答對的單字本單字數量
+          return parseInt(localStorage.getItem('vocabularyCorrectWords') || '0') >= ach.requirement;
+        case 'ssr_special':
+          // SSR 特殊成就：檢查是否已解鎖該 SSR 卡片
+          const cardWord = ach.id.replace('ssr_', '');
+          return ownedCards[cardWord] ? 1 : 0;
+        default:
+          return false;
+      }
+    }
+
+    // ====== 連動領獎邏輯 ======
+    function getClaimedAchievements() {
+      return JSON.parse(localStorage.getItem('claimedAchievements') || '[]');
+    }
+    function setClaimedAchievements(arr) {
+      localStorage.setItem('claimedAchievements', JSON.stringify(arr));
+    }
+    function claimAchievement(ach) {
+      const claimed = getClaimedAchievements();
+      if (claimed.includes(ach.id)) {
+        alert(`您已經領取過 ${ach.name} 的獎勵了！`);
+        return;
+      }
+      let stars = parseInt(localStorage.getItem('totalStars') || '0');
+      let reward = ach.reward;
+      // 星座成就特殊處理
+      if (ach.type === 'zodiac') {
+        // 已領取過的星數記錄在 localStorage
+        let zodiacRewards = JSON.parse(localStorage.getItem('zodiacRewards') || '{}');
+        if (!zodiacRewards[ach.id]) {
+          // 隨機決定星數
+          const [min, max] = ach.rewardRange;
+          reward = min === max ? min : Math.floor(Math.random() * (max - min + 1)) + min;
+          zodiacRewards[ach.id] = reward;
+          localStorage.setItem('zodiacRewards', JSON.stringify(zodiacRewards));
+        } else {
+          reward = zodiacRewards[ach.id];
+        }
+      }
+      // 希臘神祇成就特殊處理
+      if (ach.type === 'greek') {
+        // 已領取過的星數記錄在 localStorage
+        let greekRewards = JSON.parse(localStorage.getItem('greekRewards') || '{}');
+        if (!greekRewards[ach.id]) {
+          // 隨機決定星數
+          const [min, max] = ach.rewardRange;
+          reward = min === max ? min : Math.floor(Math.random() * (max - min + 1)) + min;
+          greekRewards[ach.id] = reward;
+          localStorage.setItem('greekRewards', JSON.stringify(greekRewards));
+        } else {
+          reward = greekRewards[ach.id];
+        }
+      }
+      stars += reward;
+      localStorage.setItem('totalStars', stars);
+      claimed.push(ach.id);
+      setClaimedAchievements(claimed);
+      
+      // 播放星星音效
+      playStarSound();
+      
+      // 使用新的美觀彈窗
+      showAchievementModal(ach, reward, stars);
+      
+      // 更新成就顯示和泡泡數量
+      renderBadges();
+      updateAllBadges();
+      updateTotalStarsDisplay();
+    }
+
+    function renderBadges() {
+      const container = document.getElementById('achievementBadges');
+      container.innerHTML = '';
+      
+      // 篩選成就
+      const filteredAchievements = achievements.filter(ach => {
+        if (currentFilter === 'all') return true;
+        return ach.type === currentFilter;
+      });
+      
+      const claimed = getClaimedAchievements();
+      // 取得已領取星座成就的星數
+      let zodiacRewards = {};
+      try { zodiacRewards = JSON.parse(localStorage.getItem('zodiacRewards') || '{}'); } catch {}
+      // 取得已領取希臘神祇成就的星數
+      let greekRewards = {};
+      try { greekRewards = JSON.parse(localStorage.getItem('greekRewards') || '{}'); } catch {}
+      
+      // 直接渲染所有成就卡片到網格中
+      filteredAchievements.forEach(ach => {
+        const unlocked = checkAchievementUnlocked(ach);
+        const isClaimed = claimed.includes(ach.id);
+        const currentProgress = getAchievementProgress(ach);
+        const progressPercentage = getProgressPercentage(ach);
+        const achievementDetail = document.createElement('div');
+        achievementDetail.className = 'achievement-detail';
+        
+        // 成就標題區域
+        const header = document.createElement('div');
+        header.className = 'achievement-header';
+        const icon = document.createElement('div');
+        icon.className = 'achievement-icon';
+        icon.textContent = ach.icon;
+        if (isClaimed) {
+          icon.classList.add('claimed-badge');
+        }
+        const info = document.createElement('div');
+        info.className = 'achievement-info';
+        const name = document.createElement('div');
+        name.className = 'achievement-name';
+        name.textContent = ach.name;
+        const description = document.createElement('div');
+        description.className = 'achievement-description';
+        description.textContent = ach.description;
+        info.appendChild(name);
+        info.appendChild(description);
+        
+        // 新增：影片按鈕（如果成就有關聯影片）
+        if (ach.youtube) {
+          const videoButton = document.createElement('div');
+          videoButton.className = 'video-button';
+          videoButton.innerHTML = '<span class="video-icon">▶</span>';
+          videoButton.title = '觀看相關影片';
+          videoButton.onclick = (e) => {
+            e.stopPropagation();
+            showVideoModal(ach);
+          };
+          achievementDetail.appendChild(videoButton);
+        }
+        
+        // 狀態標籤
+        const status = document.createElement('div');
+        status.className = 'achievement-status';
+        if (isClaimed) status.classList.add('status-claimed');
+        else if (unlocked) status.classList.add('status-unlocked');
+        else status.classList.add('status-locked');
+        status.textContent = isClaimed ? '已領取' : unlocked ? '可領取' : '未達成';
+        
+        header.appendChild(icon);
+        header.appendChild(info);
+        header.appendChild(status);
+        achievementDetail.appendChild(header);
+        
+        // 進度條
+        const progressContainer = document.createElement('div');
+        progressContainer.className = 'progress-container';
+        const progressBar = document.createElement('div');
+        progressBar.className = 'progress-bar';
+        progressBar.style.width = progressPercentage + '%';
+        const progressText = document.createElement('div');
+        progressText.className = 'progress-text';
+        progressText.innerHTML = `<span class='current-progress'>${currentProgress}</span> / <span class='required-progress'>${ach.requirement}</span>`;
+        progressContainer.appendChild(progressBar);
+        progressContainer.appendChild(progressText);
+        
+        // 獎勵資訊
+        const rewardInfo = document.createElement('div');
+        rewardInfo.className = 'reward-info';
+        if (ach.type === 'zodiac') {
+          if (isClaimed) {
+            rewardInfo.innerHTML = `<span>⭐</span><span>獎勵: ${zodiacRewards[ach.id] || '?'} 星星</span>`;
+          } else {
+            const [min, max] = ach.rewardRange;
+            rewardInfo.innerHTML = `<span>⭐</span><span>獎勵: ${min === max ? min : `${min}~${max}`} 星星</span>`;
+          }
+        } else if (ach.type === 'greek') {
+          if (isClaimed) {
+            rewardInfo.innerHTML = `<span>⭐</span><span>獎勵: ${greekRewards[ach.id] || '?'} 星星</span>`;
+          } else {
+            const [min, max] = ach.rewardRange;
+            rewardInfo.innerHTML = `<span>⭐</span><span>獎勵: ${min === max ? min : `${min}~${max}`} 星星</span>`;
+          }
+        } else {
+          rewardInfo.innerHTML = `<span>⭐</span><span>獎勵: ${ach.reward} 星星</span>`;
+        }
+        
+        // 詳細資訊切換按鈕
+        const toggleBtn = document.createElement('button');
+        toggleBtn.className = 'toggle-details';
+        toggleBtn.textContent = '查看詳細資訊';
+        toggleBtn.onclick = function() {
+          const details = this.nextElementSibling;
+          if (details.classList.contains('show')) {
+            details.classList.remove('show');
+            this.textContent = '查看詳細資訊';
+          } else {
+            details.classList.add('show');
+            this.textContent = '隱藏詳細資訊';
+          }
+        };
+        
+        // 詳細資訊區域
+        const details = document.createElement('div');
+        details.className = 'achievement-details';
+        const detailsContent = document.createElement('div');
+        detailsContent.innerHTML = `
+          <div style="margin-bottom: 8px;"><strong>達成條件：</strong>${ach.description}</div>
+          <div style="margin-bottom: 8px;"><strong>當前進度：</strong>${currentProgress} / ${ach.requirement} (${progressPercentage.toFixed(1)}%)</div>
+          <div style="margin-bottom: 8px;"><strong>獎勵內容：</strong>${ach.type === 'zodiac' ? (isClaimed ? (zodiacRewards[ach.id] || '?') : (ach.rewardRange[0] === ach.rewardRange[1] ? ach.rewardRange[0] : `${ach.rewardRange[0]}~${ach.rewardRange[1]}`)) : ach.type === 'greek' ? (isClaimed ? (greekRewards[ach.id] || '?') : (ach.rewardRange[0] === ach.rewardRange[1] ? ach.rewardRange[0] : `${ach.rewardRange[0]}-${ach.rewardRange[1]}隨機`)) : ach.reward} 顆星星</div>
+          <div><strong>成就類型：</strong>${groupTitles[ach.type]}</div>
+        `;
+        details.appendChild(detailsContent);
+        
+        achievementDetail.appendChild(progressContainer);
+        achievementDetail.appendChild(rewardInfo);
+        achievementDetail.appendChild(toggleBtn);
+        achievementDetail.appendChild(details);
+        
+        // 領獎按鈕
+        if (unlocked && !isClaimed) {
+          const claimBtn = document.createElement('button');
+          claimBtn.className = 'claim-btn';
+          claimBtn.textContent = '領取獎勵';
+          claimBtn.onclick = () => claimAchievement(ach);
+          achievementDetail.appendChild(claimBtn);
+        }
+        
+        container.appendChild(achievementDetail);
+      });
+    }
+    
+    // 新增：點擊回饋音效處理
+    function initializeClickFeedback() {
+      const clickSfx = document.getElementById('clickSfx');
+      if (!clickSfx) return;
+
+      const playClickSound = () => {
+        clickSfx.currentTime = 0;
+        clickSfx.volume = 0.5;
+        clickSfx.play().catch(e => console.error("Click sound failed:", e));
+      };
+
+      // 靜態按鈕
+      document.querySelectorAll('.btn, #muteToggle, .achievement-modal-close').forEach(btn => {
+        btn.addEventListener('click', playClickSound);
+      });
+
+      // 動態按鈕（使用事件委派）
+      document.getElementById('filterButtons').addEventListener('click', (e) => {
+        if (e.target.matches('.filter-btn')) {
+          playClickSound();
+        }
+      });
+
+      document.getElementById('achievementBadges').addEventListener('click', (e) => {
+        if (e.target.matches('.claim-btn') || e.target.matches('.toggle-details')) {
+          playClickSound();
+        }
+      });
+    }
+    
+    // 新增：背景音樂處理
+    function initializeBackgroundMusic() {
+      const bgm = document.getElementById('bgm');
+      const muteToggle = document.getElementById('muteToggle');
+      if (!bgm || !muteToggle) return;
+
+      bgm.volume = 0.3;
+
+      const playMusic = () => {
+        bgm.play().catch(e => console.error("BGM play failed:", e));
+        muteToggle.textContent = '🔈';
+        localStorage.setItem('bgmPlaying', 'true');
+      };
+
+      const pauseMusic = () => {
+        bgm.pause();
+        muteToggle.textContent = '🔇';
+        localStorage.setItem('bgmPlaying', 'false');
+      };
+
+      muteToggle.addEventListener('click', () => {
+        if (bgm.paused) {
+          playMusic();
+        } else {
+          pauseMusic();
+        }
+      });
+
+      // 頁面載入時同步狀態
+      if (localStorage.getItem('bgmPlaying') === 'true') {
+        bgm.currentTime = parseFloat(localStorage.getItem('bgmTime') || '0');
+        playMusic();
+      } else {
+        pauseMusic();
+      }
+
+      // 離開頁面前儲存時間
+      window.addEventListener('beforeunload', () => {
+        localStorage.setItem('bgmTime', bgm.currentTime.toString());
+      });
+    }
+
+    // 修改：頁面載入時初始化所有功能
+    window.addEventListener('load', function() {
+      initializeClickFeedback();
+      initializeBackgroundMusic();
+      addSSRVideosToAchievements(); // 新增：為 SSR 卡片添加影片成就
+      renderFilterButtons();
+      renderStats();
+      renderBadges();
+      updateTotalStarsDisplay();
+      updateAllBadges(); // 確保泡泡數量正確顯示
+    });
+
+    // 自動產生20個關卡成就（配合atlas.html的設計）
+    (function() {
+      const atlasCategories = [
+        { key: 'aries', name: '白羊座', icon: '♈', rewardRange: [5,5] },
+        { key: 'taurus', name: '金牛座', icon: '♉', rewardRange: [5,5] },
+        { key: 'gemini', name: '雙子座', icon: '♊', rewardRange: [5,5] },
+        { key: 'cancer', name: '巨蟹座', icon: '♋', rewardRange: [7,10] },
+        { key: 'leo', name: '獅子座', icon: '♌', rewardRange: [8,12] },
+        { key: 'virgo', name: '處女座', icon: '♍', rewardRange: [9,13] },
+        { key: 'libra', name: '天秤座', icon: '♎', rewardRange: [10,14] },
+        { key: 'scorpio', name: '天蠍座', icon: '♏', rewardRange: [11,15] },
+        { key: 'sagittarius', name: '射手座', icon: '♐', rewardRange: [12,16] },
+        { key: 'capricorn', name: '摩羯座', icon: '♑', rewardRange: [13,17] },
+        { key: 'aquarius', name: '水瓶座', icon: '♒', rewardRange: [14,18] },
+        { key: 'pisces', name: '雙魚座', icon: '♓', rewardRange: [15,20] },
+        { key: 'andromeda', name: '仙女座', icon: '👸', rewardRange: [16,20] },
+        { key: 'cygnus', name: '天鵝座', icon: '🦢', rewardRange: [17,20] },
+        { key: 'orion', name: '獵戶座', icon: '🏹', rewardRange: [17,20] },
+        { key: 'pegasus', name: '飛馬座', icon: '🦄', rewardRange: [17,20] },
+        { key: 'cassiopeia', name: '仙后座', icon: '👑', rewardRange: [17,20] },
+        { key: 'scorpius', name: '天蠍座', icon: '🦂', rewardRange: [17,20] },
+        { key: 'phoenix', name: '鳳凰座', icon: '🔥', rewardRange: [17,20] },
+        { key: 'vela', name: '船帆座', icon: '⛵', rewardRange: [17,20] }
+      ];
+      
+      atlasCategories.forEach((category, index) => {
+        achievements.push({
+          id: `pass_${category.key}`,
+          name: `通過${category.name}`,
+          requirement: 1,
+          reward: category.rewardRange[0] === category.rewardRange[1] ? category.rewardRange[0] : null,
+          icon: category.icon,
+          type: 'zodiac',
+          description: `通過${category.name}關卡`,
+          rewardRange: category.rewardRange
+        });
+      });
+    })();
+
+    // 新增：影片播放相關函數
+    function showVideoModal(achievement) {
+      const modal = document.getElementById('videoModal');
+      const title = document.getElementById('videoModalTitle');
+      const player = document.getElementById('videoPlayer');
+      
+      // 設置標題
+      title.textContent = `${achievement.name} - 相關影片`;
+      
+      // 設置影片 URL
+      if (achievement.youtube) {
+        // 將 YouTube URL 轉換為嵌入格式
+        let videoUrl = achievement.youtube;
+        if (videoUrl.includes('youtube.com/watch?v=')) {
+          const videoId = videoUrl.split('v=')[1].split('&')[0];
+          videoUrl = `https://www.youtube.com/embed/${videoId}`;
+        } else if (videoUrl.includes('youtu.be/')) {
+          const videoId = videoUrl.split('youtu.be/')[1];
+          videoUrl = `https://www.youtube.com/embed/${videoId}`;
+        }
+        player.src = videoUrl;
+      }
+      
+      // 顯示 Modal
+      modal.style.display = 'flex';
+      
+      // 添加點擊外部關閉功能
+      modal.onclick = function(e) {
+        if (e.target === modal) {
+          closeVideoModal();
+        }
+      };
+    }
+    
+    function closeVideoModal() {
+      const modal = document.getElementById('videoModal');
+      const player = document.getElementById('videoPlayer');
+      
+      // 停止影片播放
+      player.src = '';
+      
+      // 隱藏 Modal
+      modal.style.display = 'none';
+      
+      // 移除點擊事件
+      modal.onclick = null;
+    }
+    
+    // 新增：為 SSR 卡片成就添加影片連結
+    function addSSRVideosToAchievements() {
+      if (!window.allCards) return;
+      
+      // 為每張 SSR 卡片創建對應的成就
+      const ssrCards = allCards.filter(card => card.rarity === '超稀有');
+      
+      ssrCards.forEach(card => {
+        // 檢查是否已存在該成就
+        const existingAchievement = achievements.find(ach => ach.id === `ssr_${card.word}`);
+        if (!existingAchievement) {
+          achievements.push({
+            id: `ssr_${card.word}`,
+            name: `解鎖 SSR：${card.zh}`,
+            requirement: 1,
+            reward: 50,
+            icon: '🌟',
+            type: 'ssr_special',
+            description: `解鎖超稀有卡片「${card.zh}」`,
+            youtube: card.youtube || null // 如果卡片有 YouTube 連結就使用
+          });
+        }
+      });
+    }
+
+    // 新增：open+Enter 一鍵領取所有成就
+    (function(){
+      let keySequence = '';
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+          if (keySequence.toLowerCase() === 'open') {
+            claimAllUnlockedAchievements();
+            keySequence = '';
+          } else {
+            keySequence = '';
+          }
+        } else if (e.key.length === 1) {
+          keySequence += e.key;
+          if (keySequence.length > 10) keySequence = keySequence.slice(-10);
+        }
+      });
+    })();
+
+    // 新增：一鍵領取所有已解鎖成就
+    function claimAllUnlockedAchievements() {
+      const claimed = getClaimedAchievements();
+      let count = 0;
+      achievements.forEach(ach => {
+        if (checkAchievementUnlocked(ach) && !claimed.includes(ach.id)) {
+          claimAchievement(ach);
+          count++;
+        }
+      });
+      if (count > 0) {
+        alert(`🎉 已自動領取 ${count} 個成就！`);
+        // 更新泡泡數量（因為claimAchievement已經會更新，這裡確保最後更新一次）
+        updateAllBadges();
+      } else {
+        alert('目前沒有可領取的成就。');
+      }
+    }
+  </script>
+
+  <!-- 新增：影片播放 Modal -->
+  <div id="videoModal" class="video-modal" style="display: none;">
+    <div class="video-modal-content">
+      <div class="video-modal-header">
+        <h3 id="videoModalTitle">觀看影片</h3>
+        <button class="video-modal-close" onclick="closeVideoModal()">✕</button>
+      </div>
+      <div class="video-modal-body">
+        <iframe id="videoPlayer" width="100%" height="400" frameborder="0" allowfullscreen></iframe>
+      </div>
+    </div>
+  </div>
+</body>
+</html> 
