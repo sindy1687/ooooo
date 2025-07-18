@@ -1267,4 +1267,32 @@
       
       // 初始化遊戲
       updateTotal();
-      update
+      updateQuestionCount();
+      lives = 5;
+      updateLives();
+      
+      // 設置 Enter 鍵事件監聽器
+      const answerInput = document.getElementById('answerInput');
+      if (answerInput) {
+        answerInput.addEventListener('keydown', function(e) {
+          if (e.key === 'Enter') {
+            e.preventDefault(); // 防止表單提交
+            checkAnswer();
+          }
+        });
+      }
+      
+      // 添加鍵盤快捷鍵
+      document.addEventListener('keydown', (e) => {
+        // 音樂控制快捷鍵
+        if (e.key === 'm' || e.key === 'M') {
+          toggleBackgroundMusic();
+        }
+      });
+      
+      // 開始遊戲
+      nextWord();
+    });
+  </script>
+</body>
+</html>
