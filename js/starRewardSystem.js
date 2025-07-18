@@ -148,6 +148,28 @@ const VocabularyAchievementSystem = {
     return 0;
   },
   
+  // 記錄答對的單字（不觸發星星獎勵）
+  recordCorrectWordWithoutReward: function(word, bookName) {
+    // 增加答對單字計數
+    const currentCount = parseInt(localStorage.getItem('vocabularyCorrectWords') || '0');
+    const newCount = currentCount + 1;
+    localStorage.setItem('vocabularyCorrectWords', newCount);
+    
+    // 記錄答對的單字（避免重複計算）
+    let correctWords = JSON.parse(localStorage.getItem('vocabularyCorrectWordsList') || '[]');
+    const wordKey = `${bookName}_${word}`;
+    if (!correctWords.includes(wordKey)) {
+      correctWords.push(wordKey);
+      localStorage.setItem('vocabularyCorrectWordsList', JSON.stringify(correctWords));
+      
+      // 檢查成就（但不給予星星獎勵）
+      this.checkAchievements(newCount);
+      
+      return 0; // 不給予星星獎勵
+    }
+    return 0;
+  },
+  
   // 計算星星獎勵
   calculateStarReward: function(word, bookName) {
     // 基礎獎勵：答對一個單字獲得1顆星星
