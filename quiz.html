@@ -588,6 +588,9 @@
       perfectAnswers: 0, // 完美答題次數（15秒內答對）
       startTime: Date.now()
     };
+    
+    // ===== 新增：答題處理狀態 =====
+    let isProcessingAnswer = false; // 是否正在處理答題
 
     // 從 localStorage 取總星星，若無則為 0
     let totalStarCount = parseInt(localStorage.getItem('totalStars') || '0', 10);
@@ -1036,15 +1039,22 @@
           
           updateLives();
           if (lives <= 0) {
-            setTimeout(() => showResultPanel(), 800);
+            setTimeout(() => {
+              showResultPanel();
+              isProcessingAnswer = false; // 重置處理狀態
+            }, 800);
           } else {
-            setTimeout(() => nextWord(), 800);
+            setTimeout(() => {
+              nextWord();
+              isProcessingAnswer = false; // 重置處理狀態
+            }, 800);
           }
         }
       }, 1000);
     }
 
     function nextWord() {
+      isProcessingAnswer = false; // 重置處理狀態
       if (used.length >= words.length) {
         document.getElementById('wordDisplay').textContent = '✅ 挑戰完成';
         clearInterval(timer);
@@ -1079,7 +1089,8 @@
     }
 
     function checkAnswer() {
-      if (!current) return;
+      if (!current || isProcessingAnswer) return; // 如果正在處理答題，直接返回
+      isProcessingAnswer = true; // 設置正在處理答題狀態
       const ans = document.getElementById('answerInput').value.trim().toLowerCase();
       
       // ===== 新增：計算答題時間 =====
@@ -1145,7 +1156,10 @@
         }
         
         clearInterval(timer);
-        setTimeout(() => nextWord(), 800);
+        setTimeout(() => {
+          nextWord();
+          isProcessingAnswer = false; // 重置處理狀態
+        }, 800);
       } else {
         document.getElementById('feedback').textContent = `❌ 正解是：${current.en}`;
         document.getElementById('feedback').style.color = '#f66';
@@ -1159,9 +1173,15 @@
         updateLives();
         clearInterval(timer);
         if (lives <= 0) {
-          setTimeout(() => showResultPanel(), 800);
+          setTimeout(() => {
+            showResultPanel();
+            isProcessingAnswer = false; // 重置處理狀態
+          }, 800);
         } else {
-          setTimeout(() => nextWord(), 800);
+          setTimeout(() => {
+            nextWord();
+            isProcessingAnswer = false; // 重置處理狀態
+          }, 800);
         }
       }
     }
@@ -1171,6 +1191,7 @@
       wrongList = [];
       correctCount = 0;
       lives = 5;
+      isProcessingAnswer = false; // 重置處理狀態
       gameStats = {
         correctCount: 0,
         totalAnswered: 0,
@@ -1246,32 +1267,4 @@
       
       // 初始化遊戲
       updateTotal();
-      updateQuestionCount();
-      lives = 5;
-      updateLives();
-      
-      // 設置 Enter 鍵事件監聽器
-      const answerInput = document.getElementById('answerInput');
-      if (answerInput) {
-        answerInput.addEventListener('keydown', function(e) {
-          if (e.key === 'Enter') {
-            e.preventDefault(); // 防止表單提交
-            checkAnswer();
-          }
-        });
-      }
-      
-      // 添加鍵盤快捷鍵
-      document.addEventListener('keydown', (e) => {
-        // 音樂控制快捷鍵
-        if (e.key === 'm' || e.key === 'M') {
-          toggleBackgroundMusic();
-        }
-      });
-      
-      // 開始遊戲
-      nextWord();
-    });
-  </script>
-</body>
-</html>
+      update
