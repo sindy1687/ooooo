@@ -550,24 +550,12 @@
 
     function speak(text) {
       if (!text) return;
-      isSpeaking = true;
-      document.getElementById('answerInput').disabled = true;
-      SoundSystem.speech.speakWord(text, function() {
-        isSpeaking = false;
-        document.getElementById('answerInput').disabled = false;
-        document.getElementById('answerInput').focus();
-      });
+      SoundSystem.speech.speakWord(text);
     }
     
     function speakCurrentWord() {
       if (!current) return;
-      isSpeaking = true;
-      document.getElementById('answerInput').disabled = true;
-      SoundSystem.speech.speakWord(current.en, function() {
-        isSpeaking = false;
-        document.getElementById('answerInput').disabled = false;
-        document.getElementById('answerInput').focus();
-      });
+      SoundSystem.speech.speakWord(current.en);
     }
 
     // === 使用外部載入的 vocabData ===
@@ -600,11 +588,6 @@
       perfectAnswers: 0, // 完美答題次數（15秒內答對）
       startTime: Date.now()
     };
-    
-    // ===== 新增：答題處理狀態 =====
-    let isProcessingAnswer = false; // 是否正在處理答題
-    // ===== 新增：發音鎖定狀態 =====
-    let isSpeaking = false; // 是否正在發音
 
     // 從 localStorage 取總星星，若無則為 0
     let totalStarCount = parseInt(localStorage.getItem('totalStars') || '0', 10);
@@ -612,9 +595,6 @@
       // 使用連動系統獲取最新的星星數量
       if (typeof LinkageSystem !== 'undefined') {
         totalStarCount = LinkageSystem.stars.get();
-      } else if (typeof StarRewardSystem !== 'undefined') {
-        // 如果使用 StarRewardSystem，從它獲取星星數量
-        totalStarCount = StarRewardSystem.getTotalStars ? StarRewardSystem.getTotalStars() : totalStarCount;
       }
       document.getElementById('totalStarCount').textContent = totalStarCount;
     }
@@ -633,21 +613,36 @@
       if (!isCorrect) return 0;
       
       let baseReward = 1; // 基礎獎勵
-      let comboReward = 0; // 連擊獎勵
+      
+      // 時間獎勵：越快答對獎勵越多
+      if (answerTime <= 5) {
+        baseReward += 3; // 5秒內 +3星
+      } else if (answerTime <= 10) {
+        baseReward += 2; // 10秒內 +2星
+      } else if (answerTime <= 15) {
+        baseReward += 1; // 15秒內 +1星
+      }
       
       // 連擊獎勵：連續答對越多獎勵越多
       if (consecutiveCount >= 5) {
-        comboReward = 2; // 5連擊 +2星
+        baseReward += 3; // 5連擊 +3星
       } else if (consecutiveCount >= 3) {
-        comboReward = 1; // 3連擊 +1星
+        baseReward += 2; // 3連擊 +2星
       } else if (consecutiveCount >= 2) {
-        comboReward = 1; // 2連擊 +1星
+        baseReward += 1; // 2連擊 +1星
       }
       
-      // 計算總獎勵：基礎1星 + 連擊獎勵
-      let totalReward = baseReward + comboReward;
+      // 單字難度獎勵：根據單字長度給予額外獎勵
+      if (wordLength >= 8) {
+        baseReward += 2; // 長單字額外獎勵
+      } else if (wordLength >= 6) {
+        baseReward += 1; // 中等長度單字獎勵
+      }
       
-      return totalReward;
+      // 星座關卡特殊獎勵
+      baseReward += 1; // 星座關卡額外獎勵
+      
+      return baseReward;
     }
     
     // ===== 新增：顯示獎勵動畫 =====
@@ -782,11 +777,7 @@
       document.getElementById('wrongBtn').style.display = wrongList.length ? 'inline-block' : 'none';
       document.getElementById('resultModal').style.display = 'flex';
       disablePlay();
-      
-      // 只在沒有使用外部星星系統時更新總星星顯示
-      if (typeof StarRewardSystem === 'undefined' && typeof LinkageSystem === 'undefined') {
-        updateTotal();
-      }
+      updateTotal();
 
       // 評分與分數
       const score = correctCount * 2;
@@ -1053,22 +1044,15 @@
           
           updateLives();
           if (lives <= 0) {
-            setTimeout(() => {
-              showResultPanel();
-              isProcessingAnswer = false; // 重置處理狀態
-            }, 800);
+            setTimeout(() => showResultPanel(), 800);
           } else {
-            setTimeout(() => {
-              nextWord();
-              isProcessingAnswer = false; // 重置處理狀態
-            }, 800);
+            setTimeout(() => nextWord(), 800);
           }
         }
       }, 1000);
     }
 
     function nextWord() {
-      isProcessingAnswer = false; // 重置處理狀態
       if (used.length >= words.length) {
         document.getElementById('wordDisplay').textContent = '✅ 挑戰完成';
         clearInterval(timer);
@@ -1080,7 +1064,6 @@
         lives--;
         updateLives();
         wrongList.push(current);
-        gameStats.consecutiveCorrect = 0; // 跳過也重置連擊
         if (lives <= 0) {
           clearInterval(timer);
           showResultPanel();
@@ -1094,13 +1077,7 @@
       document.getElementById('wordDisplay').textContent = current.zh;
       document.getElementById('answerInput').value = '';
       document.getElementById('feedback').textContent = '';
-      isSpeaking = true;
-      document.getElementById('answerInput').disabled = true;
-      SoundSystem.speech.speakWord(current.en, function() {
-        isSpeaking = false;
-        document.getElementById('answerInput').disabled = false;
-        document.getElementById('answerInput').focus();
-      });
+      speak(current.en);
       startTimer();
       document.getElementById('resultModal').style.display = 'none';
       document.getElementById('wrongModal').style.display = 'none';
@@ -1109,8 +1086,7 @@
     }
 
     function checkAnswer() {
-      if (!current || isProcessingAnswer) return; // 如果正在處理答題，直接返回
-      isProcessingAnswer = true; // 設置正在處理答題狀態
+      if (!current) return;
       const ans = document.getElementById('answerInput').value.trim().toLowerCase();
       
       // ===== 新增：計算答題時間 =====
@@ -1144,7 +1120,7 @@
         // 計算星星獎勵
         const starsEarned = calculateStarReward(true, answerTime, gameStats.consecutiveCorrect, current.en.length);
         
-        // 只使用一個星星系統，避免重複加星星
+        // 使用統一的星星系統
         if (typeof StarRewardSystem !== 'undefined') {
           StarRewardSystem.addStars(starsEarned);
         } else if (typeof LinkageSystem !== 'undefined') {
@@ -1154,15 +1130,20 @@
           localStorage.setItem('totalStars', totalStarCount);
         }
         
-        // 更新顯示（只在沒有使用外部系統時更新）
-        if (typeof StarRewardSystem === 'undefined' && typeof LinkageSystem === 'undefined') {
-          updateTotal();
-        }
+        // 更新顯示
+        updateTotal();
         
         // 顯示獎勵動畫
         let reasonText = '';
+        if (answerTime <= 5) {
+          reasonText = '⚡ 超快速答題！';
+        } else if (answerTime <= 10) {
+          reasonText = '🎯 快速答題！';
+        } else if (answerTime <= 15) {
+          reasonText = '✨ 準確答題！';
+        }
         if (gameStats.consecutiveCorrect >= 3) {
-          reasonText = '🔥 連擊獎勵！';
+          reasonText += reasonText ? ' + 連擊獎勵！' : '🔥 連擊獎勵！';
         }
         
         // showRewardAnimation(starsEarned, reasonText); // 移除這一行，統一由 StarRewardSystem 處理彈窗動畫
@@ -1176,10 +1157,7 @@
         }
         
         clearInterval(timer);
-        setTimeout(() => {
-          nextWord();
-          isProcessingAnswer = false; // 重置處理狀態
-        }, 800);
+        setTimeout(() => nextWord(), 800);
       } else {
         document.getElementById('feedback').textContent = `❌ 正解是：${current.en}`;
         document.getElementById('feedback').style.color = '#f66';
@@ -1193,15 +1171,9 @@
         updateLives();
         clearInterval(timer);
         if (lives <= 0) {
-          setTimeout(() => {
-            showResultPanel();
-            isProcessingAnswer = false; // 重置處理狀態
-          }, 800);
+          setTimeout(() => showResultPanel(), 800);
         } else {
-          setTimeout(() => {
-            nextWord();
-            isProcessingAnswer = false; // 重置處理狀態
-          }, 800);
+          setTimeout(() => nextWord(), 800);
         }
       }
     }
@@ -1211,7 +1183,6 @@
       wrongList = [];
       correctCount = 0;
       lives = 5;
-      isProcessingAnswer = false; // 重置處理狀態
       gameStats = {
         correctCount: 0,
         totalAnswered: 0,
@@ -1297,7 +1268,6 @@
         answerInput.addEventListener('keydown', function(e) {
           if (e.key === 'Enter') {
             e.preventDefault(); // 防止表單提交
-            if (isSpeaking) return; // 發音中禁止送出
             checkAnswer();
           }
         });
