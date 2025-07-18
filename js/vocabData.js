@@ -80,7 +80,7 @@ const vocabData = {
     { zh: "卡片", en: "card" }, { zh: "鋼琴", en: "piano" }, { zh: "吉他", en: "guitar" }, { zh: "歌曲", en: "song" },
     { zh: "球", en: "ball" }, { zh: "棒球", en: "baseball" }, { zh: "籃球", en: "basketball" }, { zh: "足球", en: "soccer" },
     { zh: "風箏", en: "kite" }, { zh: "娃娃", en: "doll" }, { zh: "春天", en: "spring" }, { zh: "夏天", en: "summer" },
-    { zh: "秋天", en: "autumn" }, { zh: "冬天", en: "winter" }, { zh: "太陽", en: "sun" }, { zh: "月亮", en: "moon" },
+    { zh: "秋天", en: "fall" }, { zh: "冬天", en: "winter" }, { zh: "太陽", en: "sun" }, { zh: "月亮", en: "moon" },
     { zh: "星星", en: "star" }, { zh: "雨", en: "rain" }, { zh: "熱的", en: "hot" }, { zh: "冷的", en: "cold" }
   ],
   phoenix: [
@@ -90,8 +90,8 @@ const vocabData = {
     { zh: "哪一個", en: "which" }, { zh: "這裡", en: "here" }, { zh: "那裡", en: "there" }, { zh: "在…之內", en: "inside" },
     { zh: "在…之上", en: "on" }, { zh: "在…地點", en: "at" }, { zh: "在…之下", en: "under" }, { zh: "從；由", en: "from" }
   ],
-  andromeda: [
-    { zh: "外的", en: "outside" }, { zh: "在…外側", en: "outside of" }, { zh: "根據", en: "according to" }, { zh: "為了", en: "for" },
+  draco: [
+    { zh: "外的", en: "out" }, { zh: "在…外側", en: "outside of" }, { zh: "根據", en: "according to" }, { zh: "為了", en: "for" },
     { zh: "向；往", en: "toward" }, { zh: "與；用…", en: "with" }, { zh: "和；而且", en: "and" }, { zh: "但是", en: "but" },
     { zh: "衣服", en: "clothes" }, { zh: "大衣", en: "coat" }, { zh: "夾克", en: "jacket" }, { zh: "褲子", en: "pants" },
     { zh: "T恤", en: "t-shirt" }, { zh: "短褲", en: "shorts" }, { zh: "裙子", en: "skirt" }, { zh: "襯衫", en: "shirt" },
