@@ -91,7 +91,7 @@ const vocabData = {
     { zh: "在…之上", en: "on" }, { zh: "在…地點", en: "at" }, { zh: "在…之下", en: "under" }, { zh: "從；由", en: "from" }
   ],
   draco: [
-    { zh: "外的", en: "out" }, { zh: "在…外側", en: "outside of" }, { zh: "根據", en: "according to" }, { zh: "為了", en: "for" },
+    { zh: "外的", en: "out" }, { zh: "在…外側", en: "outside of" }, { zh: "根據", en: "by" }, { zh: "為了", en: "for" },
     { zh: "向；往", en: "toward" }, { zh: "與；用…", en: "with" }, { zh: "和；而且", en: "and" }, { zh: "但是", en: "but" },
     { zh: "衣服", en: "clothes" }, { zh: "大衣", en: "coat" }, { zh: "夾克", en: "jacket" }, { zh: "褲子", en: "pants" },
     { zh: "T恤", en: "t-shirt" }, { zh: "短褲", en: "shorts" }, { zh: "裙子", en: "skirt" }, { zh: "襯衫", en: "shirt" },
