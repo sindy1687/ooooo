@@ -479,164 +479,29 @@
   <script src="js/achievementSystem.js"></script>
   <script>
     /***** 背景音樂連動系統 *****/
-    let backgroundMusic = null;
-    let toggleMusicBtn = null;
-    let isMusicPlaying = false;
-    
-    // 初始化背景音樂系統
     function initBackgroundMusic() {
-      console.log('🎵 初始化背景音樂系統...');
-      
-      backgroundMusic = document.getElementById('backgroundMusic');
-      toggleMusicBtn = document.getElementById('toggleMusic');
-      
-      if (!backgroundMusic) {
-        console.error('❌ 找不到背景音樂元素');
-        return;
-      }
-      
-      if (!toggleMusicBtn) {
-        console.error('❌ 找不到音樂控制按鈕');
-        return;
-      }
-      
-      // 設定音樂屬性
-      backgroundMusic.volume = 0.3;
-      backgroundMusic.loop = true;
-      
-      // 檢查 LinkageSystem 是否可用
-      if (typeof LinkageSystem !== 'undefined' && LinkageSystem.music) {
-        isMusicPlaying = LinkageSystem.music.isPlaying();
-        console.log('🔗 LinkageSystem 音樂狀態:', isMusicPlaying);
-      } else {
-        // 備用方案：直接從 localStorage 讀取
-        const musicState = localStorage.getItem('bgMusicState');
-        isMusicPlaying = musicState === 'playing';
-        console.log('📦 localStorage 音樂狀態:', isMusicPlaying);
-      }
-      
-      // 根據狀態設定按鈕外觀
-      updateMusicButtonState();
-      
-      // 如果應該播放，嘗試播放
-      if (isMusicPlaying) {
-        playBackgroundMusic();
-      }
-      
-      console.log('✅ 背景音樂系統初始化完成');
-    }
-    
-    // 更新音樂按鈕狀態
-    function updateMusicButtonState() {
-      if (!toggleMusicBtn) return;
-      
-      if (isMusicPlaying) {
-        toggleMusicBtn.classList.add('playing');
-        toggleMusicBtn.style.background = 'rgba(0, 255, 255, 0.2)';
-      } else {
-        toggleMusicBtn.classList.remove('playing');
-        toggleMusicBtn.style.background = 'rgba(10, 20, 40, 0.85)';
+      if (typeof SoundSystem !== 'undefined') {
+        SoundSystem.bgm.initGlobalAudio();
+        SoundSystem.bgm.updateAllControls();
       }
     }
-    
-    // 播放背景音樂
+
     function playBackgroundMusic() {
-      if (!backgroundMusic) return;
-      
-      // 優先使用 SoundSystem
-      if (typeof SoundSystem !== 'undefined' && SoundSystem.bgm) {
+      if (typeof SoundSystem !== 'undefined') {
         SoundSystem.bgm.play();
-        isMusicPlaying = true;
-        updateMusicButtonState();
-        console.log('🎵 透過 SoundSystem 播放背景音樂');
-        return;
       }
-      
-      // 備用方案：直接播放本地音樂元素
-      backgroundMusic.play().then(() => {
-        isMusicPlaying = true;
-        updateMusicButtonState();
-        
-        // 同步到 LinkageSystem
-        if (typeof LinkageSystem !== 'undefined' && LinkageSystem.music) {
-          LinkageSystem.music.setPlaying(true);
-        } else {
-          localStorage.setItem('bgMusicState', 'playing');
-        }
-        
-        console.log('🎵 背景音樂開始播放');
-      }).catch(err => {
-        console.error('❌ 背景音樂播放失敗:', err);
-        isMusicPlaying = false;
-        updateMusicButtonState();
-      });
     }
-    
-    // 暫停背景音樂
+
     function pauseBackgroundMusic() {
-      if (!backgroundMusic) return;
-      
-      // 優先使用 SoundSystem
-      if (typeof SoundSystem !== 'undefined' && SoundSystem.bgm) {
+      if (typeof SoundSystem !== 'undefined') {
         SoundSystem.bgm.pause();
-        isMusicPlaying = false;
-        updateMusicButtonState();
-        console.log('🔇 透過 SoundSystem 暫停背景音樂');
-        return;
       }
-      
-      // 備用方案：直接暫停本地音樂元素
-      backgroundMusic.pause();
-      isMusicPlaying = false;
-      updateMusicButtonState();
-      
-      // 同步到 LinkageSystem
-      if (typeof LinkageSystem !== 'undefined' && LinkageSystem.music) {
-        LinkageSystem.music.setPlaying(false);
-      } else {
-        localStorage.setItem('bgMusicState', 'paused');
-      }
-      
-      console.log('🔇 背景音樂已暫停');
     }
-    
-    // 切換背景音樂播放狀態
+
     function toggleBackgroundMusic() {
-      if (isMusicPlaying) {
-        pauseBackgroundMusic();
-      } else {
-        playBackgroundMusic();
+      if (typeof SoundSystem !== 'undefined') {
+        SoundSystem.bgm.toggle();
       }
-    }
-    
-    // 音樂系統診斷函數
-    function diagnoseMusicSystem() {
-      console.log('🔍 === 音樂系統診斷 ===');
-      console.log('背景音樂元素:', backgroundMusic);
-      console.log('音樂控制按鈕:', toggleMusicBtn);
-      console.log('當前播放狀態:', isMusicPlaying);
-      console.log('LinkageSystem 可用:', typeof LinkageSystem !== 'undefined');
-      console.log('SoundSystem 可用:', typeof SoundSystem !== 'undefined');
-      
-      if (backgroundMusic) {
-        console.log('音樂檔案路徑:', backgroundMusic.src);
-        console.log('音樂音量:', backgroundMusic.volume);
-        console.log('音樂是否循環:', backgroundMusic.loop);
-        console.log('音樂是否暫停:', backgroundMusic.paused);
-        console.log('音樂當前時間:', backgroundMusic.currentTime);
-      }
-      
-      if (typeof LinkageSystem !== 'undefined' && LinkageSystem.music) {
-        console.log('LinkageSystem 音樂狀態:', LinkageSystem.music.isPlaying());
-        console.log('LinkageSystem 音樂音量:', LinkageSystem.music.getVolume());
-      }
-      
-      if (typeof SoundSystem !== 'undefined' && SoundSystem.bgm) {
-        console.log('SoundSystem 背景音樂:', SoundSystem.bgm);
-        console.log('SoundSystem 背景音樂狀態:', !SoundSystem.bgm.paused);
-      }
-      
-      alert('音樂系統診斷完成，請查看控制台');
     }
     
     // === 星空背景生成 ===
@@ -745,37 +610,35 @@
     
     // ===== 新增：星星獎勵計算函數 =====
     function calculateStarReward(isCorrect, answerTime, consecutiveCount, wordLength) {
+      // 只有答對才給星星，錯誤不加星
       if (!isCorrect) return 0;
       
       let baseReward = 1; // 基礎獎勵
       
       // 時間獎勵：越快答對獎勵越多
       if (answerTime <= 5) {
-        baseReward += 3; // 5秒內 +3星
+        baseReward += 1; // 5秒內 +1星
       } else if (answerTime <= 10) {
-        baseReward += 2; // 10秒內 +2星
+        baseReward += 1; // 10秒內 +1星
       } else if (answerTime <= 15) {
-        baseReward += 1; // 15秒內 +1星
+        baseReward += 0; // 15秒內無額外獎勵
       }
       
       // 連擊獎勵：連續答對越多獎勵越多
       if (consecutiveCount >= 5) {
-        baseReward += 3; // 5連擊 +3星
+        baseReward += 2; // 5連擊 +2星
       } else if (consecutiveCount >= 3) {
-        baseReward += 2; // 3連擊 +2星
+        baseReward += 1; // 3連擊 +1星
       } else if (consecutiveCount >= 2) {
-        baseReward += 1; // 2連擊 +1星
+        baseReward += 0; // 2連擊無額外獎勵
       }
       
       // 單字難度獎勵：根據單字長度給予額外獎勵
       if (wordLength >= 8) {
-        baseReward += 2; // 長單字額外獎勵
+        baseReward += 1; // 長單字額外獎勵
       } else if (wordLength >= 6) {
-        baseReward += 1; // 中等長度單字獎勵
+        baseReward += 0; // 中等長度單字無額外獎勵
       }
-      
-      // 星座關卡特殊獎勵
-      baseReward += 1; // 星座關卡額外獎勵
       
       return baseReward;
     }
@@ -906,7 +769,8 @@
 
     function showResultPanel() {
       // 本次星星已在checkAnswer累加，不需要再次設置
-      document.getElementById('sessionStars').textContent = correctCount * 2;
+      // 移除重複的星星計算，因為每題答對時已經加過星星了
+      document.getElementById('sessionStars').textContent = '已於答題時加星';
       document.getElementById('sessionCorrect').textContent = correctCount;
       document.getElementById('sessionWrong').textContent = wrongList.length;
       document.getElementById('wrongBtn').style.display = wrongList.length ? 'inline-block' : 'none';
@@ -1177,6 +1041,9 @@
           lives--;
           gameStats.consecutiveCorrect = 0; // 重置連擊
           
+          // 確保時間到時不加星
+          console.log('⏰ 時間到不加星');
+          
           updateLives();
           if (lives <= 0) {
             setTimeout(() => showResultPanel(), 800);
@@ -1199,6 +1066,10 @@
         lives--;
         updateLives();
         wrongList.push(current);
+        
+        // 確保跳過時不加星
+        console.log('⏭️ 跳過不加星');
+        
         if (lives <= 0) {
           clearInterval(timer);
           showResultPanel();
@@ -1268,27 +1139,13 @@
         // 更新顯示
         updateTotal();
         
-        // 顯示獎勵動畫
-        let reasonText = '';
-        if (answerTime <= 5) {
-          reasonText = '⚡ 超快速答題！';
-        } else if (answerTime <= 10) {
-          reasonText = '🎯 快速答題！';
-        } else if (answerTime <= 15) {
-          reasonText = '✨ 準確答題！';
-        }
-        if (gameStats.consecutiveCorrect >= 3) {
-          reasonText += reasonText ? ' + 連擊獎勵！' : '🔥 連擊獎勵！';
-        }
-        
-        // showRewardAnimation(starsEarned, reasonText); // 移除這一行，統一由 StarRewardSystem 處理彈窗動畫
-        
         // 顯示連擊通知
         showComboNotification(gameStats.consecutiveCorrect);
         
-        // ===== 新增：記錄答對的單字 =====
+        // ===== 記錄答對的單字（但不重複加星） =====
         if (typeof VocabularyAchievementSystem !== 'undefined') {
-          VocabularyAchievementSystem.recordCorrectWord(current.en, categoryKey);
+          // 只記錄單字，不觸發額外的星星獎勵
+          VocabularyAchievementSystem.recordCorrectWordWithoutReward(current.en, categoryKey);
         }
         
         clearInterval(timer);
@@ -1302,6 +1159,9 @@
         
         // ===== 新增：答錯邏輯 =====
         gameStats.consecutiveCorrect = 0; // 重置連擊
+        
+        // 確保錯誤時不加星，無論答題時間多短
+        console.log('❌ 答錯不加星，答題時間：', answerTime, '秒');
         
         updateLives();
         clearInterval(timer);
