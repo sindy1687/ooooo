@@ -469,7 +469,7 @@ const baseCards = [
   {
     "word": "Satoru Gojo",
     "zh": "五條悟",
-    "image": "https://v1.pinimg.com/videos/mc/720p/53/5a/b3/535ab3a98f8f2e24b1bf333f6b2fb025.mp4",
+    "image": "https://v1.pinimg.com/videos/mc/720p/e9/d9/62/e9d96263e5be2172d124edb4d1981cb1.mp4",
     "video": "https://youtu.be/OBrDE0WyAP4?si=5LfpdnHq5Tf-HFL-",
     "rarity": "超稀有",
     "category": "咒術迴戰",
