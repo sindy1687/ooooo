@@ -13,19 +13,6 @@
       overflow-x: hidden;
     }
     
-    /* 確保背景圖片載入失敗時的備用方案 */
-    body::before {
-      content: '';
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
-      z-index: -2;
-      opacity: 0.8;
-    }
-    
     /* 確保所有元素都在視窗範圍內 */
     * {
       box-sizing: border-box;
@@ -36,13 +23,9 @@
       margin: 0;
       padding: 0;
       font-family: 'Inter', 'Noto Sans TC', 'Microsoft JhengHei', '微軟正黑體', 'PingFang TC', 'Helvetica Neue', Arial, sans-serif;
-      background: 
-        linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%),
-        url('https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?ixlib=rb-4.0.3&auto=format&fit=crop&w=2071&q=80') no-repeat center center fixed,
-        linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+      background: url('https://cdn-prd.ggac.com/ggac/work/image/2024/6/3/695158cd-1871-4803-88ab-beb43f6e11e5-2048x.jpg') no-repeat center center fixed;
       background-size: cover;
       background-repeat: no-repeat;
-      background-blend-mode: overlay;
       color: #fff;
       text-align: center;
       min-height: 100vh;
@@ -229,12 +212,8 @@
       content: '';
       position: absolute;
       top: 0; left: 0; right: 0; bottom: 0;
-      background: 
-        linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 50%, rgba(240, 147, 251, 0.1) 100%),
-        url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80') repeat center center,
-        linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 50%, rgba(240, 147, 251, 0.1) 100%);
-      background-size: cover;
-      opacity: 0.3;
+      background: url('https://png.pngtree.com/thumb_back/fw800/background/20230613/pngtree-cosmic-starry-sky-background-image_2890957.jpg') repeat center center;
+      opacity: 0.2;
       border-radius: 20px;
       pointer-events: none;
       z-index: 0;
@@ -270,13 +249,10 @@
       content: '';
       position: absolute;
       top: 0; left: 0; right: 0; bottom: 0;
-      background: 
-        linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 50%, rgba(240, 147, 251, 0.1) 100%),
-        url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80') repeat center center,
-        linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 50%, rgba(240, 147, 251, 0.1) 100%);
-      background-size: cover;
+      background: url('https://png.pngtree.com/thumb_back/fw800/background/20230613/pngtree-cosmic-starry-sky-background-image_2890957.jpg') repeat center center,
+                  linear-gradient(to bottom, rgba(10, 20, 40, 0.5) 0%, rgba(10, 20, 40, 0.9) 100%);
       background-blend-mode: overlay;
-      opacity: 0.3;
+      opacity: 0.2;
       border-radius: 14px;
       pointer-events: none;
       z-index: 0;
@@ -439,7 +415,7 @@
       width: 100vw; height: 100vh;
       background: rgba(0, 0, 0, 0.7);
       display: none;
-      z-index: 900;
+      z-index: 1400;
     }
     #modal {
       position: fixed;
@@ -449,7 +425,7 @@
       padding: 25px;
       border-radius: 18px;
       box-shadow: 0 0 40px #00ffff99, 0 0 100px #a259ff44 inset;
-      z-index: 1000;
+      z-index: 1500;
       transition: all 0.4s ease;
       color: #fff;
       max-width: 90%;
@@ -527,8 +503,8 @@
       display: none;
       justify-content: center;
       align-items: center;
-      z-index: 2000;
-      padding: 20px;
+      z-index: 15000;
+      padding: 0;
       box-sizing: border-box;
       backdrop-filter: blur(8px);
       pointer-events: auto;
@@ -543,7 +519,7 @@
       align-items: center;
       max-width: 100%;
       max-height: 100%;
-      pointer-events: none;
+      overflow: hidden;
     }
 
     .gacha-circle {
@@ -551,10 +527,10 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: min(45vw, 45vh);
-      height: min(45vw, 45vh);
-      max-width: 450px;
-      max-height: 450px;
+      width: min(50vw, 50vh);
+      height: min(50vw, 50vh);
+      max-width: 500px;
+      max-height: 500px;
       border: 5px solid #00ffff;
       border-radius: 50%;
       animation: circlePulse 2s infinite;
@@ -566,10 +542,10 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: min(55vw, 55vh);
-      height: min(55vw, 55vh);
-      max-width: 550px;
-      max-height: 550px;
+      width: min(60vw, 60vh);
+      height: min(60vw, 60vh);
+      max-width: 600px;
+      max-height: 600px;
       border-radius: 50%;
       background: radial-gradient(circle, #00ffff88 0%, #a259ff44 40%, transparent 70%);
       opacity: 0.8;
@@ -581,16 +557,13 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%) scale(0);
-      width: min(45vw, 45vh);
-      height: min(65vw, 65vh);
-      max-width: 450px;
-      max-height: 650px;
+      width: min(40vw, 40vh);
+      height: min(60vw, 60vh);
+      max-width: 400px;
+      max-height: 600px;
       animation: cardAppear 2s forwards;
       perspective: 1500px;
       background: transparent;
-      display: flex;
-      align-items: center;
-      justify-content: center;
       z-index: 10;
     }
     
@@ -600,6 +573,7 @@
       height: 100%;
       transition: transform 0.8s cubic-bezier(0.7, 0, 0.3, 1);
       transform-style: preserve-3d;
+      transform-origin: center center;
     }
 
     .card-inner.is-flipped {
@@ -615,84 +589,32 @@
       -webkit-backface-visibility: hidden;
       backface-visibility: hidden;
       border-radius: 15px;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
       box-sizing: border-box;
     }
 
     .card-back {
-      background: 
-        linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%),
-        url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80') no-repeat center center,
-        linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
-      background-size: cover;
+      background-image: url('https://i.pinimg.com/736x/7e/ef/2b/7eef2bb3dd1bb8ed15e9dbd9529a2dc8.jpg');
       border: 3px solid #555;
+      background-size: contain;
+      background-position: center;
       transform: rotateY(0deg);
       position: relative;
       overflow: hidden;
-      border-radius: 15px;
-      min-height: 200px;
-    }
-    
-    /* 確保背景圖片載入失敗時的備用方案 */
-    .card-back::before {
-      content: '🌌';
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      font-size: 4rem;
-      color: rgba(255, 255, 255, 0.8);
-      text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
-      z-index: 1;
-      pointer-events: none;
-    }
-    
-    .card-back::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
-      animation: cardShimmer 3s ease-in-out infinite;
-      z-index: 2;
-      pointer-events: none;
-    }
-    
-    @keyframes cardShimmer {
-      0%, 100% { opacity: 0; }
-      50% { opacity: 1; }
     }
 
     .card-front {
       transform: rotateY(180deg);
-      background: 
-        linear-gradient(135deg, rgba(0, 0, 0, 0.8) 0%, rgba(20, 20, 40, 0.9) 100%),
-        linear-gradient(45deg, rgba(102, 126, 234, 0.2) 0%, rgba(118, 75, 162, 0.2) 50%, rgba(240, 147, 251, 0.2) 100%);
+      background-color: #000;
       border: 3px solid #fff;
       position: relative;
       overflow: hidden;
-      box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.1);
-      border-radius: 15px;
-      min-height: 200px;
-    }
-    
-    .card-front::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.05) 50%, transparent 70%);
-      animation: frontCardShimmer 4s ease-in-out infinite;
-      z-index: 1;
-      pointer-events: none;
-    }
-    
-    @keyframes frontCardShimmer {
-      0%, 100% { opacity: 0; }
-      50% { opacity: 1; }
+      background-image: url('https://i.pinimg.com/736x/7e/ef/2b/7eef2bb3dd1bb8ed15e9dbd9529a2dc8.jpg');
+      background-size: contain;
+      background-position: center;
+      background-repeat: no-repeat;
     }
 
     .card-front-content {
@@ -712,7 +634,7 @@
     .card-front-video {
       width: 100%;
       height: 100%;
-      object-fit: cover;
+      object-fit: contain;
       border-radius: 10px;
       position: absolute;
       top: 0;
@@ -737,9 +659,18 @@
     }
 
     @keyframes cardAppear {
-      0% { transform: translate(-50%, -50%) scale(0); }
-      50% { transform: translate(-50%, -50%) scale(1.3); }
-      100% { transform: translate(-50%, -50%) scale(1); }
+      0% { 
+        transform: translate(-50%, -50%) scale(0); 
+        opacity: 0;
+      }
+      50% { 
+        transform: translate(-50%, -50%) scale(1.3); 
+        opacity: 1;
+      }
+      100% { 
+        transform: translate(-50%, -50%) scale(1); 
+        opacity: 1;
+      }
     }
 
     @keyframes circlePulse {
@@ -774,16 +705,16 @@
 
     @media (max-aspect-ratio: 1/1) {
       .gacha-card {
-        width: min(60vw, 60vh);
-        height: min(90vw, 90vh);
+        width: min(50vw, 50vh);
+        height: min(80vw, 80vh);
       }
       .gacha-circle {
-        width: min(60vw, 60vh);
-        height: min(60vw, 60vh);
+        width: min(65vw, 65vh);
+        height: min(65vw, 65vh);
       }
       .gacha-rays {
-        width: min(70vw, 70vh);
-        height: min(70vw, 70vh);
+        width: min(75vw, 75vh);
+        height: min(75vw, 75vh);
       }
     }
 
@@ -1651,10 +1582,10 @@
       <div class="gacha-circle"></div>
       <div class="gacha-rays"></div>
       <div class="gacha-card">
-        <div class="card-inner">
-          <div class="card-front"></div>
-          <div class="card-back"></div>
-        </div>
+                  <div class="card-inner">
+            <div class="card-front"></div>
+            <div class="card-back"></div>
+          </div>
       </div>
     </div>
   </div>
@@ -1823,6 +1754,13 @@
         LinkageSystem.notifications.show('請先選擇要許願的卡片！', 'warning');
         return;
       }
+      
+      // 再次檢查卡片是否已經擁有（以防萬一）
+      if (LinkageSystem.cards.isCardOwned(card.word)) {
+        LinkageSystem.notifications.show('此卡片已經擁有，無法設定為許願！', 'warning');
+        return;
+      }
+      
       currentWishCard = card;
       localStorage.setItem('currentWishCard', JSON.stringify(card));
       LinkageSystem.notifications.show(`✨ 已設定許願：${card.zh}！`, 'success');
@@ -2173,7 +2111,7 @@
             newCards.push(result.card.zh);
           }
           // 每張卡之間短暫暫停，讓玩家能看清（增加間隔時間）
-          await new Promise(resolve => setTimeout(resolve, 800));
+          await new Promise(resolve => setTimeout(resolve, 1200));
         }
 
         // 顯示摘要通知
@@ -2300,12 +2238,12 @@
         : '<span class="unlock-status-icon">✖</span>';
 
         // 6. 根據稀有度設定不同的動畫延遲時間
-        let flipDelay = 1500;
-        let closeDelay = 4000;
+        let flipDelay = 2000;
+        let closeDelay = 6000;
 
         if (card.rarity === '超稀有') {
-          flipDelay = 2200;
-          closeDelay = 5000;
+          flipDelay = 3000;
+          closeDelay = 8000;
         }
 
         // 7. 添加 skip 按鈕
@@ -2480,12 +2418,12 @@
           }
         }, flipDelay);
 
-        // 9. 動畫結束後，隱藏動畫並將卡片加入主畫面
-        closeTimeout = setTimeout(() => {
-          if (!animationAccelerated) {
-            finishAnimation();
-          }
-        }, closeDelay);
+              // 9. 動畫結束後，隱藏動畫並將卡片加入主畫面
+      closeTimeout = setTimeout(() => {
+        if (!animationAccelerated) {
+          finishAnimation();
+        }
+      }, closeDelay + 2000); // 額外增加 2 秒停留時間
         
         // 完成動畫的函數
         function finishAnimation() {
@@ -2639,12 +2577,12 @@
         : '<span class="unlock-status-icon">✖</span>';
 
       // 6. 根據稀有度設定不同的動畫延遲時間
-      let flipDelay = 1500;
-      let closeDelay = 4000;
+      let flipDelay = 2000;
+      let closeDelay = 6000;
 
       if (card.rarity === '超稀有') {
-        flipDelay = 2200;
-        closeDelay = 5000;
+        flipDelay = 3000;
+        closeDelay = 8000;
       }
 
       // 7. 添加 skip 按鈕
@@ -2824,7 +2762,7 @@
         if (!animationAccelerated) {
           finishAnimation();
         }
-      }, closeDelay);
+      }, closeDelay + 2000); // 額外增加 2 秒停留時間
       
       
       // 完成動畫的函數
@@ -3177,6 +3115,13 @@
         previewDiv.innerHTML = '';
         return;
       }
+      
+      // 檢查卡片是否已經擁有
+      if (LinkageSystem.cards.isCardOwned(card.word)) {
+        previewDiv.innerHTML = '';
+        return;
+      }
+      
       const rarityClass = card.rarity === '普通' ? 'common' : card.rarity === '稀有' ? 'rare' : 'epic';
       const isImageMP4 = card.image && card.image.endsWith('.mp4');
       let cardMedia = isImageMP4
@@ -3263,6 +3208,10 @@
       const cards = allCards.filter(card => card.rarity === rarity);
       cards.sort((a, b) => a.category.localeCompare(b.category));
       cards.forEach(card => {
+        // 檢查卡片是否已經擁有
+        const isOwned = LinkageSystem.cards.isCardOwned(card.word);
+        if (isOwned) return; // 跳過已擁有的卡片
+        
         if (filterText) {
           const text = `${card.category} ${card.zh} ${card.word}`.toLowerCase();
           if (!text.includes(filterText)) return;
@@ -3296,7 +3245,14 @@
       const a = document.getElementById('wishPoolA').value;
       const word = ssr || r || a;
       if (!word) return null;
-      return allCards.find(card => card.word === word);
+      const card = allCards.find(card => card.word === word);
+      
+      // 檢查卡片是否已經擁有
+      if (card && LinkageSystem.cards.isCardOwned(card.word)) {
+        return null; // 如果已擁有，返回 null
+      }
+      
+      return card;
     }
     function updateWishPreview() {
       const card = getCurrentWishCard();
@@ -3306,6 +3262,13 @@
         previewDiv.innerHTML = '';
         return;
       }
+      
+      // 檢查卡片是否已經擁有
+      if (LinkageSystem.cards.isCardOwned(card.word)) {
+        previewDiv.innerHTML = '';
+        return;
+      }
+      
       const rarityClass = card.rarity === '普通' ? 'common' : card.rarity === '稀有' ? 'rare' : 'epic';
       const isImageMP4 = card.image && card.image.endsWith('.mp4');
       let cardMedia = isImageMP4
