@@ -1,6 +1,6 @@
 {
   "generatedAt": "2025-06-28T12:00:00.000Z",
-  "totalCodes": 100,
+  "totalCodes": 98,
   "codes": [
     {
       "code": "WELCOME1",
@@ -26,8 +26,6 @@
       "usedBy": null,
       "createdAt": "2025-06-28T12:00:00.000Z"
     },
-   
-
     {
       "code": "NEW100A",
       "stars": 100,
@@ -68,7 +66,6 @@
       "usedBy": null,
       "createdAt": "2025-06-28T12:00:00.000Z"
     },
-    
     {
       "code": "LUCK100A",
       "stars": 100,
@@ -85,7 +82,6 @@
       "usedBy": null,
       "createdAt": "2025-06-28T12:00:00.000Z"
     },
-  
     {
       "code": "BRONZE100",
       "stars": 100,
@@ -1238,14 +1234,7 @@
       "usedBy": null,
       "createdAt": "2024-07-01T00:00:00.000Z"
     },
-    {
-      "code": "Z8X3C7VQ",
-      "stars": 3000,
-      "used": false,
-      "usedAt": null,
-      "usedBy": null,
-      "createdAt": "2024-07-01T00:00:00.000Z"
-    },
+
     {
       "code": "Q8W2E7R",
       "stars": 100,
@@ -1680,14 +1669,6 @@
     },
     {
       "code": "EXTRABIG10",
-      "stars": 3000,
-      "used": false,
-      "usedAt": null,
-      "usedBy": null,
-      "createdAt": "2025-07-01T00:00:00.000Z"
-    },
-    {
-      "code": "Z3X8Q7L2",
       "stars": 3000,
       "used": false,
       "usedAt": null,
