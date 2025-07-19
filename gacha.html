@@ -740,17 +740,21 @@
 
     /* 新增：許願池樣式 */
     .wish-section {
-      background: rgba(20, 40, 80, 0.9);
-      border: 2px solid #ffd700;
-      border-radius: 15px;
-      padding: 20px;
-      margin: 20px auto;
-      max-width: 800px;
-      box-shadow: 0 0 25px #ffd70033;
-      backdrop-filter: blur(8px);
-      animation: wishSectionGlow 3s ease-in-out infinite;
+      background: linear-gradient(135deg, rgba(20, 40, 80, 0.95) 0%, rgba(40, 20, 60, 0.95) 100%);
+      border: 3px solid transparent;
+      border-radius: 20px;
+      padding: 25px;
+      margin: 25px auto;
+      max-width: 900px;
+      box-shadow: 
+        0 0 30px rgba(255, 215, 0, 0.3),
+        0 0 60px rgba(255, 215, 0, 0.1),
+        inset 0 0 20px rgba(255, 215, 0, 0.1);
+      backdrop-filter: blur(12px);
+      animation: wishSectionGlow 4s ease-in-out infinite;
       position: relative;
       overflow: hidden;
+      border-image: linear-gradient(45deg, #ffd700, #ffaa00, #ffd700) 1;
     }
 
     .wish-section::before {
@@ -760,19 +764,26 @@
       left: -50%;
       width: 200%;
       height: 200%;
-      background: linear-gradient(45deg, transparent, rgba(255, 215, 0, 0.1), transparent);
-      animation: wishShimmer 4s linear infinite;
+      background: linear-gradient(45deg, transparent, rgba(255, 215, 0, 0.15), transparent);
+      animation: wishShimmer 6s linear infinite;
       pointer-events: none;
+      opacity: 0.8;
     }
 
     @keyframes wishSectionGlow {
       0%, 100% { 
-        box-shadow: 0 0 25px #ffd70033, 0 0 50px #ffd70022;
-        border-color: #ffd700;
+        box-shadow: 
+          0 0 30px rgba(255, 215, 0, 0.3),
+          0 0 60px rgba(255, 215, 0, 0.1),
+          inset 0 0 20px rgba(255, 215, 0, 0.1);
+        border-image: linear-gradient(45deg, #ffd700, #ffaa00, #ffd700) 1;
       }
       50% { 
-        box-shadow: 0 0 35px #ffd70055, 0 0 70px #ffd70033;
-        border-color: #ffaa00;
+        box-shadow: 
+          0 0 40px rgba(255, 215, 0, 0.5),
+          0 0 80px rgba(255, 215, 0, 0.2),
+          inset 0 0 30px rgba(255, 215, 0, 0.2);
+        border-image: linear-gradient(45deg, #ffaa00, #ffd700, #ffaa00) 1;
       }
     }
 
@@ -783,26 +794,40 @@
 
     .wish-section h3 {
       color: #ffd700;
-      font-size: 1.6rem;
+      font-size: 1.8rem;
       font-weight: bold;
-      margin-bottom: 15px;
-      text-shadow: 0 0 15px #ffd700, 0 0 30px #ffaa00;
-      letter-spacing: 2px;
+      margin-bottom: 20px;
+      text-shadow: 
+        0 0 15px #ffd700, 
+        0 0 30px #ffaa00,
+        0 0 45px #ffd700;
+      letter-spacing: 3px;
       text-align: center;
-      animation: wishTitlePulse 2s ease-in-out infinite;
+      animation: wishTitlePulse 3s ease-in-out infinite;
       position: relative;
       z-index: 1;
       font-family: 'Orbitron', 'Inter', sans-serif;
+      background: linear-gradient(45deg, #ffd700, #ffaa00, #ffd700);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
 
     @keyframes wishTitlePulse {
       0%, 100% { 
         transform: scale(1);
-        text-shadow: 0 0 15px #ffd700, 0 0 30px #ffaa00;
+        text-shadow: 
+          0 0 15px #ffd700, 
+          0 0 30px #ffaa00,
+          0 0 45px #ffd700;
       }
       50% { 
-        transform: scale(1.05);
-        text-shadow: 0 0 20px #ffd700, 0 0 40px #ffaa00, 0 0 60px #ffd700;
+        transform: scale(1.08);
+        text-shadow: 
+          0 0 25px #ffd700, 
+          0 0 50px #ffaa00, 
+          0 0 75px #ffd700,
+          0 0 100px #ffaa00;
       }
     }
 
@@ -818,19 +843,22 @@
     }
 
     .wish-select {
-      background: rgba(0, 0, 0, 0.7);
+      background: linear-gradient(135deg, rgba(0, 0, 0, 0.8) 0%, rgba(20, 40, 80, 0.8) 100%);
       border: 2px solid #00ffff;
-      border-radius: 12px;
-      padding: 12px 18px;
+      border-radius: 15px;
+      padding: 14px 20px;
       color: #fff;
       font-size: 1.1rem;
       font-family: 'Inter', 'Noto Sans TC', sans-serif;
       min-width: 220px;
       cursor: pointer;
-      box-shadow: 0 0 20px #00ffff33;
-      transition: all 0.3s ease;
+      box-shadow: 
+        0 0 20px rgba(0, 255, 255, 0.3),
+        inset 0 0 10px rgba(0, 255, 255, 0.1);
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
       position: relative;
       overflow: hidden;
+      backdrop-filter: blur(8px);
     }
 
     .wish-select::before {
@@ -864,20 +892,23 @@
     }
 
     .wish-btn {
-      background: linear-gradient(135deg, #ffd700 0%, #ffaa00 100%);
+      background: linear-gradient(135deg, #ffd700 0%, #ffaa00 50%, #ffd700 100%);
       color: #000;
-      border: none;
-      padding: 12px 24px;
-      border-radius: 12px;
+      border: 2px solid rgba(255, 215, 0, 0.5);
+      padding: 14px 28px;
+      border-radius: 15px;
       cursor: pointer;
       font-weight: bold;
-      box-shadow: 0 0 20px #ffd70066;
+      box-shadow: 
+        0 0 25px rgba(255, 215, 0, 0.4),
+        inset 0 0 15px rgba(255, 215, 0, 0.2);
       font-size: 1.1rem;
-      letter-spacing: 1px;
-      transition: all 0.3s ease;
+      letter-spacing: 2px;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
       position: relative;
       overflow: hidden;
       font-family: 'Inter', 'Noto Sans TC', sans-serif;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     }
 
     .wish-btn::before {
@@ -908,31 +939,41 @@
     }
 
     .current-wish {
-      background: rgba(0, 0, 0, 0.5);
-      border: 2px solid #ffd700;
-      border-radius: 12px;
-      padding: 18px;
+      background: linear-gradient(135deg, rgba(0, 0, 0, 0.6) 0%, rgba(20, 40, 80, 0.6) 100%);
+      border: 3px solid transparent;
+      border-radius: 18px;
+      padding: 25px;
       text-align: center;
-      min-height: 70px;
+      min-height: 80px;
       display: flex;
       align-items: center;
       justify-content: center;
       color: #ffd700;
       font-weight: bold;
-      text-shadow: 0 0 10px #ffd700;
+      text-shadow: 0 0 15px #ffd700;
       position: relative;
       z-index: 1;
-      animation: wishCardGlow 2s ease-in-out infinite;
+      animation: wishCardGlow 3s ease-in-out infinite;
+      backdrop-filter: blur(10px);
+      border-image: linear-gradient(45deg, #ffd700, #ffaa00, #ffd700) 1;
+      box-shadow: 
+        0 0 20px rgba(255, 215, 0, 0.3),
+        inset 0 0 15px rgba(255, 215, 0, 0.1);
     }
 
     @keyframes wishCardGlow {
       0%, 100% { 
-        box-shadow: 0 0 15px #ffd70033;
-        border-color: #ffd700;
+        box-shadow: 
+          0 0 20px rgba(255, 215, 0, 0.3),
+          inset 0 0 15px rgba(255, 215, 0, 0.1);
+        border-image: linear-gradient(45deg, #ffd700, #ffaa00, #ffd700) 1;
       }
       50% { 
-        box-shadow: 0 0 25px #ffd70055, 0 0 40px #ffd70033;
-        border-color: #ffaa00;
+        box-shadow: 
+          0 0 30px rgba(255, 215, 0, 0.5),
+          0 0 50px rgba(255, 215, 0, 0.2),
+          inset 0 0 25px rgba(255, 215, 0, 0.2);
+        border-image: linear-gradient(45deg, #ffaa00, #ffd700, #ffaa00) 1;
       }
     }
 
@@ -1533,20 +1574,23 @@
     <h3>🌟 星辰祈願</h3>
     <div class="wish-controls" style="display:flex;flex-direction:column;align-items:center;gap:10px;">
       <input id="wishSearchGlobal" class="wish-select" style="margin-bottom:8px;max-width:400px;" placeholder="搜尋卡片/類別/名稱...">
-      <div style="display:flex;gap:18px;flex-wrap:wrap;justify-content:center;align-items:flex-start;width:100%;">
-        <div style="display:flex;flex-direction:column;align-items:center;min-width:180px;">
-          <div style="font-weight:bold;color:#ffd700;margin-bottom:4px;">SSR 許願</div>
-          <select id="wishPoolSSR" class="wish-select"></select>
+      <div style="display:flex;gap:15px;flex-wrap:nowrap;justify-content:center;align-items:center;width:100%;">
+        <div style="display:flex;flex-direction:column;align-items:center;min-width:150px;">
+          <div style="font-weight:bold;color:#ffd700;margin-bottom:6px;font-size:0.9rem;text-shadow:0 0 8px #ffd700;">SSR 許願</div>
+          <select id="wishPoolSSR" class="wish-select" style="min-width:150px;"></select>
         </div>
-        <div style="display:flex;flex-direction:column;align-items:center;min-width:180px;">
-          <div style="font-weight:bold;color:#a259ff;margin-bottom:4px;">R 許願</div>
-          <select id="wishPoolR" class="wish-select"></select>
+        <div style="display:flex;flex-direction:column;align-items:center;min-width:150px;">
+          <div style="font-weight:bold;color:#a259ff;margin-bottom:6px;font-size:0.9rem;text-shadow:0 0 8px #a259ff;">R 許願</div>
+          <select id="wishPoolR" class="wish-select" style="min-width:150px;"></select>
         </div>
-        <div style="display:flex;flex-direction:column;align-items:center;min-width:180px;">
-          <div style="font-weight:bold;color:#00ffff;margin-bottom:4px;">A 許願</div>
-          <select id="wishPoolA" class="wish-select"></select>
+        <div style="display:flex;flex-direction:column;align-items:center;min-width:150px;">
+          <div style="font-weight:bold;color:#00ffff;margin-bottom:6px;font-size:0.9rem;text-shadow:0 0 8px #00ffff;">A 許願</div>
+          <select id="wishPoolA" class="wish-select" style="min-width:150px;"></select>
         </div>
-        <button id="setWishBtn" class="wish-btn" style="height:48px;align-self:center;">設定許願</button>
+        <div style="display:flex;flex-direction:column;align-items:center;margin-left:10px;">
+          <div style="font-weight:bold;color:#ffd700;margin-bottom:6px;font-size:0.9rem;text-shadow:0 0 8px #ffd700;opacity:0;">按鈕</div>
+          <button id="setWishBtn" class="wish-btn" style="height:48px;font-size:1rem;min-width:100px;font-weight:bold;letter-spacing:1px;padding:14px 20px;">許願</button>
+        </div>
       </div>
     </div>
     <div id="currentWish" class="current-wish"></div>
@@ -3218,7 +3262,7 @@
         }
         const option = document.createElement('option');
         option.value = card.word;
-        option.textContent = `${getRarityEmoji(card.rarity)} [${card.category}] ${card.zh} (${card.word})`;
+        option.textContent = `${getRarityEmoji(card.rarity)} [${card.category}] ${card.zh}`;
         select.appendChild(option);
         hasOption = true;
       });
