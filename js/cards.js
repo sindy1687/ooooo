@@ -283,6 +283,56 @@ const baseCards = [
       "description": "使敵方中毒，每回合損失 10 點"
     }
   },
+    {
+    "word": "SpongeBob",
+    "zh": "海綿寶寶",
+    "image": "https://v1.pinimg.com/videos/mc/720p/62/de/71/62de71dd1ee4d2b07a2c401aa2a12e32.mp4",
+    "video": "https://www.youtube.com/watch?v=_hFzxfQmQmc",
+    "youtube": "https://www.youtube.com/watch?v=_hFzxfQmQmc",
+    "rarity": "普通",
+    "category": "海綿寶寶",
+    "description": "總是在比奇堡忙東忙西的快樂打工仔，笑點製造機本機。"
+  },
+  {
+    "word": "Patrick Star",
+    "zh": "派大星",
+    "image": "https://v1.pinimg.com/videos/mc/720p/d0/74/ca/d074caa9a9a5fe5d23cb03b5faf893c2.mp4",
+    "video": "https://www.youtube.com/watch?v=Zw_63WHvK1o",
+    "youtube": "https://www.youtube.com/watch?v=Zw_63WHvK1o",
+    "rarity": "普通",
+    "category": "海綿寶寶",
+    "description": "住在石頭下的哲學家，有著不按牌理出牌的閃亮邏輯。"
+  },
+  {
+    "word": "Squidward",
+    "zh": "章魚哥",
+    "image": "https://v1.pinimg.com/videos/mc/720p/35/0b/ed/350bed0a0e543e466f580e45e92d0e24.mp4",
+    "video": "https://www.youtube.com/watch?v=gGKNt0WYtzM",
+    "youtube": "https://www.youtube.com/watch?v=gGKNt0WYtzM",
+    "rarity": "稀有",
+    "category": "海綿寶寶",
+    "description": "憂鬱藝術魂，愛音樂、恨吵鬧，卻總逃不出快樂夥伴的包圍網。"
+  },
+  {
+    "word": "Mr. Krabs",
+    "zh": "蟹老闆",
+    "image": "https://v1.pinimg.com/videos/mc/720p/94/be/b8/94beb84403502f019c18f926d7ddaafc.mp4",
+    "video": "https://www.youtube.com/watch?v=Zw_63WHvK1o",
+    "youtube": "https://www.youtube.com/watch?v=Zw_63WHvK1o",
+    "rarity": "稀有",
+    "category": "海綿寶寶",
+    "description": "錢就是一切！經營蟹堡王的商人魂滿點的紅螃蟹。"
+  },
+  {
+    "word": "Sandy Cheeks",
+    "zh": "珊迪",
+    "image": "https://v1.pinimg.com/videos/mc/720p/23/6e/e4/236ee489cc9d7e2653e87363ad5a150c.mp4",
+    "video": "https://www.youtube.com/watch?v=HLPFJWdlSoY",
+    "youtube": "https://www.youtube.com/watch?v=HLPFJWdlSoY",
+    "rarity": "超稀有",
+    "category": "海綿寶寶",
+    "description": "來自德州的松鼠小姐，空手道高手、科技天才，戴著頭盔在海裡生存。"
+ },
 {
     "word": "Pikachu",
     "zh": "皮卡丘",
