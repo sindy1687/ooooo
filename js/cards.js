@@ -47,7 +47,7 @@ const baseCards = [
 {
     "word": "Kibutsuji Muzan",
     "zh": "鬼舞辻無慘",
-    "image": "https://i.pinimg.com/736x/34/39/86/34398655f2c25e2d831f5f03e7a7c85c.jpg",
+    "image": "https://v1.pinimg.com/videos/iht/720p/d8/40/4a/d8404ac6f1a29c7dc117f2be8485f284.mp4",
     "video": "",
     "youtube": "",
     "rarity": "超稀有",
