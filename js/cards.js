@@ -176,6 +176,7 @@ const baseCards = [
   "role": "蛇柱",
   "description": "他以沉默編織情感，雙瞳如蛇般審視一切，但心裡住著的，是為愛甘願赴死的溫柔。"
 },
+
   {
     "word": "Nezuko Kamado",
     "zh": "竈門禰豆子",
@@ -188,6 +189,7 @@ const baseCards = [
       "type": "blood_explosion",
       "value": 70,
       "description": "爆血技能造成大範圍爆擊傷害"
+    }
   },
  {
     "word": "Kanroji Mitsuri",
@@ -212,6 +214,7 @@ const baseCards = [
       "type": "lightning_strike",
       "value": 80,
       "description": "睡著後釋放雷之呼吸，單體高傷害"
+    }
   },
   {
     "word": "Inosuke Hashibira",
@@ -225,6 +228,7 @@ const baseCards = [
       "type": "beast_slash",
       "value": 50,
       "description": "使用獸之呼吸攻擊敵人兩次"
+    }
   },
 {
     "word": "Sanemi Shinazugawa",
@@ -249,6 +253,7 @@ const baseCards = [
       "type": "counter",
       "value": 30,
       "description": "成功防禦後立即反擊造成 30 點傷害"
+    }
   },
   {
     "word": "Kyojuro Rengoku",
@@ -262,6 +267,7 @@ const baseCards = [
       "type": "flame_pillar",
       "value": 100,
       "description": "施展炎之呼吸奧義，大範圍高傷"
+    }
   },
   {
     "word": "Shinobu Kocho",
@@ -275,6 +281,7 @@ const baseCards = [
       "type": "poison_dance",
       "value": 10,
       "description": "使敵方中毒，每回合損失 10 點"
+    }
   },
  {
     "word": "Yoichi Isagi",
