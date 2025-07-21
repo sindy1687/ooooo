@@ -738,27 +738,8 @@
     <input type="file" id="imgUploader" accept="image/*" onchange="handleImageUpload(event)">
 
     <!-- 單字本下載區按鈕（美觀現代，建議放在主內容上方） -->
-    <a id="downloadVocabBtn" href="download_vocab.html" style="
-      display: block;
-      max-width: 340px;
-      margin: 32px auto 18px auto;
-      padding: 18px 0;
-      background: linear-gradient(90deg, #00ffff 0%, #a259ff 100%);
-      color: #000;
-      font-size: 1.25rem;
-      font-family: 'Orbitron', 'Noto Sans TC', sans-serif;
-      font-weight: bold;
-      border-radius: 16px;
-      box-shadow: 0 0 24px #00ffff, 0 0 32px #a259ff99;
-      text-align: center;
-      letter-spacing: 1px;
-      text-decoration: none;
-      transition: transform 0.18s, box-shadow 0.18s;
-      position: relative;
-      z-index: 2;
-    ">
-      📥 單字本下載區
-    </a>
+    <a class="download-link" href="單字下載區/1000英檢單字.csv" download>⬇️ 下載 1000英檢單字.csv</a>
+    <a class="download-link" href="單字下載區/托福單字.csv" download style="margin-top:10px;">⬇️ 下載 托福單字.csv</a>
     <script>
       const btn = document.getElementById('downloadVocabBtn');
       if (btn) {
