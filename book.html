@@ -737,22 +737,40 @@
     <!-- 隱藏的檔案上傳，用於上傳封面 -->
     <input type="file" id="imgUploader" accept="image/*" onchange="handleImageUpload(event)">
 
-    <!-- 單字本下載區按鈕（美觀現代，建議放在主內容上方） -->
-    <a class="download-link" href="單字下載區/1000英檢單字.csv" download>⬇️ 下載 1000英檢單字.csv</a>
-    <a class="download-link" href="單字下載區/托福單字.csv" download style="margin-top:10px;">⬇️ 下載 托福單字.csv</a>
-    <script>
-      const btn = document.getElementById('downloadVocabBtn');
-      if (btn) {
-        btn.addEventListener('mouseover', function() {
-          btn.style.transform = 'scale(1.06)';
-          btn.style.boxShadow = '0 0 32px #00ffff, 0 0 48px #a259ffcc';
-        });
-        btn.addEventListener('mouseout', function() {
-          btn.style.transform = 'scale(1)';
-          btn.style.boxShadow = '0 0 24px #00ffff, 0 0 32px #a259ff99';
-        });
+    <!-- 單字本下載區（美觀現代） -->
+    <div style="max-width:400px;margin:36px auto 24px auto;text-align:center;">
+      <div style="color:#00ffff;font-size:1.2rem;font-family:'Orbitron','Noto Sans TC',sans-serif;margin-bottom:10px;letter-spacing:1px;">📥 單字本下載區</div>
+      <a class="download-link-vocab" href="單字下載區/1000英檢單字.csv" download>⬇️ 下載 1000英檢單字.csv</a>
+      <a class="download-link-vocab" href="單字下載區/托福單字.csv" download>⬇️ 下載 托福單字.csv</a>
+      <div style="margin-top:16px;color:#ffd700;font-size:0.95rem;">檔案格式：英文單字, 中文解釋, 英文例句, 例句中文解釋</div>
+    </div>
+    <style>
+      .download-link-vocab {
+        display: block;
+        width: 100%;
+        max-width: 320px;
+        margin: 0 auto 14px auto;
+        padding: 18px 0;
+        background: linear-gradient(90deg, #00ffff 0%, #a259ff 100%);
+        color: #000;
+        font-size: 1.15rem;
+        font-family: 'Orbitron', 'Noto Sans TC', sans-serif;
+        font-weight: bold;
+        border-radius: 16px;
+        box-shadow: 0 0 24px #00ffff, 0 0 32px #a259ff99;
+        text-align: center;
+        letter-spacing: 1px;
+        text-decoration: none;
+        transition: transform 0.18s, box-shadow 0.18s;
+        position: relative;
+        z-index: 2;
       }
-    </script>
+      .download-link-vocab:hover {
+        transform: scale(1.06);
+        box-shadow: 0 0 32px #00ffff, 0 0 48px #a259ffcc;
+        color: #222;
+      }
+    </style>
 
     <!-- 單字本卡片格子 -->
     <div class="grid" id="bookList"></div>
@@ -1229,30 +1247,3 @@
       document.addEventListener('visibilitychange', function() {
         if (document.hidden) {
           // 頁面隱藏時暫停音樂
-          if (isMusicPlaying && backgroundMusic) {
-            backgroundMusic.pause();
-          }
-        } else {
-          // 頁面顯示時恢復音樂
-          if (isMusicPlaying && backgroundMusic && backgroundMusic.paused) {
-            backgroundMusic.play().catch(err => {
-              console.log('頁面恢復時音樂播放失敗:', err);
-            });
-          }
-        }
-      });
-      
-      // 添加鍵盤快捷鍵
-      document.addEventListener('keydown', (e) => {
-        if (e.ctrlKey && e.key === 'Enter') {
-          createBook();
-        }
-        // 音樂控制快捷鍵
-        if (e.key === 'm' || e.key === 'M') {
-          toggleBackgroundMusic();
-        }
-      });
-    });
-  </script>
-</body>
-</html>
