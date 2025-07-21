@@ -90,7 +90,7 @@ const vocabData = {
     { zh: "哪一個", en: "which" }, { zh: "這裡", en: "here" }, { zh: "那裡", en: "there" }, { zh: "在…之內", en: "inside" },
     { zh: "在…之上", en: "on" }, { zh: "在…地點", en: "at" }, { zh: "在…之下", en: "under" }, { zh: "從；由", en: "from" }
   ],
-  draco: [
+  andromeda: [
     { zh: "外的", en: "out" }, { zh: "在…外側", en: "outside" }, { zh: "根據", en: "by" }, { zh: "為了", en: "for" },
     { zh: "向；往", en: "to" }, { zh: "與；用…", en: "with" }, { zh: "和；而且", en: "and" }, { zh: "但是", en: "but" },
     { zh: "衣服", en: "clothes" }, { zh: "大衣", en: "coat" }, { zh: "夾克", en: "jacket" }, { zh: "褲子", en: "pants" },
