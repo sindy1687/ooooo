@@ -737,6 +737,42 @@
     <!-- 隱藏的檔案上傳，用於上傳封面 -->
     <input type="file" id="imgUploader" accept="image/*" onchange="handleImageUpload(event)">
 
+    <!-- 單字本下載區按鈕（美觀現代，建議放在主內容上方） -->
+    <a id="downloadVocabBtn" href="download_vocab.html" style="
+      display: block;
+      max-width: 340px;
+      margin: 32px auto 18px auto;
+      padding: 18px 0;
+      background: linear-gradient(90deg, #00ffff 0%, #a259ff 100%);
+      color: #000;
+      font-size: 1.25rem;
+      font-family: 'Orbitron', 'Noto Sans TC', sans-serif;
+      font-weight: bold;
+      border-radius: 16px;
+      box-shadow: 0 0 24px #00ffff, 0 0 32px #a259ff99;
+      text-align: center;
+      letter-spacing: 1px;
+      text-decoration: none;
+      transition: transform 0.18s, box-shadow 0.18s;
+      position: relative;
+      z-index: 2;
+    ">
+      📥 單字本下載區
+    </a>
+    <script>
+      const btn = document.getElementById('downloadVocabBtn');
+      if (btn) {
+        btn.addEventListener('mouseover', function() {
+          btn.style.transform = 'scale(1.06)';
+          btn.style.boxShadow = '0 0 32px #00ffff, 0 0 48px #a259ffcc';
+        });
+        btn.addEventListener('mouseout', function() {
+          btn.style.transform = 'scale(1)';
+          btn.style.boxShadow = '0 0 24px #00ffff, 0 0 32px #a259ff99';
+        });
+      }
+    </script>
+
     <!-- 單字本卡片格子 -->
     <div class="grid" id="bookList"></div>
   </div>
