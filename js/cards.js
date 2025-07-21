@@ -47,7 +47,7 @@ const baseCards = [
 {
     "word": "Kibutsuji Muzan",
     "zh": "鬼舞辻無慘",
-    "image": "https://v1.pinimg.com/videos/iht/720p/d8/40/4a/d8404ac6f1a29c7dc117f2be8485f284.mp4",
+    "image": "https://i.pinimg.com/736x/34/39/86/34398655f2c25e2d831f5f03e7a7c85c.jpg",
     "video": "",
     "youtube": "",
     "rarity": "超稀有",
@@ -283,56 +283,177 @@ const baseCards = [
       "description": "使敵方中毒，每回合損失 10 點"
     }
   },
-    {
-    "word": "SpongeBob",
-    "zh": "海綿寶寶",
-    "image": "https://v1.pinimg.com/videos/mc/720p/62/de/71/62de71dd1ee4d2b07a2c401aa2a12e32.mp4",
-    "video": "https://www.youtube.com/watch?v=_hFzxfQmQmc",
-    "youtube": "https://www.youtube.com/watch?v=_hFzxfQmQmc",
+ {
+    "word": "Yoichi Isagi",
+    "zh": "潔 世一",
+    "image": "https://v1.pinimg.com/videos/mc/720p/69/17/a9/6917a9911ac5be693316fc8111f9d5a6.mp4",
     "rarity": "普通",
-    "category": "海綿寶寶",
-    "description": "總是在比奇堡忙東忙西的快樂打工仔，笑點製造機本機。"
+    "category": "Blue Lock",
+    "role": "主角",
+    "description": "戰術視野如鷹眼，目標只為進球；他是青之牢籠裡最飢渴的射手。"
   },
   {
-    "word": "Patrick Star",
-    "zh": "派大星",
-    "image": "https://v1.pinimg.com/videos/mc/720p/d0/74/ca/d074caa9a9a5fe5d23cb03b5faf893c2.mp4",
-    "video": "https://www.youtube.com/watch?v=Zw_63WHvK1o",
-    "youtube": "https://www.youtube.com/watch?v=Zw_63WHvK1o",
-    "rarity": "普通",
-    "category": "海綿寶寶",
-    "description": "住在石頭下的哲學家，有著不按牌理出牌的閃亮邏輯。"
-  },
-  {
-    "word": "Squidward",
-    "zh": "章魚哥",
-    "image": "https://v1.pinimg.com/videos/mc/720p/35/0b/ed/350bed0a0e543e466f580e45e92d0e24.mp4",
-    "video": "https://www.youtube.com/watch?v=gGKNt0WYtzM",
-    "youtube": "https://www.youtube.com/watch?v=gGKNt0WYtzM",
-    "rarity": "稀有",
-    "category": "海綿寶寶",
-    "description": "憂鬱藝術魂，愛音樂、恨吵鬧，卻總逃不出快樂夥伴的包圍網。"
-  },
-  {
-    "word": "Mr. Krabs",
-    "zh": "蟹老闆",
-    "image": "https://v1.pinimg.com/videos/mc/720p/94/be/b8/94beb84403502f019c18f926d7ddaafc.mp4",
-    "video": "https://www.youtube.com/watch?v=Zw_63WHvK1o",
-    "youtube": "https://www.youtube.com/watch?v=Zw_63WHvK1o",
-    "rarity": "稀有",
-    "category": "海綿寶寶",
-    "description": "錢就是一切！經營蟹堡王的商人魂滿點的紅螃蟹。"
-  },
-  {
-    "word": "Sandy Cheeks",
-    "zh": "珊迪",
-    "image": "https://v1.pinimg.com/videos/mc/720p/23/6e/e4/236ee489cc9d7e2653e87363ad5a150c.mp4",
-    "video": "https://www.youtube.com/watch?v=HLPFJWdlSoY",
-    "youtube": "https://www.youtube.com/watch?v=HLPFJWdlSoY",
+    "word": "Meguru Bachira",
+    "zh": "蜂樂 廻",
+    "image": "https://v1.pinimg.com/videos/iht/expMp4/fb/5e/c2/fb5ec2ae1fc0717c28b6c623f877a986_t4.mp4",
     "rarity": "超稀有",
-    "category": "海綿寶寶",
-    "description": "來自德州的松鼠小姐，空手道高手、科技天才，戴著頭盔在海裡生存。"
- },
+    "category": "Blue Lock",
+    "role": "突破型前鋒",
+    "description": "心中住著怪物，腳下藏著魔法；像風一樣突破你所有防線。"
+  },
+  {
+    "word": "Rin Itoshi",
+    "zh": "糸師 凛",
+    "image": "https://v1.pinimg.com/videos/mc/720p/b8/0e/b7/b80eb7769d3b5a6e2c54de9fce51e679.mp4",
+    "rarity": "超稀有",
+    "category": "Blue Lock",
+    "role": "戰術核心",
+    "description": "冷冽如冰，精準如電腦，理性至上卻藏著熾熱的兄弟復仇之火。"
+  },
+  {
+    "word": "Hyoma Chigiri",
+    "zh": "千切 豹馬",
+    "image": "https://v1.pinimg.com/videos/mc/720p/8a/8d/fd/8a8dfd771d76a342e43b2e9a19884015.mp4",
+    "rarity": "稀有",
+    "category": "Blue Lock",
+    "role": "速度型前鋒",
+    "description": "閃電雙腿，風中舞者；他用速度擊穿所有懷疑。"
+  },
+  {
+    "word": "Rensuke Kunigami",
+    "zh": "國神 錬介",
+    "image": "https://i.pinimg.com/736x/32/11/ba/3211baa4c7441bfa48acecb4e086482a.jpg",
+    "rarity": "普通",
+    "category": "Blue Lock",
+    "role": "力量型前鋒",
+    "description": "熱血、正義感與鐵腿並存，他是夢想與肌肉的代名詞。"
+  },
+  {
+    "word": "Reo Mikage",
+    "zh": "御影 玲王",
+    "image": "https://i.pinimg.com/736x/db/77/67/db77679106726965411e036544d522ca.jpg",
+    "rarity": "普通",
+    "category": "Blue Lock",
+    "role": "萬能型選手",
+    "description": "天才與財富的結晶，追求自由的完美主義者。"
+  },
+  {
+    "word": "Seishiro Nagi",
+    "zh": "凪 誠士郎",
+    "image": "https://v1.pinimg.com/videos/mc/720p/1d/f4/30/1df4302f014d5de4921e6d30e9fe2ac4.mp4",
+    "rarity": "超稀有",
+    "category": "Blue Lock",
+    "role": "天才球感",
+    "description": "從遊戲中誕生的怪物，懶惰外表下潛藏致命的天賦。"
+  },
+  {
+    "word": "Shoei Barou",
+    "zh": "馬狼 照英",
+    "image": "https://v1.pinimg.com/videos/iht/720p/53/15/2c/53152cf6d8f26ef0fb3f4e75e195055e.mp4",
+    "rarity": "稀有",
+    "category": "Blue Lock",
+    "role": "自我帝王",
+    "description": "支配場上的王者，只信奉自己的道路與榮耀。"
+  },
+  {
+    "word": "Gin Gagamaru",
+    "zh": "我牙丸 吟",
+    "image": "https://i.pinimg.com/736x/db/07/3f/db073f0f4ed4dc10711e6b49b632f966.jpg",
+    "rarity": "普通",
+    "category": "Blue Lock",
+    "role": "守門野獸",
+    "description": "不可能的角度，都是他的主場；你無法預測他會撲向哪裡。"
+  },
+  {
+    "word": "Zantetsu Tsurugi",
+    "zh": "剣城 斬鉄",
+    "image": "https://v1.pinimg.com/videos/mc/720p/9e/f0/c9/9ef0c908dbc0fb31e52f0fa41a04a92c.mp4",
+    "rarity": "普通",
+    "category": "Blue Lock",
+    "role": "速度與反應",
+    "description": "腦袋慢一拍，但速度快兩拍；速度成就他的存在感。"
+  },
+  {
+    "word": "Jingo Raichi",
+    "zh": "雷市 陣吾",
+    "image": "https://i.pinimg.com/736x/be/a1/c5/bea1c5a3a44487594f70a8c472fc5e02.jpg",
+    "rarity": "普通",
+    "category": "Blue Lock",
+    "role": "瘋狗型中場",
+    "description": "情緒控場，吼聲震耳，精神攻擊的最佳代言人。"
+  },
+  {
+    "word": "Okuhito Iemon",
+    "zh": "伊右衛門 奥人",
+    "image": "https://i.pinimg.com/736x/ca/e6/50/cae65029347396c47c194e94aada85c9.jpg",
+    "rarity": "普通",
+    "category": "Blue Lock",
+    "role": "守門人",
+    "description": "在看似平凡的外表下，默默守護球門如最後一道防線。"
+  },
+  {
+    "word": "Shidou Ryusei",
+    "zh": "士道 龍聖",
+    "image": "https://v1.pinimg.com/videos/mc/720p/61/a1/b2/61a1b207e191f0632d8f94208705f8cd.mp4",
+    "rarity": "超稀有",
+    "category": "Blue Lock",
+    "role": "狂人型射手",
+    "description": "狂氣與天賦的結晶，連自己都無法預測的進攻怪獸。"
+  },
+  {
+    "word": "Eita Otoya",
+    "zh": "音呼 永太",
+    "image": "https://v1.pinimg.com/videos/iht/720p/a2/d4/b0/a2d4b08928d4e9383ee4a967d0e6067d.mp4",
+    "rarity": "普通",
+    "category": "Blue Lock",
+    "role": "潛行型翼鋒",
+    "description": "總在你忽視的角落出現，悄無聲息地完成致命一擊。"
+  },
+  {
+    "word": "Aoshi Tokimitsu",
+    "zh": "時光 青志",
+    "image": "https://v1.pinimg.com/videos/mc/720p/ab/75/f4/ab75f4754fbf86187e7d3306a8f7be7b.mp4",
+    "rarity": "普通",
+    "category": "Blue Lock",
+    "role": "焦慮型怪力男",
+    "description": "一邊害怕被淘汰，一邊展現驚人爆發；玻璃心包著核彈肌。"
+  },
+  {
+    "word": "Hiori Yo",
+    "zh": "凜花 世",
+    "image": "https://v1.pinimg.com/videos/mc/720p/5d/64/a9/5d64a998a0a78a996a4e84fac3918f88.mp4",
+    "rarity": "稀有",
+    "category": "Blue Lock",
+    "role": "靜謐操控者",
+    "description": "如水般冷靜的傳球藝術家，讓整場比賽為他轉動。"
+  },
+  {
+    "word": "Tabito Karasu",
+    "zh": "烏 旅人",
+    "image": "https://v1.pinimg.com/videos/iht/expMp4/6f/3e/cd/6f3ecdf4604c19c4b483044f5bc2c8aa_720w.mp4",
+    "rarity": "稀有",
+    "category": "Blue Lock",
+    "role": "操盤手",
+    "description": "毒舌與機關算盡，是球場上的軍師型毒舌男。"
+  },
+  {
+    "word": "Anri Teieri",
+    "zh": "帝襟 杏里",
+    "image": "https://v1.pinimg.com/videos/iht/720p/27/ec/d9/27ecd9962fea7808c21389ddd2677aac.mp4",
+    "rarity": "普通",
+    "category": "Blue Lock",
+    "role": "企劃人員",
+    "description": "唯一的正常人，努力讓這場瘋狂計畫順利執行。"
+  },
+  {
+    "word": "Jinpachi Ego",
+    "zh": "絵心 甚八",
+    "image": "https://v1.pinimg.com/videos/mc/720p/0f/57/9b/0f579ba62359dbd7eae1e6f703fcdbf9.mp4",
+    "rarity": "稀有",
+    "category": "Blue Lock",
+    "role": "教練",
+    "description": "自我理論至上，創造最自私的足球場，他是操縱者與賭徒。"
+  },
 {
     "word": "Pikachu",
     "zh": "皮卡丘",
