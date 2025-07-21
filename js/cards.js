@@ -189,6 +189,7 @@ const baseCards = [
       "type": "blood_explosion",
       "value": 70,
       "description": "爆血技能造成大範圍爆擊傷害"
+    }
   },
  {
     "word": "Kanroji Mitsuri",
@@ -227,6 +228,7 @@ const baseCards = [
       "type": "beast_slash",
       "value": 50,
       "description": "使用獸之呼吸攻擊敵人兩次"
+    }
   },
 {
     "word": "Sanemi Shinazugawa",
