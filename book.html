@@ -1247,3 +1247,30 @@
       document.addEventListener('visibilitychange', function() {
         if (document.hidden) {
           // 頁面隱藏時暫停音樂
+          if (isMusicPlaying && backgroundMusic) {
+            backgroundMusic.pause();
+          }
+        } else {
+          // 頁面顯示時恢復音樂
+          if (isMusicPlaying && backgroundMusic && backgroundMusic.paused) {
+            backgroundMusic.play().catch(err => {
+              console.log('頁面恢復時音樂播放失敗:', err);
+            });
+          }
+        }
+      });
+      
+      // 添加鍵盤快捷鍵
+      document.addEventListener('keydown', (e) => {
+        if (e.ctrlKey && e.key === 'Enter') {
+          createBook();
+        }
+        // 音樂控制快捷鍵
+        if (e.key === 'm' || e.key === 'M') {
+          toggleBackgroundMusic();
+        }
+      });
+    });
+  </script>
+</body>
+</html>
