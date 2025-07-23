@@ -1741,6 +1741,30 @@
         function restartGame() {
             playSound('click');
             document.getElementById('resultModal').style.display = 'none';
+            
+            // 完全重置遊戲狀態
+            gameState.currentSubLevel = 'sub1'; // 重置到第一個小關
+            gameState.currentQuestion = 0;
+            gameState.score = 0;
+            gameState.timeLeft = 180;
+            gameState.questions = [];
+            gameState.currentQuestionData = null;
+            gameState.isGameActive = false;
+            gameState.logicHintUsed = 0;
+            
+            // 清除計時器
+            if (gameState.timer) {
+                clearInterval(gameState.timer);
+                gameState.timer = null;
+            }
+            
+            // 隱藏所有提示區塊
+            hideAllHints();
+            
+            // 重置困難單字提示狀態
+            resetWordHintState();
+            
+            // 重新初始化遊戲
             initGame();
         }
 
