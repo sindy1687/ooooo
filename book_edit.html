@@ -76,7 +76,7 @@
     -------------------------*/
     #audioControls {
       position: fixed;
-      top: 20px;
+      top: 70px; /* 原本是20px，往下移動避免擋到返回按鈕 */
       right: 20px;
       z-index: 1001;
       display: flex;
@@ -996,7 +996,35 @@
     ----------------------------------------*/
     const bookName = new URLSearchParams(location.search).get('book');
     const storageKey = 'book_' + bookName;
-    let vocab = JSON.parse(localStorage.getItem(storageKey) || '[]');
+    let vocab = [];
+
+    async function loadDefaultVocabIfNeeded() {
+      const localData = localStorage.getItem(storageKey);
+      if (localData) {
+        vocab = JSON.parse(localData);
+        return;
+      }
+      // 自動掛載 1000英檢單字.csv
+      try {
+        const response = await fetch('1000英檢單字.csv');
+        if (!response.ok) throw new Error('無法載入 1000英檢單字.csv');
+        const text = await response.text();
+        // 解析 CSV
+        vocab = text.split('\n').filter(l => l.trim()).map(line => {
+          const parts = line.split(',');
+          return {
+            word: parts[0]?.trim() || '',
+            meaning: parts[1]?.trim() || '',
+            example: parts[2]?.trim() || '',
+            exampleMeaning: parts[3]?.trim() || ''
+          };
+        }).filter(v => v.word && v.meaning && v.example);
+        localStorage.setItem(storageKey, JSON.stringify(vocab));
+      } catch (e) {
+        alert('預設單字載入失敗：' + e.message);
+        vocab = [];
+      }
+    }
 
     document.getElementById('bookNameDisplay').textContent = bookName;
 
@@ -1348,10 +1376,11 @@
     /*----------------------------------------
       (6) 初始化
     ----------------------------------------*/
-    window.addEventListener('load', () => {
+    window.addEventListener('load', async () => {
       updateStarsDisplay();
       initCanvas();
       animate();
+      await loadDefaultVocabIfNeeded();
       displayWords();
       
       // 初始化音樂系統
