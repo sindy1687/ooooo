@@ -2052,6 +2052,7 @@
   <script src="js/starRewardSystem.js"></script>
   <script src="js/cardUtils.js"></script> <!-- 引入共享的卡牌工具函式 -->
   <script src="js/cards.js"></script> <!-- 載入主卡片資料，包含影片屬性 -->
+  <script src="js/custom_cards.js"></script> <!-- 載入自訂卡片資料 -->
   <script src="js/achievementSystem.js"></script>
   <script>
     /***** 背景音樂連動系統 *****/
@@ -2222,6 +2223,10 @@
     // 等待 cards.js 完全載入
     function waitForAllCards() {
       if (window.allCards && window.allCards.length > 0) {
+        // 合併 customCards
+        if (window.customCards && Array.isArray(window.customCards)) {
+          window.allCards = window.allCards.concat(window.customCards);
+        }
         console.log('allCards 載入成功，長度:', window.allCards.length);
         initializePage();
       } else {
