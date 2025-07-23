@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>第六關：動詞高手 - 一般動詞現在式否定句</title>
+    <title>第六關：動詞高手 - 現在進行式</title>
     <link rel="stylesheet" href="responsive.css">
     <style>
         html, body {
@@ -466,8 +466,8 @@
     <div class="game-container">
         <div class="level-header">
             <h1 class="level-title" id="levelTitle">動詞高手</h1>
-            <h2 class="level-subtitle" id="levelSubtitle">一般動詞現在式否定句</h2>
-            <p class="scene-description" id="levelDescription">掌握一般動詞現在式否定句的用法</p>
+            <h2 class="level-subtitle" id="levelSubtitle">現在進行式</h2>
+            <p class="scene-description" id="levelDescription">掌握現在進行式的用法</p>
         </div>
 
         <div class="game-info">
@@ -488,7 +488,7 @@
         <div class="guardian-statue" id="guardianStatue">🌟</div>
 
         <div class="grammar-tip">
-            <strong>文法小提示：</strong> 一般動詞現在式否定句：主詞 + do/does + not + 原形動詞，表示沒有的動作
+            <strong>文法小提示：</strong> 現在進行式：主詞 + am/are/is + V-ing，表示正在進行的動作
         </div>
 
         <div class="question-container" id="questionContainer">
@@ -946,7 +946,7 @@
             // 顯示提示區塊
             logicHintDiv.style.display = 'block';
             // 使用題目專屬的判斷提示
-            let logicHint = gameState.currentQuestionData.logicHint || '一般動詞現在式否定句：主詞 + do/does + not + 原形動詞，表示沒有的動作。';
+            let logicHint = gameState.currentQuestionData.logicHint || '現在進行式：主詞 + am/are/is + V-ing，表示正在進行的動作。';
             logicHintDiv.innerHTML = `<strong>判斷邏輯提示：</strong>${logicHint}`;
         }
 
@@ -1124,7 +1124,8 @@
         function restartGame() {
             playSound('click');
             document.getElementById('resultModal').style.display = 'none';
-            initGame();
+            // 跳轉到第一關重新開始
+            window.location.href = 'grammar_level1_1.html';
         }
 
         // 返回選單
