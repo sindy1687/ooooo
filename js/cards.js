@@ -283,6 +283,186 @@ const baseCards = [
       "description": "使敵方中毒，每回合損失 10 點"
     }
   },
+  {
+    "word": "Amuro Ray",
+    "zh": "阿姆羅・雷",
+    "image": "https://i.pinimg.com/736x/51/7f/80/517f80f88070f910a075a760b1626795.jpg",
+    "rarity": "稀有",
+    "category": "鋼彈系列",
+    "role": "駕駛員",
+    "description": "第一代鋼彈駕駛，從宅男變英雄，Newtype之光閃耀宇宙。"
+  },
+  {
+    "word": "RX-78-2 Gundam",
+    "zh": "RX-78-2 鋼彈",
+    "image": "https://i.pinimg.com/736x/10/ca/c5/10cac5090110b097718a30cc212cbf46.jpg",
+    "rarity": "超稀有",
+    "category": "鋼彈系列",
+    "role": "機體",
+    "description": "白色惡魔降臨，經典中的經典，鋼彈之父登場！"
+  },
+  {
+    "word": "Char Aznable",
+    "zh": "夏亞・阿茲納布爾",
+    "image": "https://i.pinimg.com/736x/bf/44/95/bf44952f9289d34ccc037075818ab4eb.jpg",
+    "rarity": "超稀有",
+    "category": "鋼彈系列",
+    "role": "反派/王牌駕駛",
+    "description": "紅色有角的傳說，面具下藏著宇宙的悲傷與復仇。"
+  },
+  {
+    "word": "Zaku II (Char Custom)",
+    "zh": "薩克II（夏亞專用）",
+    "image": "https://i.pinimg.com/736x/f7/d0/71/f7d07190a6651590accb1e29edf9111f.jpg",
+    "rarity": "稀有",
+    "category": "鋼彈系列",
+    "role": "機體",
+    "description": "紅色三倍速，不只帥氣還致命！"
+  },
+  {
+    "word": "Kamille Bidan",
+    "zh": "卡密兒・維丹",
+    "image": "https://i.pinimg.com/originals/3f/68/6c/3f686c1d87dfcea84f3474c36c63f424.gif",
+    "rarity": "普通",
+    "category": "鋼彈系列",
+    "role": "駕駛員",
+    "description": "性格爆炸但意志堅定，新世代的Newtype。"
+  },
+  {
+    "word": "Zeta Gundam",
+    "zh": "Z鋼彈",
+    "image": "https://i.pinimg.com/736x/62/b0/e3/62b0e3c31535b1e7dd6982ca643717bc.jpg",
+    "rarity": "超稀有",
+    "category": "鋼彈系列",
+    "role": "機體",
+    "description": "空戰之王，自由變形，一閃而過的死亡光束。"
+  },
+  {
+    "word": "Judau Ashta",
+    "zh": "茱鐸・亞希達",
+    "image": "https://i.pinimg.com/736x/93/8d/81/938d810eba47cf2707696b6fc10774f5.jpg",
+    "rarity": "普通",
+    "category": "鋼彈系列",
+    "role": "駕駛員",
+    "description": "嘴砲王＋潛力型Newtype，駕駛Double Zeta 鋼彈無人能敵！"
+  },
+  {
+    "word": "ZZ Gundam",
+    "zh": "ZZ 鋼彈",
+    "image": "https://i.pinimg.com/736x/54/4f/3f/544f3f5c83c05ebb64b89f27c2dff26a.jpg",
+    "rarity": "稀有",
+    "category": "鋼彈系列",
+    "role": "機體",
+    "description": "力量感爆棚，變形合體超有感，彷彿是鋼彈界的肌肉猛男！"
+  },
+  {
+    "word": "Heero Yuy",
+    "zh": "希羅・尤爾",
+    "image": "https://i.pinimg.com/736x/b7/41/1d/b7411d6bada1ff5e1d9fc348dc50b3ac.jpg",
+    "rarity": "稀有",
+    "category": "鋼彈系列",
+    "role": "駕駛員",
+    "description": "眼神比鋼彈還硬！決心比金屬還鋒利。"
+  },
+  {
+    "word": "Wing Gundam Zero",
+    "zh": "飛翼零式鋼彈",
+    "image": "https://i.pinimg.com/736x/7f/87/49/7f87491fc0cdb3355b092d5ced87cc2e.jpg",
+    "rarity": "超稀有",
+    "category": "鋼彈系列",
+    "role": "機體",
+    "description": "天使羽翼之下，是毀滅與希望的交織。"
+  },
+  {
+    "word": "Kira Yamato",
+    "zh": "基拉・大和",
+    "image": "https://i.pinimg.com/736x/25/18/93/25189361f6214e7aeb4782dd98a56f8d.jpg",
+    "rarity": "稀有",
+    "category": "鋼彈系列",
+    "role": "駕駛員",
+    "description": "不想殺人卻戰無不勝，他是SEED裡的和平派開掛王。"
+  },
+  {
+    "word": "Strike Freedom Gundam",
+    "zh": "自由鋼彈（改）",
+    "image": "https://i.pinimg.com/736x/7d/c0/02/7dc002200177b7c998ed7523b56f32c7.jpg",
+    "rarity": "超稀有",
+    "category": "鋼彈系列",
+    "role": "機體",
+    "description": "背後展開的是羽翼，還是審判？金色骨架閃爆宇宙。"
+  },
+  {
+    "word": "Athrun Zala",
+    "zh": "阿斯蘭・薩拉",
+    "image": "https://i.pinimg.com/736x/4d/91/c5/4d91c5648145c9cfd723996385ee6e66.jpg",
+    "rarity": "普通",
+    "category": "鋼彈系列",
+    "role": "駕駛員",
+    "description": "左右為難的中立王子，鋼彈版愛情與戰爭代表。"
+  },
+  {
+    "word": "Gundam Barbatos",
+    "zh": "鋼彈巴巴托斯",
+    "image": "https://v1.pinimg.com/videos/iht/expMp4/bf/64/38/bf6438811245e56f7c536aebfc34dc09_720w.mp4",
+    "rarity": "稀有",
+    "category": "鋼彈系列",
+    "role": "機體",
+    "description": "打鐵不靠槍炮，用狼牙棒教你什麼是肉搏暴力美學。"
+  },
+  {
+    "word": "Mikazuki Augus",
+    "zh": "三日月・奧古斯",
+    "image": "https://i.pinimg.com/736x/89/3f/ea/893fead1ef79c376d63916ab0ad2aef5.jpg",
+    "rarity": "普通",
+    "category": "鋼彈系列",
+    "role": "駕駛員",
+    "description": "冷靜如機器人，但一發動攻擊就是地獄開場。"
+  },
+  {
+    "word": "Aerial Gundam",
+    "zh": "鋼彈風靈",
+    "image": "https://v1.pinimg.com/videos/mc/720p/39/ac/b7/39acb74653b026e7641660f28ef1b015.mp4",
+    "rarity": "超稀有",
+    "category": "鋼彈系列",
+    "role": "機體",
+    "description": "不只美型還能打，高機動＋AI女兒合體超進化！"
+  },
+  {
+    "word": "Suletta Mercury",
+    "zh": "蘇萊塔・墨丘利",
+    "image": "https://i.pinimg.com/736x/af/f2/22/aff222b76aa1be438ed561184dd8d300.jpg",
+    "rarity": "普通",
+    "category": "鋼彈系列",
+    "role": "駕駛員",
+    "description": "社恐少女意外扛起戰局，一句「逃跑就一無所有」擊潰全場。"
+  },
+  {
+    "word": "Gundam Exia",
+    "zh": "能天使鋼彈",
+    "image": "https://v1.pinimg.com/videos/mc/720p/27/c5/16/27c5162814cf0ddda6303d69b6ee44bd.mp4",
+    "rarity": "稀有",
+    "category": "鋼彈系列",
+    "role": "機體",
+    "description": "劍士魂滿載！用光劍斬開未來的不義。"
+  },
+  {
+    "word": "Setsuna F. Seiei",
+    "zh": "剎那・F・塞耶",
+    "image": "https://i.pinimg.com/736x/a4/db/e7/a4dbe7b612ad89cf1a1fd63d1f69411c.jpg",
+    "rarity": "普通",
+    "category": "鋼彈系列",
+    "role": "駕駛員",
+    "description": "「我就是鋼彈！」──中二台詞說到宇宙都點頭。"
+  },
+  {
+    "word": "Turn A Gundam",
+    "zh": "∀鋼彈",
+    "image": "https://i.pinimg.com/736x/93/4d/fc/934dfc4381367512bbc3118160771f1f.jpg",
+    "rarity": "超稀有",
+    "category": "鋼彈系列",
+    "role": "機體",
+    "description": "胡子鋼彈大魔王，設定大融合的象徵。"
+  },
  {
     "word": "Yoichi Isagi",
     "zh": "潔 世一",
