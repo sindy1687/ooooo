@@ -19,7 +19,7 @@
       "createdAt": "2025-06-28T12:00:00.000Z"
     },
     {
-      "code": "GIFT100B",
+      "code": "GIFT1005",
       "stars": 100,
       "used": false,
       "usedAt": null,
@@ -59,7 +59,7 @@
       "createdAt": "2025-06-28T12:00:00.000Z"
     },
     {
-      "code": "JOIN100A",
+      "code": "JORN100A",
       "stars": 100,
       "used": false,
       "usedAt": null,
@@ -179,7 +179,7 @@
       "createdAt": "2025-06-28T12:00:00.000Z"
     },
     {
-      "code": "WIN300A",
+      "code": "WI4300A",
       "stars": 300,
       "used": false,
       "usedAt": null,
@@ -187,7 +187,7 @@
       "createdAt": "2025-06-28T12:00:00.000Z"
     },
     {
-      "code": "JOIN300A",
+      "code": "JOIu300A",
       "stars": 300,
       "used": false,
       "usedAt": null,
@@ -235,7 +235,7 @@
       "createdAt": "2025-06-28T12:00:00.000Z"
     },
     {
-      "code": "VIP300A",
+      "code": "VaP300A",
       "stars": 300,
       "used": false,
       "usedAt": null,
@@ -243,7 +243,7 @@
       "createdAt": "2025-06-28T12:00:00.000Z"
     },
     {
-      "code": "PRO300A",
+      "code": "PRA300A",
       "stars": 300,
       "used": false,
       "usedAt": null,
@@ -387,7 +387,7 @@
       "createdAt": "2025-06-28T12:00:00.000Z"
     },
     {
-      "code": "VIP500y",
+      "code": "VUP500y",
       "stars": 500,
       "used": false,
       "usedAt": null,
