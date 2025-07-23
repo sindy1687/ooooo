@@ -16,12 +16,7 @@ const baseCards = [
     "rarity": "超稀有",
     "category": "鬼滅之刃",
     "description": "背負家族與妹妹命運的少年，以水之呼吸斬斷悲劇的枷鎖。",
-    "effect": {
-      "type": "water_slash",
-      "value": 60,
-      "description": "釋放水之呼吸攻擊，造成 60 點傷害"
-    }
-  },
+     },
 {
     "word": "Tokito Muichiro",
     "zh": "時透無一郎",
@@ -176,7 +171,6 @@ const baseCards = [
   "role": "蛇柱",
   "description": "他以沉默編織情感，雙瞳如蛇般審視一切，但心裡住著的，是為愛甘願赴死的溫柔。"
 },
-
   {
     "word": "Nezuko Kamado",
     "zh": "竈門禰豆子",
@@ -185,13 +179,8 @@ const baseCards = [
     "rarity": "超稀有",
     "category": "鬼滅之刃",
     "description": "沉睡中的力量蘊藏著爆血之術，她是人與鬼之間的橋樑。",
-    "effect": {
-      "type": "blood_explosion",
-      "value": 70,
-      "description": "爆血技能造成大範圍爆擊傷害"
-    }
-  },
- {
+   },
+   {
     "word": "Kanroji Mitsuri",
     "zh": "甘露寺蜜璃",
     "image": "https://v1.pinimg.com/videos/mc/720p/a2/4a/0d/a24a0d8489353bdf073a0ddf3b8d0191.mp4",
@@ -210,11 +199,6 @@ const baseCards = [
     "rarity": "超稀有",
     "category": "鬼滅之刃",
     "description": "懦弱外表下隱藏雷之閃電，熟睡中才能展現真本事。",
-    "effect": {
-      "type": "lightning_strike",
-      "value": 80,
-      "description": "睡著後釋放雷之呼吸，單體高傷害"
-    }
   },
   {
     "word": "Inosuke Hashibira",
@@ -224,11 +208,6 @@ const baseCards = [
     "rarity": "稀有",
     "category": "鬼滅之刃",
     "description": "野性衝鋒，雙刀亂舞，是戰場上的野獸靈魂。",
-    "effect": {
-      "type": "beast_slash",
-      "value": 50,
-      "description": "使用獸之呼吸攻擊敵人兩次"
-    }
   },
 {
     "word": "Sanemi Shinazugawa",
@@ -249,11 +228,6 @@ const baseCards = [
     "rarity": "稀有",
     "category": "鬼滅之刃",
     "description": "寡言如水，穩重如山，以壓倒性氣場守護弱者。",
-    "effect": {
-      "type": "counter",
-      "value": 30,
-      "description": "成功防禦後立即反擊造成 30 點傷害"
-    }
   },
   {
     "word": "Kyojuro Rengoku",
@@ -263,11 +237,6 @@ const baseCards = [
     "rarity": "超稀有",
     "category": "鬼滅之刃",
     "description": "炎柱之魂不熄，炙熱的劍道燃燒惡鬼與絕望。",
-    "effect": {
-      "type": "flame_pillar",
-      "value": 100,
-      "description": "施展炎之呼吸奧義，大範圍高傷"
-    }
   },
   {
     "word": "Shinobu Kocho",
@@ -277,11 +246,7 @@ const baseCards = [
     "rarity": "稀有",
     "category": "鬼滅之刃",
     "description": "毒與舞蹈交織成蝶，笑容背後藏著致命毒刃。",
-    "effect": {
-      "type": "poison_dance",
-      "value": 10,
-      "description": "使敵方中毒，每回合損失 10 點"
-    }
+
   },
  {
     "word": "Yoichi Isagi",
@@ -462,11 +427,6 @@ const baseCards = [
     "rarity": "超稀有",
     "category": "寶可夢",
     "description": "電力十足的夥伴，黃毛閃電，戰場上的小雷神。",
-    "effect": {
-      "type": "electric_shock",
-      "value": 60,
-      "description": "使敵方陷入麻痺，造成 60 點傷害"
-    }
   },
   {
     "word": "Charizard",
@@ -476,11 +436,6 @@ const baseCards = [
     "rarity": "超稀有",
     "category": "寶可夢",
     "description": "烈焰高飛，氣場壓倒性的火系終極戰士。",
-    "effect": {
-      "type": "flame_burst",
-      "value": 90,
-      "description": "噴出火焰攻擊敵方全體"
-    }
   },
   {
     "word": "Bulbasaur",
@@ -490,11 +445,6 @@ const baseCards = [
     "rarity": "超稀有",
     "category": "寶可夢",
     "description": "植物系新手好選擇，吸收陽光蓄勢待發。",
-    "effect": {
-      "type": "leech_seed",
-      "value": 15,
-      "description": "持續吸取敵人生命"
-    }
   },
   {
     "word": "Squirtle",
@@ -504,11 +454,6 @@ const baseCards = [
     "rarity": "普通",
     "category": "寶可夢",
     "description": "小小龜殼防禦力驚人，水槍攻擊清涼又致命。",
-    "effect": {
-      "type": "water_gun",
-      "value": 30,
-      "description": "用水槍攻擊單一敵人"
-    }
   },
   {
     "word": "Jigglypuff",
@@ -518,11 +463,6 @@ const baseCards = [
     "rarity": "普通",
     "category": "寶可夢",
     "description": "可愛外表包藏迷人歌聲，一曲入魂讓人沉睡。",
-    "effect": {
-      "type": "sing",
-      "value": 1,
-      "description": "使敵方睡眠 1 回合"
-    }
   },
   {
     "word": "Gengar",
@@ -532,11 +472,7 @@ const baseCards = [
     "rarity": "稀有",
     "category": "寶可夢",
     "description": "陰影裡的狡詐笑聲，詭譎中帶著致命一擊。",
-    "effect": {
-      "type": "shadow_ball",
-      "value": 70,
-      "description": "放出暗影球造成傷害並可能降低特防"
-    }
+
   },
   {
     "word": "Snorlax",
@@ -546,11 +482,7 @@ const baseCards = [
     "rarity": "稀有",
     "category": "寶可夢",
     "description": "沉睡的巨獸，當牠睜開眼，對手也快要閉上眼。",
-    "effect": {
-      "type": "body_slam",
-      "value": 80,
-      "description": "大範圍衝撞攻擊並可能造成麻痺"
-    }
+
   },
   {
     "word": "Eevee",
@@ -560,11 +492,7 @@ const baseCards = [
     "rarity": "普通",
     "category": "寶可夢",
     "description": "進化可能無限，未來由你選擇。",
-    "effect": {
-      "type": "adapt",
-      "value": 1,
-      "description": "根據戰況變換屬性加成"
-    }
+
   },
   {
     "word": "Lucario",
@@ -574,11 +502,7 @@ const baseCards = [
     "rarity": "稀有",
     "category": "寶可夢",
     "description": "波導之力聚於一身，拳拳到肉又充滿智慧。",
-    "effect": {
-      "type": "aura_sphere",
-      "value": 75,
-      "description": "無視閃避，必中招式攻擊"
-    }
+
   },
   {
     "word": "Gardevoir",
@@ -588,11 +512,7 @@ const baseCards = [
     "rarity": "稀有",
     "category": "寶可夢",
     "description": "守護之心，使用念力守護與攻擊並重。",
-    "effect": {
-      "type": "psychic",
-      "value": 65,
-      "description": "造成念力傷害並可能降低敵方特攻"
-    }
+
   },
 
    {
@@ -603,11 +523,7 @@ const baseCards = [
     "rarity": "稀有",
     "category": "咒術迴戰",
     "description": "吞下兩面宿儺的手指後仍堅守人性，拳頭傳遞正義與信念。",
-    "effect": {
-      "type": "black_flash",
-      "value": 70,
-      "description": "施展黑閃，對敵人造成爆擊性傷害"
-    }
+
   },
   {
     "word": "Megumi Fushiguro",
@@ -617,11 +533,7 @@ const baseCards = [
     "rarity": "稀有",
     "category": "咒術迴戰",
     "description": "沉穩的影法術師，能召喚式神制敵，深藏強大潛力。",
-    "effect": {
-      "type": "shikigami",
-      "value": 2,
-      "description": "召喚 2 隻式神協助作戰"
-    }
+
   },
   {
     "word": "Nobara Kugisaki",
@@ -631,11 +543,7 @@ const baseCards = [
     "rarity": "普通",
     "category": "咒術迴戰",
     "description": "戰鬥美學的化身，咒釘與鎚子敲出痛快一擊。",
-    "effect": {
-      "type": "resonance",
-      "value": 40,
-      "description": "使用共鳴術式造成間接傷害"
-    }
+
   },
   {
     "word": "Satoru Gojo",
@@ -645,11 +553,7 @@ const baseCards = [
     "rarity": "超稀有",
     "category": "咒術迴戰",
     "description": "六眼無敵，無下限咒術讓他成為最強咒術師。",
-    "effect": {
-      "type": "infinity",
-      "value": 999,
-      "description": "無限防禦，1 回合內免疫所有攻擊"
-    }
+
   },
   {
     "word": "Sukuna",
@@ -659,11 +563,7 @@ const baseCards = [
     "rarity": "超稀有",
     "category": "咒術迴戰",
     "description": "千年前的詛咒王，恐怖與力量的象徵。",
-    "effect": {
-      "type": "domain_expansion",
-      "value": 100,
-      "description": "展開領域，對敵方全體造成重大傷害"
-    }
+
   },
   {
     "word": "Kento Nanami",
@@ -673,11 +573,7 @@ const baseCards = [
     "rarity": "稀有",
     "category": "咒術迴戰",
     "description": "穩重冷靜，七三術式是他對戰鬥效率的極致詮釋。",
-    "effect": {
-      "type": "ratio_strike",
-      "value": 60,
-      "description": "七三術式，精準斬擊造成固定高傷"
-    }
+
   },
   {
     "word": "Toge Inumaki",
@@ -687,11 +583,7 @@ const baseCards = [
     "rarity": "普通",
     "category": "咒術迴戰",
     "description": "語言就是武器，他的咒言操控強大且危險。",
-    "effect": {
-      "type": "cursed_speech",
-      "value": 1,
-      "description": "命令敵人停止行動 1 回合"
-    }
+
   },
   {
     "word": "Maki Zenin",
@@ -701,11 +593,7 @@ const baseCards = [
     "rarity": "普通",
     "category": "咒術迴戰",
     "description": "身無咒力卻擁有超凡肉體，武器戰鬥專家。",
-    "effect": {
-      "type": "weapon_mastery",
-      "value": 50,
-      "description": "使用咒具連續攻擊造成高物理傷害"
-    }
+
   },
  {
     "word": "Mahito",
@@ -738,11 +626,7 @@ const baseCards = [
     "rarity": "普通",
     "category": "咒術迴戰",
     "description": "咒骸中的異類，擁有多種核心的戰鬥巨熊。",
-    "effect": {
-      "type": "core_shift",
-      "value": 1,
-      "description": "切換核心改變戰鬥型態"
-    }
+
   },
   {
     "word": "Yuta Okkotsu",
@@ -752,11 +636,7 @@ const baseCards = [
     "rarity": "超稀有",
     "category": "咒術迴戰",
     "description": "擁有特級咒靈理香加持，潛力無限的天才。",
-    "effect": {
-      "type": "rika_summon",
-      "value": 80,
-      "description": "召喚理香造成巨大打擊並提升自身防禦"
-    }
+
   },
 {
     "word": "Gon Freecss",
@@ -766,11 +646,7 @@ const baseCards = [
     "rarity": "超稀有",
     "category": "獵人",
     "description": "純真與力量並存，為友情與正義不惜一切。",
-    "effect": {
-      "type": "nen_punch",
-      "value": 100,
-      "description": "將所有念集中於拳頭造成爆炸性物理傷害"
-    }
+
   },
   {
     "word": "Killua Zoldyck",
@@ -780,11 +656,7 @@ const baseCards = [
     "rarity": "超稀有",
     "category": "獵人",
     "description": "暗殺家族出身，電光閃現間決勝負。",
-    "effect": {
-      "type": "godspeed",
-      "value": 80,
-      "description": "以神速移動斬擊敵人，提升閃避率"
-    }
+
   },
   {
     "word": "Kurapika",
@@ -794,11 +666,7 @@ const baseCards = [
     "rarity": "超稀有",
     "category": "獵人",
     "description": "鎖鍊鎖住仇恨，燃燒著緋紅雙眼的復仇者。",
-    "effect": {
-      "type": "chain_judgment",
-      "value": 60,
-      "description": "審判鎖鏈限制敵人行動並造成傷害"
-    }
+
   },
   {
     "word": "Leorio Paradinight",
@@ -808,11 +676,7 @@ const baseCards = [
     "rarity": "普通",
     "category": "獵人",
     "description": "粗中有細的熱血醫生，拳頭與情義並行。",
-    "effect": {
-      "type": "telepunch",
-      "value": 40,
-      "description": "瞬間打擊遠處敵人，造成中等物理傷害"
-    }
+
   },
   {
     "word": "Hisoka",
@@ -822,11 +686,7 @@ const baseCards = [
     "rarity": "超稀有",
     "category": "獵人",
     "description": "變化系殺戮魔術師，詭譎莫測、危險又迷人。",
-    "effect": {
-      "type": "bungee_gum",
-      "value": 70,
-      "description": "用愛的口香糖束縛敵人並彈回攻擊"
-    }
+
   },
   {
     "word": "Isaac Netero",
@@ -836,11 +696,7 @@ const baseCards = [
     "rarity": "稀有",
     "category": "獵人",
     "description": "最強獵人之一，百式觀音如神降臨。",
-    "effect": {
-      "type": "100_type",
-      "value": 120,
-      "description": "百式觀音猛攻，造成連擊致命傷害"
-    }
+
   },
   {
     "word": "Meruem",
@@ -850,11 +706,7 @@ const baseCards = [
     "rarity": "稀有",
     "category": "獵人",
     "description": "蟻王之尊，智慧與力量的巔峰存在。",
-    "effect": {
-      "type": "royal_power",
-      "value": 130,
-      "description": "王之壓制，對敵人造成極大範圍傷害"
-    }
+
   },
   {
     "word": "Neferpitou",
@@ -864,11 +716,7 @@ const baseCards = [
     "rarity": "稀有",
     "category": "獵人",
     "description": "蟻王近衛軍之一，醫術與戰力兼備的恐怖存在。",
-    "effect": {
-      "type": "puppeteer",
-      "value": 60,
-      "description": "操控屍體作戰並回復己方生命"
-    }
+
   },
   {
     "word": "Shaiapouf",
@@ -878,11 +726,7 @@ const baseCards = [
     "rarity": "普通",
     "category": "獵人",
     "description": "優雅陰狠，擅長操弄與操縱人心的近衛軍。",
-    "effect": {
-      "type": "hypnosis",
-      "value": 30,
-      "description": "使敵人進入混亂狀態 2 回合"
-    }
+
   },
   {
     "word": "Knuckle Bine",
@@ -892,11 +736,7 @@ const baseCards = [
     "rarity": "普通",
     "category": "獵人",
     "description": "重情義的拳鬥念使，以念獸收債為戰術核心。",
-    "effect": {
-      "type": "interest",
-      "value": 20,
-      "description": "念獸累積攻擊後爆擊，造成雙倍傷害"
-    }
+
   },
   {
     "word": "Biscuit Krueger",
@@ -905,11 +745,7 @@ const baseCards = [
     "rarity": "稀有",
     "category": "獵人",
     "description": "外表是小女孩，實際是肌肉爆棚的資深高手。",
-    "effect": {
-      "type": "true_form",
-      "value": 90,
-      "description": "變身真身後提升攻擊與防禦"
-    }
+
   },
   
   {
@@ -920,11 +756,7 @@ const baseCards = [
     "rarity": "普通",
     "category": "工作細胞",
     "description": "迷路但熱心的氧氣快遞員，奔波於身體各地。",
-    "effect": {
-      "type": "oxygen_delivery",
-      "value": 50,
-      "description": "為隊伍恢復少量能量，並提升回合速度"
-    }
+
   },
   {
     "word": "White Blood Cell",
@@ -934,11 +766,7 @@ const baseCards = [
     "rarity": "普通",
     "category": "工作細胞",
     "description": "冷酷外表下有著溫柔靈魂，專責清除入侵病原。",
-    "effect": {
-      "type": "pathogen_slayer",
-      "value": 90,
-      "description": "對病毒類敵人造成高額傷害"
-    }
+
   },
   {
     "word": "Platelet",
@@ -948,11 +776,7 @@ const baseCards = [
     "rarity": "超稀有",
     "category": "工作細胞",
     "description": "超人氣的可愛修補小隊長，總能鼓舞全隊。",
-    "effect": {
-      "type": "cute_repair",
-      "value": 100,
-      "description": "修補我方防禦並提升全體士氣"
-    }
+
   },
   {
     "word": "Killer T Cell",
@@ -962,11 +786,7 @@ const baseCards = [
     "rarity": "稀有",
     "category": "工作細胞",
     "description": "暴走熱血的戰士，專門殲滅被感染的細胞。",
-    "effect": {
-      "type": "berserk_strike",
-      "value": 85,
-      "description": "對敵人造成爆擊，若目標為感染體則加倍"
-    }
+
   },
   {
     "word": "Macrophage",
@@ -975,11 +795,7 @@ const baseCards = [
     "rarity": "超稀有",
     "category": "工作細胞",
     "description": "穿著洋裝優雅地用菜刀解決入侵者。",
-    "effect": {
-      "type": "cleansing_slash",
-      "value": 95,
-      "description": "清掃全體敵人狀態，造成高額斬擊"
-    }
+
   },
   {
     "word": "Memory Cell",
@@ -989,11 +805,7 @@ const baseCards = [
     "rarity": "稀有",
     "category": "工作細胞",
     "description": "總覺得預知了一切，實際偶爾準確。",
-    "effect": {
-      "type": "future_vision",
-      "value": 70,
-      "description": "提前識破敵方技能，降低傷害並反擊"
-    }
+
   },
   {
     "word": "Helper T Cell",
@@ -1003,11 +815,7 @@ const baseCards = [
     "rarity": "稀有",
     "category": "工作細胞",
     "description": "指揮官型角色，負責協調免疫行動。",
-    "effect": {
-      "type": "tactical_order",
-      "value": 60,
-      "description": "提升全體攻擊與行動效率"
-    }
+
   },
   {
     "word": "Regulatory T Cell",
@@ -1017,11 +825,7 @@ const baseCards = [
     "rarity": "普通",
     "category": "工作細胞",
     "description": "冷靜沉著，調節免疫過強的反應。",
-    "effect": {
-      "type": "immune_balance",
-      "value": 55,
-      "description": "降低我方受到的反效果與失控傷害"
-    }
+
   },
   {
     "word": "Dendritic Cell",
@@ -1045,12 +849,7 @@ const baseCards = [
     "rarity": "普通",
     "category": "工作細胞",
     "description": "嘴上不饒人但抗體製作第一名。",
-    "effect": {
-      "type": "antibody_wave",
-      "value": 65,
-      "description": "釋放抗體彈幕造成範圍魔法傷害"
-    }
-  },
+    },
   {
     "word": "NK Cell",
     "zh": "自然殺手細胞",
@@ -1059,11 +858,7 @@ const baseCards = [
     "rarity": "稀有",
     "category": "工作細胞",
     "description": "單兵戰力最強，沉默寡言卻一擊致命。",
-    "effect": {
-      "type": "lethal_strike",
-      "value": 95,
-      "description": "對單一敵人造成致命打擊，無視防禦"
-    }
+
   },
   {
     "word": "Butt Detective",
@@ -1073,11 +868,7 @@ const baseCards = [
     "rarity": "超稀有",
     "category": "屁屁偵探",
     "description": "總是一本正經地放屁破案，氣場與氣味同時攻擊敵人。",
-    "effect": {
-      "type": "gas_truth",
-      "value": 100,
-      "description": "放屁造成混亂並揭露敵方弱點"
-    }
+
   },
   {
     "word": "Brown",
@@ -1087,11 +878,7 @@ const baseCards = [
     "rarity": "普通",
     "category": "屁屁偵探",
     "description": "屁屁偵探的忠心助手，總是在最關鍵時刻提供協助。",
-    "effect": {
-      "type": "timely_support",
-      "value": 50,
-      "description": "召喚支援回合，可中斷敵方行動"
-    }
+
   },
   {
     "word": "Inspector",
@@ -1101,11 +888,7 @@ const baseCards = [
     "rarity": "稀有",
     "category": "屁屁偵探",
     "description": "與屁屁偵探並肩合作的警察，擅長擺陣圍捕犯人。",
-    "effect": {
-      "type": "trap_net",
-      "value": 80,
-      "description": "設下陷阱，限制敵方行動兩回合"
-    }
+
   },
   {
     "word": "Cancer Cell",
@@ -1114,11 +897,7 @@ const baseCards = [
     "rarity": "超稀有",
     "category": "工作細胞",
     "description": "痛苦與復仇心所化身的變異細胞。",
-    "effect": {
-      "type": "mutation_rage",
-      "value": 100,
-      "description": "每次受到攻擊後強化自己，並反彈部分傷害"
-    }
+
   },
      {
     "word": "Chrollo Lucilfer",
@@ -1128,11 +907,7 @@ const baseCards = [
     "rarity": "稀有",
     "category": "獵人",
     "description": "幻影旅團團長，操控被奪取的能力反制敵人。",
-    "effect": {
-      "type": "skill_thief",
-      "value": 1,
-      "description": "隨機複製一名敵人技能並使用一次"
-    }
+
   },
 {
     "word": "Toy Story",
@@ -1142,11 +917,7 @@ const baseCards = [
     "rarity": "超稀有",
     "category": "皮克斯宇宙",
     "description": "玩具們在房間裡有自己的大冒險世界，每一次移動都是奇蹟。",
-    "effect": {
-      "type": "friendship_buff",
-      "value": 90,
-      "description": "強化全體夥伴合作效果"
-    }
+
   },
   {
     "word": "Coco",
@@ -1156,11 +927,7 @@ const baseCards = [
     "rarity": "超稀有",
     "category": "皮克斯宇宙",
     "description": "穿越亡靈之地，用音樂尋找家族的記憶與真相。",
-    "effect": {
-      "type": "music_memory",
-      "value": 100,
-      "description": "喚醒失落記憶，解除所有負面狀態"
-    }
+
   },
   {
     "word": "Inside Out",
@@ -1170,11 +937,7 @@ const baseCards = [
     "rarity": "稀有",
     "category": "皮克斯宇宙",
     "description": "五種情緒住在你的腦袋裡，每個決定都改變整個人生。",
-    "effect": {
-      "type": "emotion_shift",
-      "value": 70,
-      "description": "隨機切換情緒狀態，賦予對應能力加成"
-    }
+
   },
   {
     "word": "Up",
@@ -1184,11 +947,7 @@ const baseCards = [
     "rarity": "稀有",
     "category": "皮克斯宇宙",
     "description": "老爺爺用氣球飛屋開啟人生最勇敢的冒險旅程。",
-    "effect": {
-      "type": "lift_off",
-      "value": 80,
-      "description": "跳脫困境，逃離傷害並重置冷卻時間"
-    }
+
   },
   {
     "word": "Ratatouille",
@@ -1198,11 +957,7 @@ const baseCards = [
     "rarity": "普通",
     "category": "皮克斯宇宙",
     "description": "一隻老鼠在巴黎當上廚神，料理與夢想齊飛。",
-    "effect": {
-      "type": "flavor_boost",
-      "value": 60,
-      "description": "恢復生命並提升士氣"
-    }
+
   },
 {
     "word": "Jaguar",
@@ -1212,11 +967,7 @@ const baseCards = [
     "rarity": "稀有",
     "category": "亞馬遜雨林",
     "description": "亞馬遜的終極獵手，潛伏黑影之中，以一擊致命。",
-    "effect": {
-      "type": "stealth_strike",
-      "value": 95,
-      "description": "偷襲造成高額傷害，成功則隱匿一回合"
-    }
+
   },
   {
     "word": "Capybara",
@@ -1226,11 +977,7 @@ const baseCards = [
     "rarity": "普通",
     "category": "亞馬遜雨林",
     "description": "最 chill 的森林鄰居，友善穩重，是團隊的穩定核心。",
-    "effect": {
-      "type": "peace_aura",
-      "value": 60,
-      "description": "降低戰鬥緊張度，減緩我方傷害"
-    }
+
   },
    {
     "word": "Tamandua",
@@ -1240,11 +987,7 @@ const baseCards = [
     "rarity": "普通",
     "category": "亞馬遜雨林",
     "description": "迷你版食蟻獸，靈巧可愛，是昆蟲大軍的剋星。",
-    "effect": {
-      "type": "bug_cleanse",
-      "value": 55,
-      "description": "清除場上所有蟲系干擾效果"
-    }
+
   },
   {
     "word": "Howler Monkey",
@@ -1254,11 +997,7 @@ const baseCards = [
     "rarity": "普通",
     "category": "亞馬遜雨林",
     "description": "森林中最響亮的聲音，能在數公里外回響，是領地與警告的象徵。",
-    "effect": {
-      "type": "sonic_roar",
-      "value": 65,
-      "description": "干擾敵人視野，降低命中率"
-    }
+
   },
   {
     "word": "Red Uakari",
@@ -1338,11 +1077,7 @@ const baseCards = [
     "rarity": "普通",
     "category": "亞馬遜雨林",
     "description": "動作最慢的哺乳動物，用慢與靜的智慧化解危機。",
-    "effect": {
-      "type": "slow_reflect",
-      "value": 60,
-      "description": "延緩對手攻擊頻率，並反射部分持續傷害"
-    }
+   
   },
   {
     "word": "Leafcutter Ant",
@@ -1352,12 +1087,7 @@ const baseCards = [
     "rarity": "普通",
     "category": "亞馬遜雨林",
     "description": "勤奮的地下建築師，以菌菇農業維生，是雨林中的隱形力量。",
-    "effect": {
-      "type": "swarm_support",
-      "value": 65,
-      "description": "召喚蟻群協助攻擊，提高整體輸出"
-    }
-  },
+     },
  {
     "word": "Narwhal",
     "zh": "獨角鯨",
@@ -1375,12 +1105,7 @@ const baseCards = [
     "rarity": "超稀有",
     "category": "冰原動物",
     "description": "冰原之王，厚重皮毛與鋒利利爪使牠成為極地霸主。",
-    "effect": {
-      "type": "ice_crush",
-      "value": 95,
-      "description": "強力擊碎防禦，造成範圍傷害"
-    }
-  },
+     },
 {
     "word": "Caribou",
     "zh": "馴鹿",
@@ -1398,12 +1123,7 @@ const baseCards = [
     "rarity": "普通",
     "category": "冰原動物",
     "description": "白羽無聲飛翔，夜間狩獵者，擁有極佳的視覺與聽覺。",
-    "effect": {
-      "type": "silent_wings",
-      "value": 60,
-      "description": "提升我方先手率，並降低敵方閃避"
-    }
-  },
+     },
   {
     "word": "Fennec Fox",
     "zh": "耳廓狐",
@@ -1412,11 +1132,75 @@ const baseCards = [
     "rarity": "稀有",
     "category": "炎熱生物",
     "description": "超大耳朵是沙漠生存利器，能散熱與偵測遠方聲音。",
-    "effect": {
-      "type": "heat_detection",
-      "value": 60,
-      "description": "提升閃避並預知敵方技能"
-    }
+    },
+{
+    id: 10001,
+    word: "Dromedary Camel",
+    zh: "單峰駱駝",
+    rarity: "普通",
+    category: "炎熱生物",
+    image: "https://v1.pinimg.com/videos/mc/720p/35/3d/65/353d657c86cc0a3171241afedbef185f.mp4",
+    description: "最常見於非洲與中東沙漠，能長時間忍受乾渴。"
+  },
+  {
+    id: 10004,
+    word: "Desert Tortoise",
+    zh: "沙漠陸龜",
+    rarity: "普通",
+    category: "炎熱生物",
+    image: "https://i.pinimg.com/736x/39/62/de/3962deb5ff76fe8cc264efb3423c36b7.jpg",
+    description: "能耐高溫與乾旱，壽命極長的沙漠爬蟲。"
+  },
+  {
+    id: 10005,
+    word: "Saharan Silver Ant",
+    zh: "撒哈拉銀蟻",
+    rarity: "超稀有",
+    category: "炎熱生物",
+    image: "https://i.pinimg.com/736x/67/c6/78/67c678a2a17dfdae2a6e47e759c30f6b.jpg",
+    role: "沙漠求生專家",
+    description: "能在攝氏 60 度高溫地表奔跑數分鐘，體表銀毛反射熱輻射。",
+    youtube: "https://www.youtube.com/watch?v=QwF3ipuNyfc"
+  },
+  {
+    id: 10007,
+    word: "Desert Iguana",
+    zh: "沙漠鬣蜥",
+    rarity: "普通",
+    category: "炎熱生物",
+    image: "https://i.pinimg.com/736x/51/e2/21/51e221a5602dd97874f855bd9a34e632.jpg",
+    role: "爬行類",
+    description: "棲息在北美沙漠地區，活躍於攝氏 45 度以上的白天。"
+  },
+  {
+    id: 10009,
+    word: "Namib Desert Beetle",
+    zh: "納米比甲蟲",
+    rarity: "稀有",
+    category: "炎熱生物",
+    image: "https://i.pinimg.com/736x/57/95/09/5795098694afb93103b8e94e973bb1e5.jpg",
+    role: "取水專家",
+    description: "可從晨霧中收集水分，反向彎曲身體讓水珠滾入口中。"
+  },
+  {
+    id: 10011,
+    word: "Saharan Cheetah",
+    zh: "撒哈拉獵豹",
+    rarity: "稀有",
+    category: "炎熱生物",
+    image: "https://v1.pinimg.com/videos/iht/expMp4/14/f2/23/14f223b65c6ca79556aad64ea731281d_720w.mp4",
+    role: "掠食者",
+    description: "稀有且瀕危，耐熱、靈活，是撒哈拉沙漠的終極掠食者之一。"
+  },
+  {
+    id: 10013,
+    word: "African Elephant",
+    zh: "非洲象",
+    rarity: "普通",
+    category: "炎熱生物",
+    image: "https://v1.pinimg.com/videos/mc/720p/1f/a2/d8/1fa2d831309e2d257d57447ec27e5f52.mp4",
+    role: "草原巨獸",
+    description: "透過巨大的耳朵與泥浴調節體溫，在炎熱草原長途跋涉。"
   },
  {
     "word": "Antarctic Fur Seal",
@@ -1435,11 +1219,6 @@ const baseCards = [
     "rarity": "普通",
     "category": "炎熱生物",
     "description": "沙漠之舟，耐渴耐熱的長征王，擁有強大耐力。",
-    "effect": {
-      "type": "endurance_boost",
-      "value": 70,
-      "description": "提升持續戰鬥力並減少狀態異常"
-    }
   },
   {
     "word": "Thorny Devil",
@@ -1449,11 +1228,7 @@ const baseCards = [
     "rarity": "普通",
     "category": "炎熱生物",
     "description": "滿身尖刺的防禦高手，能從皮膚引水，是沙漠奇蹟。",
-    "effect": {
-      "type": "thorn_barrier",
-      "value": 65,
-      "description": "每回合反彈部分物理傷害"
-    }
+
   },
 {
     "word": "Greenland Shark",
@@ -1573,11 +1348,7 @@ const baseCards = [
     "rarity": "稀有",
     "category": "炎熱生物",
     "description": "強壯耐熱的大型沙漠蜥蜴，具有強力尾巴與咬合。",
-    "effect": {
-      "type": "tail_whip",
-      "value": 75,
-      "description": "擊退敵人並降低其攻擊力"
-    }
+   
   },
   {
     "word": "Scarab Beetle",
@@ -1587,11 +1358,7 @@ const baseCards = [
     "rarity": "普通",
     "category": "炎熱生物",
     "description": "古埃及神聖象徵，擅於在炎熱沙地移動並操控沙塵。",
-    "effect": {
-      "type": "dust_shroud",
-      "value": 55,
-      "description": "降低敵方命中並提升我方隱蔽"
-    }
+   
   },
   {
     "word": "Caracal",
@@ -1600,12 +1367,7 @@ const baseCards = [
     "video": "https://youtu.be/EXAMPLE_CARACAL",
     "rarity": "超稀有",
     "category": "炎熱生物",
-    "description": "跳躍能力極強的沙地獵手，以靈敏與爆發力著稱。",
-    "effect": {
-      "type": "leap_strike",
-      "value": 90,
-      "description": "攻擊時有機率再次行動"
-    }
+   
   },
   {
     "word": "Dung Beetle",
@@ -1615,11 +1377,7 @@ const baseCards = [
     "rarity": "稀有",
     "category": "炎熱生物",
     "description": "環境清道夫與神聖象徵，擅於在混亂中保存戰力。",
-    "effect": {
-      "type": "resilience",
-      "value": 65,
-      "description": "每回合回復少量生命，並免疫一次狀態異常"
-    }
+   
   },
   {
     "word": "Arctic Fox",
@@ -1629,11 +1387,7 @@ const baseCards = [
     "rarity": "超稀有",
     "category": "冰原動物",
     "description": "善於在冰雪間偽裝與挖掘，能迅速躲避危險。",
-    "effect": {
-      "type": "frost_hide",
-      "value": 55,
-      "description": "提升自身閃避並解除一項負面狀態"
-    }
+    
   },
   {
     "word": "Musk Ox",
@@ -1643,11 +1397,7 @@ const baseCards = [
     "rarity": "普通",
     "category": "冰原動物",
     "description": "強壯耐寒，群體圍圈抵禦捕食者，是極地智慧的象徵。",
-    "effect": {
-      "type": "circle_guard",
-      "value": 70,
-      "description": "保護全體成員，降低下一回合所受傷害"
-    }
+   
   },
   {
     "word": "Arctic Wolf",
@@ -1657,11 +1407,7 @@ const baseCards = [
     "rarity": "超稀有",
     "category": "冰原動物",
     "description": "行動迅捷、團隊配合無間，極地最有紀律的獵團。",
-    "effect": {
-      "type": "pack_chase",
-      "value": 90,
-      "description": "每有1名隊友，增加攻擊力"
-    }
+   
   },
   {
     "word": "Walrus",
@@ -1671,11 +1417,7 @@ const baseCards = [
     "rarity": "稀有",
     "category": "冰原動物",
     "description": "厚皮脂肪與巨牙武裝的冰原巨獸，既能防守也可衝鋒。",
-    "effect": {
-      "type": "tusk_charge",
-      "value": 75,
-      "description": "提高防禦後衝撞攻擊敵方前排"
-    }
+   
   },
   {
     "word": "Snowshoe Hare",
@@ -1685,11 +1427,7 @@ const baseCards = [
     "rarity": "稀有",
     "category": "冰原動物",
     "description": "毛色隨季變化，跳躍迅捷，擅長閃避與迴避危機。",
-    "effect": {
-      "type": "evasion_dash",
-      "value": 60,
-      "description": "提升閃避率並增加速度"
-    }
+    
   },
   {
     "word": "Ermine",
@@ -1699,11 +1437,7 @@ const baseCards = [
     "rarity": "稀有",
     "category": "冰原動物",
     "description": "機靈的小獵人，能在雪地中穿梭如風，迅速出擊。",
-    "effect": {
-      "type": "quick_strike",
-      "value": 65,
-      "description": "優先攻擊敵方後排，造成額外傷害"
-    }
+
   },
   {
     "word": "Snow Leopard",
@@ -1713,11 +1447,7 @@ const baseCards = [
     "rarity": "超稀有",
     "category": "冰原動物",
     "description": "高山冰原的隱匿獵手，敏捷與力量並存，是終極掠食者。",
-    "effect": {
-      "type": "silent_pounce",
-      "value": 95,
-      "description": "突襲造成高傷並降低敵方行動力"
-    }
+
   },
   {
     "word": "Frost Lizard",
@@ -1727,11 +1457,7 @@ const baseCards = [
     "rarity": "普通",
     "category": "冰原動物",
     "description": "傳說中的冰原生物，吐息能凍結敵人行動，是幻想與真實的交界。",
-    "effect": {
-      "type": "freeze_breath",
-      "value": 70,
-      "description": "對敵方造成冰凍效果，延遲其下一次攻擊"
-    }
+
   },
 {
     "word": "King Penguin",
@@ -1741,11 +1467,6 @@ const baseCards = [
     "rarity": "超稀有",
     "category": "冰原動物",
     "description": "高貴冷靜的極地統治者，象徵秩序與凝聚力，牠的出現讓萬物安靜低頭。",
-    "effect": {
-      "type": "regal_command",
-      "value": 100,
-      "description": "恢復全體生命並提升所有冰原動物卡的技能效果20%（持續3回合）"
-    }
   },
   {
     "word": "Ivory Gull",
@@ -1755,11 +1476,7 @@ const baseCards = [
     "rarity": "普通",
     "category": "冰原動物",
     "description": "極地飛行者，巡弋於冰與雪之間，帶來寒風與觀察力。",
-    "effect": {
-      "type": "wind_scout",
-      "value": 55,
-      "description": "揭示敵方隱藏狀態並略降敵閃避"
-    }
+
   },
   {
     "word": "Monsters, Inc.",
@@ -1769,11 +1486,7 @@ const baseCards = [
     "rarity": "普通",
     "category": "皮克斯宇宙",
     "description": "在門後的世界收集尖叫聲與歡笑來發電，怪獸與童心的合作奇蹟。",
-    "effect": {
-      "type": "laugh_power",
-      "value": 65,
-      "description": "提升能量產出並減少敵人怒氣"
-    }
+
   },
    {
     "word": "Suguru Geto",
@@ -1783,11 +1496,7 @@ const baseCards = [
     "rarity": "稀有",
     "category": "咒術迴戰",
     "description": "原特級，操咒靈為武器的反派，理念與狂信的化身。",
-    "effect": {
-      "type": "curse_command",
-      "value": 2,
-      "description": "釋放兩隻強力咒靈攻擊敵方"
-    }
+
   },
   {
     "word": "Choso",
@@ -1797,11 +1506,7 @@ const baseCards = [
     "rarity": "稀有",
     "category": "咒術迴戰",
     "description": "血操術的高手，以兄弟為名展開血的制裁。",
-    "effect": {
-      "type": "blood_control",
-      "value": 65,
-      "description": "操控血液進行遠距攻擊並造成流血"
-    }
+
   },
 
     {
@@ -1812,11 +1517,7 @@ const baseCards = [
     "rarity": "稀有",
     "category": "寶可夢",
     "description": "溫柔力量的巨龍，一擊龍爪扭轉戰局。",
-    "effect": {
-      "type": "dragon_claw",
-      "value": 85,
-      "description": "強力單體攻擊，附加暴擊機率"
-    }
+
   },
   {
     "word": "Mewtwo",
@@ -1826,11 +1527,7 @@ const baseCards = [
     "rarity": "稀有",
     "category": "寶可夢",
     "description": "人造奇蹟，念力之王，戰場上無可匹敵。",
-    "effect": {
-      "type": "psystrike",
-      "value": 100,
-      "description": "施展心靈強襲，造成極高傷害"
-    }
+
   },
   {
     "word": "Muzan Kibutsuji",
@@ -1840,11 +1537,7 @@ const baseCards = [
     "rarity": "超稀有",
     "category": "鬼滅之刃",
     "description": "鬼之始祖，操控恐懼與再生的不死之王。",
-    "effect": {
-      "type": "multi_attack",
-      "value": 40,
-      "description": "攻擊隨機三人，每人造成 40 點傷害"
-    }
+
   },
   {
     "word": "Naruto Uzumaki",
@@ -1854,11 +1547,7 @@ const baseCards = [
     "rarity": "超稀有",
     "category": "火影忍者",
     "description": "從落魄孤兒到相信自己的忍者，鳴人以不屈精神與螺旋丸書寫前行之路。",
-    "effect": {
-      "type": "energy_boost",
-      "value": 50,
-      "description": "消耗螺旋丸能量，立刻回復 50 點體力"
-    }
+
   },
   {
     "word": "Sasuke Uchiha",
@@ -1868,11 +1557,7 @@ const baseCards = [
     "rarity": "超稀有",
     "category": "火影忍者",
     "description": "冷酷的復仇者，背負家族的血海深仇，擁有寫輪眼與千鳥之力。",
-    "effect": {
-      "type": "critical_strike",
-      "value": 100,
-      "description": "下一次攻擊造成 2 倍傷害"
-    }
+
   },
   {
     "word": "Sakura Haruno",
@@ -1882,11 +1567,7 @@ const baseCards = [
     "rarity": "稀有",
     "category": "火影忍者",
     "description": "醫療忍術專家，掌握怪力與療癒之術，戰場上的生命守護者。",
-    "effect": {
-      "type": "heal",
-      "value": 40,
-      "description": "恢復隊友生命值 40 點"
-    }
+
   },
   {
     "word": "Kakashi Hatake",
@@ -1896,11 +1577,7 @@ const baseCards = [
     "rarity": "稀有",
     "category": "火影忍者",
     "description": "擁有寫輪眼的複製忍者，智慧與冷靜的象徵，是鳴人小隊的領導者。",
-    "effect": {
-      "type": "copy_skill",
-      "value": 1,
-      "description": "複製敵方技能並可使用一次"
-    }
+
   },
   {
     "word": "Itachi Uchiha",
@@ -1910,11 +1587,7 @@ const baseCards = [
     "rarity": "普通",
     "category": "火影忍者",
     "description": "為了村子與弟弟而選擇黑暗之路的天才，萬花筒寫輪眼的持有者。",
-    "effect": {
-      "type": "illusion",
-      "value": 1,
-      "description": "使敵方陷入幻術，1 回合無法行動"
-    }
+
   },
   {
     "word": "Shikamaru Nara",
@@ -1924,11 +1597,7 @@ const baseCards = [
     "rarity": "稀有",
     "category": "火影忍者",
     "description": "影子操控天才，智商爆表的戰略家，懶散外表下藏著最強腦袋。",
-    "effect": {
-      "type": "trap",
-      "value": 1,
-      "description": "讓敵人陷入影子束縛，無法移動 1 回合"
-    }
+
   },
   {
     "word": "Rock Lee",
@@ -1938,11 +1607,7 @@ const baseCards = [
     "rarity": "普通",
     "category": "火影忍者",
     "description": "體術天才，熱血永不放棄，努力就是他最強的忍術。",
-    "effect": {
-      "type": "atk_boost",
-      "value": 30,
-      "description": "提升攻擊力 30 點"
-    }
+
   },
   {
     "word": "Hinata Hyuga",
@@ -1952,11 +1617,7 @@ const baseCards = [
     "rarity": "普通",
     "category": "火影忍者",
     "description": "柔拳系溫柔少女，堅定心意在戰場綻放。",
-    "effect": {
-      "type": "block",
-      "value": 20,
-      "description": "下一次受到傷害減少 20 點"
-    }
+
   },
   {
     "word": "Gaara",
@@ -1966,11 +1627,7 @@ const baseCards = [
     "rarity": "稀有",
     "category": "火影忍者",
     "description": "沙之守鶴的容器，從冷漠中誕生的守護者。",
-    "effect": {
-      "type": "shield",
-      "value": 35,
-      "description": "召喚沙盾，抵擋 35 點傷害"
-    }
+
   },
   {
     "word": "Neji Hyuga",
@@ -1980,11 +1637,7 @@ const baseCards = [
     "rarity": "稀有",
     "category": "火影忍者",
     "description": "命運與實力的對決，白眼洞悉一切。",
-    "effect": {
-      "type": "reveal",
-      "value": 1,
-      "description": "揭示敵方下一個行動"
-    }
+
   },
     {
     "word": "Temari",
@@ -1994,11 +1647,7 @@ const baseCards = [
     "rarity": "普通",
     "category": "火影忍者",
     "description": "風之忍者，鋒利言語與團扇同樣致命。",
-    "effect": {
-      "type": "wind",
-      "value": 25,
-      "description": "釋放風遁攻擊，造成 25 點範圍傷害"
-    }
+
    },
 
   {
@@ -2009,11 +1658,7 @@ const baseCards = [
     "rarity": "超稀有",
     "category": "童話故事",
     "description": "被蘋果詛咒的純真少女，以微笑融化王子的真愛魔咒。",
-    "effect": {
-      "type": "shield",
-      "value": 1,
-      "description": "抵擋一次答錯懲罰"
-    }
+
   },
   {
     "word": "Aurora",
@@ -2023,11 +1668,7 @@ const baseCards = [
     "rarity": "超稀有",
     "category": "童話故事",
     "description": "沉睡千年的公主，在晨曦中甦醒，舞動皇宮的光影韻律。",
-    "effect": {
-      "type": "energy_restore",
-      "value": 2,
-      "description": "恢復 2 點能量"
-    }
+
   },
   {
     "word": "Tinker Bell",
@@ -2037,11 +1678,7 @@ const baseCards = [
 "rarity": "普通",
     "category": "童話故事",
     "description": "飄散魔法塵的精靈，用一縷微光點亮夢幻永不陳舊。",
-    "effect": {
-      "type": "hint",
-      "value": 1,
-      "description": "排除一個錯誤選項"
-    }
+
   },
   {
     "word": "Peter Pan",
@@ -2051,11 +1688,7 @@ const baseCards = [
 "rarity": "超稀有",
     "category": "童話故事",
     "description": "永遠不肯長大的男孩，在奇幻夢島揮舞冒險的翅膀。",
-    "effect": {
-      "type": "skip_level",
-      "value": 1,
-      "description": "直接跳過當前樓層"
-    }
+
   },
   {
     "word": "Captain Hook",
@@ -2324,11 +1957,7 @@ const baseCards = [
     "rarity": "超稀有",
     "category": "童話故事",
     "description": "灰姑娘在暮色南瓜馬車裡奔向夢想，用一隻水晶鞋書寫逆轉人生的詩篇。",
-    "effect": {
-      "type": "time_extend",
-      "value": 60,
-      "description": "增加答題時間 60 秒"
-    }
+
   },
   {
     "word": "Pocahontas",
@@ -2816,6 +2445,36 @@ category: "神話生物", description: "白蹄踏露，角尖閃耀純潔光芒�
     "role": "Protagonist",
     "description": "從最弱的獵人化身暗影君主，黑色披風下，死亡為他效忠。"
   },
+{
+  id: 20007,
+  word: "Lennart Niermann",
+  zh: "雷納特・尼爾曼",
+  rarity: "普通",
+  category: "Solo Leveling",
+  image: "https://i.pinimg.com/736x/59/9a/4e/599a4e6abb900e7b32a5f6293e3e0fb6.jpg",
+  role: "德國S級獵人",
+  description: "實力堅強但謙虛，戰場上的穩定力量。"
+},
+{
+  id: 20008,
+  word: "Sung Il-Hwan",
+  zh: "成一煥",
+  rarity: "稀有",
+  category: "Solo Leveling",
+  image: "https://i.pinimg.com/736x/9e/82/a4/9e82a41fd2ea25a629c3de8e2b55425f.jpg",
+  role: "主角之父",
+  description: "神祕消失多年後歸來，背負著宇宙級的命運。"
+},
+{
+  id: 20009,
+  word: "Iron",
+  zh: "鐵盾戰士",
+  rarity: "普通",
+  category: "Solo Leveling",
+  image: "https://v1.pinimg.com/videos/iht/expMp4/7f/f3/47/7ff3477dfcc5db36806a118d90da4c38_720w.mp4",
+  role: "影子坦克",
+  description: "雖然常被打飛，但他永遠是前線最可靠的盾牌。"
+},
   {
     "word": "Cha Hae-In",
     "zh": "車海印",
