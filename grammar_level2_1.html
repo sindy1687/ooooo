@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
@@ -1690,7 +1690,8 @@
         function restartGame() {
             playSound('click');
             document.getElementById('resultModal').style.display = 'none';
-            initGame();
+            // 跳轉到第一關重新開始
+            window.location.href = 'grammar_level1_1.html';
         }
 
         // 返回選單
