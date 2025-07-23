@@ -281,7 +281,60 @@ const baseCards = [
       "type": "poison_dance",
       "value": 10,
       "description": "使敵方中毒，每回合損失 10 點"
-    }
+  },
+ {
+    "word": "Saharan Silver Ant",
+    "zh": "撒哈拉銀蟻",
+    "image": "https://i.pinimg.com/736x/67/c6/78/67c678a2a17dfdae2a6e47e759c30f6b.jpg",
+    "rarity": "稀有",
+    "category": "炎熱生物",
+    "role": "沙漠求生專家",
+    "description": "能在攝氏 60 度高溫地表奔跑數分鐘，體表銀毛反射熱輻射。"
+  },
+  {
+    "word": "Desert Iguana",
+    "zh": "沙漠鬣蜥",
+    "image": "https://v1.pinimg.com/videos/mc/720p/c5/14/7d/c5147d27c25667df64fc9175ddf3a562.mp4",
+    "rarity": "普通",
+    "category": "炎熱生物",
+    "role": "爬行類",
+    "description": "棲息在北美沙漠地區，活躍於攝氏 45 度以上的白天。"
+  },
+  {
+    "word": "Namib Desert Beetle",
+    "zh": "納米比甲蟲",
+    "image": "https://i.pinimg.com/736x/dc/0d/4e/dc0d4ee9f36b4409cbd6fc33660c3f11.jpg",
+    "rarity": "稀有",
+    "category": "炎熱生物",
+    "role": "取水專家",
+    "description": "可從晨霧中收集水分，反向彎曲身體讓水珠滾入口中。"
+  },
+  {
+    "word": "Saharan Cheetah",
+    "zh": "撒哈拉獵豹",
+    "image": "https://v1.pinimg.com/videos/mc/720p/1f/bc/17/1fbc17c8bf91c791cc8402a0c4e739e0.mp4",
+    "rarity": "稀有",
+    "category": "炎熱生物",
+    "role": "掠食者",
+    "description": "稀有且瀕危，耐熱、靈活，是撒哈拉沙漠的終極掠食者之一。"
+  },
+  {
+    "word": "Gila Monster",
+    "zh": "希拉毒蜥",
+    "image": "https://v1.pinimg.com/videos/mc/720p/ee/fd/11/eefd11e483a1c22fb599e0ada29bf03d.mp4",
+    "rarity": "稀有",
+    "category": "炎熱生物",
+    "role": "毒爬行類",
+    "description": "棲息於北美乾旱地區，是少數帶毒的大型蜥蜴之一。"
+  },
+  {
+    "word": "African Elephant",
+    "zh": "非洲象",
+    "image": "https://v1.pinimg.com/videos/mc/720p/2e/b5/36/2eb5366ed9e0ce8ee0c49269f70818da.mp4",
+    "rarity": "普通",
+    "category": "炎熱生物",
+    "role": "草原巨獸",
+    "description": "透過巨大的耳朵與泥浴調節體溫，在炎熱草原長途跋涉。"
   },
   {
     "word": "Amuro Ray",
