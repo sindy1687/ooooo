@@ -866,7 +866,7 @@ const baseCards = [
     "image": "https://img.myvideo.net.tw/images/TOE020/0000/0002/202208301649239017_280x400.jpg",
     "video": "https://youtu.be/owzMeiYR4jA?si=svunethtF5LSEQ0i",
     "rarity": "超稀有",
-    "category": "屁屁偵探",
+    "category": "偵探系列",
     "description": "總是一本正經地放屁破案，氣場與氣味同時攻擊敵人。",
 
   },
@@ -876,9 +876,8 @@ const baseCards = [
     "image": "https://tse3.mm.bing.net/th/id/OIP.t4Nf8RwnrddC5FE-aa1hkAAAAA?r=0&rs=1&pid=ImgDetMain&o=7&rm=3",
     "video": "https://youtu.be/EXAMPLE_BROWN",
     "rarity": "普通",
-    "category": "屁屁偵探",
+    "category": "偵探系列",
     "description": "屁屁偵探的忠心助手，總是在最關鍵時刻提供協助。",
-
   },
   {
     "word": "Inspector",
@@ -886,9 +885,40 @@ const baseCards = [
     "image": "https://img.shoplineapp.com/media/image_clips/60f2b518cb57630014918263/original.jpeg?1626518808",
     "video": "https://youtu.be/EXAMPLE_INSPECTOR",
     "rarity": "稀有",
-    "category": "屁屁偵探",
+    "category": "偵探系列",
     "description": "與屁屁偵探並肩合作的警察，擅長擺陣圍捕犯人。",
-
+  },
+  {
+    "word": "sherlock",
+    "zh": "夏洛克·福爾摩斯",
+    "image": "https://i.pinimg.com/736x/cc/ea/ce/cceacef11a440ef02a3712459c347fe7.jpg",
+    "rarity": "超稀有",
+    "category": "偵探系列",
+    "description": "觀察力爆表、推理狂魔，一根菸斗裡能推敲出整條街的秘密。"
+  },
+  {
+    "word": "hercule poirot",
+    "zh": "赫丘勒·白羅",
+    "image": "https://i.pinimg.com/736x/e6/0a/83/e60a839cd376fc3b7e94b6a9d5ad407f.jpg",
+    "rarity": "超稀有",
+    "category": "偵探系列",
+    "description": "鬍子捲捲、邏輯滿點，每一宗謀殺案在他眼裡都是數學題。"
+  },
+  {
+    "word": "nancy drew",
+    "zh": "南茜·朱兒",
+    "image": "https://i.pinimg.com/736x/09/0e/ca/090eca512d77fd25d628f87c9accd773.jpg",
+    "rarity": "稀有",
+    "category": "偵探系列",
+    "description": "高中生界的辦案王，學業與解謎都能S級滿分。"
+  },
+  {
+    "word": "detective conan",
+    "zh": "名偵探柯南",
+    "image": "https://i.pinimg.com/736x/31/74/ca/3174ca92c85c6cac31d44b03bd21f631.jpg",
+    "rarity": "超稀有",
+    "category": "偵探系列",
+    "description": "雖然身高不及桌角，卻能用眼鏡炸出整條黑衣組織的真相。",
   },
   {
     "word": "Cancer Cell",
@@ -897,7 +927,6 @@ const baseCards = [
     "rarity": "超稀有",
     "category": "工作細胞",
     "description": "痛苦與復仇心所化身的變異細胞。",
-
   },
      {
     "word": "Chrollo Lucilfer",
@@ -917,7 +946,6 @@ const baseCards = [
     "rarity": "超稀有",
     "category": "皮克斯宇宙",
     "description": "玩具們在房間裡有自己的大冒險世界，每一次移動都是奇蹟。",
-
   },
   {
     "word": "Coco",
@@ -927,7 +955,6 @@ const baseCards = [
     "rarity": "超稀有",
     "category": "皮克斯宇宙",
     "description": "穿越亡靈之地，用音樂尋找家族的記憶與真相。",
-
   },
   {
     "word": "Inside Out",
@@ -937,7 +964,6 @@ const baseCards = [
     "rarity": "稀有",
     "category": "皮克斯宇宙",
     "description": "五種情緒住在你的腦袋裡，每個決定都改變整個人生。",
-
   },
   {
     "word": "Up",
@@ -947,7 +973,6 @@ const baseCards = [
     "rarity": "稀有",
     "category": "皮克斯宇宙",
     "description": "老爺爺用氣球飛屋開啟人生最勇敢的冒險旅程。",
-
   },
   {
     "word": "Ratatouille",
@@ -957,7 +982,6 @@ const baseCards = [
     "rarity": "普通",
     "category": "皮克斯宇宙",
     "description": "一隻老鼠在巴黎當上廚神，料理與夢想齊飛。",
-
   },
 {
     "word": "Jaguar",
@@ -967,7 +991,6 @@ const baseCards = [
     "rarity": "稀有",
     "category": "亞馬遜雨林",
     "description": "亞馬遜的終極獵手，潛伏黑影之中，以一擊致命。",
-
   },
   {
     "word": "Capybara",
@@ -977,7 +1000,6 @@ const baseCards = [
     "rarity": "普通",
     "category": "亞馬遜雨林",
     "description": "最 chill 的森林鄰居，友善穩重，是團隊的穩定核心。",
-
   },
    {
     "word": "Tamandua",
@@ -987,7 +1009,6 @@ const baseCards = [
     "rarity": "普通",
     "category": "亞馬遜雨林",
     "description": "迷你版食蟻獸，靈巧可愛，是昆蟲大軍的剋星。",
-
   },
   {
     "word": "Howler Monkey",
@@ -997,7 +1018,6 @@ const baseCards = [
     "rarity": "普通",
     "category": "亞馬遜雨林",
     "description": "森林中最響亮的聲音，能在數公里外回響，是領地與警告的象徵。",
-
   },
   {
     "word": "Red Uakari",
@@ -1007,11 +1027,6 @@ const baseCards = [
     "rarity": "普通",
     "category": "亞馬遜雨林",
     "description": "以鮮紅面孔著稱，為健康與警覺的象徵，擅長跳躍與團隊行動。",
-    "effect": {
-      "type": "vital_bond",
-      "value": 60,
-      "description": "恢復友軍生命並提升羈絆技能"
-    }
   },
   {
     "word": "Caiman",
@@ -1021,11 +1036,6 @@ const baseCards = [
     "rarity": "稀有",
     "category": "亞馬遜雨林",
     "description": "亞馬遜河域潛伏獵手，雖非陸地主角，卻常突襲岸邊生物。",
-    "effect": {
-      "type": "surprise_lunge",
-      "value": 85,
-      "description": "對毫無防備敵人造成暴擊"
-    }
   },
   {
     "word": "Macaw",
@@ -1035,11 +1045,6 @@ const baseCards = [
     "rarity": "普通",
     "category": "亞馬遜雨林",
     "description": "色彩鮮明的語言高手，飛行速度快且具有高社交性。",
-    "effect": {
-      "type": "echo_voice",
-      "value": 50,
-      "description": "重複上回合我方技能效果"
-    }
   },
   {
     "word": "Amazon Poison Frog",
@@ -1049,11 +1054,6 @@ const baseCards = [
     "rarity": "稀有",
     "category": "亞馬遜雨林",
     "description": "體型小巧卻蘊藏劇毒，顏色鮮豔警示天敵，生存與美學並存。",
-    "effect": {
-      "type": "contact_poison",
-      "value": 85,
-      "description": "接觸後立即造成毒素傷害並持續削弱"
-    }
   },
   {
     "word": "Harpy Eagle",
@@ -1063,11 +1063,7 @@ const baseCards = [
     "rarity": "稀有",
     "category": "亞馬遜雨林",
     "description": "亞馬遜最強猛禽之一，翱翔密林之上，一擊獵殺。",
-    "effect": {
-      "type": "sky_strike",
-      "value": 90,
-      "description": "高空突襲，忽略敵方防禦直接造成傷害"
-    }
+
   },
   {
     "word": "Sloth",
@@ -1157,10 +1153,20 @@ const baseCards = [
     zh: "撒哈拉銀蟻",
     rarity: "超稀有",
     category: "炎熱生物",
-    image: "https://i.pinimg.com/736x/67/c6/78/67c678a2a17dfdae2a6e47e759c30f6b.jpg",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Cataglyphis_bombycina_casent0173420_profile_1.jpg/640px-Cataglyphis_bombycina_casent0173420_profile_1.jpg",
     role: "沙漠求生專家",
     description: "能在攝氏 60 度高溫地表奔跑數分鐘，體表銀毛反射熱輻射。",
     youtube: "https://www.youtube.com/watch?v=QwF3ipuNyfc"
+  },
+  {
+    id: 10006,
+    word: "Camel",
+    zh: "駱駝",
+    rarity: "普通",
+    category: "炎熱生物",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/94/Camel-1.jpg/640px-Camel-1.jpg",
+    role: "沙漠運輸之王",
+    description: "能耐高溫、數天不喝水，駝峰儲存脂肪幫助體溫調節。"
   },
   {
     id: 10007,
@@ -1168,9 +1174,19 @@ const baseCards = [
     zh: "沙漠鬣蜥",
     rarity: "普通",
     category: "炎熱生物",
-    image: "https://i.pinimg.com/736x/51/e2/21/51e221a5602dd97874f855bd9a34e632.jpg",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Dipsosaurus_dorsalis_20050829.jpg/640px-Dipsosaurus_dorsalis_20050829.jpg",
     role: "爬行類",
     description: "棲息在北美沙漠地區，活躍於攝氏 45 度以上的白天。"
+  },
+  {
+    id: 10008,
+    word: "Thorny Devil",
+    zh: "刺魔蜥",
+    rarity: "稀有",
+    category: "炎熱生物",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Moloch_horridus.jpg/640px-Moloch_horridus.jpg",
+    role: "沙漠生存者",
+    description: "來自澳洲內陸的蜥蜴，可從皮膚吸收露水導向嘴部飲用。"
   },
   {
     id: 10009,
@@ -1178,9 +1194,19 @@ const baseCards = [
     zh: "納米比甲蟲",
     rarity: "稀有",
     category: "炎熱生物",
-    image: "https://i.pinimg.com/736x/57/95/09/5795098694afb93103b8e94e973bb1e5.jpg",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fc/Stenocara.jpg/640px-Stenocara.jpg",
     role: "取水專家",
     description: "可從晨霧中收集水分，反向彎曲身體讓水珠滾入口中。"
+  },
+  {
+    id: 10010,
+    word: "Sidewinder Rattlesnake",
+    zh: "側行響尾蛇",
+    rarity: "普通",
+    category: "炎熱生物",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2d/Crotalus_cerastes_mesquite_spring_CA.jpg/640px-Crotalus_cerastes_mesquite_spring_CA.jpg",
+    role: "爬行動物",
+    description: "沙漠移動技巧高手，特殊S型行走減少皮膚與熱地面接觸。"
   },
   {
     id: 10011,
@@ -1188,9 +1214,19 @@ const baseCards = [
     zh: "撒哈拉獵豹",
     rarity: "稀有",
     category: "炎熱生物",
-    image: "https://v1.pinimg.com/videos/iht/expMp4/14/f2/23/14f223b65c6ca79556aad64ea731281d_720w.mp4",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bc/Acinonyx_jubatus_venaticus.jpg/640px-Acinonyx_jubatus_venaticus.jpg",
     role: "掠食者",
     description: "稀有且瀕危，耐熱、靈活，是撒哈拉沙漠的終極掠食者之一。"
+  },
+  {
+    id: 10012,
+    word: "Gila Monster",
+    zh: "希拉毒蜥",
+    rarity: "稀有",
+    category: "炎熱生物",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Heloderma_suspectum_03.jpg/640px-Heloderma_suspectum_03.jpg",
+    role: "毒爬行類",
+    description: "棲息於北美乾旱地區，是少數帶毒的大型蜥蜴之一。"
   },
   {
     id: 10013,
@@ -1198,7 +1234,7 @@ const baseCards = [
     zh: "非洲象",
     rarity: "普通",
     category: "炎熱生物",
-    image: "https://v1.pinimg.com/videos/mc/720p/1f/a2/d8/1fa2d831309e2d257d57447ec27e5f52.mp4",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/37/African_Bush_Elephant.jpg/640px-African_Bush_Elephant.jpg",
     role: "草原巨獸",
     description: "透過巨大的耳朵與泥浴調節體溫，在炎熱草原長途跋涉。"
   },
@@ -2508,6 +2544,115 @@ category: "神話生物", description: "白蹄踏露，角尖閃耀純潔光芒�
     "role": "National Level Hunter",
     "description": "肌肉山脈般的存在，一拳震城；美利堅的野獸，強悍無需多言。"
   },
+  //都市傳說類型 (共13張)
+  {
+    "word": "Tomino Hell",
+    "zh": "地獄的富江",
+    "image": "https://v1.pinimg.com/videos/iht/720p/ec/b1/f3/ecb1f35cb3e518f81d38d5e3887bdeb8.mp4",
+    "rarity": "超稀有",
+    "category": "都市傳說",
+    "description": "她的名字在詩中迴盪，每個音節都是一根深入靈魂的針。有人說，看著她的眼睛太久，就會忘了自己曾是誰。——來自日本的都市傳說"
+  },
+  {
+    "word": "Inunaki Village",
+    "zh": "犬鳴村",
+    "image": "https://i.pinimg.com/736x/9e/25/2b/9e252b5eb8446c84adf7028bab99d8de.jpg",
+    "rarity": "超稀有",
+    "category": "都市傳說",
+    "description": "沒有信號、沒有出口，只有漫無止境的迷霧與凝視。傳說中走進村莊的人，會在第七天忘了怎麼走出來。——來自日本的都市傳說"
+  },
+  {
+    "word": "Tsu Chan",
+    "zh": "傳說中的電話少女",
+    "image": "https://v1.pinimg.com/videos/mc/720p/61/18/c9/6118c9fc5a4568b5c13f6692fd9d23f4.mp4",
+    "rarity": "普通",
+    "category": "都市傳說",
+    "description": "電話響起，你不自覺地接起。那頭傳來微弱的喘息聲，彷彿有雙手正從線路那端一寸寸伸出來。——來自日本的都市傳說"
+  },
+  {
+    "word": "Slender Man",
+    "zh": "瘦長鬼影",
+    "image": "https://i.pinimg.com/736x/7c/73/ae/7c73ae24828439e7df98093acc822cda.jpg",
+    "rarity": "超稀有",
+    "category": "都市傳說",
+    "description": "他沒有臉，卻能吞噬記憶。他的手指無聲地伸入你夢中，留下如煙的恐懼。——來自美國的都市傳說"
+  },
+  {
+    "word": "Bloody Mary",
+    "zh": "血腥瑪麗",
+    "image": "https://v1.pinimg.com/videos/mc/720p/a7/15/80/a71580ff1d781d614ac9201a84fe76b0.mp4",
+    "rarity": "稀有",
+    "category": "都市傳說",
+    "description": "鏡子是她的牢籠也是通道。若你喚她三次，她會用你的臉來走出來。——來自美國的都市傳說"
+  },
+  {
+    "word": "Elevator Ritual",
+    "zh": "電梯遊戲",
+    "image": "https://i.pinimg.com/736x/85/fc/c2/85fcc2cecf1ce7c5dbdc4d651632f6fd.jpg",
+    "rarity": "超稀有",
+    "category": "都市傳說",
+    "description": "每個按鍵的組合都像一場儀式。如果你到達那層『不存在』的樓層，請不要讓她走進來。——來自韓國的都市傳說"
+  },
+  {
+    "word": "Red Mask",
+    "zh": "紅衣女鬼",
+    "image": "https://i.pinimg.com/736x/1a/03/29/1a0329b4713fa4132cb2cd0255956c4c.jpg",
+    "rarity": "稀有",
+    "category": "都市傳說",
+    "description": "她遮住了毀容的臉，只為問你一句話。她不是要答案，她要你的一半臉。——來自韓國的都市傳說"
+  },
+  {
+    "word": "Red Dressed Girl",
+    "zh": "紅衣小女孩",
+    "image": "https://i.pinimg.com/736x/c0/c1/0e/c0c10e002efb5860219aee1f73319ec7.jpg",
+    "rarity": "超稀有",
+    "category": "都市傳說",
+    "description": "她靜靜站在林間坡道，無聲地盯著鏡頭。紅衣不是她穿的，而是她死後，整片山林染上的顏色。——來自台灣的都市傳說"
+  },
+  {
+    "word": "Ghost Bridge",
+    "zh": "女鬼橋",
+    "image": "https://media.vogue.com.tw/photos/5e3a921cafa0b30008bc68d6/2:3/w_2560%2Cc_limit/3P9OFnaqH7CfL0hiiq4C-1240x1771.jpg",
+    "rarity": "超稀有",
+    "category": "都市傳說",
+    "description": "不管聽到什麼，都不要回頭。——來自台灣的都市傳說"
+  },
+  {
+    "word": "Yushan Flyers",
+    "zh": "玉山小飛俠",
+    "image": "https://tse1.mm.bing.net/th/id/OIP.E2g7alF4sC1mDGqj2RArFgHaFO?r=0&pid=ImgDet&w=474&h=334&rs=1&o=7&rm=3",
+    "rarity": "超稀有",
+    "category": "都市傳說",
+    "description": "山霧裡浮出三個穿黃雨衣、戴斗笠的人影，走在你前方。他們不說話，只向前走。直到你發現，他們從沒踩過地面，也沒有影子。你轉身想叫隊友時，隊伍已經不見了。——來自台灣的都市傳說"
+  },
+  {
+    "word": "Human-Faced Fish",
+    "zh": "人面魚",
+    "image": "https://ogre.natalie.mu/media/news/eiga/2019/1113/Jinmengyo_key.jpg?imwidth=750&imdensity=1",
+    "rarity": "超稀有",
+    "category": "都市傳說",
+    "description": "你靠近水池，那條魚緩緩游過來，浮出水面。牠張嘴閉嘴，像在說話，像在求救。直到你聽懂牠的嘴型，正在模仿你的名字。——來自台灣的都市傳說"
+  },
+  {
+    "word": "Kuchisake Onna",
+    "zh": "裂口女",
+    "image": "https://i.pinimg.com/736x/d2/e7/fd/d2e7fdd1a5d55ac1f9c0565cd9d2337d.jpg",
+    "rarity": "稀有",
+    "category": "都市傳說",
+    "description": "她問你：我漂亮嗎？你無論怎麼回答，剪刀都會落下。——來自日本的都市傳說"
+  },
+  {
+    "word": "Teke Teke",
+    "zh": "手腳女",
+    "image": "https://i.pinimg.com/736x/7f/56/32/7f5632578422e3806ab74c1b27711bd8.jpg",
+    "rarity": "超稀有",
+    "category": "都市傳說",
+    "description": "她沒有下半身，靠手肘爬行。聲音像骨頭在地上刮──テケ…テケ…。你跑不過她。——來自日本的都市傳說"
+  },
+
+  
+
+
   // 未來都市類型 (共7張)
   { word: "neoncity", zh: "霓虹都市", image: "https://v1.pinimg.com/videos/iht/expMp4/d2/64/4c/d2644c89c62d9565c0b02167d5f21b73_720w.mp4", rarity: "稀有", category: "未來都市", description: "光影交織的街道，夢想與現實在霓虹中共舞。" },
 
