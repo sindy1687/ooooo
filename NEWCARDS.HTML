@@ -272,10 +272,28 @@
         max-height: 7em;
       }
     }
+    .back-to-gacha-btn {
+      display: inline-block;
+      margin: 20px 0 10px 0;
+      padding: 10px 24px;
+      background: linear-gradient(90deg, #0ff, #08f);
+      color: #fff;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: bold;
+      box-shadow: 0 2px 8px #0ff4;
+      transition: background 0.2s, box-shadow 0.2s;
+    }
+    .back-to-gacha-btn:hover {
+      background: linear-gradient(90deg, #08f, #0ff);
+      box-shadow: 0 4px 16px #0ff8;
+    }
   </style>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 </head>
 <body>
+  <!-- 返回抽卡頁按鈕 -->
+  <a href="gacha.html" class="back-to-gacha-btn">返回抽卡頁</a>
   <div class="container">
     <div class="star-deco" style="top:-18px;left:12px;"></div>
     <div class="star-deco" style="top:22px;right:24px;"></div>
