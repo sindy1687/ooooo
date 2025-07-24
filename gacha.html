@@ -1602,7 +1602,26 @@
 
   <!-- 移除分頁按鈕 -->
   <main>
-    <h2>點擊按鈕開始抽卡！</h2>
+    <h2 id="drawCardHint" style="
+      font-size:2.2rem;
+      font-weight:900;
+      background: linear-gradient(90deg,#ff2d55 0%,#111 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-fill-color: transparent;
+      text-shadow: 0 0 18px #ff2d55, 0 0 32px #111, 0 0 8px #fff;
+      letter-spacing:3px;
+      animation: hintGlow 2.5s infinite alternate;
+      margin-bottom: 30px;
+    ">點擊按鈕開始抽卡！</h2>
+    <style>
+    @keyframes hintGlow {
+      0% { text-shadow: 0 0 18px #ff2d55, 0 0 32px #111, 0 0 8px #fff; }
+      50% { text-shadow: 0 0 32px #111, 0 0 48px #ff2d55, 0 0 18px #fff; }
+      100% { text-shadow: 0 0 18px #ff2d55, 0 0 32px #111, 0 0 8px #fff; }
+    }
+    </style>
     <!-- 新增：分類分頁按鈕區塊 -->
     <div id="categoryTabs" style="margin-bottom: 18px;"></div>
     <div style="margin-bottom: 32px;">
@@ -1961,9 +1980,9 @@
     // [FINAL VERSION] 處理單抽結果的通知
     function handleSingleDrawResult(result) {
       if (result.type === 'duplicate') {
-        LinkageSystem.notifications.show(`抽到重複卡片 ${result.card.zh}，轉換為 ⭐ ${result.stars}！`, 'info');
+        LinkageSystem.notifications.show(`<span style='color:#ffd700;font-weight:bold;text-shadow:0 0 6px #fff,0 0 12px #ffd700;'>抽到重複卡片</span> <span style='color:#fff;font-weight:bold;'>${result.card.zh}</span>，<span style='color:#00ffff;font-weight:bold;'>轉換為 ⭐ ${result.stars}</span>！`, 'info');
       } else if (result.type === 'new_card_unlocked') {
-        LinkageSystem.notifications.show(`🎉 恭喜！解鎖新卡片： ${result.card.zh}！`, 'success');
+        LinkageSystem.notifications.show(`<span style='color:#ff2d55;font-weight:bold;text-shadow:0 0 8px #fff,0 0 16px #ff2d55;'>🎉 恭喜！解鎖新卡片：</span> <span style='color:#fff;font-weight:bold;'>${result.card.zh}</span>！`, 'success');
       }
     }
 
@@ -2163,19 +2182,19 @@
         }
 
         // 顯示摘要通知
-        let summaryMessage = `<h3 style="margin-top:0; margin-bottom:10px; border-bottom:1px solid #ffd70044; padding-bottom:5px;">十連抽結果</h3>`;
+        let summaryMessage = `<h3 style="margin-top:0; margin-bottom:10px; border-bottom:1px solid #ffd70044; padding-bottom:5px;color:#00ffff;text-shadow:0 0 8px #00ffff;">十連抽結果</h3>`;
         if (newCards.length > 0) {
-            summaryMessage += `<p style="margin:4px 0; color:#76ff76;">🎉 新解鎖: ${newCards.join(', ')}</p>`;
+            summaryMessage += `<p style="margin:4px 0; color:#ff2d55;font-weight:bold;text-shadow:0 0 8px #fff,0 0 16px #ff2d55;">🎉 新解鎖: ${newCards.join(', ')}</p>`;
         }
         
         const duplicateEntries = Object.entries(duplicateCardsLog);
         if (duplicateEntries.length > 0) {
             const duplicatesText = duplicateEntries.map(([name, data]) => `${name} (${data.rarity}) x${data.count}`).join(', ');
-            summaryMessage += `<p style="margin:4px 0; color:#ffaa00;">🔄 重複轉換: ${duplicatesText}</p>`;
+            summaryMessage += `<p style="margin:4px 0; color:#ffd700;font-weight:bold;text-shadow:0 0 6px #fff,0 0 12px #ffd700;">🔄 重複轉換: ${duplicatesText}</p>`;
         }
         
         if (totalBonusStars > 0) {
-            summaryMessage += `<p style="margin:4px 0; color:#ffd700;">⭐ 重複獎勵: +${totalBonusStars} 星星</p>`;
+            summaryMessage += `<p style="margin:4px 0; color:#00ffff;font-weight:bold;text-shadow:0 0 8px #00ffff;">⭐ 重複獎勵: +${totalBonusStars} 星星</p>`;
         }
         
         LinkageSystem.notifications.show(summaryMessage, 'success');
@@ -2947,6 +2966,11 @@
           recentCards = recentCards.slice(-20);
         }
         localStorage.setItem('recentlyObtainedCards', JSON.stringify(recentCards));
+        // 新增：記錄解鎖時間
+        let unlockTimes = {};
+        try { unlockTimes = JSON.parse(localStorage.getItem('recentlyObtainedCardsUnlockTime') || '{}'); } catch(e){}
+        unlockTimes[word] = new Date().toISOString();
+        localStorage.setItem('recentlyObtainedCardsUnlockTime', JSON.stringify(unlockTimes));
         console.log(`🎉 新卡片已標記: ${word}`);
       }
     }
@@ -3361,6 +3385,161 @@
     if (wishSearchGlobal) {
       wishSearchGlobal.addEventListener('input', updateWishDisplay);
     }
+
+    // ========== 新增：卡片顯示分組與排序功能 ========== //
+    function renderCardGrid() {
+      const grid = document.getElementById("cardGrid");
+      if (!grid) return;
+      grid.innerHTML = "";
+
+      // 取得已擁有卡片
+      let owned = LinkageSystem.cards.getOwnedCards();
+      let recent = [];
+      try { recent = JSON.parse(localStorage.getItem('recentlyObtainedCards') || '[]'); } catch(e){}
+
+      // 找出所有卡片的最新 createdAt 日期
+      let allCreatedAts = (typeof allCards !== 'undefined' ? allCards : []).map(c => c.createdAt).filter(Boolean);
+      let latestCreatedAt = null;
+      if (allCreatedAts.length > 0) {
+        latestCreatedAt = allCreatedAts.sort().reverse()[0];
+      }
+
+      // 轉成陣列
+      let ownedArr = Object.values(owned);
+      // 依照 recentlyObtainedCards 排序，然後依照類型
+      ownedArr.sort((a, b) => {
+        // 先依照最近獲得排序
+        let ia = recent.indexOf(a.word);
+        let ib = recent.indexOf(b.word);
+        if (ia !== -1 && ib !== -1) return ia - ib; // 越新越小
+        if (ia !== -1) return -1;
+        if (ib !== -1) return 1;
+        // 再依照類型
+        if (a.category !== b.category) return a.category.localeCompare(b.category);
+        // 最後依照名稱
+        return a.zh.localeCompare(b.zh);
+      });
+
+      // 依照類型分組
+      let grouped = {};
+      ownedArr.forEach(card => {
+        if (!grouped[card.category]) grouped[card.category] = [];
+        grouped[card.category].push(card);
+      });
+
+      // 渲染
+      Object.keys(grouped).sort().forEach(category => {
+        // 類型標題
+        const catTitle = document.createElement('div');
+        catTitle.textContent = `【${category}】`;
+        catTitle.style = "font-weight:bold;color:#00ffff;text-align:left;margin:12px 0 4px 0;font-size:1.15em;text-shadow:0 0 8px #00ffff,0 0 16px #000;letter-spacing:2px;";
+        grid.appendChild(catTitle);
+
+        grouped[category].forEach(card => {
+          // 直接複用 showCard 內的卡片渲染邏輯
+          const div = document.createElement("div");
+          div.className = `card ${getRarityClass(card.rarity)} unlocked`;
+          if (card.rarity === "普通") div.style.background = 'linear-gradient(135deg, rgba(0, 255, 255, 0.1), rgba(0, 255, 255, 0.05))';
+          else if (card.rarity === "稀有") div.style.background = 'linear-gradient(135deg, rgba(162, 89, 255, 0.1), rgba(162, 89, 255, 0.05))';
+          else if (card.rarity === "超稀有") div.style.background = 'linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(255, 215, 0, 0.05))';
+          let starIcons = "";
+          if (card.rarity === "普通") starIcons = "★";
+          else if (card.rarity === "稀有") starIcons = "★★";
+          else if (card.rarity === "超稀有") starIcons = "★★★";
+          let cardMedia = '';
+          if (card.image && card.image.endsWith('.mp4')) {
+            cardMedia = `<video src="${card.image}" autoplay loop muted playsinline style="width:100%;height:120px;object-fit:cover;border-radius:10px;"></video>`;
+          } else {
+            cardMedia = `<img src="${card.image}" alt="${card.word}">`;
+          }
+
+          // 判斷是否為最新 createdAt 的新卡
+          let isNewCard = false;
+          if (card.createdAt && latestCreatedAt && card.createdAt === latestCreatedAt) {
+            isNewCard = true;
+          }
+
+          div.innerHTML = `
+            ${cardMedia}
+            <div class="stars">${starIcons}</div>
+            <div class="label">
+              <div class="chinese-text">${card.zh}</div>
+              <div class="english-text">${card.word}</div>
+            </div>
+            <div class="category-tag">類別：${card.category}</div>
+            <div class="rank-badge">${rankMap[card.rarity] || ""}</div>
+            <span class="unlock-status-icon">✔</span>
+            ${isNewCard ? '<span style="position:absolute;top:8px;left:8px;background:#ff2d55;color:#fff;font-size:0.95em;padding:2px 8px;border-radius:10px;z-index:10;font-weight:bold;box-shadow:0 0 8px #ff2d55;letter-spacing:1px;">新卡</span>' : ''}
+          `;
+          div.onclick = (e) => openModal(card);
+          grid.appendChild(div);
+        });
+      });
+    }
+    // ========== END ========== //
+
+    // ... existing code ...
+    // 在每次抽卡、解鎖新卡片、頁面載入時呼叫 renderCardGrid
+    // 例如在 drawCard、drawTen、window.onload 等地方加上 renderCardGrid();
+    // 例如：
+    // window.addEventListener("load", () => { ... renderCardGrid(); ... });
+    // ... existing code ...
+
+    // ========== 修改許願選單分群 ========== //
+    function fillWishSelect(rarity, selectId, globalSearchValue) {
+      const select = document.getElementById(selectId);
+      if (!select) return;
+      select.innerHTML = '<option value="">請選擇卡片</option>';
+      if (!Array.isArray(allCards) || allCards.length === 0) return;
+      let filterText = globalSearchValue ? globalSearchValue.trim().toLowerCase() : '';
+      // 依照類型分群
+      let cards = allCards.filter(card => card.rarity === rarity && !LinkageSystem.cards.isCardOwned(card.word));
+      // ========== 新增：找出最新 createdAt 日期 ========== //
+      let allCreatedAts = allCards.map(c => c.createdAt ? String(c.createdAt) : null).filter(Boolean);
+      let latestCreatedAt = null;
+      if (allCreatedAts.length > 0) {
+        latestCreatedAt = allCreatedAts.sort().reverse()[0];
+      }
+      // ========== END ========== //
+      let grouped = {};
+      cards.forEach(card => {
+        if (filterText) {
+          const text = `${card.category} ${card.zh} ${card.word}`.toLowerCase();
+          if (!text.includes(filterText)) return;
+        }
+        if (!grouped[card.category]) grouped[card.category] = [];
+        grouped[card.category].push(card);
+      });
+      let hasOption = false;
+      Object.keys(grouped).sort().forEach(category => {
+        const optgroup = document.createElement('optgroup');
+        optgroup.label = category;
+        optgroup.style = "color:#00ffff;font-weight:bold;text-shadow:0 0 8px #00ffff,0 0 16px #000;letter-spacing:1px;background:#101a2a;";
+        grouped[category].sort((a, b) => a.zh.localeCompare(b.zh));
+        grouped[category].forEach(card => {
+          const option = document.createElement('option');
+          option.value = card.word;
+          let isNewCard = card.createdAt && latestCreatedAt && String(card.createdAt) === String(latestCreatedAt);
+          option.textContent = `${getRarityEmoji(card.rarity)} ${card.zh}${isNewCard ? ' [新卡]' : ''}`;
+          optgroup.appendChild(option);
+          hasOption = true;
+        });
+        select.appendChild(optgroup);
+      });
+      if (!hasOption) {
+        const noOption = document.createElement('option');
+        noOption.value = '';
+        noOption.disabled = true;
+        noOption.selected = true;
+        noOption.textContent = '沒有符合的卡片';
+        select.appendChild(noOption);
+      }
+    }
+    // ========== END ========== //
+
+    // ... existing code ...
+    // 在頁面載入、抽卡、許願設定等需要時呼叫 renderCardGrid();
+    // ... existing code ...
   </script>
 </body>
 </html>
