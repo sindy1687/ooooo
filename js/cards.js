@@ -2885,7 +2885,22 @@ description: "沿側散發微光，化作深海的流動火炬。" },
   { word: "passenger pigeon", zh: "旅鴿", image: "https://i.pinimg.com/736x/70/96/00/709600748ef8156a77310ae257678122.jpg", rarity: "普通", category: "滅絕動物", description: "曾遮天蔽日的鴿群，如今只剩沉靜的羽毛傳說。", multiplier: 1.0, cost: 5 },
 
   { word: "tasmanian tiger", zh: "袋狼", image: "https://i.pinimg.com/736x/c2/b3/12/c2b3126945b4cf166652da002a8f0fb5.jpg", rarity: "稀有", category: "滅絕動物", description: "斑紋似鬼魅，於塔斯馬尼亞的夜幕中消散無蹤。", multiplier: 1.5, cost: 10 },
-
+  {
+    "word": "Hawaiian Honeycreeper",
+    "zh": "夏威夷吸蜜鳥",
+    "image": "https://img.shoplineapp.com/media/image_clips/6076bc864f751b00260a2c14/original.jpg?1618394246",
+    "rarity": "超稀有",
+    "category": "滅絕動物",
+    "description": "夏威夷王族的象徵，羽毛太美了!因為濫捕而滅絕，最後一隻在 2004 年靜靜離開。"
+  },
+  {
+    "word": "Barbary Lion",
+    "zh": "巴巴里獅",
+    "image": "https://v1.pinimg.com/videos/mc/720p/56/91/06/569106666db89488485d23bccd82095f.mp4",
+    "rarity": "超稀有",
+    "category": "滅絕動物",
+    "description": "牠們的鬃毛像火焰燃燒在北非的雪山之巔，曾是羅馬競技場的主角，也是摩洛哥皇室的圖騰。最後一隻野生巴巴里獅，於1922年在阿特拉斯山脈被獵殺。從此，帝王只存在於傳說。"
+  },
   { word: "woolly_mammoth", zh: "長毛象", image: "https://v1.pinimg.com/videos/iht/expMp4/c4/19/04/c41904a269472a3bbd417a715e112b5c_720w.mp4", rarity: "超稀有", category: "滅絕動物", description: "冰原巨獸的足跡，永遠凍結在史前的霜雪裡。", multiplier: 2.0, cost: 15 },
 
   { word: "howl", zh: "霍爾", image: "https://www.bing.com/th/id/OGC.8bc2ba6bdc5bc6f1429defacf7e2ac91?o=7&pid=1.7&rm=3&rurl=https%3a%2f%2fmegapx-assets.dcard.tw%2fimages%2ff0f51b38-17ea-4208-bb05-54f6a88c5311%2ffull.jpeg&ehk=N2IH8foq7dfoimQyUreZdh3w7dP8F9hl1%2bcW9Dg9CNc%3d", rarity: "超稀有", category: "霍爾城堡", description: "魔法師霍爾，紅髮飛揚如火，心底藏著守護與逃避的勇氣。", multiplier: 2.0, cost: 15 },
