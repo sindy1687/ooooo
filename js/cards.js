@@ -1563,17 +1563,6 @@ const baseCards = [
     "rarity": "稀有",
     "category": "寶可夢",
     "description": "人造奇蹟，念力之王，戰場上無可匹敵。",
-
-  },
-  {
-    "word": "Muzan Kibutsuji",
-    "zh": "鬼舞辻無慘",
-    "image": "https://v1.pinimg.com/videos/mc/720p/75/fd/db/75fddb05f0547a1ee67d52d5c3463023.mp4",
-    "video": "https://youtu.be/Q9wKtrjF45w",
-    "rarity": "超稀有",
-    "category": "鬼滅之刃",
-    "description": "鬼之始祖，操控恐懼與再生的不死之王。",
-
   },
   {
     "word": "Naruto Uzumaki",
