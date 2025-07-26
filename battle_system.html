@@ -1,0 +1,1935 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>戰鬥系統</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --glow-cyan: #00ffff;
+            --glow-magenta: #ff00ff;
+            --glow-yellow: #ffff00;
+            --dark-blue: #0a1428;
+            --medium-blue: #1a2a4a;
+            --light-blue: #2a4a8a;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body, html {
+            width: 100vw;
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+            font-family: 'Orbitron', sans-serif;
+            background: linear-gradient(135deg, #0a1428 0%, #1a2a4a 50%, #0a1428 100%);
+            color: #fff;
+            overflow: hidden;
+        }
+
+        .main-container {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            grid-template-rows: 1fr 300px;
+            width: 100vw;
+            height: 100vh;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        /* 戰鬥區 */
+        .battle-area {
+            grid-column: 1;
+            grid-row: 1;
+            background: rgba(10, 20, 40, 0.8);
+            border: 2px solid var(--glow-magenta);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 0 20px rgba(162, 89, 255, 0.3);
+            backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        .battle-field {
+            flex: 1;
+            background: linear-gradient(180deg, rgba(0, 0, 0, 0.5) 0%, rgba(20, 40, 80, 0.3) 100%);
+            border-radius: 12px;
+            position: relative;
+            border: 1px solid rgba(162, 89, 255, 0.3);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 40px 20px;
+        }
+
+        .enemy-area {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            min-height: 120px;
+        }
+
+        .player-area {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            min-height: 120px;
+        }
+
+        .enemy-card, .player-card {
+            width: 100px;
+            height: 140px;
+            background: rgba(255, 0, 0, 0.2);
+            border: 2px solid #ff4444;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            flex-shrink: 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .player-card {
+            background: rgba(0, 255, 0, 0.2);
+            border-color: #44ff44;
+        }
+
+        .card-media {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 6px;
+        }
+        .card-media[is-video] {
+            pointer-events: none;
+        }
+
+        .battle-controls {
+            margin-top: 15px;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .battle-btn {
+            padding: 10px 20px;
+            background: linear-gradient(45deg, #4ecdc4, #44a08d);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(78, 205, 196, 0.3);
+            min-width: 120px;
+            flex: 0 1 auto;
+        }
+
+        .battle-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 255, 255, 0.4);
+        }
+
+        /* 戰鬥日誌 */
+        .battle-log {
+            grid-column: 2;
+            grid-row: 1;
+            background: rgba(0, 0, 0, 0.85);
+            border: 2px solid var(--glow-cyan);
+            border-radius: 15px;
+            padding: 20px;
+            font-size: 0.9rem;
+            overflow-y: auto;
+            color: #fff;
+            box-shadow: 0 0 12px #00ffff33;
+        }
+
+        .log-entry {
+            margin-bottom: 10px;
+            padding: 8px;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .log-entry.system {
+            background: rgba(0, 255, 255, 0.2);
+            border-left: 3px solid var(--glow-cyan);
+        }
+
+        .log-entry.player {
+            background: rgba(0, 255, 0, 0.2);
+            border-left: 3px solid #00ff00;
+        }
+
+        .log-entry.enemy {
+            background: rgba(255, 0, 0, 0.2);
+            border-left: 3px solid #ff0000;
+        }
+
+        /* 下半部區域 */
+        .bottom-area {
+            grid-column: 1 / span 2;
+            grid-row: 2;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        /* 編輯隊伍 */
+        .team-panel {
+            background: rgba(10, 20, 40, 0.8);
+            border: 2px solid var(--glow-yellow);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 0 20px rgba(255, 255, 0, 0.2);
+            min-height: 260px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            overflow: visible;
+        }
+
+        .team-panel h3 {
+            margin: 0 0 20px 0;
+            color: var(--glow-yellow);
+            text-align: center;
+        }
+
+        .team-slots {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .team-slot {
+            width: 80px;
+            height: 110px;
+            background: rgba(255, 255, 0, 0.1);
+            border: 2px dashed var(--glow-yellow);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .team-slot:hover {
+            background: rgba(255, 255, 0, 0.2);
+            border-color: #ffff00;
+        }
+
+        .team-slot.filled {
+            border-style: solid;
+            background: rgba(255, 255, 0, 0.3);
+        }
+
+        .team-slot .card-media {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 6px;
+        }
+
+        .team-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-top: 10px;
+            background: rgba(255,255,0,0.08);
+            border-radius: 8px;
+            padding: 6px 3px;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 5px 4px;
+            background: rgba(255, 255, 0, 0.13);
+            border-radius: 5px;
+            font-size: 0.92rem;
+            font-weight: bold;
+            color: #fffbe0;
+        }
+        .stat-label {
+            color: #ffe066;
+            font-size: 0.98em;
+            letter-spacing: 0.5px;
+        }
+        .stat-value {
+            color: #fff;
+            font-size: 1em;
+            font-weight: bold;
+            text-shadow: 0 0 3px #ffe06699;
+        }
+
+        /* 卡片選擇區 */
+        .card-library {
+            background: rgba(10, 20, 40, 0.8);
+            border: 2px solid var(--glow-cyan);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+            overflow-y: auto;
+        }
+
+        .card-library h3 {
+            margin: 0 0 20px 0;
+            color: var(--glow-cyan);
+            text-align: center;
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            gap: 15px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .card {
+            width: 80px;
+            height: 110px;
+            background: rgba(0, 255, 255, 0.1);
+            border: 2px solid var(--glow-cyan);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card.ssr {
+            background: rgba(255, 215, 0, 0.15);
+            border-color: #ffd700; /* 黃色 */
+            box-shadow: 0 0 8px rgba(255, 215, 0, 0.4);
+        }
+
+        .card.a {
+            background: rgba(78, 205, 255, 0.15);
+            border-color: #2196f3; /* 藍色 */
+            box-shadow: 0 0 6px rgba(33, 150, 243, 0.3);
+        }
+
+        .card.r {
+            background: rgba(156, 39, 176, 0.15);
+            border-color: #9c27b0; /* 紫色 */
+            box-shadow: 0 0 4px rgba(156, 39, 176, 0.2);
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 255, 255, 0.4);
+        }
+
+        .card.ssr:hover {
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.6);
+        }
+
+        .card.a:hover {
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.5);
+        }
+
+        .card.r:hover {
+            box-shadow: 0 5px 15px rgba(78, 205, 196, 0.4);
+        }
+
+        .card.selected {
+            background: rgba(0, 255, 255, 0.3);
+            border-color: #ffff00;
+        }
+
+        .card.selected::after {
+            content: "已選入隊伍";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 0, 0.8);
+            color: #000;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: bold;
+        }
+
+        .card.used {
+            opacity: 0.5;
+            cursor: not-allowed;
+            filter: grayscale(1);
+        }
+
+        .card.used::after {
+            content: "已使用";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: #fff;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+        }
+
+        /* 自定義滾動條 */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--glow-cyan);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00cccc;
+        }
+
+        /* 拖放提示 */
+        .team-slot.drag-over {
+            outline: 2px dashed #00ffff;
+            background: rgba(0,255,255,0.2);
+        }
+        .card.dragging {
+            opacity: 0.6;
+            box-shadow: 0 0 16px #00ffff;
+        }
+        .player-card.ssr, .enemy-card.ssr {
+            border-color: #ffd700 !important;
+        }
+        .player-card.a, .enemy-card.a {
+            border-color: #2196f3 !important;
+        }
+        .player-card.r, .enemy-card.r {
+            border-color: #9c27b0 !important;
+        }
+
+        /* 戰鬥動畫效果 */
+        @keyframes damageFloat {
+            0% {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: translateY(-20px) scale(1.2);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-40px) scale(0.8);
+                opacity: 0;
+            }
+        }
+
+        @keyframes attackGlow {
+            0% { box-shadow: 0 0 5px #ff6b6b; }
+            50% { box-shadow: 0 0 20px #ff6b6b, 0 0 30px #ff6b6b; }
+            100% { box-shadow: 0 0 5px #ff6b6b; }
+        }
+
+        @keyframes skillGlow {
+            0% { box-shadow: 0 0 5px #ffd700; }
+            50% { box-shadow: 0 0 25px #ffd700, 0 0 40px #ffd700; }
+            100% { box-shadow: 0 0 5px #ffd700; }
+        }
+
+        @keyframes defeatShake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .battle-card {
+            transition: all 0.3s ease;
+        }
+
+        .battle-card.attacking {
+            animation: attackGlow 0.8s ease-in-out;
+        }
+
+        .battle-card.skill-attacking {
+            animation: skillGlow 1.2s ease-in-out;
+        }
+
+        .battle-card.defeated {
+            animation: defeatShake 0.5s ease-in-out;
+        }
+
+        .damage-number {
+            position: absolute;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+            z-index: 1000;
+            pointer-events: none;
+        }
+
+        .damage-number.normal {
+            color: #ff6b6b;
+            animation: damageFloat 1s ease-out forwards;
+        }
+
+        .damage-number.skill {
+            color: #ffd700;
+            animation: damageFloat 1.2s ease-out forwards;
+        }
+
+        .damage-number.critical {
+            color: #ff4757;
+            font-size: 1.4rem;
+            animation: damageFloat 1.5s ease-out forwards;
+        }
+    </style>
+</head>
+<body>
+    <!-- 卡片放大預覽 Modal -->
+    <div id="card-preview-modal" style="display:none; position:fixed; z-index:9999; left:0; top:0; width:100vw; height:100vh; background:rgba(0,0,0,0.65); align-items:center; justify-content:center;">
+        <div id="card-preview-content" style="position:relative; background:rgba(20,30,40,0.98); border-radius:18px; box-shadow:0 0 32px #00ffff99; padding:24px; display:flex; flex-direction:column; align-items:center;">
+            <button id="close-card-preview" style="position:absolute; top:8px; right:12px; background:#222; color:#fff; border:none; border-radius:50%; width:32px; height:32px; font-size:1.3rem; cursor:pointer;">×</button>
+            <div id="card-preview-media"></div>
+            <div id="card-preview-title" style="margin-top:12px; font-size:1.3rem; color:#ffe066; font-weight:bold;"></div>
+            <div id="card-preview-stats" style="margin-top:8px; font-size:1.1rem; color:#fff;"></div>
+        </div>
+    </div>
+    <div class="main-container">
+        <!-- 星星顯示區 -->
+        <div style="position: fixed; top: 20px; right: 20px; z-index: 1000; background: rgba(0,0,0,0.8); padding: 10px 15px; border-radius: 10px; border: 2px solid #ffd700; box-shadow: 0 0 10px rgba(255,215,0,0.3);">
+            <div style="color: #ffd700; font-weight: bold; font-size: 1.2rem;">
+                ⭐ <span id="totalStarsCount">0</span>
+            </div>
+        </div>
+
+        <!-- 返回首頁按鈕 -->
+        <div style="position: fixed; top: 20px; left: 20px; z-index: 1000;">
+            <button id="back-to-home" style="background: linear-gradient(45deg, #00ffff, #ff00ff); border: none; border-radius: 10px; padding: 12px 20px; color: #000; font-weight: bold; font-size: 1rem; cursor: pointer; box-shadow: 0 0 15px rgba(0,255,255,0.4); transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 5px 20px rgba(0,255,255,0.6)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 0 15px rgba(0,255,255,0.4)'">
+                🏠 返回首頁
+            </button>
+        </div>
+
+        <!-- 戰鬥區 -->
+        <div class="battle-area">
+            <div class="battle-field">
+                <div class="enemy-area" id="enemy-area">
+                    <!-- 敵人卡牌會在這裡顯示 -->
+                </div>
+                <div class="player-area" id="player-area">
+                    <!-- 玩家卡牌會在這裡顯示 -->
+                </div>
+            </div>
+            <div class="battle-controls">
+                <button class="battle-btn" id="start-battle">開始戰鬥</button>
+                <button class="battle-btn" id="manual-battle" style="background: linear-gradient(45deg, #ffd700, #ff6b6b);">手動戰鬥</button>
+            </div>
+            <!-- 手動戰鬥控制區 -->
+            <div id="manual-controls" style="display: none; margin-top: 15px; padding: 15px; background: rgba(0,0,0,0.3); border-radius: 10px; border: 1px solid #00ffff;">
+                <div style="text-align: center; margin-bottom: 10px; color: #00ffff; font-weight: bold;">手動戰鬥控制</div>
+                <div id="current-turn-info" style="text-align: center; margin-bottom: 10px; color: #fff;"></div>
+                <div id="enemy-selection" style="display: none; margin-bottom: 15px; text-align: center;">
+                    <div style="color: #ffd700; font-weight: bold; margin-bottom: 8px;">選擇攻擊目標：</div>
+                    <div id="enemy-targets" style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;"></div>
+                </div>
+                <div id="action-buttons" style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
+                    <button id="attack-btn" class="battle-btn" style="background: linear-gradient(45deg, #ff6b6b, #ff8e8e);">攻擊</button>
+                    <button id="skill-btn" class="battle-btn" style="background: linear-gradient(45deg, #4ecdc4, #6ee7df);">技能</button>
+                    <button id="skip-btn" class="battle-btn" style="background: linear-gradient(45deg, #95a5a6, #bdc3c7);">跳過</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 戰鬥日誌 -->
+        <div class="battle-log" id="battle-log">
+            <div class="log-entry system">戰鬥系統已準備就緒！</div>
+        </div>
+
+        <!-- 下半部區域 -->
+        <div class="bottom-area">
+            <!-- 編輯隊伍 -->
+            <div class="team-panel">
+                <h3>編輯隊伍</h3>
+                <div class="team-slots">
+                    <div class="team-slot" data-slot="0">
+                        <span>拖放卡牌</span>
+                    </div>
+                    <div class="team-slot" data-slot="1">
+                        <span>拖放卡牌</span>
+                    </div>
+                    <div class="team-slot" data-slot="2">
+                        <span>拖放卡牌</span>
+                    </div>
+                    <div class="team-slot" data-slot="3">
+                        <span>拖放卡牌</span>
+                    </div>
+                </div>
+                
+                <div class="team-stats">
+                    <div class="stat-item">
+                        <span class="stat-label">總攻擊力:</span>
+                        <span class="stat-value" id="total-attack">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">總防禦力:</span>
+                        <span class="stat-value" id="total-defense">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">總生命值:</span>
+                        <span class="stat-value" id="total-hp">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">隊伍技能:</span>
+                        <span class="stat-value" id="team-skill">無</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 卡片選擇區 -->
+            <div class="card-library">
+                <h3>卡片選擇區</h3>
+                <div class="card-grid" id="card-grid">
+                    <!-- 卡片會在這裡動態生成 -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="js/sound.js"></script>
+    <script src="js/soundSystem.js"></script>
+    <script src="js/userData.js"></script>
+    <script src="js/starRewardSystem.js"></script>
+    <script src="js/cardUtils.js"></script>
+    <script src="js/vocabData.js"></script>
+    <script src="js/cards.js"></script>
+    <script src="js/custom_cards.js"></script>
+    <script src="js/achievementSystem.js"></script>
+    <script>
+        // 遊戲狀態
+        // 獲取當前星星數量
+        function getCurrentStars() {
+            console.log('getCurrentStars 被調用');
+            if (typeof StarRewardSystem !== 'undefined') {
+                console.log('使用 StarRewardSystem');
+                return parseInt(localStorage.getItem('totalStars') || '0');
+            } else if (typeof LinkageSystem !== 'undefined' && LinkageSystem.stars) {
+                console.log('使用 LinkageSystem');
+                return LinkageSystem.stars.get();
+            } else {
+                console.log('使用 localStorage');
+                return parseInt(localStorage.getItem('totalStars') || '0');
+            }
+        }
+
+        // 增加星星（戰鬥系統專用）
+        function addStarsToBattle(amount) {
+            console.log('addStarsToBattle 被調用，數量:', amount);
+            let currentStars = 0;
+            
+            if (typeof StarRewardSystem !== 'undefined') {
+                console.log('使用 StarRewardSystem');
+                currentStars = parseInt(localStorage.getItem('totalStars') || '0');
+                const newStars = currentStars + amount;
+                localStorage.setItem('totalStars', newStars.toString());
+                // 嘗試調用 StarRewardSystem 的方法
+                if (typeof StarRewardSystem.addStars === 'function') {
+                    StarRewardSystem.addStars(amount);
+                }
+            } else if (typeof LinkageSystem !== 'undefined' && LinkageSystem.stars) {
+                console.log('使用 LinkageSystem');
+                currentStars = LinkageSystem.stars.get();
+                LinkageSystem.stars.add(amount);
+            } else {
+                console.log('使用 localStorage');
+                currentStars = parseInt(localStorage.getItem('totalStars') || '0');
+                const newStars = currentStars + amount;
+                localStorage.setItem('totalStars', newStars.toString());
+            }
+            
+            console.log('星星更新完成，當前星星:', getCurrentStars());
+            updateStarsDisplay();
+        }
+
+        // 更新星星顯示
+        function updateStarsDisplay() {
+            const starsElement = document.getElementById('totalStarsCount');
+            if (starsElement) {
+                const currentStars = getCurrentStars();
+                starsElement.textContent = currentStars;
+                console.log('星星顯示已更新:', currentStars);
+            }
+        }
+
+        // 初始化星星顯示
+        function initStarsDisplay() {
+            updateStarsDisplay();
+        }
+
+        const gameState = {
+            playerTeam: [],
+            enemyTeam: [],
+            isBattleActive: false,
+            currentTurn: 0,
+            usedCards: new Set(), // 記錄今天被打敗的卡片
+            selectedCards: new Set() // 記錄已選入隊伍但未使用的卡片
+        };
+
+        // 玩家狀態
+        const playerStatus = {
+            coins: 1000,
+            stars: 50,
+            exp: 0,
+            stage: 1
+        };
+
+        // 初始化遊戲
+        function initGame() {
+            console.log('initGame 開始執行');
+            console.log('baseCards 是否存在:', typeof baseCards !== 'undefined');
+            console.log('baseCards 長度:', typeof baseCards !== 'undefined' ? baseCards.length : 'undefined');
+            
+            if (typeof baseCards === 'undefined') {
+                console.log('等待卡片資料載入...');
+                setTimeout(initGame, 100);
+                return;
+            }
+            console.log('卡片資料已載入，共', baseCards.length, '張卡片');
+            
+            // 檢查卡片資料是否正確
+            if (baseCards.length === 0) {
+                console.error('卡片資料為空！');
+                addLogEntry('系統', '❌ 卡片資料載入失敗！');
+                return;
+            }
+            
+            // 為卡片補充素質屬性
+            enhanceCardsWithStats();
+            
+            loadUsedCards();
+            createCardGrid();
+            setupEventListeners();
+            updateTeamStats();
+            initStarsDisplay();
+            console.log('遊戲初始化完成');
+            addLogEntry('系統', '遊戲初始化完成！');
+        }
+
+        // 載入今天被打敗的卡片
+        function loadUsedCards() {
+            const today = new Date().toDateString();
+            const savedData = localStorage.getItem('usedCards_' + today);
+            if (savedData) {
+                gameState.usedCards = new Set(JSON.parse(savedData));
+            }
+        }
+
+        // 儲存今天被打敗的卡片
+        function saveUsedCards() {
+            const today = new Date().toDateString();
+            localStorage.setItem('usedCards_' + today, JSON.stringify([...gameState.usedCards]));
+        }
+
+        // 為卡片補充素質屬性
+        function enhanceCardsWithStats() {
+            baseCards.forEach((card, index) => {
+                // 如果卡片沒有素質，根據索引生成隨機但固定的素質
+                if (!card.attack || !card.defense || !card.hp) {
+                    const seed = index * 7 + 13; // 簡單的隨機種子
+                    // 根據稀有度設定素質範圍
+                    const rarity = card.rarity || getRandomRarity(seed);
+                    card.rarity = rarity;
+                    let minStat, maxStat;
+                    if (rarity === '超稀有') {
+                        minStat = 180; maxStat = 250; // 超稀有：180-250
+                    } else if (rarity === '稀有') {
+                        minStat = 50; maxStat = 100;  // 稀有：50-100（最低）
+                    } else {
+                        minStat = 100; maxStat = 160; // 普通：100-160（中等）
+                    }
+                    card.attack = card.attack || (minStat + (seed * 3 % (maxStat - minStat + 1)));
+                    card.defense = card.defense || (minStat + (seed * 5 % (maxStat - minStat + 1)));
+                    card.hp = card.hp || (minStat + (seed * 7 % (maxStat - minStat + 1)));
+                    // 為卡片加入技能
+                    if (!card.skill) {
+                        card.skill = generateSkill(card, seed);
+                    }
+                }
+            });
+            console.log('已為', baseCards.length, '張卡片補充素質');
+        }
+
+        // 生成卡片技能
+        function generateSkill(card, seed) {
+            const skills = [
+                { name: '普通攻擊', damage: 1.0, cooldown: 0, description: '基礎攻擊' },
+                { name: '強力一擊', damage: 1.5, cooldown: 2, description: '造成1.5倍傷害' },
+                { name: '防禦姿態', damage: 0.5, cooldown: 1, description: '攻擊力減半但增加防禦' },
+                { name: '連擊', damage: 0.8, cooldown: 3, description: '連續攻擊兩次' },
+                { name: '暴擊', damage: 2.0, cooldown: 4, description: '造成雙倍傷害' }
+            ];
+            const skillIndex = seed % skills.length;
+            const baseSkill = skills[skillIndex];
+            
+            // 根據稀有度調整冷卻時間
+            let adjustedCooldown = baseSkill.cooldown;
+            if (card.rarity === '超稀有') {
+                // SSR卡片冷卻時間減半（最短）
+                adjustedCooldown = Math.max(0, Math.floor(baseSkill.cooldown * 0.5));
+            } else if (card.rarity === '稀有') {
+                // A卡片冷卻時間稍微減少
+                adjustedCooldown = Math.max(0, Math.floor(baseSkill.cooldown * 0.8));
+            } else {
+                // 普通卡片保持原冷卻時間
+                adjustedCooldown = baseSkill.cooldown;
+            }
+            
+            return { 
+                ...baseSkill, 
+                cooldown: adjustedCooldown,
+                currentCooldown: 0 
+            };
+        }
+
+        // 戰鬥控制變數
+        let currentAttacker = 0; // 0=玩家回合, 1=敵人回合
+        let currentPlayerIndex = 0;
+        let currentEnemyIndex = 0;
+        let isManualBattle = false;
+        let isAnimating = false; // 防止動畫期間重複點擊
+        let selectedEnemyIndex = -1; // 選擇的敵人索引
+        let isSelectingTarget = false; // 是否正在選擇目標
+
+        // 播放錯誤音效
+        function playWrongSound() {
+            try {
+                // 嘗試使用現有的音效系統
+                if (typeof playSound === 'function') {
+                    playSound('wrong');
+                } else if (typeof SoundSystem !== 'undefined' && SoundSystem.play) {
+                    SoundSystem.play('wrong');
+                } else {
+                    // 創建音效元素
+                    const audio = new Audio('sound/wrong.mp3');
+                    audio.volume = 0.3;
+                    audio.play().catch(e => console.log('音效播放失敗:', e));
+                }
+            } catch (error) {
+                console.log('音效播放錯誤:', error);
+            }
+        }
+
+        // 播放攻擊音效
+        function playAttackSound() {
+            try {
+                if (typeof playSound === 'function') {
+                    playSound('click');
+                } else if (typeof SoundSystem !== 'undefined' && SoundSystem.play) {
+                    SoundSystem.play('click');
+                } else {
+                    const audio = new Audio('sound/click.mp3');
+                    audio.volume = 0.2;
+                    audio.play().catch(e => console.log('音效播放失敗:', e));
+                }
+            } catch (error) {
+                console.log('音效播放錯誤:', error);
+            }
+        }
+
+        // 播放技能音效
+        function playSkillSound() {
+            try {
+                if (typeof playSound === 'function') {
+                    playSound('correct');
+                } else if (typeof SoundSystem !== 'undefined' && SoundSystem.play) {
+                    SoundSystem.play('correct');
+                } else {
+                    const audio = new Audio('sound/correct.mp3');
+                    audio.volume = 0.3;
+                    audio.play().catch(e => console.log('音效播放失敗:', e));
+                }
+            } catch (error) {
+                console.log('音效播放錯誤:', error);
+            }
+        }
+
+        // 戰鬥動畫效果
+        function animateAttack(attacker, target, damage, isSkill = false) {
+            return new Promise((resolve) => {
+                isAnimating = true;
+                
+                // 找到攻擊者和目標的DOM元素
+                const attackerElement = document.querySelector(`[data-card-id="${attacker.originalIndex || attacker.id}"]`);
+                const targetElement = document.querySelector(`[data-card-id="${target.originalIndex || target.id}"]`);
+                
+                // 攻擊者動畫
+                if (attackerElement) {
+                    attackerElement.classList.add(isSkill ? 'skill-attacking' : 'attacking');
+                    attackerElement.style.transform = 'scale(1.1)';
+                    attackerElement.style.filter = 'brightness(1.3)';
+                    
+                    setTimeout(() => {
+                        attackerElement.style.transform = 'scale(1)';
+                        attackerElement.style.filter = 'brightness(1)';
+                        attackerElement.classList.remove('attacking', 'skill-attacking');
+                    }, isSkill ? 1200 : 800);
+                }
+                
+                // 目標動畫
+                if (targetElement) {
+                    setTimeout(() => {
+                        targetElement.style.transform = 'scale(0.9)';
+                        targetElement.style.filter = 'brightness(0.7)';
+                        
+                        // 創建傷害數字
+                        const damageText = document.createElement('div');
+                        damageText.textContent = `-${damage}`;
+                        damageText.className = `damage-number ${isSkill ? 'skill' : 'normal'}`;
+                        
+                        // 隨機位置偏移
+                        const offsetX = (Math.random() - 0.5) * 20;
+                        const offsetY = (Math.random() - 0.5) * 10;
+                        damageText.style.left = `calc(50% + ${offsetX}px)`;
+                        damageText.style.top = `calc(50% + ${offsetY}px)`;
+                        
+                        targetElement.appendChild(damageText);
+                        
+                        setTimeout(() => {
+                            targetElement.style.transform = 'scale(1)';
+                            targetElement.style.filter = 'brightness(1)';
+                            damageText.remove();
+                        }, isSkill ? 1200 : 1000);
+                    }, isSkill ? 600 : 400);
+                }
+                
+                setTimeout(() => {
+                    isAnimating = false;
+                    resolve();
+                }, isSkill ? 1200 : 800);
+            });
+        }
+
+        // 擊敗動畫
+        function animateDefeat(card, isPlayer) {
+            return new Promise((resolve) => {
+                const cardElement = document.querySelector(`[data-card-id="${card.originalIndex || card.id}"]`);
+                if (cardElement) {
+                    cardElement.classList.add('defeated');
+                    
+                    // 擊敗特效
+                    const defeatEffect = document.createElement('div');
+                    defeatEffect.style.cssText = `
+                        position: absolute;
+                        top: 50%;
+                        left: 50%;
+                        transform: translate(-50%, -50%);
+                        font-size: 2rem;
+                        color: #ff4757;
+                        text-shadow: 0 0 10px #ff4757;
+                        z-index: 1001;
+                        animation: damageFloat 1s ease-out forwards;
+                    `;
+                    defeatEffect.textContent = '💀';
+                    cardElement.appendChild(defeatEffect);
+                    
+                    cardElement.style.transition = 'all 0.5s ease-out';
+                    cardElement.style.transform = 'scale(0) rotate(180deg)';
+                    cardElement.style.opacity = '0';
+                    cardElement.style.filter = 'brightness(0)';
+                    
+                    setTimeout(() => {
+                        defeatEffect.remove();
+                        resolve();
+                    }, 500);
+                } else {
+                    resolve();
+                }
+            });
+        }
+
+        // 根據種子生成稀有度
+        function getRandomRarity(seed) {
+            const raritySeed = seed % 100;
+            if (raritySeed < 5) return 'SSR';      // 5% 機率
+            else if (raritySeed < 25) return 'A';  // 20% 機率
+            else return 'R';                        // 75% 機率
+        }
+
+        // 稀有度轉換（中文→英文標籤）
+        function getRarityLabel(rarity) {
+            if (rarity === '超稀有') return 'SSR';
+            if (rarity === '稀有') return 'A';
+            return 'R';
+        }
+        function getRarityColor(rarity) {
+            if (rarity === '超稀有') return '#ffd700';
+            if (rarity === '稀有') return '#2196f3';
+            return '#9c27b0';
+        }
+
+        // 獲取稀有度背景色
+        function getRarityBgColor(rarity) {
+            switch(rarity) {
+                case 'SSR': return 'rgba(255, 215, 0, 0.2)';
+                case 'A': return 'rgba(255, 107, 107, 0.2)';
+                case 'R': return 'rgba(78, 205, 196, 0.2)';
+                default: return 'rgba(78, 205, 196, 0.2)';
+            }
+        }
+
+        // 創建卡片網格
+        function createCardGrid() {
+            console.log('createCardGrid 開始執行');
+            const cardGrid = document.getElementById('card-grid');
+            if (!cardGrid) {
+                console.error('找不到 card-grid 元素！');
+                return;
+            }
+            cardGrid.innerHTML = '';
+
+            if (typeof baseCards === 'undefined') {
+                console.log('baseCards 未定義，顯示載入中...');
+                cardGrid.innerHTML = '<p>載入中...</p>';
+                return;
+            }
+
+            console.log('開始創建卡片，總數:', baseCards.length);
+            baseCards.forEach((card, index) => {
+                console.log(`創建卡片 ${index}:`, card.zh || '無名稱');
+                const cardDiv = createCardElement(card, index);
+                cardGrid.appendChild(cardDiv);
+            });
+            console.log('卡片網格創建完成');
+        }
+
+        // 創建卡片元素
+        function createCardElement(card, index) {
+            const cardDiv = document.createElement('div');
+            cardDiv.className = 'card';
+            cardDiv.dataset.cardIndex = index;
+            
+            const isUsed = gameState.usedCards.has(index);
+            const isSelected = gameState.selectedCards.has(index);
+            if (isUsed) {
+                cardDiv.classList.add('used');
+            } else if (isSelected) {
+                cardDiv.classList.add('selected');
+            }
+
+            // 拖放屬性
+            if (!isUsed && !isSelected) {
+                cardDiv.setAttribute('draggable', 'true');
+                cardDiv.addEventListener('dragstart', (e) => {
+                    e.dataTransfer.setData('text/plain', index);
+                    cardDiv.classList.add('dragging');
+                });
+                cardDiv.addEventListener('dragend', (e) => {
+                    cardDiv.classList.remove('dragging');
+                });
+            }
+
+            const imageSrc = card.image || 'img/card_back.jpeg';
+            let mediaContent = '';
+            
+            if (card.image && card.image.endsWith('.mp4')) {
+                mediaContent = `<video class="card-media" is-video src="${card.image}" muted preload="metadata" playsinline loop></video>`;
+            } else {
+                mediaContent = `<img class="card-media" src="${imageSrc}" alt="${card.zh}" onerror="this.src='img/card_back.jpeg'">`;
+            }
+
+            // 稀有度標籤
+            const rarityLabel = getRarityLabel(card.rarity);
+            const rarityColor = getRarityColor(card.rarity);
+            const rarityTag = `<div style="position:absolute;top:3px;right:3px;background:${rarityColor};color:#fff;font-size:0.7rem;font-weight:bold;padding:2px 7px;border-radius:6px;box-shadow:0 0 6px ${rarityColor}99;z-index:2;">${rarityLabel}</div>`;
+
+            cardDiv.innerHTML = `
+                ${rarityTag}
+                ${mediaContent}
+                <div style="position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.8); padding: 3px; font-size: 0.65rem; text-align: center;">
+                    <div style="font-weight: bold; margin-bottom: 2px;">${card.zh}</div>
+                    <div style="display: flex; justify-content: space-between; font-size: 0.5rem; opacity: 0.9;">
+                        <span style="color: #ff6b6b;">攻:${card.attack || 0}</span>
+                        <span style="color: #4ecdc4;">防:${card.defense || 0}</span>
+                        <span style="color: #45b7d1;">血:${card.hp || 0}</span>
+                    </div>
+                    <div style="font-size: 0.45rem; color: #ffd700; margin-top: 2px;">${card.skill ? card.skill.name : '無技能'}</div>
+                </div>
+            `;
+
+            // 處理影片播放
+            const video = cardDiv.querySelector('video');
+            if (video) {
+                cardDiv.addEventListener('mouseenter', () => {
+                    if (!isSelected) video.play();
+                });
+                cardDiv.addEventListener('mouseleave', () => {
+                    video.pause();
+                    video.currentTime = 0;
+                });
+                video.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    if (!isSelected) {
+                        if (video.paused) video.play();
+                        else video.pause();
+                    }
+                });
+            }
+
+            // 點擊只彈窗，點兩下才選卡，拖放不彈窗
+            let clickTimer = null;
+            cardDiv.addEventListener('click', (e) => {
+                if (clickTimer) {
+                    clearTimeout(clickTimer);
+                    clickTimer = null;
+                    // 雙擊才選卡
+                    if (!isUsed && !isSelected) selectCard(index);
+                } else {
+                    clickTimer = setTimeout(() => {
+                        showCardPreview(card);
+                        clickTimer = null;
+                    }, 250);
+                }
+            });
+
+            return cardDiv;
+        }
+
+        // 選擇卡片
+        function selectCard(cardIndex) {
+            if (gameState.playerTeam.length >= 4) {
+                addLogEntry('系統', '隊伍已滿，無法添加更多卡片！');
+                return;
+            }
+
+            const card = baseCards[cardIndex];
+            const slotIndex = gameState.playerTeam.length;
+            
+            // 添加到隊伍
+            gameState.playerTeam.push({
+                ...card,
+                originalIndex: cardIndex
+            });
+
+            // 標記為已選入隊伍（但未使用）
+            gameState.selectedCards.add(cardIndex);
+
+            // 更新UI
+            updateTeamDisplay();
+            updateCardGrid();
+            updateTeamStats();
+            
+            addLogEntry('系統', `已選擇卡片：${card.zh}`);
+        }
+
+        // 更新隊伍顯示
+        function updateTeamDisplay() {
+            const teamSlots = document.querySelectorAll('.team-slot');
+            
+            teamSlots.forEach((slot, index) => {
+                slot.innerHTML = '';
+                slot.setAttribute('data-slot', index);
+                slot.classList.remove('drag-over');
+                // 拖放事件
+                slot.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    slot.classList.add('drag-over');
+                });
+                slot.addEventListener('dragleave', (e) => {
+                    slot.classList.remove('drag-over');
+                });
+                slot.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    slot.classList.remove('drag-over');
+                    const cardIndex = parseInt(e.dataTransfer.getData('text/plain'));
+                    if (!gameState.usedCards.has(cardIndex)) {
+                        dropCardToSlot(cardIndex, index);
+                    }
+                });
+                
+                if (index < gameState.playerTeam.length) {
+                    const card = gameState.playerTeam[index];
+                    const imageSrc = card.image || 'img/card_back.jpeg';
+                    
+                    let mediaContent = '';
+                    if (card.image && card.image.endsWith('.mp4')) {
+                        mediaContent = `<video class="card-media" is-video src="${card.image}" muted preload="metadata" playsinline loop></video>`;
+                    } else {
+                        mediaContent = `<img class="card-media" src="${imageSrc}" alt="${card.zh}" onerror="this.src='img/card_back.jpeg'">`;
+                    }
+                    // 稀有度標籤
+                    const rarityLabel = getRarityLabel(card.rarity);
+                    const rarityColor = getRarityColor(card.rarity);
+                    const rarityTag = `<div style="position:absolute;top:3px;right:3px;background:${rarityColor};color:#fff;font-size:0.7rem;font-weight:bold;padding:2px 7px;border-radius:6px;box-shadow:0 0 6px ${rarityColor}99;z-index:2;">${rarityLabel}</div>`;
+                    
+                    // 判斷是否鎖定（被打敗）
+                    const isLocked = card.originalIndex !== undefined && gameState.usedCards.has(card.originalIndex);
+                    let lockTag = '';
+                    if (isLocked) {
+                        lockTag = `<div style="position:absolute;left:3px;top:3px;background:rgba(0,0,0,0.7);color:#ffd700;font-size:0.8rem;font-weight:bold;padding:2px 6px;border-radius:6px;z-index:3;display:flex;align-items:center;"><span style='font-size:1.1em;margin-right:2px;'>🔒</span>鎖定</div>`;
+                    }
+                    slot.innerHTML = `
+                        ${rarityTag}
+                        ${lockTag}
+                        ${mediaContent}
+                        <div style="position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.8); padding: 3px; font-size: 0.65rem; text-align: center;">
+                            <div style="font-weight: bold; margin-bottom: 2px;">${card.zh}</div>
+                            <div style="display: flex; justify-content: space-between; font-size: 0.5rem; opacity: 0.9;">
+                                <span style="color: #ff6b6b;">攻:${card.attack || 0}</span>
+                                <span style="color: #4ecdc4;">防:${card.defense || 0}</span>
+                                <span style="color: #45b7d1;">血:${card.hp || 0}</span>
+                            </div>
+                            <div style="font-size: 0.45rem; color: #ffd700; margin-top: 2px;">${card.skill ? card.skill.name : '無技能'}</div>
+                        </div>
+                    `;
+                    slot.classList.add('filled');
+                    if (isLocked) {
+                        slot.style.opacity = '0.5';
+                        slot.style.pointerEvents = 'none';
+                        slot.style.filter = 'grayscale(0.7) blur(1px)';
+                    } else {
+                        slot.style.opacity = '1';
+                        slot.style.pointerEvents = '';
+                        slot.style.filter = '';
+                        // 添加雙擊移除卡片功能
+                        slot.addEventListener('dblclick', () => {
+                            removeCardFromSlot(index);
+                        });
+                    }
+                    // 處理影片播放
+                    const video = slot.querySelector('video');
+                    if (video) {
+                        slot.addEventListener('mouseenter', () => video.play());
+                        slot.addEventListener('mouseleave', () => {
+                            video.pause();
+                            video.currentTime = 0;
+                        });
+                    }
+                } else {
+                    slot.innerHTML = '<span>拖放卡牌</span>';
+                    slot.classList.remove('filled');
+                }
+            });
+        }
+
+        // 拖放到隊伍欄位的邏輯
+        function dropCardToSlot(cardIndex, slotIndex) {
+            // 先檢查該卡片是否已經在隊伍中
+            const alreadyInTeam = gameState.playerTeam.some(c => c.originalIndex === cardIndex);
+            if (alreadyInTeam) return;
+            // 檢查該卡片是否已經被使用（戰鬥後）
+            if (gameState.usedCards.has(cardIndex)) return;
+            
+            // 取得卡片資料
+            const card = baseCards[cardIndex];
+            const cardData = {
+                ...card,
+                hp: card.hp || 100,
+                attack: card.attack || 0,
+                defense: card.defense || 0,
+                originalIndex: cardIndex
+            };
+            // 如果該欄位已經有卡片，覆蓋
+            if (slotIndex < gameState.playerTeam.length) {
+                gameState.playerTeam[slotIndex] = cardData;
+            } else {
+                // 如果該欄位是空的，直接放進去
+                gameState.playerTeam.push(cardData);
+            }
+            // 標記為已選入隊伍（但未使用）
+            gameState.selectedCards.add(cardIndex);
+            updateTeamDisplay();
+            updateCardGrid();
+            updateTeamStats();
+            addLogEntry('系統', `拖放卡片：${card.zh}`);
+        }
+
+        // 移除卡片從隊伍欄位
+        function removeCardFromSlot(slotIndex) {
+            if (slotIndex >= gameState.playerTeam.length) return;
+
+            const removedCard = gameState.playerTeam.splice(slotIndex, 1)[0];
+            gameState.selectedCards.delete(removedCard.originalIndex);
+            updateTeamDisplay();
+            updateCardGrid();
+            updateTeamStats();
+            addLogEntry('系統', `移除卡片：${removedCard.zh}`);
+        }
+
+        // 更新卡片網格
+        function updateCardGrid() {
+            const cards = document.querySelectorAll('.card');
+            cards.forEach((cardDiv, index) => {
+                const isSelected = gameState.selectedCards.has(index);
+                const isUsed = gameState.usedCards.has(index);
+                cardDiv.classList.remove('used', 'selected', 'ssr', 'a', 'r');
+                if (isUsed) {
+                    cardDiv.classList.add('used');
+                } else if (isSelected) {
+                    cardDiv.classList.add('selected');
+                }
+                // 根據稀有度設定背景和邊框顏色
+                if (baseCards[index] && baseCards[index].rarity) {
+                    cardDiv.classList.add(baseCards[index].rarity.toLowerCase());
+                }
+            });
+        }
+
+        // 更新隊伍統計
+        function updateTeamStats() {
+            let totalAttack = 0;
+            let totalDefense = 0;
+            let totalHp = 0;
+            
+            gameState.playerTeam.forEach(card => {
+                totalAttack += card.attack || 0;
+                totalDefense += card.defense || 0;
+                totalHp += card.hp || 0;
+            });
+
+            document.getElementById('total-attack').textContent = totalAttack;
+            document.getElementById('total-defense').textContent = totalDefense;
+            document.getElementById('total-hp').textContent = totalHp;
+            document.getElementById('team-skill').textContent = gameState.playerTeam.length > 0 ? '已啟用' : '無';
+        }
+
+        // 生成敵人隊伍
+        function generateEnemyTeam() {
+            const enemyCount = 4;
+            gameState.enemyTeam = [];
+            for (let i = 0; i < enemyCount; i++) {
+                const randomCard = baseCards[Math.floor(Math.random() * baseCards.length)];
+                gameState.enemyTeam.push({
+                    ...randomCard,
+                    hp: (randomCard.hp || 100) * 1.2,
+                    maxHp: (randomCard.hp || 100) * 1.2
+                });
+            }
+            console.log('生成敵人隊伍：', gameState.enemyTeam.length, '個敵人');
+        }
+
+        // 更新戰鬥顯示
+        function updateBattleDisplay() {
+            const enemyArea = document.getElementById('enemy-area');
+            const playerArea = document.getElementById('player-area');
+            
+            // 清空區域
+            enemyArea.innerHTML = '';
+            playerArea.innerHTML = '';
+            
+            // 顯示敵人卡牌
+            gameState.enemyTeam.forEach((enemy, index) => {
+                const enemyCard = createBattleCardElement(enemy, 'enemy', index);
+                enemyArea.appendChild(enemyCard);
+            });
+            
+            // 顯示玩家卡牌
+            gameState.playerTeam.forEach((card, index) => {
+                const playerCard = createBattleCardElement(card, 'player', index);
+                playerArea.appendChild(playerCard);
+            });
+            
+            console.log('更新戰鬥顯示：', gameState.enemyTeam.length, '個敵人，', gameState.playerTeam.length, '個玩家');
+        }
+
+        // 創建戰鬥卡片元素
+        function createBattleCardElement(card, type, index) {
+            const cardDiv = document.createElement('div');
+            cardDiv.className = type === 'enemy' ? 'enemy-card' : 'player-card';
+            cardDiv.dataset.index = index;
+            cardDiv.dataset.cardId = card.originalIndex || card.id || `battle-${type}-${index}`;
+            // 新增稀有度 class
+            if (card.rarity) {
+                cardDiv.classList.add(card.rarity.toLowerCase());
+            }
+            
+            const imageSrc = card.image || 'img/card_back.jpeg';
+            let mediaContent = '';
+            
+            if (card.image && card.image.endsWith('.mp4')) {
+                mediaContent = `<video class="card-media" is-video src="${card.image}" muted preload="metadata" playsinline loop></video>`;
+            } else {
+                mediaContent = `<img class="card-media" src="${imageSrc}" alt="${card.zh}" onerror="this.src='img/card_back.jpeg'">`;
+            }
+            // 稀有度標籤
+            const rarityLabel = getRarityLabel(card.rarity);
+            const rarityColor = getRarityColor(card.rarity);
+            const rarityTag = `<div style="position:absolute;top:3px;right:3px;background:${rarityColor};color:#fff;font-size:0.7rem;font-weight:bold;padding:2px 7px;border-radius:6px;box-shadow:0 0 6px ${rarityColor}99;z-index:2;">${rarityLabel}</div>`;
+
+            // 血條
+            const hp = Math.round(card.hp || 100);
+            const maxHp = Math.round(card.maxHp || card.hp || 100);
+            const hpPercent = Math.max(0, Math.min(100, Math.round((hp / maxHp) * 100)));
+            const hpBar = `<div style="width: 90%; height: 10px; background: #222; border-radius: 5px; margin: 2px auto 0 auto; position: relative;">
+                <div style="width: ${hpPercent}%; height: 100%; background: linear-gradient(90deg, #ff6b6b, #ffe066); border-radius: 5px;"></div>
+                <span style="position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%); font-size: 0.65em; color: #fff; text-shadow: 0 0 2px #000;">${hp}/${maxHp}</span>
+            </div>`;
+
+            cardDiv.innerHTML = `
+                ${rarityTag}
+                ${mediaContent}
+                <div style="position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.8); padding: 4px; font-size: 0.8rem; text-align: center;">
+                    <div>${card.zh}</div>
+                    ${hpBar}
+                    <div style="font-size: 0.6rem; color: #ffd700; margin-top: 2px;">${card.skill ? card.skill.name : '無技能'}</div>
+                </div>
+            `;
+
+            // 處理影片播放
+            const video = cardDiv.querySelector('video');
+            if (video) {
+                cardDiv.addEventListener('mouseenter', () => video.play());
+                cardDiv.addEventListener('mouseleave', () => {
+                    video.pause();
+                    video.currentTime = 0;
+                });
+                video.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    if (video.paused) video.play();
+                    else video.pause();
+                });
+            }
+
+            return cardDiv;
+        }
+
+        // 開始戰鬥
+        async function startBattle() {
+            if (gameState.playerTeam.length === 0) {
+                addLogEntry('系統', '請先選擇卡片組成隊伍！');
+                return;
+            }
+
+            if (gameState.isBattleActive) {
+                addLogEntry('系統', '戰鬥正在進行中！');
+                return;
+            }
+
+            // 檢查星星數量
+            const currentStars = getCurrentStars();
+            console.log('當前星星數量:', currentStars);
+            if (currentStars < 10) {
+                addLogEntry('系統', '星星不足！需要10顆星星才能開始戰鬥。');
+                return;
+            }
+            // 扣除10顆星星
+            addStarsToBattle(-10);
+            console.log('已扣除10顆星星，當前星星:', getCurrentStars());
+            addLogEntry('系統', '💎 消耗10顆星星開始戰鬥！');
+            await new Promise(resolve => setTimeout(resolve, 500));
+            addLogEntry('系統', '⚔️ 戰鬥即將開始...');
+            await new Promise(resolve => setTimeout(resolve, 600));
+            addLogEntry('系統', '🔥 敵人正在逼近！');
+            await new Promise(resolve => setTimeout(resolve, 500));
+
+            // 戰鬥開始時，不標記卡片為已使用，只移除 selected 標記
+            gameState.playerTeam.forEach(card => {
+                if (card.originalIndex !== undefined) {
+                    gameState.selectedCards.delete(card.originalIndex);
+                }
+            });
+            updateCardGrid();
+
+            gameState.isBattleActive = true;
+            gameState.currentTurn = 0;
+            
+            generateEnemyTeam();
+            updateBattleDisplay();
+            
+            addLogEntry('系統', '🎯 戰鬥開始！');
+            await new Promise(resolve => setTimeout(resolve, 400));
+            addLogEntry('系統', `👹 敵人數量：${gameState.enemyTeam.length}，玩家隊伍：${gameState.playerTeam.length}人`);
+            await new Promise(resolve => setTimeout(resolve, 400));
+            addLogEntry('系統', '💪 準備好迎接挑戰了嗎？');
+            
+            // 開始手動戰鬥
+            startManualBattle();
+        }
+
+        // 開始手動戰鬥
+        function startManualBattle() {
+            // 防呆判斷：如果沒有敵人隊伍，不允許開始手動戰鬥
+            if (!gameState.enemyTeam || gameState.enemyTeam.length === 0) {
+                addLogEntry('系統', '⚠️ 請先開始戰鬥！');
+                return;
+            }
+            
+            // 防呆判斷：如果戰鬥還沒開始，不允許開始手動戰鬥
+            if (!gameState.isBattleActive) {
+                addLogEntry('系統', '⚠️ 請先開始戰鬥！');
+                return;
+            }
+            
+            isManualBattle = true;
+            currentAttacker = 0; // 玩家先手
+            currentPlayerIndex = 0;
+            currentEnemyIndex = 0;
+            selectedEnemyIndex = -1;
+            document.getElementById('manual-controls').style.display = 'block';
+            addLogEntry('system', '🎯 手動戰鬥開始！玩家先手');
+            updateManualControls();
+        }
+
+        // 更新手動戰鬥控制界面
+        function updateManualControls() {
+            // 減少所有玩家卡片的技能冷卻
+            gameState.playerTeam.forEach(card => {
+                if (card.skill && card.skill.currentCooldown > 0) {
+                    card.skill.currentCooldown--;
+                }
+            });
+
+            const turnInfo = document.getElementById('current-turn-info');
+            const attackBtn = document.getElementById('attack-btn');
+            const skillBtn = document.getElementById('skill-btn');
+            const enemySelection = document.getElementById('enemy-selection');
+            const enemyTargets = document.getElementById('enemy-targets');
+            
+            // 檢查戰鬥結果
+            if (gameState.enemyTeam.length === 0 || gameState.playerTeam.length === 0) {
+                checkBattleResult();
+                return;
+            }
+            
+            if (currentAttacker === 0) {
+                // 玩家回合
+                const player = gameState.playerTeam[currentPlayerIndex];
+                turnInfo.textContent = `玩家回合：${player.zh} (血量: ${Math.round(player.hp)})`;
+                
+                // 檢查是否有敵人可攻擊
+                if (gameState.enemyTeam.length > 0) {
+                    attackBtn.disabled = false;
+                    skillBtn.disabled = player.skill.currentCooldown > 0;
+                    
+                    console.log('玩家回合，準備顯示敵人選擇界面');
+                    // 顯示敵人選擇界面
+                    showEnemyTargets();
+                } else {
+                    attackBtn.disabled = true;
+                    skillBtn.disabled = true;
+                    enemySelection.style.display = 'none';
+                }
+                
+                skillBtn.textContent = `技能 (${player.skill.name})`;
+            } else {
+                // 敵人回合
+                const enemy = gameState.enemyTeam[currentEnemyIndex];
+                turnInfo.textContent = `敵人回合：${enemy.zh} (血量: ${Math.round(enemy.hp)})`;
+                attackBtn.disabled = true;
+                skillBtn.disabled = true;
+                enemySelection.style.display = 'none';
+                // 敵人自動攻擊
+                setTimeout(() => {
+                    performEnemyAttack();
+                }, 1000);
+            }
+        }
+
+        // 顯示敵人目標選擇
+        function showEnemyTargets() {
+            const enemySelection = document.getElementById('enemy-selection');
+            const enemyTargets = document.getElementById('enemy-targets');
+            
+            console.log('showEnemyTargets 被調用，敵人數量:', gameState.enemyTeam.length);
+            
+            // 如果只剩一個敵人，自動選擇並隱藏選擇界面
+            if (gameState.enemyTeam.length === 1) {
+                selectedEnemyIndex = 0;
+                enemySelection.style.display = 'none';
+                addLogEntry('system', '🎯 只剩一個敵人，自動選擇目標');
+                return;
+            }
+            
+            // 如果有多個敵人，顯示選擇界面
+            if (gameState.enemyTeam.length > 1) {
+                enemySelection.style.display = 'block';
+                enemyTargets.innerHTML = '';
+                
+                gameState.enemyTeam.forEach((enemy, index) => {
+                    const targetBtn = document.createElement('button');
+                    targetBtn.className = 'battle-btn';
+                    targetBtn.style.cssText = `
+                        background: linear-gradient(45deg, #ff4757, #ff6b6b);
+                        padding: 8px 12px;
+                        font-size: 0.8rem;
+                        min-width: 80px;
+                    `;
+                    targetBtn.textContent = `${enemy.zh} (${Math.round(enemy.hp)}HP)`;
+                    targetBtn.onclick = () => selectEnemyTarget(index);
+                    
+                    // 高亮選中的目標
+                    if (selectedEnemyIndex === index) {
+                        targetBtn.style.background = 'linear-gradient(45deg, #ffd700, #ffed4e)';
+                        targetBtn.style.color = '#000';
+                    }
+                    
+                    enemyTargets.appendChild(targetBtn);
+                });
+                console.log('已顯示敵人選擇界面，敵人數量:', gameState.enemyTeam.length);
+            }
+        }
+
+        // 選擇敵人目標
+        function selectEnemyTarget(index) {
+            console.log('選擇敵人目標:', index, '敵人名稱:', gameState.enemyTeam[index]?.zh);
+            selectedEnemyIndex = index;
+            showEnemyTargets(); // 重新顯示以更新高亮
+        }
+
+        // 切換到敵人回合
+        async function switchToEnemyTurn() {
+            currentAttacker = 1;
+            selectedEnemyIndex = -1;
+            document.getElementById('enemy-selection').style.display = 'none';
+            
+            addLogEntry('system', '🔄 切換到敵人回合');
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            updateManualControls();
+        }
+
+        // 切換到玩家回合
+        async function switchToPlayerTurn() {
+            currentAttacker = 0;
+            // 每回合都要重新選擇
+            selectedEnemyIndex = -1;
+            // 移動到下一個玩家卡片
+            currentPlayerIndex = (currentPlayerIndex + 1) % gameState.playerTeam.length;
+            // 移動到下一個敵人卡片
+            currentEnemyIndex = (currentEnemyIndex + 1) % gameState.enemyTeam.length;
+            addLogEntry('system', '🔄 切換到玩家回合');
+            await new Promise(resolve => setTimeout(resolve, 500));
+            updateManualControls();
+        }
+
+        // 執行敵人攻擊
+        async function performEnemyAttack() {
+            if (gameState.enemyTeam.length > 0 && gameState.playerTeam.length > 0) {
+                // 只讓第一個敵人攻擊
+                const enemy = gameState.enemyTeam[0];
+                const targetIndex = Math.floor(Math.random() * gameState.playerTeam.length);
+                const player = gameState.playerTeam[targetIndex];
+                
+                // 敵人攻擊描述
+                addLogEntry('enemy', `👹 ${enemy.zh} 發出威脅的咆哮！`);
+                await new Promise(resolve => setTimeout(resolve, 600));
+                
+                addLogEntry('enemy', `⚔️ ${enemy.zh} 向 ${player.zh} 發動攻擊！`);
+                await new Promise(resolve => setTimeout(resolve, 500));
+                
+                const damage = Math.floor((enemy.attack || 40) * 0.8);
+                
+                // 執行攻擊動畫
+                await animateAttack(enemy, player, damage, false);
+                
+                player.hp -= damage;
+                addLogEntry('enemy', `💥 ${enemy.zh} 對 ${player.zh} 造成 ${damage} 點傷害！`);
+                // 播放被攻擊音效
+                playWrongSound();
+                await new Promise(resolve => setTimeout(resolve, 500));
+                
+                // 檢查玩家是否被擊敗
+                if (player.hp <= 0) {
+                    addLogEntry('player', `💀 ${player.zh} 被擊敗了！`);
+                    await animateDefeat(player, true);
+                    handleDefeatedCard(player, true);
+                    gameState.playerTeam.splice(targetIndex, 1);
+                    await new Promise(resolve => setTimeout(resolve, 300));
+                }
+                
+                updateBattleDisplay();
+                
+                // 切換到玩家回合
+                await switchToPlayerTurn();
+                
+            }
+        }
+
+        // 玩家攻擊
+        async function performPlayerAttack() {
+            if (isAnimating) return; // 防止動畫期間重複點擊
+            if (currentPlayerIndex < gameState.playerTeam.length && gameState.enemyTeam.length > 0) {
+                // 只剩一個敵人自動選
+                if (selectedEnemyIndex < 0 && gameState.enemyTeam.length === 1) {
+                    selectedEnemyIndex = 0;
+                }
+                if (selectedEnemyIndex < 0) {
+                    addLogEntry('system', '⚠️ 請先選擇攻擊目標！');
+                    return;
+                }
+                console.log('玩家攻擊檢查 - 選擇的敵人索引:', selectedEnemyIndex, '敵人數量:', gameState.enemyTeam.length);
+                
+                // 如果沒有選擇目標但只剩一個敵人，自動選擇
+                if (selectedEnemyIndex < 0 && gameState.enemyTeam.length === 1) {
+                    selectedEnemyIndex = 0;
+                    console.log('自動選擇最後一個敵人');
+                }
+                
+                if (selectedEnemyIndex >= 0) {
+                    console.log('開始攻擊敵人:', gameState.enemyTeam[selectedEnemyIndex]?.zh);
+                    const player = gameState.playerTeam[currentPlayerIndex];
+                    const enemy = gameState.enemyTeam[selectedEnemyIndex];
+                    
+                    // 檢查是否暴擊
+                    const isCritical = Math.random() < 0.15; // 15%暴擊率
+                    const baseDamage = player.attack || 50;
+                    const damage = isCritical ? Math.floor(baseDamage * 1.5) : baseDamage;
+                    
+                    // 戰鬥描述
+                    let battleDesc = '';
+                    if (isCritical) {
+                        battleDesc = `💥 ${player.zh} 發動暴擊攻擊！`;
+                        addLogEntry('player', battleDesc);
+                        await new Promise(resolve => setTimeout(resolve, 800));
+                    }
+                    
+                    battleDesc = `⚔️ ${player.zh} 揮舞武器攻擊 ${enemy.zh}`;
+                    addLogEntry('player', battleDesc);
+                    await new Promise(resolve => setTimeout(resolve, 600));
+                    
+                    // 執行攻擊動畫
+                    await animateAttack(player, enemy, damage, false);
+                    // 播放攻擊音效
+                    playAttackSound();
+                    
+                    enemy.hp -= damage;
+                    
+                    // 傷害描述
+                    const damageDesc = isCritical ? 
+                        `💥 暴擊！造成 ${damage} 點巨大傷害！` : 
+                        `💥 造成 ${damage} 點傷害`;
+                    addLogEntry('player', damageDesc);
+                    await new Promise(resolve => setTimeout(resolve, 500));
+                    
+                    // 檢查敵人是否被擊敗
+                    if (enemy.hp <= 0) {
+                        addLogEntry('enemy', `💀 ${enemy.zh} 被擊敗了！`);
+                        await animateDefeat(enemy, false);
+                        gameState.enemyTeam.splice(selectedEnemyIndex, 1);
+                        await new Promise(resolve => setTimeout(resolve, 300));
+                    }
+                    
+                    updateBattleDisplay();
+                    selectedEnemyIndex = -1; // 重置選擇
+                    
+                    // 切換到敵人回合
+                    await switchToEnemyTurn();
+                } else {
+                    addLogEntry('system', '⚠️ 請先選擇攻擊目標！');
+                }
+            } else if (selectedEnemyIndex < 0) {
+                addLogEntry('system', '⚠️ 請先選擇攻擊目標！');
+            }
+        }
+
+        // 玩家使用技能
+        async function performPlayerSkill() {
+            if (isAnimating) return; // 防止動畫期間重複點擊
+
+            if (currentPlayerIndex < gameState.playerTeam.length && gameState.enemyTeam.length > 0) {
+                // 如果沒有選擇目標但只剩一個敵人，自動選擇
+                if (selectedEnemyIndex < 0 && gameState.enemyTeam.length === 1) {
+                    selectedEnemyIndex = 0;
+                }
+                
+                if (selectedEnemyIndex >= 0) {
+                    const player = gameState.playerTeam[currentPlayerIndex];
+                    const enemy = gameState.enemyTeam[selectedEnemyIndex];
+                    
+                    const baseDamage = player.attack || 50;
+                    const skillDamage = Math.floor(baseDamage * player.skill.damage);
+                    
+                    // 技能發動描述
+                    addLogEntry('player', `🌟 ${player.zh} 開始凝聚力量...`);
+                    await new Promise(resolve => setTimeout(resolve, 800));
+                    
+                    addLogEntry('player', `✨ 發動技能「${player.skill.name}」！`);
+                    await new Promise(resolve => setTimeout(resolve, 600));
+                    
+                    // 執行技能動畫
+                    await animateAttack(player, enemy, skillDamage, true);
+                    // 播放技能音效
+                    playSkillSound();
+                    
+                    enemy.hp -= skillDamage;
+                    
+                    addLogEntry('player', `💫 技能「${player.skill.name}」造成 ${skillDamage} 點傷害！`);
+                    await new Promise(resolve => setTimeout(resolve, 500));
+                    
+                    // 設置技能冷卻
+                    player.skill.currentCooldown = player.skill.cooldown;
+                    addLogEntry('system', `⏰ ${player.zh} 的技能進入冷卻期`);
+                    await new Promise(resolve => setTimeout(resolve, 300));
+                    
+                    // 檢查敵人是否被擊敗
+                    if (enemy.hp <= 0) {
+                        addLogEntry('enemy', `💀 ${enemy.zh} 被技能擊敗了！`);
+                        await animateDefeat(enemy, false);
+                        gameState.enemyTeam.splice(selectedEnemyIndex, 1);
+                        await new Promise(resolve => setTimeout(resolve, 300));
+                    }
+                    
+                    updateBattleDisplay();
+                    selectedEnemyIndex = -1; // 重置選擇
+                    
+                    // 切換到敵人回合
+                    await switchToEnemyTurn();
+                } else {
+                    addLogEntry('system', '⚠️ 請先選擇攻擊目標！');
+                }
+            } else if (selectedEnemyIndex < 0) {
+                addLogEntry('system', '⚠️ 請先選擇攻擊目標！');
+            }
+        }
+
+        // 檢查戰鬥結果
+        async function checkBattleResult() {
+            if (gameState.enemyTeam.length === 0) {
+                addLogEntry('system', '🎉 戰鬥勝利！所有敵人都被擊敗了！');
+                await new Promise(resolve => setTimeout(resolve, 800));
+                addLogEntry('system', '🌟 你的隊伍展現了無與倫比的實力！');
+                await new Promise(resolve => setTimeout(resolve, 600));
+                console.log('戰鬥勝利，準備給予20顆星星獎勵');
+                addStarsToBattle(20);
+                console.log('已給予20顆星星獎勵，當前星星:', getCurrentStars());
+                addLogEntry('system', '💎 獲得星星獎勵：20顆！');
+                await new Promise(resolve => setTimeout(resolve, 500));
+                addLogEntry('system', '🏆 恭喜你贏得了這場激烈的戰鬥！');
+                endBattle();
+                return;
+            }
+            
+            if (gameState.playerTeam.length === 0) {
+                addLogEntry('system', '💔 戰鬥失敗！所有玩家都被擊敗了！');
+                await new Promise(resolve => setTimeout(resolve, 800));
+                addLogEntry('system', '😔 敵人太強大了，下次再來挑戰吧！');
+                await new Promise(resolve => setTimeout(resolve, 600));
+                addLogEntry('system', '💪 不要氣餒，強化你的隊伍後再戰！');
+                endBattle();
+                return;
+            }
+        }
+
+        // 結束戰鬥
+        function endBattle() {
+            gameState.isBattleActive = false;
+            isManualBattle = false;
+            document.getElementById('manual-controls').style.display = 'none';
+            updateCardGrid();
+        }
+
+        // 處理被擊敗的卡片
+        async function handleDefeatedCard(card, isPlayer) {
+            if (isPlayer && card.originalIndex !== undefined) {
+                gameState.usedCards.add(card.originalIndex);
+                saveUsedCards();
+                await animateDefeat(card, isPlayer); // 添加擊敗動畫
+            }
+        }
+
+        // 重置戰鬥
+        function resetBattle() {
+            gameState.isBattleActive = false;
+            isManualBattle = false;
+            gameState.enemyTeam = [];
+            gameState.currentTurn = 0;
+            document.getElementById('manual-controls').style.display = 'none';
+            selectedEnemyIndex = -1;
+            document.getElementById('enemy-selection').style.display = 'none';
+            
+            // 恢復玩家隊伍血量
+            gameState.playerTeam.forEach(card => {
+                card.hp = card.hp || 100;
+                // 重置技能冷卻
+                if (card.skill) {
+                    card.skill.currentCooldown = 0;
+                }
+            });
+            
+            updateBattleDisplay();
+            addLogEntry('系統', '戰鬥已重置');
+        }
+
+        // 添加日誌條目
+        function addLogEntry(type, message) {
+            const battleLog = document.getElementById('battle-log');
+            const logEntry = document.createElement('div');
+            logEntry.className = `log-entry ${type}`;
+            logEntry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            battleLog.appendChild(logEntry);
+            battleLog.scrollTop = battleLog.scrollHeight;
+        }
+
+        // 設置事件監聽器
+        function setupEventListeners() {
+            document.getElementById('start-battle').addEventListener('click', startBattle);
+            document.getElementById('manual-battle').addEventListener('click', startManualBattle);
+            document.getElementById('attack-btn').addEventListener('click', performPlayerAttack);
+            document.getElementById('skill-btn').addEventListener('click', performPlayerSkill);
+            document.getElementById('skip-btn').addEventListener('click', () => {
+                currentPlayerIndex++;
+                updateManualControls();
+            });
+            document.getElementById('back-to-home').addEventListener('click', () => {
+                window.location.href = 'index.html'; // 跳轉到首頁
+            });
+        }
+
+        // 頁面載入完成後初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('頁面載入完成，開始初始化...');
+            initGame();
+        });
+
+        // 顯示卡片放大預覽
+        function showCardPreview(card) {
+            const modal = document.getElementById('card-preview-modal');
+            const mediaDiv = document.getElementById('card-preview-media');
+            const titleDiv = document.getElementById('card-preview-title');
+            const statsDiv = document.getElementById('card-preview-stats');
+            // 清空
+            mediaDiv.innerHTML = '';
+            titleDiv.textContent = card.zh || '';
+            statsDiv.innerHTML = `<span style='color:#ff6b6b;'>攻:${card.attack||0}</span>　<span style='color:#4ecdc4;'>防:${card.defense||0}</span>　<span style='color:#45b7d1;'>血:${card.hp||0}</span>`;
+            // 放大內容
+            if (card.image && card.image.endsWith('.mp4')) {
+                mediaDiv.innerHTML = `<video src="${card.image}" style="width:160px;height:220px;object-fit:cover;border-radius:12px;box-shadow:0 0 12px #00ffff99;" muted autoplay loop playsinline></video>`;
+            } else {
+                const imgSrc = card.image || 'img/card_back.jpeg';
+                mediaDiv.innerHTML = `<img src="${imgSrc}" alt="${card.zh}" style="width:160px;height:220px;object-fit:cover;border-radius:12px;box-shadow:0 0 12px #00ffff99;">`;
+            }
+            modal.style.display = 'flex';
+        }
+
+        // 關閉預覽
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('close-card-preview').onclick = () => {
+                document.getElementById('card-preview-modal').style.display = 'none';
+            };
+            document.getElementById('card-preview-modal').onclick = (e) => {
+                if (e.target === document.getElementById('card-preview-modal')) {
+                    document.getElementById('card-preview-modal').style.display = 'none';
+                }
+            };
+        });
+    </script>
+</body>
+</html>
