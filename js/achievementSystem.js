@@ -72,19 +72,28 @@ class AchievementSystem {
       { key: 'vela', name: '船帆座', icon: '⛵', rewardRange: [17,20] }
     ];
     
-    atlasCategories.forEach((category, index) => {
+    atlasCategories.forEach(category => {
       this.achievements.push({
         id: `pass_${category.key}`,
-        name: `通過${category.name}`,
+        name: category.name,
         requirement: 1,
-        reward: category.rewardRange[0] === category.rewardRange[1] ? category.rewardRange[0] : null,
-        icon: category.icon,
+        reward: category.rewardRange[1],
+        icon: '🌠',
         type: 'zodiac',
         description: `通過${category.name}關卡`,
         rewardRange: category.rewardRange
       });
     });
 
+    // 星座關卡總體成就
+    this.achievements.push(
+      { id: 'zodiac_beginner', name: '星座新手', requirement: 1, reward: 10, icon: '🌠', type: 'zodiac_total', description: '通過第一個星座關卡，開始星座之旅' },
+      { id: 'zodiac_explorer', name: '星座探索者', requirement: 5, reward: 25, icon: '🌠', type: 'zodiac_total', description: '通過5個星座關卡，展現探索精神' },
+      { id: 'zodiac_master', name: '星座大師', requirement: 10, reward: 50, icon: '🌠', type: 'zodiac_total', description: '通過10個星座關卡，成為星座大師' },
+      { id: 'zodiac_expert', name: '星座專家', requirement: 15, reward: 100, icon: '🌠', type: 'zodiac_total', description: '通過15個星座關卡，展現專家實力' },
+      { id: 'zodiac_legend', name: '星座傳奇', requirement: 20, reward: 200, icon: '🌠', type: 'zodiac_total', description: '通過所有星座關卡，成就傳奇' }
+    );
+    
     this.init();
   }
 
@@ -440,6 +449,9 @@ class AchievementSystem {
         const zodiacKey = achievement.id.replace('pass_', '');
         const passedAtlas = JSON.parse(localStorage.getItem('passed_atlas') || '[]');
         return passedAtlas.includes(zodiacKey);
+      case 'zodiac_total':
+        const passedAtlasTotal = JSON.parse(localStorage.getItem('passed_atlas') || '[]');
+        return passedAtlasTotal.length >= achievement.requirement;
       case 'vocabulary':
         return parseInt(localStorage.getItem('vocabularyCorrectWords') || '0') >= achievement.requirement;
       case 'ssr_special':
