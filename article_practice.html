@@ -1,0 +1,2815 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <title>英文文章練習 - Article Practice</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="responsive_enhanced.css">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <style>
+    /* 禁用右鍵選單和複製功能 */
+    body {
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
+    
+    /* 允許輸入框可以選取 */
+    input, textarea {
+      -webkit-user-select: text;
+      -moz-user-select: text;
+      -ms-user-select: text;
+      user-select: text;
+    }
+    
+    /* 防止水平滾動 */
+    html {
+      overflow-x: hidden;
+    }
+    
+    /* 確保所有元素都在視窗範圍內 */
+    * {
+      box-sizing: border-box;
+      max-width: 100%;
+    }
+
+    /* 改善英文字體 */
+    body {
+      font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'Noto Sans TC', 'Microsoft JhengHei', sans-serif;
+    }
+
+    /* 英文文章內容使用更好的字體 */
+    .article-content {
+      font-family: 'Georgia', 'Times New Roman', 'Segoe UI', 'Roboto', serif;
+      line-height: 2.2;
+      font-size: 1.1rem;
+      letter-spacing: 1.2px;
+      word-spacing: 2px;
+    }
+
+    /* 英文標題使用清晰字體 */
+    .article-title {
+      font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', sans-serif;
+      font-weight: 600;
+      letter-spacing: 0.8px;
+    }
+
+    /* 練習問題使用易讀字體 */
+    .practice-input p {
+      font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'Noto Sans TC', 'Microsoft JhengHei', sans-serif;
+      line-height: 1.6;
+    }
+
+    /* 詞彙單字高亮樣式 */
+    .vocabulary-word {
+      background: linear-gradient(120deg, #ffd700 0%, #ffed4e 100%);
+      color: #333;
+      font-weight: bold;
+      padding: 0px 2px;
+      border-radius: 2px;
+      border: 1px solid #ffb300;
+      box-shadow: 0 1px 2px rgba(255, 179, 0, 0.3);
+      cursor: help;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline;
+      margin: 0 1px;
+      letter-spacing: 0.2px;
+    }
+
+    .vocabulary-word:hover {
+      background: linear-gradient(120deg, #ffed4e 0%, #ffd700 100%);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(255, 179, 0, 0.4);
+    }
+
+    /* 詞彙單字工具提示樣式 */
+    .vocabulary-word::after {
+      content: attr(title);
+      position: absolute;
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0, 0, 0, 0.8);
+      color: white;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 14px;
+      white-space: nowrap;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+      z-index: 1000;
+      pointer-events: none;
+    }
+
+    .vocabulary-word:hover::after {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    /* 選擇題選項使用清晰字體 */
+    .quiz-option {
+      font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', sans-serif;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+    
+    /* === 背景：星空與漸層 === */
+    body {
+      margin: 0;
+      padding: 0;
+      overflow: auto;
+      color: #fff;
+      background: linear-gradient(to bottom, #020111 0%, #000010 100%);
+      width: 100%;
+      overflow-x: hidden;
+    }
+
+    /* 星星粒子 */
+    #starfield {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* 主要容器 */
+    #container {
+      position: relative;
+      z-index: 1;
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 30px;
+      background: rgba(10, 20, 40, 0.7);
+      border-radius: 16px;
+      box-shadow: 0 0 32px #00ffff44, 0 0 80px #a259ff22 inset;
+      backdrop-filter: blur(8px);
+    }
+
+    /* 返回首頁按鈕 */
+    .home-btn {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background: linear-gradient(90deg, #00ffff 0%, #a259ff 100%);
+      color: #000;
+      font-weight: bold;
+      padding: 8px 16px;
+      border-radius: 8px;
+      box-shadow: 0 0 16px #00ffff;
+      text-decoration: none;
+      z-index: 2;
+      transition: transform 0.2s, box-shadow 0.2s;
+      font-family: 'Orbitron', 'Segoe UI', sans-serif;
+    }
+    .home-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 32px #00ffff;
+    }
+
+    /* 標題 */
+    h1 {
+      text-align: center;
+      color: #00ffff;
+      margin-bottom: 30px;
+      font-size: 2.5rem;
+      text-shadow: 0 0 12px #00ffff, 0 0 32px #a259ff;
+      font-family: 'Orbitron', 'Segoe UI', sans-serif;
+    }
+
+    /* 模式選擇區域 */
+    .mode-selection {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .mode-card {
+      background: rgba(255, 255, 255, 0.1);
+      border: 2px solid #00ffff;
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(5px);
+    }
+
+    .mode-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(0, 255, 255, 0.3);
+      border-color: #ffd700;
+    }
+
+    .mode-card h3 {
+      color: #ffd700;
+      margin-bottom: 10px;
+      font-size: 1.3rem;
+    }
+
+    .mode-card p {
+      color: #b8c7e0;
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    /* 文章練習區域 */
+    .article-section {
+      display: none;
+      margin-top: 20px;
+    }
+
+    .article-section.active {
+      display: block;
+    }
+
+    .article-content {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid #00ffff;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+      line-height: 1.8;
+      font-size: 1.1rem;
+    }
+
+    .article-title {
+      color: #ffd700;
+      font-size: 1.4rem;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+
+    /* 練習輸入區域 */
+    .practice-input {
+      margin-top: 20px;
+    }
+
+    .practice-input textarea {
+      width: 100%;
+      min-height: 120px;
+      padding: 15px;
+      background: rgba(10, 20, 40, 0.8);
+      border: 2px solid #00ffff;
+      border-radius: 8px;
+      color: #fff;
+      font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', sans-serif;
+      font-size: 1rem;
+      line-height: 1.6;
+      letter-spacing: 0.3px;
+      resize: vertical;
+    }
+
+    .practice-input textarea:focus {
+      outline: none;
+      border-color: #ffd700;
+      box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+    }
+
+    /* 按鈕樣式 */
+    .btn {
+      background: linear-gradient(135deg, #00ffff 0%, #a259ff 100%);
+      color: #000;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-family: 'Orbitron', 'Segoe UI', sans-serif;
+      margin: 5px;
+    }
+
+    .btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 5px 15px rgba(0, 255, 255, 0.4);
+    }
+
+    .btn-secondary {
+      background: linear-gradient(135deg, #ffd700 0%, #ffaa00 100%);
+      color: #000;
+    }
+
+    .btn-danger {
+      background: linear-gradient(135deg, #ff6b6b 0%, #ff4757 100%);
+      color: #fff;
+    }
+
+    /* 遊戲關卡入口 */
+    .game-entrance {
+      margin-top: 30px;
+      padding: 20px;
+      background: rgba(255, 215, 0, 0.1);
+      border: 2px solid #ffd700;
+      border-radius: 12px;
+      text-align: center;
+    }
+
+    .game-entrance h3 {
+      color: #ffd700;
+      margin-bottom: 15px;
+      font-size: 1.4rem;
+    }
+
+    .game-entrance p {
+      color: #b8c7e0;
+      margin-bottom: 20px;
+    }
+
+    /* 關卡選擇樣式 */
+    .level-selection h3 {
+      color: #00ffff;
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 1.5rem;
+    }
+
+    .level-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .level-card {
+      background: rgba(255, 255, 255, 0.1);
+      border: 2px solid #00ffff;
+      border-radius: 12px;
+      padding: 15px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(5px);
+      position: relative;
+    }
+
+    .level-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(0, 255, 255, 0.3);
+      border-color: #ffd700;
+    }
+
+    .level-card h4 {
+      color: #ffd700;
+      margin-bottom: 8px;
+      font-size: 1.1rem;
+      font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', sans-serif;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    .level-card p {
+      color: #b8c7e0;
+      font-size: 0.9rem;
+      margin-bottom: 10px;
+      font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', sans-serif;
+      line-height: 1.4;
+    }
+
+    .level-status {
+      color: #00ff00;
+      font-size: 0.8rem;
+      font-weight: bold;
+    }
+
+    /* 關卡內容樣式 */
+    .level-content {
+      margin-top: 20px;
+    }
+
+    .level-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding: 15px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+      border: 1px solid #00ffff;
+    }
+
+    .level-header h3 {
+      color: #ffd700;
+      margin: 0;
+      font-size: 1.3rem;
+    }
+
+    .level-progress {
+      color: #00ffff;
+      font-weight: bold;
+      font-size: 1.1rem;
+    }
+
+    /* 關卡選擇樣式 */
+    .level-selection h3 {
+      color: #00ffff;
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 1.5rem;
+    }
+
+    .level-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .level-card {
+      background: rgba(255, 255, 255, 0.1);
+      border: 2px solid #00ffff;
+      border-radius: 12px;
+      padding: 15px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(5px);
+      position: relative;
+    }
+
+    .level-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(0, 255, 255, 0.3);
+      border-color: #ffd700;
+    }
+
+    /* 關卡狀態樣式 */
+    .level-card.locked {
+      opacity: 0.6;
+      border-color: #666;
+      cursor: not-allowed;
+    }
+    
+    .level-card.locked:hover {
+      transform: none;
+      box-shadow: none;
+      border-color: #666;
+    }
+    
+    .level-card.locked .level-status {
+      color: #ff6b6b;
+    }
+    
+    .level-card.unlocked {
+      border-color: #00ffff;
+    }
+    
+    .level-card.unlocked .level-status {
+      color: #00ff00;
+    }
+    
+    .level-card.completed {
+      border-color: #ffd700;
+      background: rgba(255, 215, 0, 0.1);
+    }
+    
+    .level-card.completed .level-status {
+      color: #ffd700;
+    }
+    
+    /* 通關徽章樣式 */
+    .completion-badge {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      background: linear-gradient(45deg, #ffd700, #ffed4e);
+      color: #000;
+      font-weight: bold;
+      font-size: 0.8rem;
+      padding: 4px 8px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(255, 215, 0, 0.5);
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    .level-status {
+      color: #00ff00;
+      font-size: 0.8rem;
+      font-weight: bold;
+    }
+
+    /* 關卡內容樣式 */
+    .level-content {
+      margin-top: 20px;
+    }
+
+    .level-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding: 15px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+      border: 1px solid #00ffff;
+    }
+
+    .level-header h3 {
+      color: #ffd700;
+      margin: 0;
+      font-size: 1.3rem;
+    }
+
+    .level-progress {
+      color: #00ffff;
+      font-weight: bold;
+      font-size: 1.1rem;
+    }
+
+    /* 選擇題樣式 */
+    .quiz-question {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid #00ffff;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 15px;
+    }
+
+    .quiz-question h5 {
+      color: #ffd700;
+      margin-bottom: 10px;
+      font-size: 1rem;
+    }
+
+    .quiz-options {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .quiz-option {
+      display: flex;
+      align-items: center;
+      padding: 8px 12px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid #00ffff;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .quiz-option:hover {
+      background: rgba(0, 255, 255, 0.2);
+      border-color: #ffd700;
+    }
+
+    .quiz-option.selected {
+      background: rgba(255, 215, 0, 0.3);
+      border-color: #ffd700;
+    }
+
+    .quiz-option.correct {
+      background: rgba(0, 255, 0, 0.3);
+      border-color: #00ff00;
+    }
+
+    .quiz-option.incorrect {
+      background: rgba(255, 0, 0, 0.3);
+      border-color: #ff0000;
+    }
+
+    .quiz-option input[type="radio"] {
+      margin-right: 10px;
+    }
+
+    /* 問題進度樣式 */
+    .question-progress {
+      text-align: center;
+      color: #00ffff;
+      font-weight: bold;
+      font-size: 1.1rem;
+      margin: 10px 0;
+    }
+
+    /* 進度顯示 */
+    .progress-bar {
+      width: 100%;
+      height: 8px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+      overflow: hidden;
+      margin: 10px 0;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #00ffff, #ffd700);
+      transition: width 0.3s ease;
+    }
+
+    /* 星星顯示樣式 */
+    .stars-display {
+      position: fixed;
+      top: 15px;
+      right: 15px;
+      background: rgba(10, 20, 40, 0.6);
+      padding: 6px 12px;
+      border-radius: 10px;
+      color: #ffd700;
+      font-weight: bold;
+      box-shadow: 0 0 12px #ffd700, 0 0 32px #00ffff;
+      border: 2px solid #00ffff;
+      font-size: 1.1rem;
+      backdrop-filter: blur(1px);
+      z-index: 1000;
+    }
+
+    .stars-display span {
+      font-size: 1.1rem;
+      font-weight: bold;
+      color: #ffd700;
+      text-shadow: 0 0 10px #ffd700;
+      font-family: 'Orbitron', 'Segoe UI', sans-serif;
+    }
+
+
+
+    /* 響應式設計 */
+    @media (max-width: 768px) {
+      #container {
+        margin: 20px auto;
+        padding: 20px;
+      }
+      
+      h1 {
+        font-size: 2rem;
+      }
+      
+      .mode-selection {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- 星星背景 -->
+  <div id="starfield"></div>
+
+  <!-- 返回首頁按鈕 -->
+  <a href="index.html" class="home-btn">🏠 首頁</a>
+
+  <div id="container">
+    <h1>📚 英文文章練習</h1>
+    
+    <!-- 星星顯示 -->
+    <div class="stars-display">
+      <span id="totalStarsCount">⭐ 0</span>
+    </div>
+    
+    <!-- 模式選擇 -->
+    <div class="mode-selection">
+      <div class="mode-card" onclick="selectMode('reading')">
+        <h3>📖 閱讀練習</h3>
+        <p>閱讀英文文章並回答問題，提升理解能力</p>
+      </div>
+      <div class="mode-card" onclick="selectMode('writing')">
+        <h3>✍️ 寫作練習</h3>
+        <p>根據提示寫作英文文章，提升表達能力</p>
+      </div>
+    </div>
+
+    <!-- 閱讀練習區域 -->
+    <div id="reading-section" class="article-section">
+      <!-- 關卡選擇 -->
+      <div class="level-selection" id="reading-level-selection">
+        <h3>📚 選擇閱讀關卡</h3>
+        <div style="text-align: center; margin-bottom: 15px;">
+          <button class="btn btn-secondary" onclick="showCurrentLevelProgress()">📊 查看當前關卡進度</button>
+          <div style="margin-top: 10px; color: #ffd700; font-weight: bold;">
+            <span id="completion-summary">通關進度：0/40</span>
+          </div>
+        </div>
+        <div class="level-grid" id="level-grid">
+          <!-- 關卡會動態載入 -->
+        </div>
+      </div>
+
+      <!-- 關卡內容 -->
+      <div class="level-content" id="reading-level-content" style="display: none;">
+        <div class="level-header">
+          <button class="btn btn-secondary" onclick="backToLevelSelection()">← 返回關卡選擇</button>
+          <h3 id="current-level-title">關卡標題</h3>
+          <div class="level-progress">
+            <span id="current-level-number">1</span> / <span id="total-levels">1</span>
+            <span id="level-completion-status" style="margin-left: 10px; color: #ffd700; font-weight: bold;"></span>
+          </div>
+        </div>
+
+        <div class="article-content" id="current-article">
+          <!-- 文章內容會動態載入 -->
+        </div>
+        <div style="text-align: center; margin-top: 15px;">
+          <button class="btn btn-secondary" onclick="playArticleAudio()" id="play-article-btn">
+            🔊 播放文章發音
+          </button>
+        </div>
+        
+        <div class="practice-input">
+          <h4>📝 練習問題：</h4>
+          <div id="current-question">
+            <!-- 當前問題會動態載入 -->
+          </div>
+          <div class="question-progress">
+            <span id="current-question-number">1</span> / <span id="total-questions">3</span>
+          </div>
+          <textarea id="reading-answer" placeholder="請在這裡寫下你的答案..."></textarea>
+          <button class="btn" onclick="checkReadingAnswer()" id="submit-answer-btn">✅ 提交答案</button>
+          <button class="btn btn-secondary" onclick="nextQuestion()" id="next-question-btn" style="display: none;">➡️ 下一題</button>
+          <div id="answer-feedback" style="margin-top: 10px; color: #ffd700; font-weight: bold;"></div>
+          
+          <h4 style="margin-top: 20px;">🎯 閱讀測驗：</h4>
+          <div id="current-quiz">
+            <!-- 選擇題會動態載入 -->
+          </div>
+          <button class="btn" onclick="checkQuiz()">✅ 檢查測驗</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 寫作練習區域 -->
+    <div id="writing-section" class="article-section">
+      <div class="article-content">
+        <div class="article-title" id="writing-title">寫作主題：My Dream Job</div>
+        <p id="writing-description">請根據以下提示寫一篇關於「我的理想工作」的英文文章：</p>
+        <ul id="writing-prompts">
+          <li>What is your dream job?</li>
+          <li>Why do you want this job?</li>
+          <li>What skills do you need for this job?</li>
+          <li>How will you prepare for this career?</li>
+        </ul>
+      </div>
+      
+      <div class="practice-input">
+        <h4>✍️ 寫作練習：</h4>
+        <textarea id="writing-answer" placeholder="請在這裡寫下你的英文文章..."></textarea>
+        <button class="btn" onclick="saveWriting()">💾 儲存文章</button>
+        <button class="btn btn-secondary" onclick="showWritingTips()">💡 寫作技巧</button>
+        <button class="btn btn-secondary" onclick="changeWritingTopic()">🔄 換個主題</button>
+      </div>
+    </div>
+
+
+
+    <!-- 功能按鈕區域 -->
+    <div style="text-align: center; margin-top: 30px;">
+      <button class="btn btn-secondary" onclick="location.href='index.html'">🏠 返回首頁</button>
+    </div>
+  </div>
+
+  <script src="js/articleData.js"></script>
+  <script src="js/starRewardSystem.js"></script>
+  <script src="js/sound.js"></script>
+  <script>
+    // 星星背景效果
+    function createStars() {
+      const starfield = document.getElementById('starfield');
+      for (let i = 0; i < 100; i++) {
+        const star = document.createElement('div');
+        star.style.position = 'absolute';
+        star.style.width = '2px';
+        star.style.height = '2px';
+        star.style.background = 'white';
+        star.style.borderRadius = '50%';
+        star.style.left = Math.random() * 100 + '%';
+        star.style.top = Math.random() * 100 + '%';
+        star.style.animation = `twinkle ${Math.random() * 3 + 2}s infinite`;
+        starfield.appendChild(star);
+      }
+    }
+
+    // 當前模式
+    let currentMode = '';
+    let currentReadingLevel = 1;
+    let currentWritingTopicIndex = 0;
+    let currentQuestionIndex = 0;
+    let progress = 0;
+    let completedExercises = [];
+    let completedReadingLevels = [];
+
+
+    // 初始化語音系統
+    function initSpeechSynthesis() {
+      if ('speechSynthesis' in window) {
+        // 等待語音列表載入
+        speechSynthesis.onvoiceschanged = function() {
+          const voices = speechSynthesis.getVoices();
+          console.log('可用的語音：', voices.map(v => `${v.name} (${v.lang})`));
+        };
+        
+        // 立即嘗試獲取語音列表
+        const voices = speechSynthesis.getVoices();
+        if (voices.length > 0) {
+          console.log('語音系統已初始化');
+        }
+      }
+    }
+
+    // 禁用右鍵選單
+    document.addEventListener('contextmenu', function(e) {
+      e.preventDefault();
+      return false;
+    });
+    
+    // 禁用鍵盤快捷鍵複製
+    document.addEventListener('keydown', function(e) {
+      // 禁用 Ctrl+C, Ctrl+A, Ctrl+X, Ctrl+V
+      if (e.ctrlKey && (e.key === 'c' || e.key === 'a' || e.key === 'x' || e.key === 'v')) {
+        // 允許在輸入框中使用這些快捷鍵
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+          return true;
+        }
+        e.preventDefault();
+        return false;
+      }
+    });
+    
+    // 初始化
+    document.addEventListener('DOMContentLoaded', function() {
+      createStars();
+      loadProgress();
+      loadWritingTopic(); // 載入第一個寫作主題
+      loadReadingLevels(); // 載入閱讀關卡
+      
+      // 初始化音效系統
+      if (typeof SoundSystem !== 'undefined') {
+        SoundSystem.init();
+      }
+      
+      // 初始化語音系統
+      initSpeechSynthesis();
+      
+      // 初始化星星系統顯示
+      updateStarsDisplay();
+      
+      // 為所有按鈕添加點擊音效
+      if (typeof SoundSystem !== 'undefined') {
+        SoundSystem.addClickSoundToElements(document.querySelectorAll('button'));
+      }
+      
+      // 定期更新星星顯示（每5秒）
+      setInterval(updateStarsDisplay, 5000);
+      
+      // 延遲更新星星顯示，確保DOM完全載入
+      setTimeout(updateStarsDisplay, 100);
+      
+      // 為答案輸入框添加 Enter 鍵事件
+      setupAnswerInputEvents();
+    });
+    
+    // 設置答案輸入框的 Enter 鍵事件
+    function setupAnswerInputEvents() {
+      // 為閱讀練習答案輸入框添加 Enter 鍵事件
+      const readingAnswerInput = document.getElementById('reading-answer');
+      if (readingAnswerInput) {
+        readingAnswerInput.addEventListener('keydown', function(e) {
+          if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault(); // 防止換行
+            checkReadingAnswer();
+          }
+        });
+      }
+      
+      // 為遊戲模式答案輸入框添加 Enter 鍵事件
+      const gameReadingAnswerInput = document.getElementById('game-reading-answer');
+      if (gameReadingAnswerInput) {
+        gameReadingAnswerInput.addEventListener('keydown', function(e) {
+          if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault(); // 防止換行
+            checkGameReadingAnswer();
+          }
+        });
+      }
+      
+      // 為寫作練習答案輸入框添加 Enter 鍵事件
+      const writingAnswerInput = document.getElementById('writing-answer');
+      if (writingAnswerInput) {
+        writingAnswerInput.addEventListener('keydown', function(e) {
+          if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault(); // 防止換行
+            saveWriting();
+          }
+        });
+      }
+    }
+    
+    // 更新星星顯示
+    function updateStarsDisplay() {
+      const starsCount = document.getElementById('totalStarsCount');
+      if (starsCount) {
+        const stars = parseInt(localStorage.getItem('totalStars') || '0');
+        starsCount.textContent = `⭐ ${stars}`;
+        console.log('⭐ 星星數已更新:', stars);
+      }
+      
+      // 如果StarRewardSystem可用，也調用它
+      if (typeof StarRewardSystem !== 'undefined') {
+        StarRewardSystem.updateStarsDisplay();
+      }
+      
+      // 重新載入關卡列表以更新解鎖狀態
+      // 檢查是否在閱讀模式或尚未選擇模式
+      if (currentMode === 'reading' || !currentMode) {
+        loadReadingLevels();
+      }
+    }
+
+    // 載入閱讀關卡
+    function loadReadingLevels() {
+      const levelGrid = document.getElementById('level-grid');
+      const totalLevels = document.getElementById('total-levels');
+      
+      // 更新總關卡數
+      totalLevels.textContent = articleLevels.length;
+      
+      // 計算通關統計
+      const completedCount = completedReadingLevels.length;
+      const completionSummary = document.getElementById('completion-summary');
+      if (completionSummary) {
+        completionSummary.textContent = `通關進度：${completedCount}/${articleLevels.length}`;
+      }
+      
+      // 生成關卡卡片
+      levelGrid.innerHTML = articleLevels.map((level, index) => {
+        const unlockCost = (index + 1) * 5; // 每關解鎖需要花費5顆星星
+        const isUnlocked = index === 0 || localStorage.getItem(`level_${index + 1}_unlocked`) === 'true'; // 第一關默認解鎖
+        const isCompleted = completedReadingLevels.includes(index + 1);
+        
+        let statusText = '';
+        let statusClass = '';
+        let clickAction = '';
+        
+        if (isCompleted) {
+          statusText = '✅ 已通關';
+          statusClass = 'completed';
+          clickAction = `selectReadingLevel(${index + 1})`;
+        } else if (isUnlocked) {
+          statusText = '🔓 已解鎖';
+          statusClass = 'unlocked';
+          clickAction = `selectReadingLevel(${index + 1})`;
+        } else {
+          statusText = `🔒 花費 ${unlockCost} 顆星星解鎖`;
+          statusClass = 'locked';
+          clickAction = `unlockLevel(${index + 1}, ${unlockCost})`;
+        }
+        
+        return `
+          <div class="level-card ${statusClass}" onclick="${clickAction}">
+            <h4>${index + 1}. ${level.title}</h4>
+            <p>${level.difficulty} - ${level.category}</p>
+            <div class="level-status ${statusClass}">${statusText}</div>
+            ${isCompleted ? '<div class="completion-badge">🏆 通關</div>' : ''}
+          </div>
+        `;
+      }).join('');
+    }
+    
+    // 解鎖關卡
+    function unlockLevel(levelNumber, cost) {
+      const currentStars = parseInt(localStorage.getItem('totalStars') || '0');
+      
+      if (currentStars >= cost) {
+        // 確認是否要花費星星解鎖
+        const confirmUnlock = confirm(`🔓 確定要花費 ${cost} 顆星星解鎖第 ${levelNumber} 關嗎？\n\n您目前有 ${currentStars} 顆星星`);
+        
+        if (confirmUnlock) {
+          // 扣除星星
+          const newStars = currentStars - cost;
+          localStorage.setItem('totalStars', newStars.toString());
+          
+          // 標記關卡為已解鎖
+          localStorage.setItem(`level_${levelNumber}_unlocked`, 'true');
+          
+          // 更新顯示
+          updateStarsDisplay();
+          
+          alert(`🎉 恭喜！第 ${levelNumber} 關已解鎖！\n\n花費了 ${cost} 顆星星，剩餘 ${newStars} 顆星星`);
+        }
+      } else {
+        alert(`🔒 星星不足！\n\n解鎖第 ${levelNumber} 關需要 ${cost} 顆星星\n您目前只有 ${currentStars} 顆星星\n\n請繼續練習以獲得更多星星！`);
+      }
+    }
+    
+
+
+    // 選擇模式
+    function selectMode(mode) {
+      currentMode = mode;
+      
+      // 隱藏所有區域
+      document.querySelectorAll('.article-section').forEach(section => {
+        section.classList.remove('active');
+      });
+      
+      // 顯示選中的區域
+      document.getElementById(mode + '-section').classList.add('active');
+      
+      // 如果是閱讀模式，顯示關卡選擇
+      if (mode === 'reading') {
+        document.getElementById('reading-level-selection').style.display = 'block';
+        document.getElementById('reading-level-content').style.display = 'none';
+      }
+      
+
+      
+      // 更新進度
+      updateProgress();
+    }
+
+    // 選擇閱讀關卡
+    function selectReadingLevel(level) {
+      currentReadingLevel = level;
+      const levelData = articleLevels[level - 1];
+      
+      // 隱藏關卡選擇，顯示關卡內容
+      document.getElementById('reading-level-selection').style.display = 'none';
+      document.getElementById('reading-level-content').style.display = 'block';
+      
+      // 更新關卡標題和進度
+      document.getElementById('current-level-title').textContent = levelData.title;
+      document.getElementById('current-level-number').textContent = level;
+      
+      // 更新通關狀態
+      const completionStatus = document.getElementById('level-completion-status');
+      if (completedReadingLevels.includes(level)) {
+        completionStatus.textContent = '✅ 已通關';
+        completionStatus.style.color = '#ffd700';
+      } else {
+        completionStatus.textContent = '';
+      }
+      
+      // 載入文章內容
+      const articleDiv = document.getElementById('current-article');
+      const highlightedContent = highlightVocabularyWords(levelData.article.content, levelData.vocabulary);
+      articleDiv.innerHTML = `
+        <div class="article-title">${levelData.article.title}</div>
+        <p>${highlightedContent}</p>
+      `;
+      
+      // 重置發音按鈕狀態
+      const playBtn = document.getElementById('play-article-btn');
+      if (playBtn) {
+        playBtn.textContent = '🔊 播放文章發音';
+        playBtn.onclick = playArticleAudio;
+      }
+      
+      // 重置問題索引
+      currentQuestionIndex = 0;
+      
+      // 載入第一個問題
+      loadCurrentQuestion();
+      
+      // 載入選擇題測驗
+      const quizDiv = document.getElementById('current-quiz');
+      if (levelData.quiz) {
+        quizDiv.innerHTML = levelData.quiz.map((quiz, index) => `
+          <div class="quiz-question">
+            <h5>${index + 1}. ${quiz.question}</h5>
+            <div class="quiz-options">
+              ${quiz.options.map((option, optIndex) => `
+                <label class="quiz-option" onclick="selectQuizOption(${index}, ${optIndex})">
+                  <input type="radio" name="quiz${index}" value="${optIndex}">
+                  ${String.fromCharCode(65 + optIndex)}) ${option}
+                </label>
+              `).join('')}
+            </div>
+          </div>
+        `).join('');
+        
+        // 重新啟用測驗提交按鈕
+        const quizSubmitBtn = document.querySelector('button[onclick="checkQuiz()"]');
+        if (quizSubmitBtn) {
+          quizSubmitBtn.disabled = false;
+          quizSubmitBtn.textContent = '✅ 檢查測驗';
+        }
+      } else {
+        quizDiv.innerHTML = '<p>此關卡暫無測驗題目</p>';
+      }
+      
+      // 清空答案輸入框
+      document.getElementById('reading-answer').value = '';
+      
+      // 重新設置 Enter 鍵事件
+      setupAnswerInputEvents();
+    }
+
+    // 返回關卡選擇
+    function backToLevelSelection() {
+      document.getElementById('reading-level-selection').style.display = 'block';
+      document.getElementById('reading-level-content').style.display = 'none';
+    }
+
+    // 下一關
+    function nextReadingLevel() {
+      if (currentReadingLevel < articleLevels.length) {
+        selectReadingLevel(currentReadingLevel + 1);
+      } else {
+        alert('🎉 恭喜！你已完成所有閱讀關卡！');
+        backToLevelSelection();
+      }
+    }
+
+    // 高亮詞彙單字
+    function highlightVocabularyWords(content, vocabulary) {
+      if (!vocabulary || vocabulary.length === 0) {
+        return content;
+      }
+      
+      let highlightedContent = content;
+      
+      // 為每個詞彙單字添加高亮樣式
+      vocabulary.forEach(item => {
+        const word = item.word;
+        const meaning = item.meaning;
+        
+        // 使用正則表達式來匹配單字（考慮大小寫和詞形變化）
+        const regex = new RegExp(`\\b${word}\\b`, 'gi');
+        
+        // 替換為帶有高亮樣式的單字
+        highlightedContent = highlightedContent.replace(regex, 
+          `<span class="vocabulary-word" title="${meaning}">${word}</span>`
+        );
+      });
+      
+      return highlightedContent;
+    }
+
+    // 檢查閱讀答案
+    function checkReadingAnswer() {
+      const answerInput = document.getElementById('reading-answer');
+      const submitBtn = document.getElementById('submit-answer-btn');
+      const feedbackDiv = document.getElementById('answer-feedback');
+      const answer = answerInput.value.trim();
+      if (answer.length > 0) {
+        const levelData = articleLevels[currentReadingLevel - 1];
+        const correctAnswer = levelData.answers[currentQuestionIndex];
+        // ... existing code ...
+        let matchCount = 0;
+        const answerWords = answer.toLowerCase().split(' ');
+        const correctWords = correctAnswer.toLowerCase().split(' ');
+        correctWords.forEach(word => {
+          if (answerWords.includes(word)) {
+            matchCount++;
+          }
+        });
+        const isCorrect = matchCount / correctWords.length >= 0.6;
+        recordAnswer(currentReadingLevel, currentQuestionIndex, isCorrect);
+        // 鎖定輸入框與提交按鈕
+        answerInput.disabled = true;
+        submitBtn.disabled = true;
+        // 顯示正確答案
+        feedbackDiv.innerHTML = `正確答案：<span style='color:#fff;'>${correctAnswer}</span>`;
+        if (isCorrect) {
+          // ... existing code ...
+          if (typeof StarRewardSystem !== 'undefined') {
+            StarRewardSystem.addStars(5);
+          } else {
+            const currentStars = parseInt(localStorage.getItem('totalStars') || '0');
+            const newStars = currentStars + 5;
+            localStorage.setItem('totalStars', newStars.toString());
+          }
+          updateStarsDisplay();
+          playSound('correct');
+          showStarReward(5);
+          checkLevelCompletion(currentReadingLevel);
+          if (currentQuestionIndex === levelData.questions.length - 1) {
+            if (!completedReadingLevels.includes(currentReadingLevel)) {
+              completedReadingLevels.push(currentReadingLevel);
+              localStorage.setItem(`level_${currentReadingLevel}_completed`, 'true');
+              if (typeof StarRewardSystem !== 'undefined') {
+                StarRewardSystem.addStars(5);
+              } else {
+                const currentStars = parseInt(localStorage.getItem('totalStars') || '0');
+                const newStars = currentStars + 5;
+                localStorage.setItem('totalStars', newStars.toString());
+              }
+              updateStarsDisplay();
+              playSound('complete');
+            }
+            markExerciseComplete('reading');
+          } else {
+            document.getElementById('next-question-btn').style.display = 'inline-block';
+          }
+        } else {
+          playSound('wrong');
+          // 答錯也顯示下一題按鈕
+          if (currentQuestionIndex < levelData.questions.length - 1) {
+            document.getElementById('next-question-btn').style.display = 'inline-block';
+          }
+        }
+      } else {
+        alert('請先寫下你的答案！');
+      }
+    }
+
+    // 記錄答題結果
+    function recordAnswer(level, questionIndex, isCorrect) {
+      const key = `level_${level}_answers`;
+      let answers = JSON.parse(localStorage.getItem(key) || '{}');
+      
+      answers[questionIndex] = isCorrect;
+      localStorage.setItem(key, JSON.stringify(answers));
+    }
+    
+    // 檢查關卡完成度
+    function checkLevelCompletion(level) {
+      const key = `level_${level}_answers`;
+      const answers = JSON.parse(localStorage.getItem(key) || '{}');
+      const levelData = articleLevels[level - 1];
+      const totalQuestions = levelData.questions.length;
+      
+      // 計算正確答案數量
+      let correctCount = 0;
+      for (let i = 0; i < totalQuestions; i++) {
+        if (answers[i] === true) {
+          correctCount++;
+        }
+      }
+      
+      const practiceAccuracy = (correctCount / totalQuestions) * 100;
+      
+      // 檢查測驗成績
+      const quizKey = `level_${level}_quiz_score`;
+      const quizScore = parseInt(localStorage.getItem(quizKey) || '0');
+      
+      // 只有練習和測驗都達到80%才能通關
+      if (practiceAccuracy >= 80 && quizScore >= 80 && !completedReadingLevels.includes(level)) {
+        completedReadingLevels.push(level);
+        
+        // 標記關卡為已完成
+        localStorage.setItem(`level_${level}_completed`, 'true');
+        
+        // 關卡完成獎勵
+        if (typeof StarRewardSystem !== 'undefined') {
+          StarRewardSystem.addStars(10); // 80%通關獎勵
+        } else {
+          // 備用星星系統
+          const currentStars = parseInt(localStorage.getItem('totalStars') || '0');
+          const newStars = currentStars + 10;
+          localStorage.setItem('totalStars', newStars.toString());
+        }
+        
+        // 立即更新星星顯示
+        updateStarsDisplay();
+        
+        // 播放完成音效
+        playSound('complete');
+      }
+    }
+    
+    // 顯示關卡進度
+    function showLevelProgress(level) {
+      const key = `level_${level}_answers`;
+      const answers = JSON.parse(localStorage.getItem(key) || '{}');
+      const levelData = articleLevels[level - 1];
+      const totalQuestions = levelData.questions.length;
+      
+      // 計算練習正確答案數量
+      let correctCount = 0;
+      for (let i = 0; i < totalQuestions; i++) {
+        if (answers[i] === true) {
+          correctCount++;
+        }
+      }
+      
+      const practiceAccuracy = (correctCount / totalQuestions) * 100;
+      
+      // 獲取測驗成績
+      const quizKey = `level_${level}_quiz_score`;
+      const quizScore = parseInt(localStorage.getItem(quizKey) || '0');
+      
+      // 檢查是否已通關
+      const isCompleted = completedReadingLevels.includes(level);
+      
+      let statusMessage = '';
+      if (isCompleted) {
+        statusMessage = '🎉 已通關！';
+      } else if (practiceAccuracy >= 80 && quizScore >= 80) {
+        statusMessage = '🎉 已達到通關標準！';
+      } else {
+        statusMessage = '💪 繼續努力！';
+      }
+      
+      alert(`📊 第 ${level} 關進度：\n\n📝 練習部分：\n✅ 正確題數：${correctCount}/${totalQuestions}\n📈 正確率：${practiceAccuracy.toFixed(1)}%\n\n🎯 測驗部分：\n📈 正確率：${quizScore}%\n\n🎯 通關標準：練習和測驗都需達到80%\n\n${statusMessage}`);
+    }
+    
+    // 顯示當前關卡進度
+    function showCurrentLevelProgress() {
+      if (currentReadingLevel) {
+        showLevelProgress(currentReadingLevel);
+      } else {
+        alert('請先選擇一個關卡！');
+      }
+    }
+    
+    // 載入當前問題
+    function loadCurrentQuestion() {
+      const levelData = articleLevels[currentReadingLevel - 1];
+      const questionDiv = document.getElementById('current-question');
+      const questionNumber = document.getElementById('current-question-number');
+      const totalQuestions = document.getElementById('total-questions');
+      
+      // 更新問題進度
+      questionNumber.textContent = currentQuestionIndex + 1;
+      totalQuestions.textContent = levelData.questions.length;
+      
+      // 載入當前問題
+      questionDiv.innerHTML = `<p>${levelData.questions[currentQuestionIndex]}</p>`;
+      
+      // 清空答案輸入框並重新啟用
+      const answerInput = document.getElementById('reading-answer');
+      const submitBtn = document.getElementById('submit-answer-btn');
+      const feedbackDiv = document.getElementById('answer-feedback');
+      
+      answerInput.value = '';
+      answerInput.disabled = false;
+      submitBtn.disabled = false;
+      feedbackDiv.innerHTML = '';
+      
+      // 隱藏下一題按鈕
+      document.getElementById('next-question-btn').style.display = 'none';
+      
+      // 重新設置 Enter 鍵事件
+      setupAnswerInputEvents();
+    }
+
+    // 下一題
+    function nextQuestion() {
+      const levelData = articleLevels[currentReadingLevel - 1];
+      
+      if (currentQuestionIndex < levelData.questions.length - 1) {
+        currentQuestionIndex++;
+        loadCurrentQuestion();
+        
+        // 隱藏下一題按鈕
+        document.getElementById('next-question-btn').style.display = 'none';
+      } else {
+        // 可以選擇重新開始或進入下一關
+        if (confirm('是否要重新開始練習問題？')) {
+          currentQuestionIndex = 0;
+          loadCurrentQuestion();
+          // 隱藏下一題按鈕
+          document.getElementById('next-question-btn').style.display = 'none';
+        }
+      }
+    }
+
+    // 顯示閱讀答案
+    function showReadingAnswer() {
+      const levelData = articleLevels[currentReadingLevel - 1];
+      const currentAnswer = levelData.answers[currentQuestionIndex];
+      // 移除顯示答案的彈窗
+    }
+
+    // 選擇測驗選項
+    function selectQuizOption(questionIndex, optionIndex) {
+      const questionDiv = document.querySelectorAll('.quiz-question')[questionIndex];
+      const options = questionDiv.querySelectorAll('.quiz-option');
+      
+      // 移除所有選項的選中狀態
+      options.forEach(option => {
+        option.classList.remove('selected');
+        option.querySelector('input').checked = false;
+      });
+      
+      // 選中當前選項
+      options[optionIndex].classList.add('selected');
+      options[optionIndex].querySelector('input').checked = true;
+    }
+
+    // 檢查測驗答案
+    function checkQuiz() {
+      const levelData = articleLevels[currentReadingLevel - 1];
+      if (!levelData.quiz) {
+        return;
+      }
+
+      // 檢查是否已經提交過
+      const quizSubmitBtn = document.querySelector('button[onclick="checkQuiz()"]');
+      if (quizSubmitBtn.disabled) {
+        return; // 已經提交過，不再處理
+      }
+
+      let correctCount = 0;
+      const questionDivs = document.querySelectorAll('.quiz-question');
+      
+      levelData.quiz.forEach((quiz, index) => {
+        const selectedOption = questionDivs[index].querySelector('input:checked');
+        const options = questionDivs[index].querySelectorAll('.quiz-option');
+        
+        if (selectedOption) {
+          const selectedIndex = parseInt(selectedOption.value);
+          
+          // 移除之前的結果樣式
+          options.forEach(option => {
+            option.classList.remove('correct', 'incorrect');
+          });
+          
+          if (selectedIndex === quiz.correct) {
+            options[selectedIndex].classList.add('correct');
+            correctCount++;
+          } else {
+            options[selectedIndex].classList.add('incorrect');
+            options[quiz.correct].classList.add('correct');
+          }
+        }
+      });
+      
+      const score = Math.round((correctCount / levelData.quiz.length) * 100);
+      
+      // 計算測驗獎勵
+      let starsEarned = 0;
+      if (score >= 90) {
+        starsEarned = 5; // 90%以上：5星
+      } else if (score >= 80) {
+        starsEarned = 3; // 80%以上：3星
+      } else if (score >= 60) {
+        starsEarned = 1; // 60%以上：1星
+      }
+      
+      // 給予星星獎勵
+      if (starsEarned > 0) {
+        if (typeof StarRewardSystem !== 'undefined') {
+          StarRewardSystem.addStars(starsEarned);
+        } else {
+          // 備用星星系統
+          const currentStars = parseInt(localStorage.getItem('totalStars') || '0');
+          const newStars = currentStars + starsEarned;
+          localStorage.setItem('totalStars', newStars.toString());
+        }
+        
+        // 立即更新星星顯示
+        updateStarsDisplay();
+        
+        // 顯示星星獎勵動畫
+        showStarReward(starsEarned);
+        
+        // 播放正確音效
+        playSound('correct');
+      }
+      
+      // 記錄測驗成績
+      const quizKey = `level_${currentReadingLevel}_quiz_score`;
+      localStorage.setItem(quizKey, score.toString());
+      
+      // 檢查是否達到通關標準（練習和測驗都80%）
+      checkLevelCompletion(currentReadingLevel);
+      
+      // 鎖定所有選項和提交按鈕
+      questionDivs.forEach(questionDiv => {
+        const options = questionDiv.querySelectorAll('input[type="radio"]');
+        options.forEach(option => {
+          option.disabled = true;
+        });
+      });
+      quizSubmitBtn.disabled = true;
+      quizSubmitBtn.textContent = '✅ 已提交';
+      
+      // 顯示測驗結果
+      let resultMessage = `🎯 測驗結果：${correctCount}/${levelData.quiz.length} 題正確 (${score}分)`;
+      if (starsEarned > 0) {
+        resultMessage += `\n\n⭐ 獲得 ${starsEarned} 顆星星獎勵！`;
+        if (score >= 90) {
+          resultMessage += '\n🎉 優秀表現！';
+        } else if (score >= 80) {
+          resultMessage += '\n🎉 良好表現！';
+        } else if (score >= 60) {
+          resultMessage += '\n🎉 及格表現！';
+        }
+      } else {
+        resultMessage += '\n\n💪 繼續努力，下次會更好！';
+      }
+      
+      alert(resultMessage);
+    }
+
+    // 播放文章發音
+    function playArticleAudio() {
+      const levelData = articleLevels[currentReadingLevel - 1];
+      if (!levelData) {
+        alert('請先選擇關卡！');
+        return;
+      }
+      
+      const articleTitle = levelData.article.title;
+      const articleContent = levelData.article.content;
+      
+      // 播放音效提示
+      playSound('correct');
+      
+      // 顯示文章內容供閱讀
+      const fullText = `${articleTitle}\n\n${articleContent}`;
+      
+      // 使用瀏覽器的語音合成API（如果可用）
+      if ('speechSynthesis' in window) {
+        // 獲取可用的語音
+        const voices = speechSynthesis.getVoices();
+        
+        // 尋找最佳的美式英語語音
+        let selectedVoice = null;
+        
+        // 優先選擇：Google 美式英語女聲
+        selectedVoice = voices.find(voice => 
+          voice.lang === 'en-US' && 
+          voice.name.includes('Google') && 
+          voice.name.includes('Female')
+        );
+        
+        // 其次：Microsoft 美式英語女聲
+        if (!selectedVoice) {
+          selectedVoice = voices.find(voice => 
+            voice.lang === 'en-US' && 
+            voice.name.includes('Microsoft') && 
+            voice.name.includes('Female')
+          );
+        }
+        
+        // 再次：任何美式英語女聲
+        if (!selectedVoice) {
+          selectedVoice = voices.find(voice => 
+            voice.lang === 'en-US' && 
+            voice.name.includes('Female')
+          );
+        }
+        
+        // 最後：任何美式英語語音
+        if (!selectedVoice) {
+          selectedVoice = voices.find(voice => 
+            voice.lang === 'en-US'
+          );
+        }
+        
+        // 如果還是沒有找到，使用第一個可用的語音
+        if (!selectedVoice && voices.length > 0) {
+          selectedVoice = voices[0];
+        }
+        
+        const utterance = new SpeechSynthesisUtterance(fullText);
+        utterance.lang = 'en-US';
+        utterance.rate = 1.0; // 正常速度
+        utterance.pitch = 1.1; // 稍微提高音調，更有活力
+        utterance.volume = 1.0;
+        
+        // 如果找到了合適的語音，使用它
+        if (selectedVoice) {
+          utterance.voice = selectedVoice;
+          console.log('使用語音：', selectedVoice.name, selectedVoice.lang);
+        } else {
+          console.log('未找到合適的語音，使用默認語音');
+        }
+        
+        // 開始播放
+        speechSynthesis.speak(utterance);
+        
+        // 更新按鈕狀態
+        const playBtn = document.getElementById('play-article-btn');
+        if (playBtn) {
+          playBtn.textContent = '⏸️ 暫停發音';
+          playBtn.onclick = pauseArticleAudio;
+        }
+        
+        // 播放完成後恢復按鈕
+        utterance.onend = function() {
+          if (playBtn) {
+            playBtn.textContent = '🔊 播放文章發音';
+            playBtn.onclick = playArticleAudio;
+          }
+        };
+        
+        // 移除彈窗，只播放語音
+      } else {
+        // 如果瀏覽器不支持語音合成，靜默處理
+        console.log('瀏覽器不支持語音合成');
+      }
+    }
+    
+    // 暫停文章發音
+    function pauseArticleAudio() {
+      if ('speechSynthesis' in window) {
+        speechSynthesis.cancel(); // 停止所有語音
+        
+        // 恢復按鈕狀態
+        const playBtn = document.getElementById('play-article-btn');
+        if (playBtn) {
+          playBtn.textContent = '🔊 播放文章發音';
+          playBtn.onclick = playArticleAudio;
+        }
+        
+        // 移除彈窗，靜默暫停
+      }
+    }
+
+
+
+    // 儲存寫作
+    function saveWriting() {
+      const writing = document.getElementById('writing-answer').value.trim();
+      if (writing.length > 0) {
+        localStorage.setItem('savedWriting', writing);
+        markExerciseComplete('writing');
+        
+        // 計算寫作獎勵（基於文章長度）
+        let starsEarned = 3; // 基礎獎勵
+        const wordCount = writing.split(' ').length;
+        
+        if (wordCount >= 50) {
+          starsEarned = 8; // 長文章獎勵
+        } else if (wordCount >= 30) {
+          starsEarned = 6; // 中等文章獎勵
+        } else if (wordCount >= 15) {
+          starsEarned = 4; // 短文章獎勵
+        }
+        
+        // 給予寫作完成獎勵
+        if (typeof StarRewardSystem !== 'undefined') {
+          StarRewardSystem.addStars(starsEarned);
+        } else {
+          // 備用星星系統
+          const currentStars = parseInt(localStorage.getItem('totalStars') || '0');
+          const newStars = currentStars + starsEarned;
+          localStorage.setItem('totalStars', newStars.toString());
+        }
+        
+        // 立即更新星星顯示
+        updateStarsDisplay();
+        
+        // 顯示星星獎勵動畫
+        showStarReward(starsEarned);
+        
+        // 播放完成音效
+        playSound('complete');
+        
+        // 顯示結果訊息
+        let resultMessage = `💾 文章已儲存！\n\n⭐ 獲得 ${starsEarned} 顆星星獎勵！`;
+        if (wordCount >= 50) {
+          resultMessage += '\n🎉 優秀的長篇文章！';
+        } else if (wordCount >= 30) {
+          resultMessage += '\n🎉 良好的中等文章！';
+        } else if (wordCount >= 15) {
+          resultMessage += '\n🎉 不錯的短篇文章！';
+        }
+        resultMessage += '\n\n繼續練習其他模式來解鎖遊戲關卡。';
+        
+        alert(resultMessage);
+      } else {
+        alert('請先寫下你的文章！');
+      }
+    }
+
+    // 載入寫作主題
+    function loadWritingTopic(index = 0) {
+      const topic = writingTopics[index];
+      document.getElementById('writing-title').textContent = `寫作主題：${topic.title}`;
+      document.getElementById('writing-description').textContent = topic.description;
+      
+      const promptsList = document.getElementById('writing-prompts');
+      promptsList.innerHTML = topic.prompts.map(prompt => `<li>${prompt}</li>`).join('');
+    }
+
+    // 切換寫作主題
+    function changeWritingTopic() {
+      currentWritingTopicIndex = (currentWritingTopicIndex + 1) % writingTopics.length;
+      loadWritingTopic(currentWritingTopicIndex);
+      document.getElementById('writing-answer').value = '';
+      
+      // 重新設置 Enter 鍵事件
+      setupAnswerInputEvents();
+    }
+
+    // 顯示寫作技巧
+    function showWritingTips() {
+      const currentTopic = writingTopics[currentWritingTopicIndex];
+      alert('💡 寫作技巧：\n\n' + currentTopic.tips.join('\n'));
+    }
+
+
+
+
+
+    // 標記練習完成
+    function markExerciseComplete(exercise) {
+      if (!completedExercises.includes(exercise)) {
+        completedExercises.push(exercise);
+        
+        // 計算進度：包含閱讀關卡完成度
+        let totalProgress = completedExercises.length;
+        if (exercise === 'reading' && completedReadingLevels.length > 0) {
+          totalProgress += completedReadingLevels.length * 0.5; // 每個閱讀關卡算0.5分
+        }
+        
+        progress = Math.min((totalProgress / 5) * 100, 100); // 最多5分（3個模式 + 4個閱讀關卡）
+        saveProgress();
+        updateProgress();
+      }
+    }
+
+    // 更新進度
+    function updateProgress() {
+      const progressFill = document.getElementById('progress-fill');
+      const progressText = document.getElementById('progress-text');
+      
+      if (progressFill) progressFill.style.width = progress + '%';
+      if (progressText) progressText.textContent = Math.round(progress) + '%';
+    }
+
+
+    
+    // 選擇遊戲
+    function selectGame(gameType) {
+      // 播放選擇音效
+      playSound('correct');
+      
+      // 關閉遊戲對話框
+      closeGameDialog();
+      
+      // 載入對應的遊戲內容
+      loadGameContent(gameType);
+    }
+    
+    // 載入遊戲內容
+    function loadGameContent(gameType) {
+      // 隱藏所有區域
+      document.querySelectorAll('.article-section').forEach(section => {
+        section.classList.remove('active');
+        section.style.display = 'none';
+      });
+      
+      // 隱藏模式選擇
+      document.querySelector('.mode-selection').style.display = 'none';
+      
+      // 顯示遊戲區域
+      const gameSection = document.getElementById('game-section');
+      if (gameSection) {
+        gameSection.style.display = 'block';
+        gameSection.classList.add('active');
+      }
+      
+      // 根據遊戲類型載入內容
+      switch(gameType) {
+        case 'reading':
+          loadReadingGame();
+          break;
+        case 'quiz':
+          loadQuizGame();
+          break;
+        case 'cards':
+          loadCardsGame();
+          break;
+        case 'gacha':
+          loadGachaGame();
+          break;
+      }
+    }
+    
+    // 載入閱讀練習遊戲
+    function loadReadingGame() {
+      const gameSection = document.getElementById('game-section');
+      const gameContent = gameSection.querySelector('.article-content');
+      
+      // 隨機選擇一個閱讀等級
+      const randomLevel = Math.floor(Math.random() * articleLevels.length) + 1;
+      currentReadingLevel = randomLevel;
+      
+      gameContent.innerHTML = `
+        <div class="game-header">
+          <button class="btn btn-secondary" onclick="backToArticlePractice()">← 返回練習</button>
+          <h2>📖 閱讀練習挑戰</h2>
+          <div class="game-stats">
+            <span id="reading-level">等級: ${randomLevel}</span>
+            <span id="reading-progress">進度: 0%</span>
+          </div>
+        </div>
+        <div class="reading-game-content">
+          <div class="article-content" id="game-article">
+            <!-- 文章內容會動態載入 -->
+          </div>
+          <div style="text-align: center; margin-top: 15px;">
+            <button class="btn btn-secondary" onclick="playGameArticleAudio()" id="play-game-article-btn">
+              🔊 播放文章發音
+            </button>
+          </div>
+          <div class="practice-input">
+            <h4>📝 練習問題：</h4>
+            <div id="game-current-question">
+              <!-- 當前問題會動態載入 -->
+            </div>
+            <div class="question-progress">
+              <span id="game-current-question-number">1</span> / <span id="game-total-questions">3</span>
+            </div>
+            <textarea id="game-reading-answer" placeholder="請在這裡寫下你的答案..."></textarea>
+            <button class="btn" onclick="checkGameReadingAnswer()">✅ 提交答案</button>
+            <button class="btn btn-secondary" onclick="nextGameQuestion()" id="game-next-question-btn" style="display: none;">➡️ 下一題</button>
+            
+            <h4 style="margin-top: 20px;">🎯 閱讀測驗：</h4>
+            <div id="game-current-quiz">
+              <!-- 選擇題會動態載入 -->
+            </div>
+            <button class="btn" onclick="checkGameQuiz()">✅ 檢查測驗</button>
+            <button class="btn btn-secondary" onclick="showGameQuizAnswer()">📖 顯示測驗答案</button>
+          </div>
+        </div>
+      `;
+      
+      // 載入文章內容
+      loadGameArticle();
+    }
+    
+    // 載入遊戲文章
+    function loadGameArticle() {
+      const levelData = articleLevels[currentReadingLevel - 1];
+      if (!levelData) return;
+      
+      // 載入文章內容
+      const articleDiv = document.getElementById('game-article');
+      const highlightedContent = highlightVocabularyWords(levelData.article.content, levelData.vocabulary);
+      articleDiv.innerHTML = `
+        <div class="article-title">${levelData.article.title}</div>
+        <div class="article-text">${highlightedContent}</div>
+      `;
+      
+      // 載入問題
+      loadGameQuestions();
+      
+      // 載入測驗
+      loadGameQuiz();
+    }
+    
+    // 載入遊戲問題
+    function loadGameQuestions() {
+      const levelData = articleLevels[currentReadingLevel - 1];
+      if (!levelData || !levelData.questions) return;
+      
+      currentQuestionIndex = 0;
+      totalQuestions = levelData.questions.length;
+      
+      // 更新問題進度
+      document.getElementById('game-current-question-number').textContent = '1';
+      document.getElementById('game-total-questions').textContent = totalQuestions;
+      
+      // 顯示第一個問題
+      showGameQuestion();
+    }
+    
+    // 顯示遊戲問題
+    function showGameQuestion() {
+      const levelData = articleLevels[currentReadingLevel - 1];
+      if (!levelData || !levelData.questions) return;
+      
+      const question = levelData.questions[currentQuestionIndex];
+      if (!question) return;
+      
+      const questionDiv = document.getElementById('game-current-question');
+      questionDiv.innerHTML = `
+        <p><strong>問題 ${currentQuestionIndex + 1}：</strong>${question.question}</p>
+      `;
+      
+      // 清空答案輸入框
+      document.getElementById('game-reading-answer').value = '';
+      
+      // 重新設置 Enter 鍵事件
+      setupAnswerInputEvents();
+    }
+    
+    // 載入遊戲測驗
+    function loadGameQuiz() {
+      const levelData = articleLevels[currentReadingLevel - 1];
+      if (!levelData || !levelData.quiz) return;
+      
+      const quizDiv = document.getElementById('game-current-quiz');
+      quizDiv.innerHTML = '';
+      
+      levelData.quiz.forEach((quizItem, index) => {
+        const quizElement = document.createElement('div');
+        quizElement.className = 'quiz-item';
+        quizElement.innerHTML = `
+          <p><strong>測驗 ${index + 1}：</strong>${quizItem.question}</p>
+          <div class="quiz-options">
+            ${quizItem.options.map((option, optionIndex) => `
+              <label>
+                <input type="radio" name="quiz-${index}" value="${optionIndex}">
+                ${option}
+              </label>
+            `).join('')}
+          </div>
+        `;
+        quizDiv.appendChild(quizElement);
+      });
+    }
+    
+    // 載入打字挑戰遊戲
+    function loadQuizGame() {
+      const gameSection = document.getElementById('game-section');
+      const gameContent = gameSection.querySelector('.article-content');
+      gameContent.innerHTML = `
+        <div class="game-header">
+          <button class="btn btn-secondary" onclick="backToArticlePractice()">← 返回練習</button>
+          <h2>🎯 打字挑戰</h2>
+          <div class="game-stats">
+            <span id="quiz-score">分數: 0</span>
+            <span id="quiz-time">時間: 60s</span>
+          </div>
+        </div>
+        <div class="quiz-game-content">
+          <div class="word-display" id="current-word">載入中...</div>
+          <input type="text" id="word-input" placeholder="請輸入單字..." autocomplete="off">
+          <div class="quiz-instructions">
+            <p>🎯 目標：快速準確地輸入顯示的英文單字</p>
+            <p>⏱️ 時間：60秒內輸入越多單字越好</p>
+            <p>⭐ 獎勵：正確輸入可獲得星星獎勵</p>
+          </div>
+          <button class="btn" onclick="startQuizGame()" id="start-quiz-btn">🚀 開始挑戰</button>
+        </div>
+      `;
+      
+      // 為輸入框添加事件監聽
+      const input = document.getElementById('word-input');
+      if (input) {
+        input.addEventListener('keypress', function(e) {
+          if (e.key === 'Enter') {
+            checkQuizWord();
+          }
+        });
+      }
+    }
+    
+    // 載入卡片遊戲
+    function loadCardsGame() {
+      const gameSection = document.getElementById('game-section');
+      const gameContent = gameSection.querySelector('.article-content');
+      gameContent.innerHTML = `
+        <div class="game-header">
+          <button class="btn btn-secondary" onclick="backToArticlePractice()">← 返回練習</button>
+          <h2>🃏 卡片配對遊戲</h2>
+          <div class="game-stats">
+            <span id="cards-score">配對: 0</span>
+            <span id="cards-time">時間: 120s</span>
+          </div>
+        </div>
+        <div class="cards-game-content">
+          <div class="cards-grid" id="cards-grid">
+            <!-- 卡片會動態生成 -->
+          </div>
+          <div class="cards-instructions">
+            <p>🃏 目標：配對英文單字和中文意思</p>
+            <p>⏱️ 時間：120秒內完成配對</p>
+            <p>⭐ 獎勵：每對配對可獲得星星獎勵</p>
+          </div>
+          <button class="btn" onclick="startCardsGame()" id="start-cards-btn">🚀 開始遊戲</button>
+        </div>
+      `;
+    }
+    
+    // 載入抽卡遊戲
+    function loadGachaGame() {
+      const gameSection = document.getElementById('game-section');
+      const gameContent = gameSection.querySelector('.article-content');
+      gameContent.innerHTML = `
+        <div class="game-header">
+          <button class="btn btn-secondary" onclick="backToArticlePractice()">← 返回練習</button>
+          <h2>🎰 抽卡遊戲</h2>
+          <div class="game-stats">
+            <span id="gacha-stars">星星: ${localStorage.getItem('totalStars') || '0'}</span>
+            <span id="gacha-cards">卡片: 0</span>
+          </div>
+        </div>
+        <div class="gacha-game-content">
+          <div class="gacha-machine" id="gacha-machine">
+            <div class="gacha-display">🎰</div>
+            <div class="gacha-result" id="gacha-result"></div>
+          </div>
+          <div class="gacha-instructions">
+            <p>🎰 目標：使用星星抽取稀有英文單字卡片</p>
+            <p>⭐ 消耗：每次抽卡消耗5顆星星</p>
+            <p>🎁 獎勵：獲得稀有單字卡片</p>
+          </div>
+          <button class="btn" onclick="drawCard()" id="draw-card-btn">🎰 抽卡 (5⭐)</button>
+        </div>
+      `;
+    }
+    
+    // 返回文章練習
+    function backToArticlePractice() {
+      // 隱藏遊戲區域
+      const gameSection = document.getElementById('game-section');
+      if (gameSection) {
+        gameSection.style.display = 'none';
+        gameSection.classList.remove('active');
+      }
+      
+      // 顯示所有區域
+      document.querySelectorAll('.article-section').forEach(section => {
+        section.style.display = 'block';
+      });
+      
+      // 顯示模式選擇
+      document.querySelector('.mode-selection').style.display = 'grid';
+      
+      // 重置當前模式
+      currentMode = '';
+      
+      // 重置遊戲狀態
+      if (quizTimer) clearInterval(quizTimer);
+      if (cardsTimer) clearInterval(cardsTimer);
+      quizGameActive = false;
+      cardsGameActive = false;
+      
+      // 更新星星顯示
+      updateStarsDisplay();
+    }
+    
+
+    
+    // 開始打字挑戰遊戲
+    function startQuizGame() {
+      quizGameActive = true;
+      quizScore = 0;
+      quizTimeLeft = 60;
+      
+      // 生成單字列表（從文章資料中提取）
+      quizWords = generateQuizWords();
+      
+      // 顯示第一個單字
+      showNextQuizWord();
+      
+      // 開始計時
+      startQuizTimer();
+      
+      // 隱藏開始按鈕
+      document.getElementById('start-quiz-btn').style.display = 'none';
+      
+      // 聚焦輸入框
+      document.getElementById('word-input').focus();
+    }
+    
+    // 生成測驗單字
+    function generateQuizWords() {
+      const words = [];
+      
+      // 從文章資料中提取單字
+      articleLevels.forEach(level => {
+        if (level.vocabulary) {
+          level.vocabulary.forEach(vocab => {
+            words.push(vocab.word);
+          });
+        }
+      });
+      
+      // 如果沒有足夠的單字，添加一些基本單字
+      if (words.length < 20) {
+        const basicWords = ['hello', 'world', 'good', 'bad', 'big', 'small', 'happy', 'sad', 'fast', 'slow', 'hot', 'cold', 'new', 'old', 'young', 'beautiful', 'ugly', 'strong', 'weak', 'rich', 'poor'];
+        words.push(...basicWords);
+      }
+      
+      // 隨機打亂並返回前30個單字
+      return words.sort(() => Math.random() - 0.5).slice(0, 30);
+    }
+    
+    // 顯示下一個測驗單字
+    function showNextQuizWord() {
+      if (quizWords.length > 0) {
+        currentQuizWord = quizWords.shift();
+        document.getElementById('current-word').textContent = currentQuizWord;
+        document.getElementById('word-input').value = '';
+        document.getElementById('word-input').focus();
+      } else {
+        // 遊戲結束
+        endQuizGame();
+      }
+    }
+    
+    // 檢查測驗單字
+    function checkQuizWord() {
+      const input = document.getElementById('word-input');
+      const userInput = input.value.trim().toLowerCase();
+      const correctWord = currentQuizWord.toLowerCase();
+      
+      if (userInput === correctWord) {
+        // 正確
+        quizScore += 10;
+        playSound('correct');
+        
+        // 給予星星獎勵
+        if (typeof StarRewardSystem !== 'undefined') {
+          StarRewardSystem.addStars(1);
+        } else {
+          const currentStars = parseInt(localStorage.getItem('totalStars') || '0');
+          localStorage.setItem('totalStars', (currentStars + 1).toString());
+        }
+        
+        // 更新分數顯示
+        document.getElementById('quiz-score').textContent = `分數: ${quizScore}`;
+        
+        // 顯示正確動畫
+        document.getElementById('current-word').style.color = '#00ff00';
+        setTimeout(() => {
+          document.getElementById('current-word').style.color = '#ffd700';
+          showNextQuizWord();
+        }, 500);
+      } else {
+        // 錯誤
+        playSound('wrong');
+        document.getElementById('current-word').style.color = '#ff0000';
+        setTimeout(() => {
+          document.getElementById('current-word').style.color = '#ffd700';
+        }, 500);
+      }
+    }
+    
+    // 開始測驗計時器
+    function startQuizTimer() {
+      quizTimer = setInterval(() => {
+        quizTimeLeft--;
+        document.getElementById('quiz-time').textContent = `時間: ${quizTimeLeft}s`;
+        
+        if (quizTimeLeft <= 0) {
+          endQuizGame();
+        }
+      }, 1000);
+    }
+    
+    // 結束測驗遊戲
+    function endQuizGame() {
+      quizGameActive = false;
+      clearInterval(quizTimer);
+      
+      // 計算最終獎勵
+      const finalStars = Math.floor(quizScore / 10);
+      if (typeof StarRewardSystem !== 'undefined') {
+        StarRewardSystem.addStars(finalStars);
+      } else {
+        const currentStars = parseInt(localStorage.getItem('totalStars') || '0');
+        localStorage.setItem('totalStars', (currentStars + finalStars).toString());
+      }
+      
+      // 更新星星顯示
+      updateStarsDisplay();
+      
+      // 顯示結果
+      alert(`🎯 打字挑戰結束！\n\n分數：${quizScore}\n正確單字：${Math.floor(quizScore / 10)}個\n獲得星星：${finalStars}顆`);
+      
+      // 重新載入遊戲
+      setTimeout(() => {
+        loadQuizGame();
+      }, 1000);
+    }
+    
+    // 開始卡片遊戲
+    function startCardsGame() {
+      cardsGameActive = true;
+      cardsScore = 0;
+      cardsTimeLeft = 120;
+      matchedPairs = 0;
+      flippedCards = [];
+      
+      // 生成卡片
+      generateCards();
+      
+      // 開始計時
+      startCardsTimer();
+      
+      // 隱藏開始按鈕
+      document.getElementById('start-cards-btn').style.display = 'none';
+    }
+    
+    // 生成卡片
+    function generateCards() {
+      const cardsData = [
+        { word: 'hello', meaning: '你好' },
+        { word: 'world', meaning: '世界' },
+        { word: 'good', meaning: '好的' },
+        { word: 'bad', meaning: '壞的' },
+        { word: 'big', meaning: '大的' },
+        { word: 'small', meaning: '小的' }
+      ];
+      
+      // 創建卡片對
+      const cards = [];
+      cardsData.forEach(item => {
+        cards.push({ content: item.word, type: 'word', id: item.word });
+        cards.push({ content: item.meaning, type: 'meaning', id: item.word });
+      });
+      
+      // 隨機打亂
+      cards.sort(() => Math.random() - 0.5);
+      
+      // 生成HTML
+      const cardsGrid = document.getElementById('cards-grid');
+      cardsGrid.innerHTML = cards.map((card, index) => `
+        <div class="card" onclick="flipCard(${index})" data-index="${index}" data-id="${card.id}" data-type="${card.type}" data-content="${card.content}">
+          ?
+        </div>
+      `).join('');
+    }
+    
+    // 翻轉卡片
+    function flipCard(index) {
+      if (!cardsGameActive) return;
+      
+      const card = document.querySelector(`[data-index="${index}"]`);
+      if (card.classList.contains('flipped') || card.classList.contains('matched')) return;
+      
+      // 翻轉卡片
+      card.classList.add('flipped');
+      card.textContent = card.dataset.content;
+      
+      flippedCards.push({ element: card, id: card.dataset.id, type: card.dataset.type });
+      
+      if (flippedCards.length === 2) {
+        // 檢查是否配對
+        setTimeout(() => {
+          checkCardMatch();
+        }, 500);
+      }
+    }
+    
+    // 檢查卡片配對
+    function checkCardMatch() {
+      const [card1, card2] = flippedCards;
+      
+      if (card1.id === card2.id && card1.type !== card2.type) {
+        // 配對成功
+        card1.element.classList.add('matched');
+        card2.element.classList.add('matched');
+        cardsScore += 10;
+        matchedPairs++;
+        
+        playSound('correct');
+        
+        // 給予星星獎勵
+        if (typeof StarRewardSystem !== 'undefined') {
+          StarRewardSystem.addStars(2);
+        } else {
+          const currentStars = parseInt(localStorage.getItem('totalStars') || '0');
+          localStorage.setItem('totalStars', (currentStars + 2).toString());
+        }
+        
+        document.getElementById('cards-score').textContent = `配對: ${matchedPairs}`;
+        
+        // 檢查是否完成所有配對
+        if (matchedPairs === 6) {
+          endCardsGame();
+        }
+      } else {
+        // 配對失敗，翻回卡片
+        setTimeout(() => {
+          card1.element.classList.remove('flipped');
+          card2.element.classList.remove('flipped');
+          card1.element.textContent = '?';
+          card2.element.textContent = '?';
+        }, 1000);
+      }
+      
+      flippedCards = [];
+    }
+    
+    // 開始卡片計時器
+    function startCardsTimer() {
+      cardsTimer = setInterval(() => {
+        cardsTimeLeft--;
+        document.getElementById('cards-time').textContent = `時間: ${cardsTimeLeft}s`;
+        
+        if (cardsTimeLeft <= 0) {
+          endCardsGame();
+        }
+      }, 1000);
+    }
+    
+    // 結束卡片遊戲
+    function endCardsGame() {
+      cardsGameActive = false;
+      clearInterval(cardsTimer);
+      
+      // 計算最終獎勵
+      const finalStars = matchedPairs * 2;
+      if (typeof StarRewardSystem !== 'undefined') {
+        StarRewardSystem.addStars(finalStars);
+      } else {
+        const currentStars = parseInt(localStorage.getItem('totalStars') || '0');
+        localStorage.setItem('totalStars', (currentStars + finalStars).toString());
+      }
+      
+      // 更新星星顯示
+      updateStarsDisplay();
+      
+      // 顯示結果
+      alert(`🃏 卡片遊戲結束！\n\n配對成功：${matchedPairs}對\n獲得星星：${finalStars}顆`);
+      
+      // 重新載入遊戲
+      setTimeout(() => {
+        loadCardsGame();
+      }, 1000);
+    }
+    
+    // 遊戲閱讀練習相關函數
+    function playGameArticleAudio() {
+      const levelData = articleLevels[currentReadingLevel - 1];
+      if (!levelData) return;
+      
+      const fullText = `${levelData.title}. ${levelData.content}`;
+      
+      if ('speechSynthesis' in window) {
+        const utterance = new SpeechSynthesisUtterance(fullText);
+        utterance.lang = 'en-US';
+        utterance.rate = 1.0;
+        utterance.pitch = 1.1;
+        utterance.volume = 1.0;
+        
+        // 選擇最佳語音
+        const voices = speechSynthesis.getVoices();
+        const preferredVoice = voices.find(voice => 
+          voice.name.includes('Google US English Female') ||
+          voice.name.includes('Microsoft US English Female') ||
+          (voice.lang.includes('en-US') && voice.name.includes('Female'))
+        ) || voices.find(voice => voice.lang.includes('en-US')) || voices[0];
+        
+        if (preferredVoice) {
+          utterance.voice = preferredVoice;
+        }
+        
+        // 更新按鈕狀態
+        const playBtn = document.getElementById('play-game-article-btn');
+        if (playBtn) {
+          playBtn.textContent = '⏸️ 暫停發音';
+          playBtn.onclick = pauseGameArticleAudio;
+        }
+        
+        speechSynthesis.speak(utterance);
+      } else {
+        console.log('瀏覽器不支持語音合成');
+      }
+    }
+    
+    function pauseGameArticleAudio() {
+      if ('speechSynthesis' in window) {
+        speechSynthesis.cancel();
+        
+        // 更新按鈕狀態
+        const playBtn = document.getElementById('play-game-article-btn');
+        if (playBtn) {
+          playBtn.textContent = '🔊 播放文章發音';
+          playBtn.onclick = playGameArticleAudio;
+        }
+      }
+    }
+    
+    function checkGameReadingAnswer() {
+      const levelData = articleLevels[currentReadingLevel - 1];
+      if (!levelData || !levelData.questions) return;
+      
+      const question = levelData.questions[currentQuestionIndex];
+      if (!question) return;
+      
+      const userAnswer = document.getElementById('game-reading-answer').value.trim();
+      const correctAnswer = question.answer;
+      
+      // 檢查答案（60%關鍵字匹配）
+      const userWords = userAnswer.toLowerCase().split(/\s+/);
+      const correctWords = correctAnswer.toLowerCase().split(/\s+/);
+      const matchCount = userWords.filter(word => correctWords.includes(word)).length;
+      const matchPercentage = (matchCount / Math.max(userWords.length, correctWords.length)) * 100;
+      
+      if (matchPercentage >= 60) {
+        // 正確
+        playSound('correct');
+        
+        // 給予星星獎勵（翻譯練習固定5顆星星）
+        if (typeof StarRewardSystem !== 'undefined') {
+          StarRewardSystem.addStars(5);
+        } else {
+          const currentStars = parseInt(localStorage.getItem('totalStars') || '0');
+          localStorage.setItem('totalStars', (currentStars + 5).toString());
+        }
+        
+        // 如果不是最後一題，顯示下一題按鈕
+        const levelData = articleLevels[currentReadingLevel - 1];
+        if (currentQuestionIndex < levelData.questions.length - 1) {
+          document.getElementById('game-next-question-btn').style.display = 'inline-block';
+        }
+      } else {
+        // 錯誤
+        playSound('wrong');
+      }
+    }
+    
+    function showGameReadingAnswer() {
+      const levelData = articleLevels[currentReadingLevel - 1];
+      if (!levelData || !levelData.questions) return;
+      
+      const question = levelData.questions[currentQuestionIndex];
+      if (!question) return;
+      
+      alert(`📖 正確答案：\n\n${question.answer}`);
+    }
+    
+    function nextGameQuestion() {
+      const levelData = articleLevels[currentReadingLevel - 1];
+      if (!levelData || !levelData.questions) return;
+      
+      if (currentQuestionIndex < levelData.questions.length - 1) {
+        currentQuestionIndex++;
+        
+        // 更新問題進度
+        document.getElementById('game-current-question-number').textContent = currentQuestionIndex + 1;
+        
+        // 顯示下一個問題
+        showGameQuestion();
+        
+        // 隱藏下一題按鈕
+        document.getElementById('game-next-question-btn').style.display = 'none';
+      } else {
+        // 所有問題完成
+        if (typeof StarRewardSystem !== 'undefined') {
+          StarRewardSystem.addStars(5);
+        } else {
+          const currentStars = parseInt(localStorage.getItem('totalStars') || '0');
+          localStorage.setItem('totalStars', (currentStars + 5).toString());
+        }
+        
+        // 重置問題索引
+        currentQuestionIndex = 0;
+        
+        // 更新問題進度
+        document.getElementById('game-current-question-number').textContent = currentQuestionIndex + 1;
+        
+        // 顯示下一個問題
+        showGameQuestion();
+        
+        // 隱藏下一題按鈕
+        document.getElementById('game-next-question-btn').style.display = 'none';
+      }
+    }
+    
+    function checkGameQuiz() {
+      const levelData = articleLevels[currentReadingLevel - 1];
+      if (!levelData || !levelData.quiz) return;
+      
+      let correctCount = 0;
+      const totalQuestions = levelData.quiz.length;
+      
+      levelData.quiz.forEach((quizItem, index) => {
+        const selectedOption = document.querySelector(`input[name="quiz-${index}"]:checked`);
+        if (selectedOption && parseInt(selectedOption.value) === quizItem.correctAnswer) {
+          correctCount++;
+        }
+      });
+      
+      const score = (correctCount / totalQuestions) * 100;
+      
+      // 根據分數給予星星獎勵
+      let starsEarned = 0;
+      if (score >= 90) {
+        starsEarned = 5;
+      } else if (score >= 80) {
+        starsEarned = 3;
+      } else if (score >= 60) {
+        starsEarned = 1;
+      }
+      
+      if (typeof StarRewardSystem !== 'undefined') {
+        StarRewardSystem.addStars(starsEarned);
+      } else {
+        const currentStars = parseInt(localStorage.getItem('totalStars') || '0');
+        localStorage.setItem('totalStars', (currentStars + starsEarned).toString());
+      }
+      
+      // 更新星星顯示
+      updateStarsDisplay();
+    }
+    
+    function showGameQuizAnswer() {
+      const levelData = articleLevels[currentReadingLevel - 1];
+      if (!levelData || !levelData.quiz) return;
+      
+      let answerText = '📖 測驗答案：\n\n';
+      
+      levelData.quiz.forEach((quizItem, index) => {
+        const correctOption = quizItem.options[quizItem.correctAnswer];
+        answerText += `測驗 ${index + 1}：${correctOption}\n`;
+      });
+      
+      alert(answerText);
+    }
+    
+    function nextGameReadingLevel() {
+      // 隨機選擇下一個等級
+      const randomLevel = Math.floor(Math.random() * articleLevels.length) + 1;
+      currentReadingLevel = randomLevel;
+      
+      // 重新載入遊戲
+      loadReadingGame();
+    }
+    
+    // 抽卡
+    function drawCard() {
+      const currentStars = parseInt(localStorage.getItem('totalStars') || '0');
+      
+      if (currentStars < 5) {
+        alert('⭐ 星星不足！需要5顆星星才能抽卡。');
+        return;
+      }
+      
+      // 扣除星星
+      if (typeof StarRewardSystem !== 'undefined') {
+        StarRewardSystem.addStars(-5);
+      } else {
+        localStorage.setItem('totalStars', (currentStars - 5).toString());
+      }
+      
+      // 更新星星顯示
+      updateStarsDisplay();
+      
+      // 播放抽卡音效
+      playSound('correct');
+      
+      // 隨機選擇卡片
+      const cards = [
+        'hello - 你好',
+        'world - 世界',
+        'beautiful - 美麗的',
+        'amazing - 驚人的',
+        'wonderful - 美妙的',
+        'excellent - 優秀的',
+        'fantastic - 極好的',
+        'brilliant - 聰明的',
+        'perfect - 完美的',
+        'magnificent - 宏偉的'
+      ];
+      
+      const randomCard = cards[Math.floor(Math.random() * cards.length)];
+      
+      // 顯示抽卡結果
+      const resultDiv = document.getElementById('gacha-result');
+      resultDiv.innerHTML = `
+        <div style="color: #ffd700; font-size: 1.2rem; font-weight: bold;">
+          🎉 恭喜獲得稀有卡片！
+        </div>
+        <div style="color: #fff; font-size: 1rem; margin-top: 10px;">
+          ${randomCard}
+        </div>
+      `;
+      
+      // 更新卡片數量
+      const currentCards = parseInt(document.getElementById('gacha-cards').textContent.split(': ')[1]) + 1;
+      document.getElementById('gacha-cards').textContent = `卡片: ${currentCards}`;
+      
+      // 更新星星顯示
+      document.getElementById('gacha-stars').textContent = `星星: ${localStorage.getItem('totalStars') || '0'}`;
+    }
+    
+    // 關閉遊戲對話框
+    function closeGameDialog() {
+      const dialog = document.querySelector('div[style*="position: fixed"]');
+      if (dialog) {
+        document.body.removeChild(dialog);
+      }
+    }
+
+    // 返回選擇
+    function backToSelection() {
+      currentMode = '';
+      document.querySelectorAll('.article-section').forEach(section => {
+        section.classList.remove('active');
+      });
+    }
+
+    // 儲存進度
+    function saveProgress() {
+      localStorage.setItem('articlePracticeProgress', JSON.stringify({
+        progress: progress,
+        completedExercises: completedExercises,
+        completedReadingLevels: completedReadingLevels,
+
+      }));
+    }
+
+    // 載入進度
+    function loadProgress() {
+      const saved = localStorage.getItem('articlePracticeProgress');
+      if (saved) {
+        const data = JSON.parse(saved);
+        progress = data.progress || 0;
+        completedExercises = data.completedExercises || [];
+        completedReadingLevels = data.completedReadingLevels || [];
+
+        updateProgress();
+      }
+    }
+    
+    // 計算星星獎勵
+    function calculateStarReward(isCorrect, answerTime, consecutiveCount, questionType) {
+      if (!isCorrect) return 0;
+      
+      let baseReward = 1; // 基礎獎勵
+      
+      // 翻譯練習特殊獎勵：答對一題直接給5顆星星
+      if (questionType === 'translation') {
+        return 5; // 翻譯練習固定5顆星星
+      }
+      
+      // 時間獎勵：越快答對獎勵越多
+      if (answerTime <= 5) {
+        baseReward += 2; // 5秒內 +2星
+      } else if (answerTime <= 10) {
+        baseReward += 1; // 10秒內 +1星
+      }
+      
+      // 連擊獎勵：連續答對越多獎勵越多
+      if (consecutiveCount >= 5) {
+        baseReward += 3; // 5連擊 +3星
+      } else if (consecutiveCount >= 3) {
+        baseReward += 2; // 3連擊 +2星
+      } else if (consecutiveCount >= 2) {
+        baseReward += 1; // 2連擊 +1星
+      }
+      
+      // 問題類型獎勵
+      if (questionType === 'quiz') {
+        baseReward += 2; // 測驗題額外獎勵
+      }
+      
+      return baseReward;
+    }
+    
+    // 顯示星星獎勵動畫
+    function showStarReward(amount) {
+      const rewardDiv = document.createElement('div');
+      rewardDiv.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: linear-gradient(135deg, rgba(255, 215, 0, 0.9), rgba(255, 170, 0, 0.9));
+        color: #000;
+        padding: 20px 30px;
+        border-radius: 15px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        z-index: 1000;
+        box-shadow: 0 0 30px #ffd700;
+        animation: starRewardPop 3s cubic-bezier(.4,2,.6,1) forwards;
+        font-family: 'Orbitron', 'Segoe UI', sans-serif;
+      `;
+      rewardDiv.innerHTML = `⭐ +${amount} 星星 ⭐`;
+      
+      // 添加動畫樣式
+      const style = document.createElement('style');
+      style.textContent = `
+        @keyframes starRewardPop {
+          0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+          20% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
+          80% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+          100% { transform: translate(-50%, -50%) scale(1); opacity: 0; }
+        }
+      `;
+      document.head.appendChild(style);
+      
+      document.body.appendChild(rewardDiv);
+      
+      // 3秒後移除
+      setTimeout(() => {
+        if (document.body.contains(rewardDiv)) {
+          document.body.removeChild(rewardDiv);
+        }
+      }, 3000);
+    }
+    
+    // 播放音效
+    function playSound(soundName) {
+      if (typeof SoundSystem !== 'undefined') {
+        SoundSystem.play(soundName);
+      }
+    }
+    
+    // 顯示統計信息
+    function showStatistics() {
+      const stats = {
+        completedReadingLevels: completedReadingLevels.length,
+        completedExercises: completedExercises.length,
+        totalProgress: Math.round(progress),
+        totalStars: parseInt(localStorage.getItem('totalStars') || '0'),
+        gameStats: gameStats
+      };
+      
+      const statsText = `
+📊 練習統計：
+
+📖 已完成閱讀關卡：${stats.completedReadingLevels} 個
+✅ 已完成練習模式：${stats.completedExercises} 個
+📈 總進度：${stats.totalProgress}%
+⭐ 總星星數：${stats.totalStars} 顆
+
+🎯 遊戲統計：
+✅ 正確答案：${stats.gameStats.correctAnswers} 個
+🎯 完美答案：${stats.gameStats.perfectAnswers} 個
+⏱️ 總用時：${Math.round(stats.gameStats.totalTimeUsed)} 秒
+      `;
+      
+      alert(statsText);
+    }
+    
+    // 重置進度
+    function resetProgress() {
+      if (confirm('確定要重置所有進度嗎？這將清除所有練習記錄！')) {
+        completedExercises = [];
+        completedReadingLevels = [];
+
+        progress = 0;
+        gameStats = {
+          correctAnswers: 0,
+          totalQuestions: 0,
+          consecutiveCorrect: 0,
+          startTime: Date.now(),
+          perfectAnswers: 0,
+          totalTimeUsed: 0
+        };
+        
+        localStorage.removeItem('articlePracticeProgress');
+        updateProgress();
+        
+        // 重新載入關卡
+        loadReadingLevels();
+        loadWritingTopic();
+        
+        alert('✅ 進度已重置！');
+      }
+    }
+    
+    // 音效開關
+    function toggleSound() {
+      if (typeof SoundSystem !== 'undefined') {
+        if (SoundSystem.bgm && SoundSystem.bgm.isPlaying) {
+          SoundSystem.bgm.pause();
+          alert('🔇 音效已關閉');
+        } else {
+          SoundSystem.bgm.play();
+          alert('🔊 音效已開啟');
+        }
+      } else {
+        alert('音效系統未載入');
+      }
+    }
+    
+    // 檢查答案並給予獎勵
+    function checkAnswerWithReward(isCorrect, answerTime, questionType) {
+      if (isCorrect) {
+        gameStats.correctAnswers++;
+        gameStats.consecutiveCorrect++;
+        gameStats.totalTimeUsed += answerTime;
+        
+        // 檢查是否為完美答案（5秒內答對）
+        if (answerTime <= 5) {
+          gameStats.perfectAnswers++;
+        }
+        
+        // 計算星星獎勵
+        const starsEarned = calculateStarReward(true, answerTime, gameStats.consecutiveCorrect, questionType);
+        
+        // 給予星星獎勵
+        if (typeof StarRewardSystem !== 'undefined') {
+          StarRewardSystem.addStars(starsEarned);
+        } else {
+          // 備用星星系統
+          const currentStars = parseInt(localStorage.getItem('totalStars') || '0');
+          const newStars = currentStars + starsEarned;
+          localStorage.setItem('totalStars', newStars.toString());
+        }
+        
+        // 立即更新星星顯示
+        updateStarsDisplay();
+        
+        // 播放正確音效
+        playSound('correct');
+        
+        // 顯示星星獎勵動畫
+        showStarReward(starsEarned);
+        
+        return true;
+      } else {
+        gameStats.consecutiveCorrect = 0;
+        playSound('wrong');
+        return false;
+      }
+    }
+
+    // 星星閃爍動畫
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes twinkle {
+        0%, 100% { opacity: 0.3; transform: scale(1); }
+        50% { opacity: 1; transform: scale(1.2); }
+      }
+    `;
+    document.head.appendChild(style);
+  </script>
+</body>
+</html> 
