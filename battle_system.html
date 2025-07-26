@@ -722,6 +722,9 @@
                 return;
             }
             
+            // 過濾只顯示已解鎖的卡片
+            filterUnlockedCards();
+            
             // 為卡片補充素質屬性
             enhanceCardsWithStats();
             
@@ -732,6 +735,40 @@
             initStarsDisplay();
             console.log('遊戲初始化完成');
             addLogEntry('系統', '遊戲初始化完成！');
+        }
+
+        // 過濾只顯示已解鎖的卡片
+        function filterUnlockedCards() {
+            console.log('開始過濾已解鎖的卡片...');
+            
+            // 檢查 LinkageSystem 是否可用
+            if (typeof LinkageSystem === 'undefined' || !LinkageSystem.cards) {
+                console.warn('LinkageSystem 不可用，顯示所有卡片');
+                return;
+            }
+            
+            // 獲取已解鎖的卡片
+            const ownedCards = LinkageSystem.cards.getOwnedCards();
+            console.log('已解鎖卡片數量:', Object.keys(ownedCards).length);
+            
+            // 過濾 baseCards，只保留已解鎖的卡片
+            const originalLength = baseCards.length;
+            const unlockedCards = baseCards.filter(card => {
+                const isUnlocked = LinkageSystem.cards.isCardOwned(card.word);
+                return isUnlocked;
+            });
+            
+            // 更新 baseCards 為已解鎖的卡片
+            baseCards.length = 0;
+            unlockedCards.forEach(card => baseCards.push(card));
+            
+            console.log(`卡片過濾完成：${originalLength} -> ${baseCards.length} 張已解鎖卡片`);
+            addLogEntry('系統', `📋 已載入 ${baseCards.length} 張已解鎖卡片`);
+            
+            if (baseCards.length === 0) {
+                console.warn('沒有已解鎖的卡片！');
+                addLogEntry('系統', '⚠️ 沒有已解鎖的卡片，請先在卡片收藏頁面解鎖卡片！');
+            }
         }
 
         // 載入今天被打敗的卡片
