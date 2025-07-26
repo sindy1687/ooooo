@@ -363,7 +363,7 @@ function setSlot(slotIndex, wordData) {
         // mp4 用 video
         mediaEl = document.createElement('video');
         mediaEl.src = wordData.image;
-        mediaEl.autoplay = true;
+        mediaEl.autoplay = false; // 不自動播放
         mediaEl.loop = true;
         mediaEl.muted = true;
         mediaEl.playsInline = true;
@@ -486,23 +486,7 @@ function calculateScore(isMatch, combo) {
     return baseScore + comboBonus;
 }
 
-// 計算星星獎勵
-function calculateStarReward(word) {
-    // 基礎獎勵：配對成功獲得2顆星星
-    let baseReward = 2;
-    
-    // 根據單字長度給予額外獎勵
-    if (word.length >= 8) {
-        baseReward += 1; // 長單字額外獎勵
-    }
-    
-    // 根據 combo 給予額外獎勵
-    if (gameState.combo > 1) {
-        baseReward += Math.min(gameState.combo - 1, 3); // 最多額外3顆星星
-    }
-    
-    return baseReward;
-}
+
 
 // 計算金幣獎勵
 function calculateCoinReward(word) {
@@ -725,15 +709,13 @@ function spin() {
             gameState.combo++;
             gameState.streak++;
             
-            // 計算獎勵
-            const starsEarned = calculateStarReward(selectedWords[0].word);
+            // 計算金幣獎勵
             const coinsEarned = calculateCoinReward(selectedWords[0].word);
             
             // 增加今日金幣統計
             gameState.todayCoins += coinsEarned;
             
-            // 給予獎勵
-            StarRewardSystem.addStars(starsEarned);
+            // 只給予金幣獎勵
             coinSystem.addCoins(coinsEarned);
             
             // 顯示結果
@@ -746,7 +728,7 @@ function spin() {
             // 唸出單字
             speakWord(selectedWords[0].word);
             
-            console.log(`🎉 配對成功！三張完全一樣！獲得 ${starsEarned} 星星，${coinsEarned} 金幣`);
+            console.log(`🎉 配對成功！三張完全一樣！獲得 ${coinsEarned} 金幣`);
         } else {
             // 配對失敗（三張不完全一樣）
             gameState.combo = 0;
