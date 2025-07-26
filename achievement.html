@@ -1453,24 +1453,36 @@
       { id: 'pass_dionysus', name: '通過狄俄尼索斯關卡', requirement: 1, reward: 100, icon: '🍷', type: 'greek', description: '通過狄俄尼索斯關卡，體驗酒神與狂歡的樂趣', rewardRange: [100,150] },
       { id: 'pass_eros', name: '通過厄洛斯關卡', requirement: 1, reward: 100, icon: '💘', type: 'greek', description: '通過厄洛斯關卡，感受愛神與慾望的魔力', rewardRange: [100,150] },
       { id: 'pass_persephone', name: '通過珀耳塞福涅關卡', requirement: 1, reward: 100, icon: '🌸', type: 'greek', description: '通過珀耳塞福涅關卡，探索春神與冥后的雙重身份', rewardRange: [100,150] },
+      // 新增：閱讀關卡成就
+      { id: 'reading_beginner', name: '閱讀新手', requirement: 1, reward: 10, icon: '📖', type: 'reading', description: '完成第一個閱讀關卡，開始閱讀學習之旅' },
+      { id: 'reading_regular', name: '閱讀常客', requirement: 5, reward: 25, icon: '📚', type: 'reading', description: '完成5個閱讀關卡，展現閱讀熱情' },
+      { id: 'reading_expert', name: '閱讀專家', requirement: 10, reward: 50, icon: '🎓', type: 'reading', description: '完成10個閱讀關卡，成為閱讀專家' },
+      { id: 'reading_master', name: '閱讀大師', requirement: 20, reward: 100, icon: '👑', type: 'reading', description: '完成20個閱讀關卡，成為閱讀大師' },
+      { id: 'reading_legend', name: '閱讀傳奇', requirement: 30, reward: 200, icon: '🏆', type: 'reading', description: '完成30個閱讀關卡，創造閱讀傳奇' },
+      { id: 'reading_perfect', name: '完美閱讀', requirement: 1, reward: 30, icon: '💯', type: 'reading', description: '在閱讀關卡中獲得滿分（練習和測驗都100%）' },
+      { id: 'reading_speed', name: '快速閱讀', requirement: 5, reward: 25, icon: '⚡', type: 'reading', description: '在5個閱讀關卡中平均時間少於10分鐘' },
+      { id: 'reading_streak', name: '連續閱讀', requirement: 7, reward: 40, icon: '🔥', type: 'reading', description: '連續7天完成閱讀關卡' },
+      { id: 'reading_vocab', name: '詞彙閱讀', requirement: 100, reward: 60, icon: '📝', type: 'reading', description: '在閱讀關卡中答對100個詞彙問題' },
+      { id: 'reading_comprehension', name: '理解大師', requirement: 50, reward: 80, icon: '🧠', type: 'reading', description: '在閱讀測驗中答對50個理解問題' },
+      { id: 'reading_writing', name: '寫作練習', requirement: 10, reward: 40, icon: '✍️', type: 'reading', description: '完成10次寫作練習，提升表達能力' },
+      { id: 'reading_audio', name: '聽力練習', requirement: 20, reward: 30, icon: '🔊', type: 'reading', description: '使用20次文章發音功能，提升聽力理解' },
+      { id: 'reading_unlock', name: '關卡解鎖者', requirement: 10, reward: 50, icon: '🔓', type: 'reading', description: '使用星星解鎖10個閱讀關卡' },
+      { id: 'reading_all', name: '全關卡通關', requirement: 1, reward: 300, icon: '🌟', type: 'reading', description: '完成所有閱讀關卡，達到閱讀學習的巔峰' },
     ];
     // 取得本地進度
     let ownedCards = JSON.parse(localStorage.getItem('ownedCards') || '{}');
     let shards = JSON.parse(localStorage.getItem('cardShards') || '{}');
     // 各類型分組
     const groupTitles = {
-      collection: '📚 收集進度',
-      rarity: '🎯 稀有度專精',
-      shards: '💎 碎片系統',
-      special: '🏆 特殊成就',
-      daily: '📅 每日簽到',
-      stars: '⭐ 星星收集',
-      performance: '⚡ 遊戲表現',
-      fill: '📝 填空挑戰',
-      vocabulary: '📖 單字達人',
+      total: '🌟 總體成就',
+      card: '🃏 卡片收集',
+      shard: '💎 碎片收集',
+      vocabulary: '📚 詞彙學習',
       zodiac: '🌠 星座關卡',
+      zodiac_total: '🌠 星座挑戰',
       greek: '🏛️ 希臘神祇',
-      ssr_special: '🌟 SSR 專區'
+      ssr_special: '🌟 SSR 專區',
+      reading: '📖 閱讀關卡'
     };
     
     // 新增：當前選中的分類
@@ -1831,15 +1843,73 @@
           const passedAtlas = JSON.parse(localStorage.getItem('passed_atlas') || '[]');
           current = passedAtlas.includes(zodiacKey) ? 1 : 0;
           break;
+        case 'zodiac_total':
+          const passedAtlasTotal = JSON.parse(localStorage.getItem('passed_atlas') || '[]');
+          current = passedAtlasTotal.length >= ach.requirement ? 1 : 0;
+          break;
+        case 'vocabulary':
+          current = parseInt(localStorage.getItem('vocabularyCorrectWords') || '0');
+          break;
         case 'greek':
           // 希臘神祇關卡成就：檢查該神祇關卡是否已通過
           const greekKey = ach.id.replace('pass_', '');
           const passedGreek = JSON.parse(localStorage.getItem('passed_greek') || '[]');
           current = passedGreek.includes(greekKey) ? 1 : 0;
           break;
-        case 'vocabulary':
-          // 單字達人成就：計算答對的單字本單字數量
-          current = parseInt(localStorage.getItem('vocabularyCorrectWords') || '0');
+        case 'reading':
+          // 閱讀關卡成就：根據不同成就類型計算進度
+          switch (ach.id) {
+            case 'reading_beginner':
+            case 'reading_regular':
+            case 'reading_expert':
+            case 'reading_master':
+            case 'reading_legend':
+              // 計算完成的閱讀關卡數量
+              const completedReadingLevels = JSON.parse(localStorage.getItem('completedReadingLevels') || '[]');
+              current = completedReadingLevels.length;
+              break;
+            case 'reading_perfect':
+              // 計算滿分關卡數量
+              const perfectScores = JSON.parse(localStorage.getItem('readingPerfectScores') || '[]');
+              current = perfectScores.length;
+              break;
+            case 'reading_speed':
+              // 計算快速完成的關卡數量
+              const fastCompletions = JSON.parse(localStorage.getItem('readingFastCompletions') || '[]');
+              current = fastCompletions.length;
+              break;
+            case 'reading_streak':
+              // 計算連續閱讀天數
+              current = parseInt(localStorage.getItem('readingStreakDays') || '0');
+              break;
+            case 'reading_vocab':
+              // 計算答對的詞彙問題數量
+              current = parseInt(localStorage.getItem('readingVocabCorrect') || '0');
+              break;
+            case 'reading_comprehension':
+              // 計算答對的理解問題數量
+              current = parseInt(localStorage.getItem('readingComprehensionCorrect') || '0');
+              break;
+            case 'reading_writing':
+              // 計算完成的寫作練習數量
+              current = parseInt(localStorage.getItem('readingWritingCompleted') || '0');
+              break;
+            case 'reading_audio':
+              // 計算使用發音功能的次數
+              current = parseInt(localStorage.getItem('readingAudioUsed') || '0');
+              break;
+            case 'reading_unlock':
+              // 計算解鎖的關卡數量
+              current = parseInt(localStorage.getItem('readingLevelsUnlocked') || '0');
+              break;
+            case 'reading_all':
+              // 計算完成的關卡數量
+              const allCompletedLevels = JSON.parse(localStorage.getItem('completedReadingLevels') || '[]');
+              current = allCompletedLevels.length;
+              break;
+            default:
+              current = 0;
+          }
           break;
         case 'ssr_special':
           // SSR 特殊成就：檢查是否已解鎖該 SSR 卡片
@@ -1903,18 +1973,64 @@
           const zodiacKey = ach.id.replace('pass_', '');
           const passedAtlas = JSON.parse(localStorage.getItem('passed_atlas') || '[]');
           return passedAtlas.includes(zodiacKey);
+        case 'zodiac_total':
+          const passedAtlasTotal = JSON.parse(localStorage.getItem('passed_atlas') || '[]');
+          return passedAtlasTotal.length >= ach.requirement;
+        case 'vocabulary':
+          return parseInt(localStorage.getItem('vocabularyCorrectWords') || '0') >= ach.requirement;
         case 'greek':
           // 希臘神祇關卡成就：檢查該神祇關卡是否已通過
           const greekKey = ach.id.replace('pass_', '');
           const passedGreek = JSON.parse(localStorage.getItem('passed_greek') || '[]');
           return passedGreek.includes(greekKey);
-        case 'vocabulary':
-          // 單字達人成就：計算答對的單字本單字數量
-          return parseInt(localStorage.getItem('vocabularyCorrectWords') || '0') >= ach.requirement;
+        case 'reading':
+          // 閱讀關卡成就：根據不同成就類型計算進度
+          switch (ach.id) {
+            case 'reading_beginner':
+            case 'reading_regular':
+            case 'reading_expert':
+            case 'reading_master':
+            case 'reading_legend':
+              // 計算完成的閱讀關卡數量
+              const completedReadingLevels = JSON.parse(localStorage.getItem('completedReadingLevels') || '[]');
+              return completedReadingLevels.length >= ach.requirement;
+            case 'reading_perfect':
+              // 計算滿分關卡數量
+              const perfectScores = JSON.parse(localStorage.getItem('readingPerfectScores') || '[]');
+              return perfectScores.length >= ach.requirement;
+            case 'reading_speed':
+              // 計算快速完成的關卡數量
+              const fastCompletions = JSON.parse(localStorage.getItem('readingFastCompletions') || '[]');
+              return fastCompletions.length >= ach.requirement;
+            case 'reading_streak':
+              // 計算連續閱讀天數
+              return parseInt(localStorage.getItem('readingStreakDays') || '0') >= ach.requirement;
+            case 'reading_vocab':
+              // 計算答對的詞彙問題數量
+              return parseInt(localStorage.getItem('readingVocabCorrect') || '0') >= ach.requirement;
+            case 'reading_comprehension':
+              // 計算答對的理解問題數量
+              return parseInt(localStorage.getItem('readingComprehensionCorrect') || '0') >= ach.requirement;
+            case 'reading_writing':
+              // 計算完成的寫作練習數量
+              return parseInt(localStorage.getItem('readingWritingCompleted') || '0') >= ach.requirement;
+            case 'reading_audio':
+              // 計算使用發音功能的次數
+              return parseInt(localStorage.getItem('readingAudioUsed') || '0') >= ach.requirement;
+            case 'reading_unlock':
+              // 計算解鎖的關卡數量
+              return parseInt(localStorage.getItem('readingLevelsUnlocked') || '0') >= ach.requirement;
+            case 'reading_all':
+              // 計算完成的關卡數量
+              const allCompletedLevels = JSON.parse(localStorage.getItem('completedReadingLevels') || '[]');
+              return allCompletedLevels.length >= ach.requirement;
+            default:
+              return false;
+          }
         case 'ssr_special':
           // SSR 特殊成就：檢查是否已解鎖該 SSR 卡片
           const cardWord = ach.id.replace('ssr_', '');
-          return ownedCards[cardWord] ? 1 : 0;
+          return ownedCards[cardWord] ? true : false;
         default:
           return false;
       }
