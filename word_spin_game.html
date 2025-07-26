@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>單字分類拉霸遊戲</title>
+    <link rel="stylesheet" href="word_spin_game.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Comic+Neue:wght@300;400;700&display=swap" rel="stylesheet">
+    <!-- 引入卡片資料 -->
+    <script src="js/cards.js"></script>
+    <!-- 引入星星獎勵系統 -->
+    <script src="js/starRewardSystem.js"></script>
+    <!-- 引入金幣系統 -->
+    <script src="js/coinSystem.js"></script>
+</head>
+<body>
+    <div id="game-container">
+        <!-- 星星顯示 -->
+        <div class="stars-display">
+            <span id="totalStarsCount" class="stars-count">⭐ 0</span>
+        </div>
+        
+        <!-- 金幣顯示 -->
+        <div class="coins-display">
+            <span id="totalCoinsCount" class="coins-count">🪙 0</span>
+        </div>
+        
+        <!-- 遊戲標題 -->
+        <div class="game-header">
+            <h1 class="game-title">🎯 單字分類拉霸</h1>
+            <p class="game-subtitle">轉出三個同類單字即可得分！</p>
+        </div>
+
+        <!-- 金幣統計顯示 -->
+        <div class="score-section">
+            <div class="score-display">
+                <span class="score-label">總金幣：</span>
+                <span id="totalCoins" class="score-value">0</span>
+            </div>
+        </div>
+
+        <!-- 拉霸槽位 -->
+        <div class="slot-machine">
+            <div class="slot-container">
+                <div id="slot1" class="slot">
+                    <div class="slot-inner">
+                        <div class="slot-item">
+                            <img id="img1" src="" alt="">
+                            <span id="word1" class="word-text"></span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="slot2" class="slot">
+                    <div class="slot-inner">
+                        <div class="slot-item">
+                            <img id="img2" src="" alt="">
+                            <span id="word2" class="word-text"></span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="slot3" class="slot">
+                    <div class="slot-inner">
+                        <div class="slot-item">
+                            <img id="img3" src="" alt="">
+                            <span id="word3" class="word-text"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 控制按鈕 -->
+        <div class="controls">
+            <button id="spinBtn" class="spin-button">
+                <span class="button-text">🎰 SPIN! (5000🪙)</span>
+            </button>
+        </div>
+
+        <!-- 當前分類顯示 -->
+        <div class="current-category">
+            <span class="category-label">當前分類：</span>
+            <span id="currentCategory" class="category-value">準備中...</span>
+        </div>
+
+        <!-- 結果顯示 -->
+        <div id="result" class="result-display">
+            <div id="result-text" class="result-text"></div>
+            <div id="category-info" class="category-info"></div>
+        </div>
+
+        <!-- 音效控制 -->
+        <div class="sound-controls">
+            <button id="soundToggle" class="sound-button">🔊</button>
+            <button id="ttsToggle" class="tts-button">🔤</button>
+        </div>
+
+        <!-- 統計資訊 -->
+        <div class="stats-section">
+            <div class="stat-item">
+                <span class="stat-label">連續成功：</span>
+                <span id="streak" class="stat-value">0</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">今日遊戲：</span>
+                <span id="todayGames" class="stat-value">0</span>
+            </div>
+        </div>
+        
+        <!-- 兌換按鈕 -->
+        <div class="exchange-section">
+            <button id="exchangeBtn" class="exchange-button">
+                <span class="button-text">⭐ 兌換商城</span>
+            </button>
+        </div>
+        
+        <!-- 返回首頁按鈕 -->
+        <div class="home-section">
+            <button id="homeBtn" class="home-button">
+                <span class="button-text">🏠 返回首頁</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- 音效元素 -->
+    <audio id="spinSound" src="sound/click.mp3"></audio>
+    <audio id="correctSound" src="sound/correct.mp3"></audio>
+    <audio id="wrongSound" src="sound/wrong.mp3"></audio>
+    <audio id="comboSound" src="sound/shine.mp3"></audio>
+    <audio id="winningSound" src="sound/winning-82808.mp3"></audio>
+    <audio id="bonusSound" src="sound/game-bonus-144751.mp3"></audio>
+    <audio id="loseSound" src="sound/8-bit-video-game-lose-sound-version-1-145828.mp3"></audio>
+
+    <script src="js/word_spin_game.js"></script>
+</body>
+</html> 
+</html> 
