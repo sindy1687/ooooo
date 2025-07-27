@@ -30,77 +30,49 @@
             overflow: hidden;
         }
 
-        .main-container {
-            display: grid;
-            grid-template-columns: 1fr 400px;
-            grid-template-rows: 1fr 300px;
-            width: 100vw;
-            height: 100vh;
-            gap: 20px;
-            padding: 20px;
+        /* 勝利動畫 */
+        @keyframes victoryPulse {
+            0% { opacity: 0; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1.1); }
+            100% { opacity: 1; transform: scale(1); }
         }
 
-        /* 戰鬥區 */
-        .battle-area {
-            grid-column: 1;
-            grid-row: 1;
-            background: rgba(10, 20, 40, 0.8);
-            border: 2px solid var(--glow-magenta);
-            border-radius: 15px;
-            padding: 20px;
-            box-shadow: 0 0 20px rgba(162, 89, 255, 0.3);
-            backdrop-filter: blur(10px);
-            display: flex;
-            flex-direction: column;
-            overflow-y: auto;
-            overflow-x: hidden;
+        @keyframes victoryBounce {
+            0% { transform: scale(0.3); opacity: 0; }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); opacity: 1; }
         }
 
-        .battle-field {
-            flex: 1;
-            background: linear-gradient(180deg, rgba(0, 0, 0, 0.5) 0%, rgba(20, 40, 80, 0.3) 100%);
-            border-radius: 12px;
-            position: relative;
-            border: 1px solid rgba(162, 89, 255, 0.3);
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            padding: 40px 20px;
+        @keyframes victoryFadeIn {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
         }
 
-        .enemy-area {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 20px;
-            flex-wrap: wrap;
-            min-height: 120px;
+        /* 失敗動畫 */
+        @keyframes defeatPulse {
+            0% { opacity: 0; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1.05); }
+            100% { opacity: 1; transform: scale(1); }
         }
 
-        .player-area {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 20px;
-            flex-wrap: wrap;
-            min-height: 120px;
+        @keyframes defeatShake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
         }
 
-        .enemy-card, .player-card {
-            width: 100px;
-            height: 140px;
-            background: rgba(255, 0, 0, 0.2);
-            border: 2px solid #ff4444;
-            border-radius: 8px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            margin: 0;
-            flex-shrink: 0;
-            position: relative;
-            overflow: hidden;
+        @keyframes defeatFadeIn {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
         }
+
+
+
+
+
+
+
+
 
         .player-card {
             background: rgba(0, 255, 0, 0.2);
@@ -117,87 +89,24 @@
             pointer-events: none;
         }
 
-        .battle-controls {
-            margin-top: 15px;
-            text-align: center;
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
 
-        .battle-btn {
-            padding: 10px 20px;
-            background: linear-gradient(45deg, #4ecdc4, #44a08d);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(78, 205, 196, 0.3);
-            min-width: 120px;
-            flex: 0 1 auto;
-        }
 
-        .battle-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 255, 255, 0.4);
-        }
 
-        /* 戰鬥日誌 */
-        .battle-log {
-            grid-column: 2;
-            grid-row: 1;
-            background: rgba(0, 0, 0, 0.85);
-            border: 2px solid var(--glow-cyan);
-            border-radius: 15px;
-            padding: 20px;
-            font-size: 0.9rem;
-            overflow-y: auto;
-            color: #fff;
-            box-shadow: 0 0 12px #00ffff33;
-        }
 
-        .log-entry {
-            margin-bottom: 10px;
-            padding: 8px;
-            border-radius: 6px;
-            background: rgba(255, 255, 255, 0.1);
-        }
 
-        .log-entry.system {
-            background: rgba(0, 255, 255, 0.2);
-            border-left: 3px solid var(--glow-cyan);
-        }
 
-        .log-entry.player {
-            background: rgba(0, 255, 0, 0.2);
-            border-left: 3px solid #00ff00;
-        }
 
-        .log-entry.enemy {
-            background: rgba(255, 0, 0, 0.2);
-            border-left: 3px solid #ff0000;
-        }
 
-        /* 下半部區域 */
-        .bottom-area {
-            grid-column: 1 / span 2;
-            grid-row: 2;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
+
 
         /* 編輯隊伍 */
         .team-panel {
             background: rgba(10, 20, 40, 0.8);
             border: 2px solid var(--glow-yellow);
             border-radius: 15px;
-            padding: 20px;
+            padding: 25px;
             box-shadow: 0 0 20px rgba(255, 255, 0, 0.2);
-            min-height: 260px;
+            min-height: 320px;
             display: flex;
             flex-direction: column;
             justify-content: flex-start;
@@ -213,13 +122,13 @@
         .team-slots {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 15px;
+            gap: 20px;
             margin-bottom: 20px;
         }
 
         .team-slot {
-            width: 80px;
-            height: 110px;
+            width: 100px;
+            height: 140px;
             background: rgba(255, 255, 0, 0.1);
             border: 2px dashed var(--glow-yellow);
             border-radius: 8px;
@@ -252,11 +161,11 @@
         .team-stats {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 8px;
-            margin-top: 10px;
+            gap: 10px;
+            margin-top: 15px;
             background: rgba(255,255,0,0.08);
             border-radius: 8px;
-            padding: 6px 3px;
+            padding: 8px 4px;
         }
 
         .stat-item {
@@ -300,10 +209,27 @@
 
         .card-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
             gap: 15px;
-            max-height: 200px;
-            overflow-y: auto;
+            padding: 10px;
+        }
+
+        /* 分類按鈕樣式 */
+        .category-btn {
+            transition: all 0.3s ease;
+            font-weight: bold;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .category-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+        }
+
+        .category-btn.active {
+            transform: translateY(-1px);
+            box-shadow: 0 0 15px rgba(255,255,255,0.5);
+            border: 2px solid #fff;
         }
 
         .card {
@@ -391,24 +317,7 @@
             font-size: 0.7rem;
         }
 
-        /* 自定義滾動條 */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
 
-        ::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 4px;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: var(--glow-cyan);
-            border-radius: 4px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: #00cccc;
-        }
 
         /* 拖放提示 */
         .team-slot.drag-over {
@@ -429,18 +338,408 @@
             border-color: #9c27b0 !important;
         }
 
+        /* 放大戰鬥區和滑桿樣式 */
+        .main-container {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            grid-template-rows: 1fr 320px;
+            width: 100vw;
+            height: 100vh;
+            gap: 20px;
+            padding: 20px;
+            overflow: auto;
+        }
+
+        /* 戰鬥區進一步放大 */
+        .battle-area {
+            grid-column: 1;
+            grid-row: 1;
+            background: rgba(10, 20, 40, 0.8);
+            border: 2px solid var(--glow-magenta);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 0 20px rgba(162, 89, 255, 0.3);
+            backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            overflow-x: hidden;
+            min-height: 600px;
+        }
+
+        .battle-field {
+            flex: 1;
+            background: linear-gradient(180deg, rgba(0, 0, 0, 0.5) 0%, rgba(20, 40, 80, 0.3) 100%);
+            border-radius: 12px;
+            position: relative;
+            border: 1px solid rgba(162, 89, 255, 0.3);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 60px 40px;
+            min-height: 500px;
+        }
+
+        .enemy-area, .player-area {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            min-height: 180px;
+        }
+
+        .enemy-card, .player-card {
+            width: 140px;
+            height: 190px;
+            background: rgba(255, 0, 0, 0.2);
+            border: 2px solid #ff4444;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            flex-shrink: 0;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .player-card {
+            background: rgba(0, 255, 0, 0.2);
+            border-color: #44ff44;
+        }
+
+        /* 戰鬥日誌放大 */
+        .battle-log {
+            grid-column: 2;
+            grid-row: 1;
+            background: rgba(0, 0, 0, 0.85);
+            border: 2px solid var(--glow-cyan);
+            border-radius: 15px;
+            padding: 25px;
+            font-size: 1rem;
+            overflow-y: auto;
+            color: #fff;
+            box-shadow: 0 0 12px #00ffff33;
+            min-height: 600px;
+        }
+
+        /* 下半部區域調整 */
+        .bottom-area {
+            grid-column: 1 / span 2;
+            grid-row: 2;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            min-height: 320px;
+        }
+
+        /* 自定義滾動條 */
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--glow-cyan);
+            border-radius: 6px;
+            border: 2px solid rgba(0, 0, 0, 0.2);
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00cccc;
+        }
+
+        /* 戰鬥控制按鈕 */
+        .battle-controls {
+            margin-top: 15px;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .battle-btn {
+            padding: 12px 24px;
+            background: linear-gradient(45deg, #4ecdc4, #44a08d);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(78, 205, 196, 0.3);
+            min-width: 140px;
+            flex: 0 1 auto;
+        }
+
+        .battle-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 255, 255, 0.4);
+        }
+
+        .battle-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* 日誌條目樣式 */
+        .log-entry {
+            margin-bottom: 10px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .log-entry.system {
+            background: rgba(0, 255, 255, 0.1);
+            border-left: 4px solid #00ffff;
+        }
+
+        .log-entry.player {
+            background: rgba(0, 255, 0, 0.1);
+            border-left: 4px solid #00ff00;
+        }
+
+        .log-entry.enemy {
+            background: rgba(255, 0, 0, 0.1);
+            border-left: 4px solid #ff0000;
+        }
+
+        .log-entry.damage {
+            background: rgba(255, 165, 0, 0.1);
+            border-left: 4px solid #ffa500;
+        }
+
+        /* 響應式設計 */
+        @media (max-width: 1200px) {
+            .main-container {
+                grid-template-columns: 1fr 300px;
+                grid-template-rows: 1fr 280px;
+            }
+            
+            .battle-area {
+                padding: 25px;
+                min-height: 550px;
+            }
+            
+            .battle-field {
+                padding: 50px 25px;
+                min-height: 450px;
+            }
+            
+            .enemy-card, .player-card {
+                width: 120px;
+                height: 160px;
+            }
+            
+            .team-panel, .card-library {
+                max-height: 280px;
+            }
+        }
+        
+        /* 選中卡片樣式 */
+        .card.selected {
+            border: 2px solid #ffd700 !important;
+            box-shadow: 0 0 10px #ffd700 !important;
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                grid-template-columns: 1fr;
+                grid-template-rows: 1fr 1fr 280px;
+                gap: 15px;
+                padding: 15px;
+            }
+            
+            .battle-area {
+                min-height: 500px;
+            }
+            
+            .battle-field {
+                padding: 40px 20px;
+                min-height: 400px;
+            }
+            
+            .enemy-card, .player-card {
+                width: 100px;
+                height: 140px;
+            }
+            
+            .battle-log {
+                grid-column: 1;
+                grid-row: 2;
+                min-height: 350px;
+            }
+            
+            .bottom-area {
+                grid-column: 1;
+                grid-row: 3;
+                grid-template-columns: 1fr;
+                gap: 15px;
+                min-height: 280px;
+            }
+            
+            .team-panel, .card-library {
+                max-height: 250px;
+            }
+        }
+
+        /* 隊伍面板和卡片庫樣式 */
+        .team-panel, .card-library {
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid var(--glow-magenta);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 0 15px rgba(162, 89, 255, 0.3);
+            backdrop-filter: blur(10px);
+            overflow-y: auto;
+            max-height: 320px;
+        }
+
+        .team-panel h3, .card-library h3 {
+            color: var(--glow-magenta);
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            text-align: center;
+            text-shadow: 0 0 10px var(--glow-magenta);
+        }
+
+        .team-slots {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .team-slot {
+            height: 140px;
+            border: 2px dashed rgba(162, 89, 255, 0.5);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(162, 89, 255, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            min-height: 140px;
+        }
+
+        .team-slot.drag-over {
+            border-color: var(--glow-magenta);
+            background: rgba(162, 89, 255, 0.2);
+            transform: scale(1.05);
+        }
+
+        .team-slot.filled {
+            border-style: solid;
+            border-color: var(--glow-magenta);
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+            gap: 15px;
+            max-height: 250px;
+            overflow-y: auto;
+            padding: 15px;
+        }
+
+        .card {
+            width: 110px;
+            height: 150px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 255, 255, 0.3);
+        }
+
+        .card.selected {
+            border-color: var(--glow-cyan);
+            box-shadow: 0 0 10px var(--glow-cyan);
+        }
+
+        .card.used {
+            opacity: 0.5;
+            filter: grayscale(0.7);
+        }
+
+        .card-media {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .team-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 15px;
+            max-height: 120px;
+            overflow-y: auto;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+
+        .stat-label {
+            color: #ccc;
+        }
+
+        .stat-value {
+            color: var(--glow-cyan);
+            font-weight: bold;
+        }
+
         /* 戰鬥動畫效果 */
         @keyframes damageFloat {
             0% {
                 transform: translateY(0) scale(1);
                 opacity: 1;
             }
-            50% {
-                transform: translateY(-20px) scale(1.2);
+            25% {
+                transform: translateY(-15px) scale(1.3);
                 opacity: 1;
             }
+            50% {
+                transform: translateY(-30px) scale(1.1);
+                opacity: 0.8;
+            }
+            75% {
+                transform: translateY(-45px) scale(0.9);
+                opacity: 0.5;
+            }
             100% {
-                transform: translateY(-40px) scale(0.8);
+                transform: translateY(-60px) scale(0.7);
                 opacity: 0;
             }
         }
@@ -482,9 +781,14 @@
         .damage-number {
             position: absolute;
             font-weight: bold;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+            font-size: 1.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8), 0 0 8px rgba(255,255,255,0.5);
             z-index: 1000;
             pointer-events: none;
+            background: rgba(0,0,0,0.3);
+            padding: 2px 6px;
+            border-radius: 4px;
+            border: 1px solid rgba(255,255,255,0.3);
         }
 
         .damage-number.normal {
@@ -502,6 +806,24 @@
             font-size: 1.4rem;
             animation: damageFloat 1.5s ease-out forwards;
         }
+
+        /* 分類按鈕樣式 */
+        .category-btn {
+            transition: all 0.3s ease;
+            font-weight: bold;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .category-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+        }
+
+        .category-btn.active {
+            transform: translateY(-1px);
+            box-shadow: 0 0 15px rgba(255,255,255,0.5);
+            border: 2px solid #fff;
+        }
     </style>
 </head>
 <body>
@@ -514,6 +836,9 @@
             <div id="card-preview-stats" style="margin-top:8px; font-size:1.1rem; color:#fff;"></div>
         </div>
     </div>
+    
+
+    
     <div class="main-container">
         <!-- 星星顯示區 -->
         <div style="position: fixed; top: 20px; right: 20px; z-index: 1000; background: rgba(0,0,0,0.8); padding: 10px 15px; border-radius: 10px; border: 2px solid #ffd700; box-shadow: 0 0 10px rgba(255,215,0,0.3);">
@@ -542,6 +867,7 @@
             <div class="battle-controls">
                 <button class="battle-btn" id="start-battle">開始戰鬥</button>
                 <button class="battle-btn" id="manual-battle" style="background: linear-gradient(45deg, #ffd700, #ff6b6b);">手動戰鬥</button>
+                <button class="battle-btn" id="reset-stage" style="background: linear-gradient(45deg, #ffd700, #ffed4e);">重置關卡</button>
             </div>
             <!-- 手動戰鬥控制區 -->
             <div id="manual-controls" style="display: none; margin-top: 15px; padding: 15px; background: rgba(0,0,0,0.3); border-radius: 10px; border: 1px solid #00ffff;">
@@ -554,6 +880,7 @@
                 <div id="action-buttons" style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
                     <button id="attack-btn" class="battle-btn" style="background: linear-gradient(45deg, #ff6b6b, #ff8e8e);">攻擊</button>
                     <button id="skill-btn" class="battle-btn" style="background: linear-gradient(45deg, #4ecdc4, #6ee7df);">技能</button>
+                    <button id="defend-btn" class="battle-btn" style="background: linear-gradient(45deg, #ffd700, #ffed4e);">防禦</button>
                     <button id="skip-btn" class="battle-btn" style="background: linear-gradient(45deg, #95a5a6, #bdc3c7);">跳過</button>
                 </div>
             </div>
@@ -586,6 +913,10 @@
                 
                 <div class="team-stats">
                     <div class="stat-item">
+                        <span class="stat-label">當前關卡:</span>
+                        <span class="stat-value" id="current-stage">第1關</span>
+                    </div>
+                    <div class="stat-item">
                         <span class="stat-label">總攻擊力:</span>
                         <span class="stat-value" id="total-attack">0</span>
                     </div>
@@ -607,6 +938,35 @@
             <!-- 卡片選擇區 -->
             <div class="card-library">
                 <h3>卡片選擇區</h3>
+                
+                <!-- 分類按鈕 -->
+                <div id="category-buttons" style="text-align: center; margin-bottom: 15px;">
+                    <button class="category-btn active" data-category="all" style="margin: 5px; padding: 8px 15px; background: linear-gradient(45deg, #4CAF50, #45a049); color: white; border: none; border-radius: 5px; cursor: pointer;">全部</button>
+                    <button class="category-btn" data-category="common" style="margin: 5px; padding: 8px 15px; background: linear-gradient(45deg, #2196F3, #1976D2); color: white; border: none; border-radius: 5px; cursor: pointer;">普通</button>
+                    <button class="category-btn" data-category="rare" style="margin: 5px; padding: 8px 15px; background: linear-gradient(45deg, #9C27B0, #7B1FA2); color: white; border: none; border-radius: 5px; cursor: pointer;">稀有</button>
+                    <button class="category-btn" data-category="ssr" style="margin: 5px; padding: 8px 15px; background: linear-gradient(45deg, #FF9800, #F57C00); color: white; border: none; border-radius: 5px; cursor: pointer;">超稀有</button>
+                    <button class="category-btn" data-category="heal" style="margin: 5px; padding: 8px 15px; background: linear-gradient(45deg, #4CAF50, #388E3C); color: white; border: none; border-radius: 5px; cursor: pointer;">治癒系</button>
+                    <button class="category-btn" data-category="magic" style="margin: 5px; padding: 8px 15px; background: linear-gradient(45deg, #E91E63, #C2185B); color: white; border: none; border-radius: 5px; cursor: pointer;">魔法系</button>
+                    <button class="category-btn" data-category="attack" style="margin: 5px; padding: 8px 15px; background: linear-gradient(45deg, #F44336, #D32F2F); color: white; border: none; border-radius: 5px; cursor: pointer;">攻擊系</button>
+                    <button class="category-btn" data-category="defense" style="margin: 5px; padding: 8px 15px; background: linear-gradient(45deg, #607D8B, #455A64); color: white; border: none; border-radius: 5px; cursor: pointer;">防禦系</button>
+                </div>
+                
+                <!-- 統計信息 -->
+                <div id="card-stats" style="text-align: center; margin-bottom: 15px; color: #ffd700; font-size: 14px;">
+                    總卡片數：<span id="total-cards">0</span> | 
+                    已選擇：<span id="selected-count">0</span>/4
+                </div>
+                
+                <!-- 技能重新生成按鈕 -->
+                <div style="text-align: center; margin-bottom: 15px;">
+                    <button onclick="regenerateAllSkills()" style="padding: 8px 15px; background: linear-gradient(45deg, #FF5722, #E64A19); color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">
+                        🔄 重新生成所有技能
+                    </button>
+                </div>
+                
+                <div style="margin-bottom: 10px; text-align: center;">
+                    <span style="color: #4ecdc4; font-size: 0.9rem;">📈 只能通過戰鬥獲得經驗值自動升級</span>
+                </div>
                 <div class="card-grid" id="card-grid">
                     <!-- 卡片會在這裡動態生成 -->
                 </div>
@@ -624,18 +984,120 @@
     <script src="js/cards.js"></script>
     <script src="js/custom_cards.js"></script>
     <script src="js/achievementSystem.js"></script>
+    
+    <!-- 如果外部卡片文件載入失敗，使用預設卡片 -->
+    <script>
+        // 確保baseCards存在
+        if (typeof baseCards === 'undefined') {
+            console.log('外部卡片文件載入失敗，使用預設卡片');
+            window.baseCards = [
+                {
+                    zh: "宙斯",
+                    en: "Zeus",
+                    image: "zeus.html",
+                    attack: 200,
+                    defense: 150,
+                    hp: 300,
+                    rarity: "超稀有",
+                    skill: {
+                        name: "元素爆發",
+                        type: "magic",
+                        damage: 2.5,
+                        cooldown: 5,
+                        description: "超強魔法攻擊",
+                        currentCooldown: 0
+                    }
+                },
+                {
+                    zh: "阿波羅",
+                    en: "Apollo",
+                    image: "apollo.html",
+                    attack: 180,
+                    defense: 120,
+                    hp: 250,
+                    rarity: "稀有",
+                    skill: {
+                        name: "雷電術",
+                        type: "magic",
+                        damage: 1.6,
+                        cooldown: 2,
+                        description: "魔法攻擊，高暴擊率",
+                        currentCooldown: 0
+                    }
+                },
+                {
+                    zh: "雅典娜",
+                    en: "Athena",
+                    image: "athena.html",
+                    attack: 160,
+                    defense: 180,
+                    hp: 280,
+                    rarity: "稀有",
+                    skill: {
+                        name: "群體護盾",
+                        type: "shield",
+                        shieldAmount: 0.3,
+                        cooldown: 4,
+                        description: "為全隊增加護盾",
+                        currentCooldown: 0
+                    }
+                },
+                {
+                    zh: "阿瑞斯",
+                    en: "Ares",
+                    image: "ares.html",
+                    attack: 220,
+                    defense: 100,
+                    hp: 200,
+                    rarity: "稀有",
+                    skill: {
+                        name: "攻擊強化",
+                        type: "buff",
+                        damageBonus: 0.4,
+                        duration: 3,
+                        cooldown: 3,
+                        description: "提升攻擊力40%",
+                        currentCooldown: 0
+                    }
+                },
+                {
+                    zh: "波塞冬",
+                    en: "Poseidon",
+                    image: "poseidon.html",
+                    attack: 170,
+                    defense: 160,
+                    hp: 270,
+                    rarity: "稀有",
+                    skill: {
+                        name: "地裂術",
+                        type: "magic",
+                        damage: 2.0,
+                        cooldown: 4,
+                        description: "強力魔法攻擊",
+                        currentCooldown: 0
+                    }
+                }
+            ];
+        }
+    </script>
     <script>
         // 遊戲狀態
         // 獲取當前星星數量
         function getCurrentStars() {
             console.log('getCurrentStars 被調用');
-            if (typeof StarRewardSystem !== 'undefined') {
-                console.log('使用 StarRewardSystem');
-                return parseInt(localStorage.getItem('totalStars') || '0');
-            } else if (typeof LinkageSystem !== 'undefined' && LinkageSystem.stars) {
+            
+            // 優先使用 LinkageSystem
+            if (typeof LinkageSystem !== 'undefined' && LinkageSystem.stars) {
                 console.log('使用 LinkageSystem');
                 return LinkageSystem.stars.get();
-            } else {
+            }
+            // 其次使用 StarRewardSystem
+            else if (typeof StarRewardSystem !== 'undefined') {
+                console.log('使用 StarRewardSystem');
+                return parseInt(localStorage.getItem('totalStars') || '0');
+            }
+            // 最後使用 localStorage
+            else {
                 console.log('使用 localStorage');
                 return parseInt(localStorage.getItem('totalStars') || '0');
             }
@@ -646,23 +1108,32 @@
             console.log('addStarsToBattle 被調用，數量:', amount);
             let currentStars = 0;
             
-            if (typeof StarRewardSystem !== 'undefined') {
+            // 先獲取當前星星數量
+            if (typeof LinkageSystem !== 'undefined' && LinkageSystem.stars) {
+                console.log('使用 LinkageSystem');
+                currentStars = LinkageSystem.stars.get();
+            } else if (typeof StarRewardSystem !== 'undefined') {
                 console.log('使用 StarRewardSystem');
                 currentStars = parseInt(localStorage.getItem('totalStars') || '0');
-                const newStars = currentStars + amount;
+            } else {
+                console.log('使用 localStorage');
+                currentStars = parseInt(localStorage.getItem('totalStars') || '0');
+            }
+            
+            // 計算新的星星數量
+            const newStars = currentStars + amount;
+            console.log(`星星計算: ${currentStars} + ${amount} = ${newStars}`);
+            
+            // 更新星星數量
+            if (typeof LinkageSystem !== 'undefined' && LinkageSystem.stars) {
+                LinkageSystem.stars.set(newStars);
+            } else if (typeof StarRewardSystem !== 'undefined') {
                 localStorage.setItem('totalStars', newStars.toString());
                 // 嘗試調用 StarRewardSystem 的方法
                 if (typeof StarRewardSystem.addStars === 'function') {
                     StarRewardSystem.addStars(amount);
                 }
-            } else if (typeof LinkageSystem !== 'undefined' && LinkageSystem.stars) {
-                console.log('使用 LinkageSystem');
-                currentStars = LinkageSystem.stars.get();
-                LinkageSystem.stars.add(amount);
             } else {
-                console.log('使用 localStorage');
-                currentStars = parseInt(localStorage.getItem('totalStars') || '0');
-                const newStars = currentStars + amount;
                 localStorage.setItem('totalStars', newStars.toString());
             }
             
@@ -677,12 +1148,15 @@
                 const currentStars = getCurrentStars();
                 starsElement.textContent = currentStars;
                 console.log('星星顯示已更新:', currentStars);
+            } else {
+                console.log('找不到星星顯示元素');
             }
         }
 
         // 初始化星星顯示
         function initStarsDisplay() {
             updateStarsDisplay();
+            console.log('星星顯示初始化完成，當前星星:', getCurrentStars());
         }
 
         const gameState = {
@@ -690,7 +1164,7 @@
             enemyTeam: [],
             isBattleActive: false,
             currentTurn: 0,
-            usedCards: new Set(), // 記錄今天被打敗的卡片
+
             selectedCards: new Set() // 記錄已選入隊伍但未使用的卡片
         };
 
@@ -704,37 +1178,42 @@
 
         // 初始化遊戲
         function initGame() {
-            console.log('initGame 開始執行');
-            console.log('baseCards 是否存在:', typeof baseCards !== 'undefined');
-            console.log('baseCards 長度:', typeof baseCards !== 'undefined' ? baseCards.length : 'undefined');
+            console.log('初始化遊戲...');
             
-            if (typeof baseCards === 'undefined') {
-                console.log('等待卡片資料載入...');
-                setTimeout(initGame, 100);
-                return;
-            }
-            console.log('卡片資料已載入，共', baseCards.length, '張卡片');
-            
-            // 檢查卡片資料是否正確
-            if (baseCards.length === 0) {
-                console.error('卡片資料為空！');
-                addLogEntry('系統', '❌ 卡片資料載入失敗！');
-                return;
-            }
-            
-            // 過濾只顯示已解鎖的卡片
-            filterUnlockedCards();
-            
-            // 為卡片補充素質屬性
-            enhanceCardsWithStats();
-            
-            loadUsedCards();
-            createCardGrid();
-            setupEventListeners();
-            updateTeamStats();
+            // 初始化星星顯示
             initStarsDisplay();
-            console.log('遊戲初始化完成');
-            addLogEntry('系統', '遊戲初始化完成！');
+            
+            // 設置事件監聽器
+            setupEventListeners();
+            
+            // 等待外部卡片載入完成後再補充素質和技能
+            setTimeout(() => {
+                // 為卡片補充素質和技能
+                enhanceCardsWithStats();
+                
+                // 過濾已解鎖的卡片（這會清空並重新填充baseCards）
+                filterUnlockedCards();
+                
+                // 再次為過濾後的卡片補充素質和技能
+                enhanceCardsWithStats();
+                
+                // 載入卡牌等級和經驗值數據
+                loadCardLevels();
+                
+                // 顯示卡片
+                displayCards();
+                
+                // 設置分類按鈕
+                setupCategoryButtons();
+                
+                // 更新隊伍顯示
+                updateTeamDisplay();
+                
+                // 載入戰鬥關卡
+                loadBattleStage();
+                
+                console.log('遊戲初始化完成');
+            }, 100); // 等待100ms確保外部文件載入完成
         }
 
         // 過濾只顯示已解鎖的卡片
@@ -772,26 +1251,155 @@
         }
 
         // 載入今天被打敗的卡片
-        function loadUsedCards() {
-            const today = new Date().toDateString();
-            const savedData = localStorage.getItem('usedCards_' + today);
-            if (savedData) {
-                gameState.usedCards = new Set(JSON.parse(savedData));
+
+
+        // 載入卡牌等級和經驗值數據
+        function loadCardLevels() {
+            const savedLevels = localStorage.getItem('cardLevels');
+            if (savedLevels) {
+                try {
+                    const levels = JSON.parse(savedLevels);
+                    console.log('載入的等級數據:', levels);
+                    levels.forEach(levelData => {
+                        // 嘗試多種匹配方式
+                        let card = baseCards.find(c => c.zh === levelData.index);
+                        if (!card) {
+                            card = baseCards.find(c => c.id === levelData.index);
+                        }
+                        if (!card) {
+                            card = baseCards.find(c => (c.id || c.zh) === levelData.index);
+                        }
+                        if (card) {
+                            card.level = levelData.level;
+                            card.exp = levelData.exp || 0;
+                            console.log('成功載入卡片等級:', card.zh, '等級:', card.level, '經驗值:', card.exp);
+                        } else {
+                            console.log('找不到對應的卡片:', levelData.index);
+                        }
+                    });
+                    console.log('已載入卡牌等級和經驗值數據');
+                } catch (error) {
+                    console.error('載入卡牌等級數據失敗:', error);
+                }
+            } else {
+                console.log('沒有找到已保存的卡牌等級數據');
             }
         }
 
-        // 儲存今天被打敗的卡片
-        function saveUsedCards() {
-            const today = new Date().toDateString();
-            localStorage.setItem('usedCards_' + today, JSON.stringify([...gameState.usedCards]));
+        // 計算升級所需經驗值
+        function getExpForNextLevel(currentLevel) {
+            return Math.floor(100 * Math.pow(1.5, currentLevel - 1));
+        }
+
+        // 檢查是否可以升級
+        function canLevelUp(card) {
+            const currentLevel = card.level || 1;
+            const currentExp = card.exp || 0;
+            const requiredExp = getExpForNextLevel(currentLevel);
+            return currentExp >= requiredExp;
+        }
+
+        // 自動升級卡牌
+        function autoLevelUp(card) {
+            const currentLevel = card.level || 1;
+            const currentExp = card.exp || 0;
+            const requiredExp = getExpForNextLevel(currentLevel);
+            
+            if (currentExp >= requiredExp) {
+                const newLevel = currentLevel + 1;
+                const remainingExp = currentExp - requiredExp;
+                
+                card.level = newLevel;
+                card.exp = remainingExp;
+                
+                // 計算升級後的素質對比
+                const currentLevelBonus = (currentLevel - 1) * 0.2;
+                const newLevelBonus = (newLevel - 1) * 0.2;
+                const baseAttack = card.attack || 50;
+                const baseDefense = card.defense || 30;
+                const baseHp = card.hp || 100;
+                
+                const currentAttack = Math.round(baseAttack * (1 + currentLevelBonus));
+                const currentDefense = Math.round(baseDefense * (1 + currentLevelBonus));
+                const currentHp = Math.round(baseHp * (1 + currentLevelBonus));
+                
+                const newAttack = Math.round(baseAttack * (1 + newLevelBonus));
+                const newDefense = Math.round(baseDefense * (1 + newLevelBonus));
+                const newHp = Math.round(baseHp * (1 + newLevelBonus));
+                
+                // 顯示升級對比Modal
+                showLevelUpModal(card, {
+                    oldLevel: currentLevel,
+                    newLevel: newLevel,
+                    oldAttack: currentAttack,
+                    newAttack: newAttack,
+                    oldDefense: currentDefense,
+                    newDefense: newDefense,
+                    oldHp: currentHp,
+                    newHp: newHp
+                });
+                
+                addLogEntry('system', `🌟 ${card.zh} 自動升級！等級：${currentLevel} → ${newLevel}`);
+                addLogEntry('system', `💪 攻擊力：${currentAttack} → ${newAttack}`);
+                addLogEntry('system', `🛡️ 防禦力：${currentDefense} → ${newDefense}`);
+                addLogEntry('system', `❤️ 血量：${currentHp} → ${newHp}`);
+                
+                // 保存升級後的卡牌數據
+                const cardLevelsData = baseCards.map(c => ({ 
+                    index: c.id || c.zh, 
+                    level: c.level || 1,
+                    exp: c.exp || 0
+                }));
+                localStorage.setItem('cardLevels', JSON.stringify(cardLevelsData));
+                console.log('保存升級後的卡牌數據:', cardLevelsData);
+                
+                return true;
+            }
+            return false;
+        }
+
+        // 為卡牌添加經驗值（只能通過戰鬥獲得）
+        function addExpToCard(card, expAmount) {
+            console.log('addExpToCard 被調用:', card.zh, '經驗值:', expAmount);
+            if (!card.exp) card.exp = 0;
+            const oldExp = card.exp;
+            card.exp += expAmount;
+            console.log('經驗值更新:', card.zh, oldExp, '->', card.exp);
+            
+            const currentLevel = card.level || 1;
+            const requiredExp = getExpForNextLevel(currentLevel);
+            const expProgress = Math.min(100, Math.round((card.exp / requiredExp) * 100));
+            
+            addLogEntry('system', `📈 ${card.zh} 獲得 ${expAmount} 戰鬥經驗值！`);
+            addLogEntry('system', `📊 經驗值進度：${card.exp}/${requiredExp} (${expProgress}%)`);
+            
+            // 檢查是否可以升級
+            if (autoLevelUp(card)) {
+                // 如果升級了，再次檢查是否可以連續升級
+                while (autoLevelUp(card)) {
+                    // 連續升級
+                }
+            }
+            
+            // 保存經驗值數據
+            const cardLevelsData = baseCards.map(c => ({ 
+                index: c.id || c.zh, 
+                level: c.level || 1,
+                exp: c.exp || 0
+            }));
+            localStorage.setItem('cardLevels', JSON.stringify(cardLevelsData));
+            console.log('保存經驗值數據:', cardLevelsData);
         }
 
         // 為卡片補充素質屬性
         function enhanceCardsWithStats() {
+            console.log('開始為卡片補充素質和技能，當前卡片數量:', baseCards.length);
+            
             baseCards.forEach((card, index) => {
+                const seed = index * 7 + 13; // 簡單的隨機種子
+                
                 // 如果卡片沒有素質，根據索引生成隨機但固定的素質
                 if (!card.attack || !card.defense || !card.hp) {
-                    const seed = index * 7 + 13; // 簡單的隨機種子
                     // 根據稀有度設定素質範圍
                     const rarity = card.rarity || getRandomRarity(seed);
                     card.rarity = rarity;
@@ -806,45 +1414,177 @@
                     card.attack = card.attack || (minStat + (seed * 3 % (maxStat - minStat + 1)));
                     card.defense = card.defense || (minStat + (seed * 5 % (maxStat - minStat + 1)));
                     card.hp = card.hp || (minStat + (seed * 7 % (maxStat - minStat + 1)));
-                    // 為卡片加入技能
-                    if (!card.skill) {
-                        card.skill = generateSkill(card, seed);
-                    }
+                }
+                
+                // 確保所有卡片都有技能
+                if (!card.skill) {
+                    card.skill = generateSkill(card, seed);
+                    console.log(`為卡片 ${card.zh} 生成技能: ${card.skill.name}`);
+                } else {
+                    console.log(`卡片 ${card.zh} 已有技能: ${card.skill.name}`);
                 }
             });
-            console.log('已為', baseCards.length, '張卡片補充素質');
+            console.log('已為', baseCards.length, '張卡片補充素質和技能');
         }
 
         // 生成卡片技能
         function generateSkill(card, seed) {
             const skills = [
-                { name: '普通攻擊', damage: 1.0, cooldown: 0, description: '基礎攻擊' },
-                { name: '強力一擊', damage: 1.5, cooldown: 2, description: '造成1.5倍傷害' },
-                { name: '防禦姿態', damage: 0.5, cooldown: 1, description: '攻擊力減半但增加防禦' },
-                { name: '連擊', damage: 0.8, cooldown: 3, description: '連續攻擊兩次' },
-                { name: '暴擊', damage: 2.0, cooldown: 4, description: '造成雙倍傷害' }
+                { name: '普通攻擊', type: 'attack', damage: 1.0, cooldown: 0, description: '基礎攻擊' },
+                { name: '強力一擊', type: 'attack', damage: 1.5, cooldown: 2, description: '造成1.5倍傷害' },
+                { name: '防禦姿態', type: 'defense', damage: 0.5, cooldown: 1, description: '攻擊力減半但增加防禦' },
+                { name: '連擊', type: 'attack', damage: 0.8, cooldown: 3, description: '連續攻擊兩次' },
+                { name: '暴擊', type: 'attack', damage: 2.0, cooldown: 4, description: '造成雙倍傷害' },
+                { name: '治癒術', type: 'heal', healAmount: 0.3, cooldown: 3, description: '恢復自身30%血量' },
+                { name: '群體治癒', type: 'heal', healAmount: 0.2, cooldown: 4, description: '恢復全隊20%血量' },
+                { name: '生命汲取', type: 'drain', damage: 1.2, healRatio: 0.5, cooldown: 3, description: '攻擊並恢復傷害的50%血量' },
+                { name: '護盾術', type: 'shield', shieldAmount: 0.4, cooldown: 2, description: '為自身增加40%血量護盾' },
+                { name: '反擊', type: 'counter', damage: 1.0, cooldown: 2, description: '受到攻擊時反擊' },
+                { name: '火球術', type: 'magic', damage: 1.8, cooldown: 3, description: '魔法攻擊，無視防禦' },
+                { name: '雷電術', type: 'magic', damage: 1.6, cooldown: 2, description: '魔法攻擊，高暴擊率' },
+                { name: '冰凍術', type: 'magic', damage: 1.4, cooldown: 2, description: '魔法攻擊，降低敵人速度' },
+                { name: '風刃術', type: 'magic', damage: 1.5, cooldown: 1, description: '快速魔法攻擊' },
+                { name: '地裂術', type: 'magic', damage: 2.0, cooldown: 4, description: '強力魔法攻擊' },
+                { name: '暴擊強化', type: 'buff', criticalBonus: 0.3, duration: 3, cooldown: 4, description: '提升暴擊率30%' },
+                { name: '攻擊強化', type: 'buff', damageBonus: 0.4, duration: 3, cooldown: 3, description: '提升攻擊力40%' },
+                { name: '防禦強化', type: 'buff', defenseBonus: 0.5, duration: 3, cooldown: 3, description: '提升防禦力50%' },
+                { name: '速度強化', type: 'buff', speedBonus: 0.3, duration: 2, cooldown: 2, description: '提升行動速度' },
+                { name: '元素爆發', type: 'magic', damage: 2.5, cooldown: 5, description: '超強魔法攻擊' },
+                { name: '神聖治癒', type: 'heal', healAmount: 0.5, cooldown: 4, description: '強力治癒術' },
+                { name: '群體護盾', type: 'shield', shieldAmount: 0.3, cooldown: 4, description: '為全隊增加護盾' },
+                { name: '生命轉換', type: 'drain', damage: 1.0, healRatio: 0.8, cooldown: 4, description: '攻擊並恢復80%傷害血量' },
+                { name: '反彈護盾', type: 'shield', shieldAmount: 0.3, reflectDamage: 0.5, cooldown: 3, description: '護盾並反彈傷害' }
             ];
             const skillIndex = seed % skills.length;
             const baseSkill = skills[skillIndex];
             
-            // 根據稀有度調整冷卻時間
+            // 根據稀有度調整冷卻時間和效果
             let adjustedCooldown = baseSkill.cooldown;
+            let adjustedEffect = 1.0;
             if (card.rarity === '超稀有') {
-                // SSR卡片冷卻時間減半（最短）
+                // SSR卡片冷卻時間減半，效果增強
                 adjustedCooldown = Math.max(0, Math.floor(baseSkill.cooldown * 0.5));
+                adjustedEffect = 1.3;
             } else if (card.rarity === '稀有') {
-                // A卡片冷卻時間稍微減少
+                // A卡片冷卻時間稍微減少，效果稍微增強
                 adjustedCooldown = Math.max(0, Math.floor(baseSkill.cooldown * 0.8));
+                adjustedEffect = 1.1;
             } else {
-                // 普通卡片保持原冷卻時間
+                // 普通卡片保持原效果
                 adjustedCooldown = baseSkill.cooldown;
+                adjustedEffect = 1.0;
             }
             
-            return { 
-                ...baseSkill, 
-                cooldown: adjustedCooldown,
-                currentCooldown: 0 
-            };
+            // 根據技能類型調整效果
+            const skill = { ...baseSkill, cooldown: adjustedCooldown, currentCooldown: 0 };
+            if (skill.type === 'heal') {
+                skill.healAmount = (skill.healAmount || 0.3) * adjustedEffect;
+            } else if (skill.type === 'shield') {
+                skill.shieldAmount = (skill.shieldAmount || 0.4) * adjustedEffect;
+            } else if (skill.type === 'drain') {
+                skill.healRatio = (skill.healRatio || 0.5) * adjustedEffect;
+            } else if (skill.type === 'magic') {
+                skill.damage = (skill.damage || 1.5) * adjustedEffect;
+            } else if (skill.type === 'buff') {
+                skill.criticalBonus = (skill.criticalBonus || 0) * adjustedEffect;
+                skill.damageBonus = (skill.damageBonus || 0) * adjustedEffect;
+                skill.defenseBonus = (skill.defenseBonus || 0) * adjustedEffect;
+                skill.speedBonus = (skill.speedBonus || 0) * adjustedEffect;
+            }
+            
+            return skill;
+        }
+
+        // 強制為所有卡片重新生成技能
+        function regenerateAllSkills() {
+            console.log('開始為所有卡片重新生成技能...');
+            baseCards.forEach((card, index) => {
+                const seed = index * 7 + 13;
+                card.skill = generateSkill(card, seed);
+                console.log(`為卡片 ${card.zh} 重新生成技能: ${card.skill.name}`);
+            });
+            console.log('所有卡片技能重新生成完成');
+            
+            // 重新顯示卡片
+            displayCards();
+        }
+
+        // 檢查所有卡片的技能狀態
+        function checkCardSkills() {
+            console.log('=== 檢查卡片技能狀態 ===');
+            console.log('總卡片數量:', baseCards.length);
+            
+            let hasSkillCount = 0;
+            let noSkillCount = 0;
+            
+            baseCards.forEach((card, index) => {
+                if (card.skill && card.skill.name) {
+                    hasSkillCount++;
+                    console.log(`✅ ${card.zh}: ${card.skill.name} (${card.skill.type || '未知類型'})`);
+                } else {
+                    noSkillCount++;
+                    console.log(`❌ ${card.zh}: 無技能`);
+                }
+            });
+            
+            console.log(`=== 統計結果 ===`);
+            console.log(`有技能的卡片: ${hasSkillCount} 張`);
+            console.log(`無技能的卡片: ${noSkillCount} 張`);
+            console.log(`總計: ${baseCards.length} 張`);
+            
+            // 顯示在頁面上
+            const message = `技能檢查結果：${hasSkillCount} 張有技能，${noSkillCount} 張無技能，總計 ${baseCards.length} 張`;
+            addLogEntry('系統', message);
+        }
+
+        // 測試星星系統
+        function testStarSystem() {
+            console.log('=== 測試星星系統 ===');
+            
+            // 檢查系統可用性
+            console.log('LinkageSystem 可用:', typeof LinkageSystem !== 'undefined');
+            console.log('StarRewardSystem 可用:', typeof StarRewardSystem !== 'undefined');
+            
+            if (typeof LinkageSystem !== 'undefined') {
+                console.log('LinkageSystem.stars 可用:', LinkageSystem.stars !== undefined);
+            }
+            
+            // 獲取當前星星
+            const currentStars = getCurrentStars();
+            console.log('當前星星數量:', currentStars);
+            
+            // 測試增加星星
+            console.log('測試增加5顆星星...');
+            addStarsToBattle(5);
+            
+            // 檢查更新後的星星
+            const newStars = getCurrentStars();
+            console.log('更新後星星數量:', newStars);
+            
+            // 顯示結果
+            const message = `星星系統測試：當前 ${newStars} 顆星星 (LinkageSystem: ${typeof LinkageSystem !== 'undefined'}, StarRewardSystem: ${typeof StarRewardSystem !== 'undefined'})`;
+            addLogEntry('系統', message);
+        }
+
+        // 檢查隊伍狀態
+        function checkTeamStatus() {
+            console.log('=== 檢查隊伍狀態 ===');
+            console.log('隊伍數量:', gameState.playerTeam.length);
+            console.log('戰鬥狀態:', gameState.isBattleActive);
+            console.log('已選擇卡片:', gameState.selectedCards.size);
+            
+            if (gameState.playerTeam.length > 0) {
+                console.log('隊伍成員:');
+                gameState.playerTeam.forEach((card, index) => {
+                    console.log(`  ${index + 1}. ${card.zh} (等級: ${card.level || 1}, 技能: ${card.skill ? card.skill.name : '無'})`);
+                });
+            }
+            
+            const currentStars = getCurrentStars();
+            console.log('當前星星:', currentStars);
+            
+            const message = `隊伍狀態：${gameState.playerTeam.length}/4 張卡片，戰鬥狀態：${gameState.isBattleActive ? '進行中' : '未開始'}，星星：${currentStars}`;
+            addLogEntry('系統', message);
         }
 
         // 戰鬥控制變數
@@ -910,7 +1650,7 @@
         }
 
         // 戰鬥動畫效果
-        function animateAttack(attacker, target, damage, isSkill = false) {
+        function animateAttack(attacker, target, damage, isSkill = false, isCritical = false) {
             return new Promise((resolve) => {
                 isAnimating = true;
                 
@@ -940,11 +1680,19 @@
                         // 創建傷害數字
                         const damageText = document.createElement('div');
                         damageText.textContent = `-${damage}`;
-                        damageText.className = `damage-number ${isSkill ? 'skill' : 'normal'}`;
+                        
+                        // 判斷傷害類型
+                        let damageClass = 'normal';
+                        if (isSkill) damageClass = 'skill';
+                        if (isCritical) damageClass = 'critical';
+                        
+                        damageText.className = `damage-number ${damageClass}`;
+                        damageText.style.fontSize = isCritical ? '2rem' : '1.5rem';
+                        damageText.style.fontWeight = 'bold';
                         
                         // 隨機位置偏移
-                        const offsetX = (Math.random() - 0.5) * 20;
-                        const offsetY = (Math.random() - 0.5) * 10;
+                        const offsetX = (Math.random() - 0.5) * 30;
+                        const offsetY = (Math.random() - 0.5) * 20;
                         damageText.style.left = `calc(50% + ${offsetX}px)`;
                         damageText.style.top = `calc(50% + ${offsetY}px)`;
                         
@@ -1011,6 +1759,38 @@
             else return 'R';                        // 75% 機率
         }
 
+        // 生成敵人技能（降低強度）
+        function generateEnemySkill(rarity, seed) {
+            const skillSeed = seed % 100;
+            const skills = [
+                { name: '防禦姿態', type: 'defense', effect: '增加防禦力30%', cooldown: 4 },
+                { name: '魔法攻擊', type: 'magic', effect: '造成1.2倍魔法傷害', cooldown: 5 },
+                { name: '連擊', type: 'combo', effect: '連續攻擊1.5次', cooldown: 6 },
+                { name: '治療術', type: 'heal', effect: '恢復20%血量', cooldown: 7 },
+                { name: '反擊', type: 'counter', effect: '受到攻擊時反擊', cooldown: 5 },
+                { name: '狂暴', type: 'rage', effect: '血量低於20%時攻擊力1.5倍', cooldown: 0 }
+            ];
+            
+            // 根據稀有度選擇技能
+            let selectedSkill;
+            switch(rarity) {
+                case 'SSR':
+                    selectedSkill = skills[skillSeed % 3]; // 前3個強力技能
+                    break;
+                case 'A':
+                    selectedSkill = skills[Math.floor(skillSeed / 20) + 1]; // 中等技能
+                    break;
+                case 'R':
+                    selectedSkill = skills[Math.floor(skillSeed / 25) + 2]; // 基礎技能
+                    break;
+            }
+            
+            return {
+                ...selectedSkill,
+                currentCooldown: 0
+            };
+        }
+
         // 稀有度轉換（中文→英文標籤）
         function getRarityLabel(rarity) {
             if (rarity === '超稀有') return 'SSR';
@@ -1064,24 +1844,27 @@
             cardDiv.className = 'card';
             cardDiv.dataset.cardIndex = index;
             
-            const isUsed = gameState.usedCards.has(index);
+            // 檢查卡牌等級
+            const cardLevel = card.level || 1;
+            const levelBonus = (cardLevel - 1) * 0.2; // 每級增加20%素質
+            
+            // 計算升級後的素質
+            const baseAttack = card.attack || 50;
+            const baseDefense = card.defense || 30;
+            const baseHp = card.hp || 100;
+            
+            const upgradedAttack = Math.round(baseAttack * (1 + levelBonus));
+            const upgradedDefense = Math.round(baseDefense * (1 + levelBonus));
+            const upgradedHp = Math.round(baseHp * (1 + levelBonus));
+            
             const isSelected = gameState.selectedCards.has(index);
-            if (isUsed) {
-                cardDiv.classList.add('used');
-            } else if (isSelected) {
+            if (isSelected) {
                 cardDiv.classList.add('selected');
             }
 
-            // 拖放屬性
-            if (!isUsed && !isSelected) {
-                cardDiv.setAttribute('draggable', 'true');
-                cardDiv.addEventListener('dragstart', (e) => {
-                    e.dataTransfer.setData('text/plain', index);
-                    cardDiv.classList.add('dragging');
-                });
-                cardDiv.addEventListener('dragend', (e) => {
-                    cardDiv.classList.remove('dragging');
-                });
+            // 移除拖放屬性，改為雙擊添加
+            if (!isSelected) {
+                cardDiv.setAttribute('draggable', 'false');
             }
 
             const imageSrc = card.image || 'img/card_back.jpeg';
@@ -1098,19 +1881,38 @@
             const rarityColor = getRarityColor(card.rarity);
             const rarityTag = `<div style="position:absolute;top:3px;right:3px;background:${rarityColor};color:#fff;font-size:0.7rem;font-weight:bold;padding:2px 7px;border-radius:6px;box-shadow:0 0 6px ${rarityColor}99;z-index:2;">${rarityLabel}</div>`;
 
-            cardDiv.innerHTML = `
-                ${rarityTag}
-                ${mediaContent}
-                <div style="position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.8); padding: 3px; font-size: 0.65rem; text-align: center;">
-                    <div style="font-weight: bold; margin-bottom: 2px;">${card.zh}</div>
-                    <div style="display: flex; justify-content: space-between; font-size: 0.5rem; opacity: 0.9;">
-                        <span style="color: #ff6b6b;">攻:${card.attack || 0}</span>
-                        <span style="color: #4ecdc4;">防:${card.defense || 0}</span>
-                        <span style="color: #45b7d1;">血:${card.hp || 0}</span>
+                                // 等級標籤
+                    const levelTag = cardLevel > 1 ? `<div style="position:absolute;left:3px;top:3px;background:rgba(255,215,0,0.8);color:#000;font-size:0.6rem;font-weight:bold;padding:1px 4px;border-radius:4px;z-index:3;">Lv.${cardLevel}</div>` : '';
+                    
+                    // 經驗值進度條
+                    const currentExp = card.exp || 0;
+                    const requiredExp = getExpForNextLevel(cardLevel);
+                    const expProgress = Math.min(100, Math.round((currentExp / requiredExp) * 100));
+                    const remainingExp = requiredExp - currentExp;
+                    const expBar = `<div style="width: 100%; height: 4px; background: #333; border-radius: 2px; margin-top: 2px; position: relative;">
+                        <div style="width: ${expProgress}%; height: 100%; background: linear-gradient(90deg, #4ecdc4, #45b7d1); border-radius: 2px; box-shadow: 0 0 4px rgba(78, 205, 196, 0.6);"></div>
                     </div>
-                    <div style="font-size: 0.45rem; color: #ffd700; margin-top: 2px;">${card.skill ? card.skill.name : '無技能'}</div>
-                </div>
-            `;
+                    <div style="font-size: 0.4rem; color: #ffd700; margin-top: 1px; text-align: center;">
+                        ${currentExp}/${requiredExp} (還差${remainingExp})
+                    </div>`;
+                    
+
+                    
+                    cardDiv.innerHTML = `
+                        ${rarityTag}
+                        ${levelTag}
+                        ${mediaContent}
+                        <div style="position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.8); padding: 3px; font-size: 0.65rem; text-align: center;">
+                            <div style="font-weight: bold; margin-bottom: 2px;">${card.zh}</div>
+                            <div style="display: flex; justify-content: space-between; font-size: 0.5rem; opacity: 0.9;">
+                                <span style="color: #ff6b6b;">攻:${upgradedAttack}</span>
+                                <span style="color: #4ecdc4;">防:${upgradedDefense}</span>
+                                <span style="color: #45b7d1;">血:${upgradedHp}</span>
+                            </div>
+                            <div style="font-size: 0.45rem; color: #ffd700; margin-top: 2px;">${card.skill ? card.skill.name : '無技能'}</div>
+                            ${expBar}
+                        </div>
+                    `;
 
             // 處理影片播放
             const video = cardDiv.querySelector('video');
@@ -1131,17 +1933,43 @@
                 });
             }
 
-            // 點擊只彈窗，點兩下才選卡，拖放不彈窗
+            // 單擊顯示卡片詳情，雙擊添加到隊伍
             let clickTimer = null;
             cardDiv.addEventListener('click', (e) => {
                 if (clickTimer) {
                     clearTimeout(clickTimer);
                     clickTimer = null;
-                    // 雙擊才選卡
-                    if (!isUsed && !isSelected) selectCard(index);
+                    // 雙擊添加到隊伍
+                    if (!isSelected) {
+                        // 檢查隊伍是否已滿
+                        if (gameState.playerTeam.length >= 4) {
+                            addLogEntry('系統', '隊伍已滿，無法添加更多卡片！');
+                            return;
+                        }
+                        
+                        // 添加到隊伍
+                        const card = baseCards[index];
+                        const slotIndex = gameState.playerTeam.length;
+                        
+                        gameState.playerTeam.push({
+                            ...card,
+                            originalIndex: index
+                        });
+
+                        // 標記為已選入隊伍（但未使用）
+                        gameState.selectedCards.add(index);
+
+                        // 更新UI
+                        updateTeamDisplay();
+                        updateCardGrid();
+                        updateTeamStats();
+                        
+                        addLogEntry('系統', `雙擊添加卡片到隊伍：${card.zh}`);
+                    }
                 } else {
                     clickTimer = setTimeout(() => {
-                        showCardPreview(card);
+                        // 單擊顯示卡片詳情
+                        showCardDetailModal(card);
                         clickTimer = null;
                     }, 250);
                 }
@@ -1185,22 +2013,6 @@
                 slot.innerHTML = '';
                 slot.setAttribute('data-slot', index);
                 slot.classList.remove('drag-over');
-                // 拖放事件
-                slot.addEventListener('dragover', (e) => {
-                    e.preventDefault();
-                    slot.classList.add('drag-over');
-                });
-                slot.addEventListener('dragleave', (e) => {
-                    slot.classList.remove('drag-over');
-                });
-                slot.addEventListener('drop', (e) => {
-                    e.preventDefault();
-                    slot.classList.remove('drag-over');
-                    const cardIndex = parseInt(e.dataTransfer.getData('text/plain'));
-                    if (!gameState.usedCards.has(cardIndex)) {
-                        dropCardToSlot(cardIndex, index);
-                    }
-                });
                 
                 if (index < gameState.playerTeam.length) {
                     const card = gameState.playerTeam[index];
@@ -1218,23 +2030,57 @@
                     const rarityTag = `<div style="position:absolute;top:3px;right:3px;background:${rarityColor};color:#fff;font-size:0.7rem;font-weight:bold;padding:2px 7px;border-radius:6px;box-shadow:0 0 6px ${rarityColor}99;z-index:2;">${rarityLabel}</div>`;
                     
                     // 判斷是否鎖定（被打敗）
-                    const isLocked = card.originalIndex !== undefined && gameState.usedCards.has(card.originalIndex);
+                    const isLocked = false;
                     let lockTag = '';
                     if (isLocked) {
                         lockTag = `<div style="position:absolute;left:3px;top:3px;background:rgba(0,0,0,0.7);color:#ffd700;font-size:0.8rem;font-weight:bold;padding:2px 6px;border-radius:6px;z-index:3;display:flex;align-items:center;"><span style='font-size:1.1em;margin-right:2px;'>🔒</span>鎖定</div>`;
                     }
+                    // 檢查系列效果
+                    const seriesEffects = gameState.seriesEffects || {};
+                    const cardSeries = card.series || '無系列';
+                    const hasSeriesBonus = seriesEffects[cardSeries];
+                    const seriesTag = hasSeriesBonus ? `<div style="position:absolute;left:3px;top:3px;background:rgba(255,215,0,0.8);color:#000;font-size:0.6rem;font-weight:bold;padding:1px 4px;border-radius:4px;z-index:3;">系列</div>` : '';
+                    
+                    // 檢查卡牌等級
+                    const cardLevel = card.level || 1;
+                    const levelBonus = (cardLevel - 1) * 0.2;
+                    const baseAttack = card.attack || 50;
+                    const baseDefense = card.defense || 30;
+                    const baseHp = card.hp || 100;
+                    const upgradedAttack = Math.round(baseAttack * (1 + levelBonus));
+                    const upgradedDefense = Math.round(baseDefense * (1 + levelBonus));
+                    const upgradedHp = Math.round(baseHp * (1 + levelBonus));
+                    
+                    // 等級標籤
+                    const levelTag = cardLevel > 1 ? `<div style="position:absolute;left:3px;top:3px;background:rgba(255,215,0,0.8);color:#000;font-size:0.6rem;font-weight:bold;padding:1px 4px;border-radius:4px;z-index:3;">Lv.${cardLevel}</div>` : '';
+                    
+                    // 經驗值進度條
+                    const currentExp = card.exp || 0;
+                    const requiredExp = getExpForNextLevel(cardLevel);
+                    const expProgress = Math.min(100, Math.round((currentExp / requiredExp) * 100));
+                    const remainingExp = requiredExp - currentExp;
+                    const expBar = `<div style="width: 100%; height: 4px; background: #333; border-radius: 2px; margin-top: 2px; position: relative;">
+                        <div style="width: ${expProgress}%; height: 100%; background: linear-gradient(90deg, #4ecdc4, #45b7d1); border-radius: 2px; box-shadow: 0 0 4px rgba(78, 205, 196, 0.6);"></div>
+                    </div>
+                    <div style="font-size: 0.4rem; color: #ffd700; margin-top: 1px; text-align: center;">
+                        ${currentExp}/${requiredExp} (還差${remainingExp})
+                    </div>`;
+                    
                     slot.innerHTML = `
                         ${rarityTag}
                         ${lockTag}
+                        ${seriesTag}
+                        ${levelTag}
                         ${mediaContent}
                         <div style="position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.8); padding: 3px; font-size: 0.65rem; text-align: center;">
                             <div style="font-weight: bold; margin-bottom: 2px;">${card.zh}</div>
                             <div style="display: flex; justify-content: space-between; font-size: 0.5rem; opacity: 0.9;">
-                                <span style="color: #ff6b6b;">攻:${card.attack || 0}</span>
-                                <span style="color: #4ecdc4;">防:${card.defense || 0}</span>
-                                <span style="color: #45b7d1;">血:${card.hp || 0}</span>
+                                <span style="color: #ff6b6b;">攻:${upgradedAttack}</span>
+                                <span style="color: #4ecdc4;">防:${upgradedDefense}</span>
+                                <span style="color: #45b7d1;">血:${upgradedHp}</span>
                             </div>
                             <div style="font-size: 0.45rem; color: #ffd700; margin-top: 2px;">${card.skill ? card.skill.name : '無技能'}</div>
+                            ${expBar}
                         </div>
                     `;
                     slot.classList.add('filled');
@@ -1247,8 +2093,19 @@
                         slot.style.pointerEvents = '';
                         slot.style.filter = '';
                         // 添加雙擊移除卡片功能
-                        slot.addEventListener('dblclick', () => {
-                            removeCardFromSlot(index);
+                        let slotClickTimer = null;
+                        slot.addEventListener('click', () => {
+                            if (slotClickTimer) {
+                                clearTimeout(slotClickTimer);
+                                slotClickTimer = null;
+                                // 雙擊移除卡片
+                                removeCardFromSlot(index);
+                            } else {
+                                slotClickTimer = setTimeout(() => {
+                                    // 單擊不做任何操作
+                                    slotClickTimer = null;
+                                }, 250);
+                            }
                         });
                     }
                     // 處理影片播放
@@ -1273,7 +2130,7 @@
             const alreadyInTeam = gameState.playerTeam.some(c => c.originalIndex === cardIndex);
             if (alreadyInTeam) return;
             // 檢查該卡片是否已經被使用（戰鬥後）
-            if (gameState.usedCards.has(cardIndex)) return;
+
             
             // 取得卡片資料
             const card = baseCards[cardIndex];
@@ -1316,7 +2173,7 @@
             const cards = document.querySelectorAll('.card');
             cards.forEach((cardDiv, index) => {
                 const isSelected = gameState.selectedCards.has(index);
-                const isUsed = gameState.usedCards.has(index);
+                const isUsed = false;
                 cardDiv.classList.remove('used', 'selected', 'ssr', 'a', 'r');
                 if (isUsed) {
                     cardDiv.classList.add('used');
@@ -1330,43 +2187,141 @@
             });
         }
 
-        // 更新隊伍統計
+        // 檢查同一系列卡牌效果
+        function checkSeriesBonus() {
+            const seriesCount = {};
+            const seriesEffects = {};
+            
+            // 統計每個系列的卡牌數量
+            gameState.playerTeam.forEach(card => {
+                const series = card.series || '無系列';
+                seriesCount[series] = (seriesCount[series] || 0) + 1;
+            });
+            
+            // 計算系列效果
+            Object.keys(seriesCount).forEach(series => {
+                const count = seriesCount[series];
+                if (count >= 2) {
+                    // 2張同系列：20%暴擊率
+                    if (count === 2) {
+                        seriesEffects[series] = { type: 'critical', bonus: 0.2, description: '20%暴擊率' };
+                    }
+                    // 3張同系列：30%暴擊率 + 10%傷害加成
+                    else if (count === 3) {
+                        seriesEffects[series] = { type: 'critical_damage', bonus: 0.3, damageBonus: 0.1, description: '30%暴擊率 + 10%傷害加成' };
+                    }
+                    // 4張同系列：50%暴擊率 + 20%傷害加成 + 15%防禦加成
+                    else if (count >= 4) {
+                        seriesEffects[series] = { type: 'full_bonus', bonus: 0.5, damageBonus: 0.2, defenseBonus: 0.15, description: '50%暴擊率 + 20%傷害加成 + 15%防禦加成' };
+                    }
+                }
+            });
+            
+            return seriesEffects;
+        }
+
+        // 更新隊伍統計（包含系列效果和等級加成）
         function updateTeamStats() {
             let totalAttack = 0;
             let totalDefense = 0;
             let totalHp = 0;
             
             gameState.playerTeam.forEach(card => {
-                totalAttack += card.attack || 0;
-                totalDefense += card.defense || 0;
-                totalHp += card.hp || 0;
+                // 計算升級後的素質
+                const cardLevel = card.level || 1;
+                const levelBonus = (cardLevel - 1) * 0.2;
+                const baseAttack = card.attack || 50;
+                const baseDefense = card.defense || 30;
+                const baseHp = card.hp || 100;
+                
+                const upgradedAttack = Math.round(baseAttack * (1 + levelBonus));
+                const upgradedDefense = Math.round(baseDefense * (1 + levelBonus));
+                const upgradedHp = Math.round(baseHp * (1 + levelBonus));
+                
+                totalAttack += upgradedAttack;
+                totalDefense += upgradedDefense;
+                totalHp += upgradedHp;
             });
 
+            // 檢查系列效果
+            const seriesEffects = checkSeriesBonus();
+            let seriesDescription = '無';
+            
+            if (Object.keys(seriesEffects).length > 0) {
+                const effects = Object.values(seriesEffects).map(effect => effect.description);
+                seriesDescription = effects.join('、');
+            }
+
+            document.getElementById('current-stage').textContent = `第${currentStage}關`;
             document.getElementById('total-attack').textContent = totalAttack;
             document.getElementById('total-defense').textContent = totalDefense;
             document.getElementById('total-hp').textContent = totalHp;
-            document.getElementById('team-skill').textContent = gameState.playerTeam.length > 0 ? '已啟用' : '無';
+            document.getElementById('team-skill').textContent = seriesDescription;
+            
+            // 儲存系列效果供戰鬥使用
+            gameState.seriesEffects = seriesEffects;
         }
 
-        // 生成敵人隊伍
+        // 關卡進度追蹤
+        let currentStage = parseInt(localStorage.getItem('battleStage') || '1');
+        let stageMultiplier = 1 + (currentStage - 1) * 0.15; // 每關增加15%強度（降低難度）
+
+        // 生成敵人隊伍（解關卡感覺 + 越打越強）
         function generateEnemyTeam() {
-            const enemyCount = 4;
+            const enemyCount = Math.min(4, gameState.playerTeam.length); // 敵人數量與玩家隊伍相同
             gameState.enemyTeam = [];
+            
+            // 計算玩家隊伍總戰力
+            const playerTotalAttack = gameState.playerTeam.reduce((sum, card) => sum + (card.attack || 0), 0);
+            const playerTotalDefense = gameState.playerTeam.reduce((sum, card) => sum + (card.defense || 0), 0);
+            const playerTotalHp = gameState.playerTeam.reduce((sum, card) => sum + (card.hp || 0), 0);
+            const playerAvgLevel = (playerTotalAttack + playerTotalDefense + playerTotalHp) / (gameState.playerTeam.length * 3);
+            
+            // 從baseCards中選擇敵人卡牌
+            const availableCards = baseCards.filter(card => card.zh && card.zh.trim() !== '');
+            
             for (let i = 0; i < enemyCount; i++) {
-                const randomCard = baseCards[Math.floor(Math.random() * baseCards.length)];
-                gameState.enemyTeam.push({
-                    ...randomCard,
-                    hp: (randomCard.hp || 100) * 1.2,
-                    maxHp: (randomCard.hp || 100) * 1.2
-                });
+                const seed = Date.now() + i * 1000;
+                const rarity = getRandomRarity(seed);
+                
+                // 隨機選擇一張卡牌作為敵人基礎
+                const randomCard = availableCards[Math.floor(Math.random() * availableCards.length)];
+                
+                // 根據稀有度調整敵人強度（降低稀有度影響）
+                let rarityMultiplier = 1;
+                switch(rarity) {
+                    case 'SSR': rarityMultiplier = 1.2; break; // 降低SSR強度
+                    case 'A': rarityMultiplier = 1.1; break;   // 降低A級強度
+                    case 'R': rarityMultiplier = 1.0; break;   // 保持R級不變
+                }
+                
+                // 生成平衡的敵人（降低強度）
+                const enemy = {
+                    zh: `${randomCard.zh}`, // 使用卡牌名字
+                    attack: Math.round(playerAvgLevel * 1.8 * rarityMultiplier * stageMultiplier * (0.9 + Math.random() * 0.2)),
+                    defense: Math.round(playerAvgLevel * 1.8 * rarityMultiplier * stageMultiplier * (0.9 + Math.random() * 0.2)),
+                    hp: Math.round(playerAvgLevel * 2.2 * rarityMultiplier * stageMultiplier * (0.9 + Math.random() * 0.2)),
+                    maxHp: Math.round(playerAvgLevel * 2.2 * rarityMultiplier * stageMultiplier * (0.9 + Math.random() * 0.2)),
+                    rarity: rarity,
+                    skill: generateEnemySkill(rarity, seed),
+                    level: i + 1, // 關卡等級
+                    stage: currentStage, // 當前關卡
+                    image: randomCard.image, // 使用卡牌圖片
+                    series: randomCard.series // 使用卡牌系列
+                };
+                
+                gameState.enemyTeam.push(enemy);
             }
-            console.log('生成敵人隊伍：', gameState.enemyTeam.length, '個敵人');
+            
+            console.log(`生成第${currentStage}關敵人隊伍：`, gameState.enemyTeam.length, '個敵人，平均等級：', playerAvgLevel, '關卡倍率：', stageMultiplier);
         }
 
         // 更新戰鬥顯示
         function updateBattleDisplay() {
             const enemyArea = document.getElementById('enemy-area');
             const playerArea = document.getElementById('player-area');
+            
+            if (!enemyArea || !playerArea) return;
             
             // 清空區域
             enemyArea.innerHTML = '';
@@ -1411,17 +2366,37 @@
             const rarityColor = getRarityColor(card.rarity);
             const rarityTag = `<div style="position:absolute;top:3px;right:3px;background:${rarityColor};color:#fff;font-size:0.7rem;font-weight:bold;padding:2px 7px;border-radius:6px;box-shadow:0 0 6px ${rarityColor}99;z-index:2;">${rarityLabel}</div>`;
 
-            // 血條
-            const hp = Math.round(card.hp || 100);
-            const maxHp = Math.round(card.maxHp || card.hp || 100);
+            // 計算升級後的素質
+            const cardLevel = card.level || 1;
+            const levelBonus = (cardLevel - 1) * 0.2;
+            const baseAttack = card.attack || 50;
+            const baseDefense = card.defense || 30;
+            const baseHp = card.hp || 100;
+            
+            const upgradedAttack = Math.round(baseAttack * (1 + levelBonus));
+            const upgradedDefense = Math.round(baseDefense * (1 + levelBonus));
+            const upgradedHp = Math.round(baseHp * (1 + levelBonus));
+            
+            // 血條（使用升級後的素質）
+            const hp = Math.round(card.hp || upgradedHp);
+            const maxHp = Math.round(card.maxHp || upgradedHp);
             const hpPercent = Math.max(0, Math.min(100, Math.round((hp / maxHp) * 100)));
             const hpBar = `<div style="width: 90%; height: 10px; background: #222; border-radius: 5px; margin: 2px auto 0 auto; position: relative;">
                 <div style="width: ${hpPercent}%; height: 100%; background: linear-gradient(90deg, #ff6b6b, #ffe066); border-radius: 5px;"></div>
                 <span style="position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%); font-size: 0.65em; color: #fff; text-shadow: 0 0 2px #000;">${hp}/${maxHp}</span>
             </div>`;
 
+            // 等級標籤
+            const levelTag = cardLevel > 1 ? `<div style="position:absolute;left:3px;top:3px;background:rgba(255,215,0,0.8);color:#000;font-size:0.6rem;font-weight:bold;padding:1px 4px;border-radius:4px;z-index:3;">Lv.${cardLevel}</div>` : '';
+            
+            // 檢查是否處於防禦狀態
+            const isDefending = card.isDefending || false;
+            const defendStatus = isDefending ? '<div style="position:absolute;left:3px;top:3px;background:rgba(255,215,0,0.8);color:#000;font-size:0.7rem;font-weight:bold;padding:2px 6px;border-radius:6px;z-index:3;">🛡️防禦</div>' : '';
+            
             cardDiv.innerHTML = `
                 ${rarityTag}
+                ${levelTag}
+                ${defendStatus}
                 ${mediaContent}
                 <div style="position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.8); padding: 4px; font-size: 0.8rem; text-align: center;">
                     <div>${card.zh}</div>
@@ -1445,18 +2420,34 @@
                 });
             }
 
+            // 為敵人卡片添加點擊攻擊功能
+            if (type === 'enemy') {
+                cardDiv.style.cursor = 'pointer';
+                cardDiv.addEventListener('click', () => {
+                    if (currentAttacker === 0 && !isAnimating) { // 玩家回合且不在動畫中
+                        attackEnemy(index);
+                    }
+                });
+            }
+
             return cardDiv;
         }
 
         // 開始戰鬥
         async function startBattle() {
+            console.log('開始戰鬥按鈕被點擊');
+            console.log('當前隊伍數量:', gameState.playerTeam.length);
+            console.log('戰鬥狀態:', gameState.isBattleActive);
+            
             if (gameState.playerTeam.length === 0) {
                 addLogEntry('系統', '請先選擇卡片組成隊伍！');
+                console.log('隊伍為空，無法開始戰鬥');
                 return;
             }
 
             if (gameState.isBattleActive) {
                 addLogEntry('系統', '戰鬥正在進行中！');
+                console.log('戰鬥正在進行中');
                 return;
             }
 
@@ -1465,6 +2456,7 @@
             console.log('當前星星數量:', currentStars);
             if (currentStars < 10) {
                 addLogEntry('系統', '星星不足！需要10顆星星才能開始戰鬥。');
+                console.log('星星不足，無法開始戰鬥');
                 return;
             }
             // 扣除10顆星星
@@ -1483,6 +2475,31 @@
                     gameState.selectedCards.delete(card.originalIndex);
                 }
             });
+            
+            // 保存原始隊伍的副本，用於經驗值結算
+            gameState.originalTeam = [...gameState.playerTeam];
+            
+            // 計算升級後的素質並應用到戰鬥隊伍
+            gameState.playerTeam = gameState.playerTeam.map(card => {
+                const cardLevel = card.level || 1;
+                const levelBonus = (cardLevel - 1) * 0.2;
+                const baseAttack = card.attack || 50;
+                const baseDefense = card.defense || 30;
+                const baseHp = card.hp || 100;
+                
+                const upgradedAttack = Math.round(baseAttack * (1 + levelBonus));
+                const upgradedDefense = Math.round(baseDefense * (1 + levelBonus));
+                const upgradedHp = Math.round(baseHp * (1 + levelBonus));
+                
+                return {
+                    ...card,
+                    attack: upgradedAttack,
+                    defense: upgradedDefense,
+                    hp: upgradedHp,
+                    maxHp: upgradedHp
+                };
+            });
+            
             updateCardGrid();
 
             gameState.isBattleActive = true;
@@ -1491,11 +2508,30 @@
             generateEnemyTeam();
             updateBattleDisplay();
             
-            addLogEntry('系統', '🎯 戰鬥開始！');
+            // 顯示關卡信息
+            addLogEntry('系統', `⚔️ 第${currentStage}關戰鬥開始！`);
+            await new Promise(resolve => setTimeout(resolve, 400));
+            addLogEntry('系統', `🎯 敵人強度倍率：${stageMultiplier.toFixed(1)}x（已平衡）`);
             await new Promise(resolve => setTimeout(resolve, 400));
             addLogEntry('系統', `👹 敵人數量：${gameState.enemyTeam.length}，玩家隊伍：${gameState.playerTeam.length}人`);
             await new Promise(resolve => setTimeout(resolve, 400));
+            
+            // 顯示敵人卡牌名字
+            const enemyNames = gameState.enemyTeam.map(enemy => enemy.zh).join('、');
+            addLogEntry('系統', `🎯 敵人卡牌：${enemyNames}`);
+            await new Promise(resolve => setTimeout(resolve, 400));
+            
+            // 檢查系列效果
+            const seriesEffects = checkSeriesBonus();
+            if (Object.keys(seriesEffects).length > 0) {
+                addLogEntry('系統', '🌟 檢測到同系列卡牌效果！');
+                Object.values(seriesEffects).forEach(effect => {
+                    addLogEntry('系統', `✨ ${effect.description}`);
+                });
+            }
+            
             addLogEntry('系統', '💪 準備好迎接挑戰了嗎？');
+            addLogEntry('系統', '📈 戰鬥勝利後，所有參與戰鬥的卡牌都會獲得經驗值！');
             
             // 開始手動戰鬥
             startManualBattle();
@@ -1537,12 +2573,17 @@
             const turnInfo = document.getElementById('current-turn-info');
             const attackBtn = document.getElementById('attack-btn');
             const skillBtn = document.getElementById('skill-btn');
+            const defendBtn = document.getElementById('defend-btn');
             const enemySelection = document.getElementById('enemy-selection');
             const enemyTargets = document.getElementById('enemy-targets');
             
+            if (!turnInfo || !attackBtn || !skillBtn || !defendBtn) return;
+            
             // 檢查戰鬥結果
             if (gameState.enemyTeam.length === 0 || gameState.playerTeam.length === 0) {
-                checkBattleResult();
+                checkBattleResult().catch(error => {
+                    console.error('檢查戰鬥結果時發生錯誤:', error);
+                });
                 return;
             }
             
@@ -1553,16 +2594,18 @@
                 
                 // 檢查是否有敵人可攻擊
                 if (gameState.enemyTeam.length > 0) {
-                    attackBtn.disabled = false;
+                    attackBtn.disabled = true; // 隱藏攻擊按鈕，改為直接點擊敵人
                     skillBtn.disabled = player.skill.currentCooldown > 0;
+                    defendBtn.disabled = false; // 防禦按鈕始終可用
                     
-                    console.log('玩家回合，準備顯示敵人選擇界面');
+                    console.log('玩家回合，直接點擊敵人卡片進行攻擊');
                     // 顯示敵人選擇界面
                     showEnemyTargets();
                 } else {
                     attackBtn.disabled = true;
                     skillBtn.disabled = true;
-                    enemySelection.style.display = 'none';
+                    defendBtn.disabled = true;
+                    if (enemySelection) enemySelection.style.display = 'none';
                 }
                 
                 skillBtn.textContent = `技能 (${player.skill.name})`;
@@ -1572,7 +2615,8 @@
                 turnInfo.textContent = `敵人回合：${enemy.zh} (血量: ${Math.round(enemy.hp)})`;
                 attackBtn.disabled = true;
                 skillBtn.disabled = true;
-                enemySelection.style.display = 'none';
+                defendBtn.disabled = true;
+                if (enemySelection) enemySelection.style.display = 'none';
                 // 敵人自動攻擊
                 setTimeout(() => {
                     performEnemyAttack();
@@ -1580,51 +2624,110 @@
             }
         }
 
-        // 顯示敵人目標選擇
+        // 顯示敵人目標選擇（直接點擊敵人卡片攻擊）
         function showEnemyTargets() {
             const enemySelection = document.getElementById('enemy-selection');
             const enemyTargets = document.getElementById('enemy-targets');
             
+            if (!enemySelection || !enemyTargets) return;
+            
             console.log('showEnemyTargets 被調用，敵人數量:', gameState.enemyTeam.length);
             
-            // 如果只剩一個敵人，自動選擇並隱藏選擇界面
-            if (gameState.enemyTeam.length === 1) {
-                selectedEnemyIndex = 0;
-                enemySelection.style.display = 'none';
-                addLogEntry('system', '🎯 只剩一個敵人，自動選擇目標');
-                return;
-            }
-            
-            // 如果有多個敵人，顯示選擇界面
-            if (gameState.enemyTeam.length > 1) {
-                enemySelection.style.display = 'block';
-                enemyTargets.innerHTML = '';
-                
-                gameState.enemyTeam.forEach((enemy, index) => {
-                    const targetBtn = document.createElement('button');
-                    targetBtn.className = 'battle-btn';
-                    targetBtn.style.cssText = `
-                        background: linear-gradient(45deg, #ff4757, #ff6b6b);
-                        padding: 8px 12px;
-                        font-size: 0.8rem;
-                        min-width: 80px;
-                    `;
-                    targetBtn.textContent = `${enemy.zh} (${Math.round(enemy.hp)}HP)`;
-                    targetBtn.onclick = () => selectEnemyTarget(index);
-                    
-                    // 高亮選中的目標
-                    if (selectedEnemyIndex === index) {
-                        targetBtn.style.background = 'linear-gradient(45deg, #ffd700, #ffed4e)';
-                        targetBtn.style.color = '#000';
-                    }
-                    
-                    enemyTargets.appendChild(targetBtn);
-                });
-                console.log('已顯示敵人選擇界面，敵人數量:', gameState.enemyTeam.length);
-            }
+            // 隱藏選擇界面，改為直接點擊敵人卡片
+            enemySelection.style.display = 'none';
+            addLogEntry('system', '🎯 直接點擊敵人卡片進行攻擊！');
         }
 
-        // 選擇敵人目標
+        // 直接攻擊敵人
+        async function attackEnemy(enemyIndex) {
+            if (isAnimating) return; // 防止動畫期間重複點擊
+            
+            if (currentAttacker !== 0) return; // 不是玩家回合
+            
+            const player = gameState.playerTeam[currentPlayerIndex];
+            const enemy = gameState.enemyTeam[enemyIndex];
+            
+            if (!player || !enemy) return;
+            
+            // 檢查敵人是否處於防禦狀態
+            const isEnemyDefending = enemy.isDefending || false;
+            
+            // 檢查系列效果
+            const seriesEffects = gameState.seriesEffects || {};
+            let criticalRate = 0.15; // 基礎15%暴擊率
+            let damageBonus = 0; // 傷害加成
+            let defenseBonus = 0; // 防禦加成
+            
+            // 計算系列效果加成
+            Object.values(seriesEffects).forEach(effect => {
+                criticalRate += effect.bonus || 0;
+                damageBonus += effect.damageBonus || 0;
+                defenseBonus += effect.defenseBonus || 0;
+            });
+            
+            // 計算升級後的攻擊力
+            const cardLevel = player.level || 1;
+            const levelBonus = (cardLevel - 1) * 0.2;
+            const baseAttack = player.attack || 50;
+            const upgradedAttack = Math.round(baseAttack * (1 + levelBonus));
+            
+            // 計算普通攻擊傷害
+            let damage = Math.floor(upgradedAttack * 1.0);
+            
+            // 應用傷害加成
+            damage = Math.floor(damage * (1 + damageBonus));
+            
+            // 檢查是否暴擊
+            const isCritical = Math.random() < criticalRate;
+            if (isCritical) {
+                damage = Math.floor(damage * 1.5);
+            }
+            
+            // 如果敵人處於防禦狀態，傷害減半
+            if (isEnemyDefending) {
+                damage = Math.floor(damage * 0.5);
+                addLogEntry('enemy', `🛡️ ${enemy.zh} 處於防禦狀態，傷害減半！`);
+                await new Promise(resolve => setTimeout(resolve, 600));
+            }
+            
+            // 攻擊描述
+            addLogEntry('player', `⚔️ ${player.zh} 攻擊 ${enemy.zh}！`);
+            await new Promise(resolve => setTimeout(resolve, 400));
+            
+            // 顯示系列效果加成
+            if (damageBonus > 0) {
+                addLogEntry('player', `✨ 同系列加成：傷害+${Math.round(damageBonus * 100)}%`);
+                await new Promise(resolve => setTimeout(resolve, 400));
+            }
+            
+            if (isCritical) {
+                addLogEntry('player', `💥 暴擊！`);
+                await new Promise(resolve => setTimeout(resolve, 400));
+            }
+            
+            // 執行攻擊動畫
+            await animateAttack(player, enemy, damage, false, isCritical);
+            
+            enemy.hp -= damage;
+            
+            addLogEntry('player', `💥 造成 ${damage} 點傷害！`);
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            // 檢查敵人是否被擊敗
+            if (enemy.hp <= 0) {
+                addLogEntry('enemy', `💀 ${enemy.zh} 被擊敗了！`);
+                await animateDefeat(enemy, false);
+                gameState.enemyTeam.splice(enemyIndex, 1);
+                await new Promise(resolve => setTimeout(resolve, 300));
+            }
+            
+            updateBattleDisplay();
+            
+            // 切換到敵人回合
+            await switchToEnemyTurn();
+        }
+
+        // 選擇敵人目標（保留原有功能以備用）
         function selectEnemyTarget(index) {
             console.log('選擇敵人目標:', index, '敵人名稱:', gameState.enemyTeam[index]?.zh);
             selectedEnemyIndex = index;
@@ -1652,33 +2755,115 @@
             currentPlayerIndex = (currentPlayerIndex + 1) % gameState.playerTeam.length;
             // 移動到下一個敵人卡片
             currentEnemyIndex = (currentEnemyIndex + 1) % gameState.enemyTeam.length;
+            
+            // 更新增益效果持續時間
+            updateBuffDurations();
+            
             addLogEntry('system', '🔄 切換到玩家回合');
             await new Promise(resolve => setTimeout(resolve, 500));
             updateManualControls();
         }
 
-        // 執行敵人攻擊
+        // 執行敵人攻擊（加入技能和防禦機制）
         async function performEnemyAttack() {
             if (gameState.enemyTeam.length > 0 && gameState.playerTeam.length > 0) {
-                // 只讓第一個敵人攻擊
-                const enemy = gameState.enemyTeam[0];
+                const enemy = gameState.enemyTeam[currentEnemyIndex];
                 const targetIndex = Math.floor(Math.random() * gameState.playerTeam.length);
                 const player = gameState.playerTeam[targetIndex];
                 
-                // 敵人攻擊描述
+                // 檢查玩家是否處於防禦狀態
+                const isPlayerDefending = player.isDefending || false;
+                
+                // 決定敵人行動（攻擊、技能、防禦）
+                const actionType = Math.random();
+                let damage = 0;
+                let actionDesc = '';
+                
+                if (actionType < 0.6) {
+                    // 60% 機率普通攻擊（增加普通攻擊機率）
+                    damage = Math.floor((enemy.attack || 40) * 0.6); // 降低敵人攻擊傷害
+                    actionDesc = `⚔️ ${enemy.zh} 向 ${player.zh} 發動攻擊！`;
+                } else if (actionType < 0.8 && enemy.skill && enemy.skill.currentCooldown === 0) {
+                    // 20% 機率使用技能（降低技能使用機率）
+                    damage = Math.floor((enemy.attack || 40) * 1.2); // 降低技能傷害
+                    actionDesc = `✨ ${enemy.zh} 發動技能「${enemy.skill.name}」！`;
+                    enemy.skill.currentCooldown = enemy.skill.cooldown;
+                } else {
+                    // 20% 機率防禦（降低防禦機率）
+                    enemy.isDefending = true;
+                    actionDesc = `🛡️ ${enemy.zh} 進入防禦姿態！`;
+                    addLogEntry('enemy', actionDesc);
+                    await new Promise(resolve => setTimeout(resolve, 600));
+                    
+                    // 防禦狀態持續一回合
+                    setTimeout(() => {
+                        enemy.isDefending = false;
+                    }, 2000);
+                    
+                    // 切換到玩家回合
+                    await switchToPlayerTurn();
+                    return;
+                }
+                
+                // 如果玩家處於防禦狀態，傷害減半
+                if (isPlayerDefending) {
+                    damage = Math.floor(damage * 0.5);
+                    addLogEntry('player', `🛡️ ${player.zh} 處於防禦狀態，傷害減半！`);
+                    await new Promise(resolve => setTimeout(resolve, 600));
+                }
+                
+                // 敵人行動描述
                 addLogEntry('enemy', `👹 ${enemy.zh} 發出威脅的咆哮！`);
                 await new Promise(resolve => setTimeout(resolve, 600));
                 
-                addLogEntry('enemy', `⚔️ ${enemy.zh} 向 ${player.zh} 發動攻擊！`);
+                addLogEntry('enemy', actionDesc);
                 await new Promise(resolve => setTimeout(resolve, 500));
-                
-                const damage = Math.floor((enemy.attack || 40) * 0.8);
                 
                 // 執行攻擊動畫
                 await animateAttack(enemy, player, damage, false);
                 
-                player.hp -= damage;
-                addLogEntry('enemy', `💥 ${enemy.zh} 對 ${player.zh} 造成 ${damage} 點傷害！`);
+                // 處理護盾和反彈傷害
+                let actualDamage = damage;
+                let reflectedDamage = 0;
+                
+                // 檢查護盾
+                if (player.shield && player.shield > 0) {
+                    if (player.shield >= damage) {
+                        // 護盾完全吸收傷害
+                        player.shield -= damage;
+                        actualDamage = 0;
+                        addLogEntry('player', `🛡️ ${player.zh} 的護盾完全吸收了傷害！`);
+                    } else {
+                        // 護盾部分吸收傷害
+                        actualDamage = damage - player.shield;
+                        player.shield = 0;
+                        addLogEntry('player', `🛡️ ${player.zh} 的護盾吸收了部分傷害！`);
+                    }
+                    await new Promise(resolve => setTimeout(resolve, 400));
+                }
+                
+                // 處理反彈傷害
+                if (player.reflectDamage && actualDamage > 0) {
+                    reflectedDamage = Math.floor(actualDamage * player.reflectDamage);
+                    enemy.hp -= reflectedDamage;
+                    addLogEntry('player', `🔄 ${player.zh} 反彈了 ${reflectedDamage} 點傷害給 ${enemy.zh}！`);
+                    await new Promise(resolve => setTimeout(resolve, 400));
+                    
+                    // 檢查敵人是否被反彈傷害擊敗
+                    if (enemy.hp <= 0) {
+                        addLogEntry('enemy', `💀 ${enemy.zh} 被反彈傷害擊敗了！`);
+                        await animateDefeat(enemy, false);
+                        gameState.enemyTeam.splice(currentEnemyIndex, 1);
+                        await new Promise(resolve => setTimeout(resolve, 300));
+                    }
+                }
+                
+                // 應用實際傷害
+                if (actualDamage > 0) {
+                    player.hp -= actualDamage;
+                    addLogEntry('enemy', `💥 ${enemy.zh} 對 ${player.zh} 造成 ${actualDamage} 點傷害！`);
+                }
+                
                 // 播放被攻擊音效
                 playWrongSound();
                 await new Promise(resolve => setTimeout(resolve, 500));
@@ -1696,11 +2881,10 @@
                 
                 // 切換到玩家回合
                 await switchToPlayerTurn();
-                
             }
         }
 
-        // 玩家攻擊
+        // 玩家攻擊（加入防禦機制）
         async function performPlayerAttack() {
             if (isAnimating) return; // 防止動畫期間重複點擊
             if (currentPlayerIndex < gameState.playerTeam.length && gameState.enemyTeam.length > 0) {
@@ -1725,10 +2909,41 @@
                     const player = gameState.playerTeam[currentPlayerIndex];
                     const enemy = gameState.enemyTeam[selectedEnemyIndex];
                     
+                    // 檢查敵人是否處於防禦狀態
+                    const isEnemyDefending = enemy.isDefending || false;
+                    
+                    // 檢查系列效果
+                    const seriesEffects = gameState.seriesEffects || {};
+                    let criticalRate = 0.15; // 基礎15%暴擊率
+                    let damageBonus = 0; // 傷害加成
+                    let defenseBonus = 0; // 防禦加成
+                    
+                    // 計算系列效果加成
+                    Object.values(seriesEffects).forEach(effect => {
+                        criticalRate += effect.bonus || 0;
+                        damageBonus += effect.damageBonus || 0;
+                        defenseBonus += effect.defenseBonus || 0;
+                    });
+                    
+                    // 計算升級後的攻擊力
+                    const cardLevel = player.level || 1;
+                    const levelBonus = (cardLevel - 1) * 0.2;
+                    const baseAttack = player.attack || 50;
+                    const upgradedAttack = Math.round(baseAttack * (1 + levelBonus));
+                    
                     // 檢查是否暴擊
-                    const isCritical = Math.random() < 0.15; // 15%暴擊率
-                    const baseDamage = player.attack || 50;
-                    const damage = isCritical ? Math.floor(baseDamage * 1.5) : baseDamage;
+                    const isCritical = Math.random() < criticalRate;
+                    let damage = isCritical ? Math.floor(upgradedAttack * 1.5) : upgradedAttack;
+                    
+                    // 應用傷害加成
+                    damage = Math.floor(damage * (1 + damageBonus));
+                    
+                    // 如果敵人處於防禦狀態，傷害減半
+                    if (isEnemyDefending) {
+                        damage = Math.floor(damage * 0.5);
+                        addLogEntry('enemy', `🛡️ ${enemy.zh} 處於防禦狀態，傷害減半！`);
+                        await new Promise(resolve => setTimeout(resolve, 600));
+                    }
                     
                     // 戰鬥描述
                     let battleDesc = '';
@@ -1736,6 +2951,12 @@
                         battleDesc = `💥 ${player.zh} 發動暴擊攻擊！`;
                         addLogEntry('player', battleDesc);
                         await new Promise(resolve => setTimeout(resolve, 800));
+                    }
+                    
+                    // 顯示系列效果加成
+                    if (damageBonus > 0) {
+                        addLogEntry('player', `✨ 同系列加成：傷害+${Math.round(damageBonus * 100)}%`);
+                        await new Promise(resolve => setTimeout(resolve, 400));
                     }
                     
                     battleDesc = `⚔️ ${player.zh} 揮舞武器攻擊 ${enemy.zh}`;
@@ -1747,13 +2968,54 @@
                     // 播放攻擊音效
                     playAttackSound();
                     
-                    enemy.hp -= damage;
+                    // 處理護盾和反彈傷害
+                    let actualDamage = damage;
+                    let reflectedDamage = 0;
                     
-                    // 傷害描述
-                    const damageDesc = isCritical ? 
-                        `💥 暴擊！造成 ${damage} 點巨大傷害！` : 
-                        `💥 造成 ${damage} 點傷害`;
-                    addLogEntry('player', damageDesc);
+                    // 檢查敵人護盾
+                    if (enemy.shield && enemy.shield > 0) {
+                        if (enemy.shield >= damage) {
+                            // 護盾完全吸收傷害
+                            enemy.shield -= damage;
+                            actualDamage = 0;
+                            addLogEntry('enemy', `🛡️ ${enemy.zh} 的護盾完全吸收了傷害！`);
+                        } else {
+                            // 護盾部分吸收傷害
+                            actualDamage = damage - enemy.shield;
+                            enemy.shield = 0;
+                            addLogEntry('enemy', `🛡️ ${enemy.zh} 的護盾吸收了部分傷害！`);
+                        }
+                        await new Promise(resolve => setTimeout(resolve, 400));
+                    }
+                    
+                    // 處理敵人反彈傷害
+                    if (enemy.reflectDamage && actualDamage > 0) {
+                        reflectedDamage = Math.floor(actualDamage * enemy.reflectDamage);
+                        player.hp -= reflectedDamage;
+                        addLogEntry('enemy', `🔄 ${enemy.zh} 反彈了 ${reflectedDamage} 點傷害給 ${player.zh}！`);
+                        await new Promise(resolve => setTimeout(resolve, 400));
+                        
+                        // 檢查玩家是否被反彈傷害擊敗
+                        if (player.hp <= 0) {
+                            addLogEntry('player', `💀 ${player.zh} 被反彈傷害擊敗了！`);
+                            await animateDefeat(player, true);
+                            handleDefeatedCard(player, true);
+                            gameState.playerTeam.splice(currentPlayerIndex, 1);
+                            await new Promise(resolve => setTimeout(resolve, 300));
+                        }
+                    }
+                    
+                    // 應用實際傷害
+                    if (actualDamage > 0) {
+                        enemy.hp -= actualDamage;
+                        
+                        // 傷害描述
+                        const damageDesc = isCritical ? 
+                            `💥 暴擊！造成 ${actualDamage} 點巨大傷害！` : 
+                            `💥 造成 ${actualDamage} 點傷害`;
+                        addLogEntry('player', damageDesc);
+                    }
+                    
                     await new Promise(resolve => setTimeout(resolve, 500));
                     
                     // 檢查敵人是否被擊敗
@@ -1777,92 +3039,664 @@
             }
         }
 
+        // 升級功能已移除，只能通過戰鬥獲得經驗值升級
+
+        // 獲取選中的卡牌索引
+        function getSelectedCardIndex() {
+            const selectedCard = document.querySelector('.card.selected');
+            if (selectedCard) {
+                return parseInt(selectedCard.dataset.cardIndex);
+            }
+            return -1;
+        }
+
+        // 顯示卡牌詳細信息（包括經驗值和素質對比）
+        function showCardDetailInfo(card) {
+            const cardLevel = card.level || 1;
+            const currentExp = card.exp || 0;
+            const requiredExp = getExpForNextLevel(cardLevel);
+            const expProgress = Math.min(100, Math.round((currentExp / requiredExp) * 100));
+            
+            // 計算基礎素質和升級後素質
+            const baseAttack = card.attack || 50;
+            const baseDefense = card.defense || 30;
+            const baseHp = card.hp || 100;
+            
+            const levelBonus = (cardLevel - 1) * 0.2;
+            const upgradedAttack = Math.round(baseAttack * (1 + levelBonus));
+            const upgradedDefense = Math.round(baseDefense * (1 + levelBonus));
+            const upgradedHp = Math.round(baseHp * (1 + levelBonus));
+            
+            const detailInfo = `
+卡牌詳細信息：
+${card.zh}
+等級：${cardLevel}
+經驗值：${currentExp}/${requiredExp} (${expProgress}%)
+稀有度：${card.rarity || '普通'}
+
+素質對比：
+攻擊力：${baseAttack} → ${upgradedAttack}
+防禦力：${baseDefense} → ${upgradedDefense}
+血量：${baseHp} → ${upgradedHp}
+
+升級方式：
+只能通過戰鬥獲得經驗值自動升級
+
+當前升級所需經驗值：${requiredExp}
+`;
+            
+            alert(detailInfo);
+        }
+
+        // 重置關卡
+        function resetStage() {
+            if (confirm('確定要重置關卡嗎？這將回到第1關，但保留您的隊伍。')) {
+                currentStage = 1;
+                stageMultiplier = 1;
+                localStorage.setItem('battleStage', '1');
+                
+                addLogEntry('system', '🔄 關卡已重置到第1關！');
+                addLogEntry('system', '💪 準備重新挑戰！');
+                
+                // 重置戰鬥狀態
+                gameState.isBattleActive = false;
+                gameState.enemyTeam = [];
+                document.getElementById('manual-controls').style.display = 'none';
+                updateBattleDisplay();
+            }
+        }
+
+        // 玩家防禦
+        async function performPlayerDefend() {
+            if (isAnimating) return; // 防止動畫期間重複點擊
+            
+            if (currentPlayerIndex < gameState.playerTeam.length) {
+                const player = gameState.playerTeam[currentPlayerIndex];
+                
+                // 進入防禦狀態
+                player.isDefending = true;
+                
+                addLogEntry('player', `🛡️ ${player.zh} 進入防禦姿態！`);
+                await new Promise(resolve => setTimeout(resolve, 600));
+                
+                addLogEntry('player', `💪 ${player.zh} 準備承受下一次攻擊！`);
+                await new Promise(resolve => setTimeout(resolve, 500));
+                
+                // 防禦狀態持續一回合
+                setTimeout(() => {
+                    player.isDefending = false;
+                    addLogEntry('player', `🔄 ${player.zh} 的防禦狀態結束了`);
+                }, 2000);
+                
+                // 切換到敵人回合
+                await switchToEnemyTurn();
+            }
+        }
+
         // 玩家使用技能
         async function performPlayerSkill() {
             if (isAnimating) return; // 防止動畫期間重複點擊
 
-            if (currentPlayerIndex < gameState.playerTeam.length && gameState.enemyTeam.length > 0) {
-                // 如果沒有選擇目標但只剩一個敵人，自動選擇
-                if (selectedEnemyIndex < 0 && gameState.enemyTeam.length === 1) {
-                    selectedEnemyIndex = 0;
+            if (currentPlayerIndex < gameState.playerTeam.length) {
+                const player = gameState.playerTeam[currentPlayerIndex];
+                
+                // 技能發動描述
+                addLogEntry('player', `🌟 ${player.zh} 開始凝聚力量...`);
+                await new Promise(resolve => setTimeout(resolve, 800));
+                
+                addLogEntry('player', `✨ 發動技能「${player.skill.name}」！`);
+                await new Promise(resolve => setTimeout(resolve, 600));
+                
+                // 根據技能類型執行不同效果
+                switch (player.skill.type) {
+                    case 'heal':
+                        await performHealSkill(player);
+                        break;
+                    case 'shield':
+                        await performShieldSkill(player);
+                        break;
+                    case 'drain':
+                        if (selectedEnemyIndex >= 0 && gameState.enemyTeam.length > 0) {
+                            await performDrainSkill(player, gameState.enemyTeam[selectedEnemyIndex]);
+                        } else {
+                            addLogEntry('system', '❌ 需要選擇敵人目標！');
+                        }
+                        break;
+                    case 'counter':
+                        await performCounterSkill(player);
+                        break;
+                    case 'magic':
+                        if (selectedEnemyIndex >= 0 && gameState.enemyTeam.length > 0) {
+                            await performMagicSkill(player, gameState.enemyTeam[selectedEnemyIndex]);
+                        } else {
+                            addLogEntry('system', '❌ 需要選擇敵人目標！');
+                        }
+                        break;
+                    case 'buff':
+                        await performBuffSkill(player);
+                        break;
+                    default: // attack, defense
+                        if (selectedEnemyIndex >= 0 && gameState.enemyTeam.length > 0) {
+                            await performAttackSkill(player, gameState.enemyTeam[selectedEnemyIndex]);
+                        } else {
+                            addLogEntry('system', '❌ 需要選擇敵人目標！');
+                        }
+                        break;
                 }
                 
-                if (selectedEnemyIndex >= 0) {
-                    const player = gameState.playerTeam[currentPlayerIndex];
-                    const enemy = gameState.enemyTeam[selectedEnemyIndex];
-                    
-                    const baseDamage = player.attack || 50;
-                    const skillDamage = Math.floor(baseDamage * player.skill.damage);
-                    
-                    // 技能發動描述
-                    addLogEntry('player', `🌟 ${player.zh} 開始凝聚力量...`);
-                    await new Promise(resolve => setTimeout(resolve, 800));
-                    
-                    addLogEntry('player', `✨ 發動技能「${player.skill.name}」！`);
-                    await new Promise(resolve => setTimeout(resolve, 600));
-                    
-                    // 執行技能動畫
-                    await animateAttack(player, enemy, skillDamage, true);
-                    // 播放技能音效
-                    playSkillSound();
-                    
-                    enemy.hp -= skillDamage;
-                    
-                    addLogEntry('player', `💫 技能「${player.skill.name}」造成 ${skillDamage} 點傷害！`);
-                    await new Promise(resolve => setTimeout(resolve, 500));
-                    
-                    // 設置技能冷卻
-                    player.skill.currentCooldown = player.skill.cooldown;
-                    addLogEntry('system', `⏰ ${player.zh} 的技能進入冷卻期`);
-                    await new Promise(resolve => setTimeout(resolve, 300));
-                    
-                    // 檢查敵人是否被擊敗
-                    if (enemy.hp <= 0) {
-                        addLogEntry('enemy', `💀 ${enemy.zh} 被技能擊敗了！`);
-                        await animateDefeat(enemy, false);
-                        gameState.enemyTeam.splice(selectedEnemyIndex, 1);
-                        await new Promise(resolve => setTimeout(resolve, 300));
-                    }
-                    
-                    updateBattleDisplay();
-                    selectedEnemyIndex = -1; // 重置選擇
-                    
-                    // 切換到敵人回合
-                    await switchToEnemyTurn();
-                } else {
-                    addLogEntry('system', '⚠️ 請先選擇攻擊目標！');
-                }
-            } else if (selectedEnemyIndex < 0) {
-                addLogEntry('system', '⚠️ 請先選擇攻擊目標！');
+                // 設置技能冷卻
+                player.skill.currentCooldown = player.skill.cooldown;
+                addLogEntry('system', `⏰ ${player.zh} 的技能進入冷卻期`);
+                await new Promise(resolve => setTimeout(resolve, 300));
+                
+                updateBattleDisplay();
+                selectedEnemyIndex = -1; // 重置選擇
+                
+                // 切換到敵人回合
+                currentAttacker = 1;
+                currentEnemyIndex = 0;
+                updateManualControls();
             }
+        }
+
+        // 執行攻擊技能
+        async function performAttackSkill(player, enemy) {
+            // 檢查敵人是否處於防禦狀態
+            const isEnemyDefending = enemy.isDefending || false;
+            
+            // 檢查系列效果
+            const seriesEffects = gameState.seriesEffects || {};
+            let criticalRate = 0.15; // 基礎15%暴擊率
+            let damageBonus = 0; // 傷害加成
+            
+            // 計算系列效果加成
+            Object.values(seriesEffects).forEach(effect => {
+                criticalRate += effect.bonus || 0;
+                damageBonus += effect.damageBonus || 0;
+            });
+            
+            // 應用增益效果
+            if (player.criticalBonus) {
+                criticalRate += player.criticalBonus;
+            }
+            if (player.damageBonus) {
+                damageBonus += player.damageBonus;
+            }
+            
+            // 計算升級後的攻擊力
+            const cardLevel = player.level || 1;
+            const levelBonus = (cardLevel - 1) * 0.2;
+            const baseAttack = player.attack || 50;
+            const upgradedAttack = Math.round(baseAttack * (1 + levelBonus));
+            
+            // 計算技能傷害
+            let skillDamage = Math.floor(upgradedAttack * player.skill.damage);
+            
+            // 應用傷害加成
+            skillDamage = Math.floor(skillDamage * (1 + damageBonus));
+            
+            // 檢查是否暴擊
+            const isCritical = Math.random() < criticalRate;
+            if (isCritical) {
+                skillDamage = Math.floor(skillDamage * 1.5);
+            }
+            
+            // 如果敵人處於防禦狀態，傷害減半
+            if (isEnemyDefending) {
+                skillDamage = Math.floor(skillDamage * 0.5);
+                addLogEntry('enemy', `🛡️ ${enemy.zh} 處於防禦狀態，技能傷害減半！`);
+                await new Promise(resolve => setTimeout(resolve, 600));
+            }
+            
+            // 顯示系列效果加成
+            if (damageBonus > 0) {
+                addLogEntry('player', `✨ 同系列加成：傷害+${Math.round(damageBonus * 100)}%`);
+                await new Promise(resolve => setTimeout(resolve, 400));
+            }
+            
+            if (isCritical) {
+                addLogEntry('player', `💥 技能暴擊！`);
+                await new Promise(resolve => setTimeout(resolve, 400));
+            }
+            
+            // 執行技能動畫
+            await animateAttack(player, enemy, skillDamage, true, isCritical);
+            // 播放技能音效
+            playSkillSound();
+            
+            enemy.hp -= skillDamage;
+            
+            addLogEntry('player', `💫 技能「${player.skill.name}」造成 ${skillDamage} 點傷害！`);
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            // 檢查敵人是否被擊敗
+            if (enemy.hp <= 0) {
+                addLogEntry('enemy', `💀 ${enemy.zh} 被技能擊敗了！`);
+                await animateDefeat(enemy, false);
+                gameState.enemyTeam.splice(selectedEnemyIndex, 1);
+                await new Promise(resolve => setTimeout(resolve, 300));
+            }
+        }
+
+        // 執行治癒技能
+        async function performHealSkill(player) {
+            const maxHp = player.maxHp || player.hp || 100;
+            const healAmount = Math.floor(maxHp * player.skill.healAmount);
+            
+            // 治癒動畫效果
+            addLogEntry('player', `💚 ${player.zh} 開始治癒...`);
+            await new Promise(resolve => setTimeout(resolve, 600));
+            
+            // 播放治癒音效
+            playSkillSound();
+            
+            // 恢復血量
+            const oldHp = player.hp;
+            player.hp = Math.min(maxHp, player.hp + healAmount);
+            const actualHeal = player.hp - oldHp;
+            
+            addLogEntry('player', `💚 技能「${player.skill.name}」恢復了 ${actualHeal} 點血量！`);
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            // 如果是群體治癒，治療全隊
+            if (player.skill.name === '群體治癒') {
+                addLogEntry('system', `💚 群體治癒效果發動！`);
+                await new Promise(resolve => setTimeout(resolve, 300));
+                
+                gameState.playerTeam.forEach(teammate => {
+                    if (teammate !== player) {
+                        const teammateMaxHp = teammate.maxHp || teammate.hp || 100;
+                        const teammateOldHp = teammate.hp;
+                        teammate.hp = Math.min(teammateMaxHp, teammate.hp + healAmount);
+                        const teammateHeal = teammate.hp - teammateOldHp;
+                        
+                        if (teammateHeal > 0) {
+                            addLogEntry('system', `💚 ${teammate.zh} 恢復了 ${teammateHeal} 點血量！`);
+                        }
+                    }
+                });
+                await new Promise(resolve => setTimeout(resolve, 500));
+            }
+        }
+
+        // 執行護盾技能
+        async function performShieldSkill(player) {
+            const maxHp = player.maxHp || player.hp || 100;
+            const shieldAmount = Math.floor(maxHp * player.skill.shieldAmount);
+            
+            // 護盾動畫效果
+            addLogEntry('player', `🛡️ ${player.zh} 開始施放護盾...`);
+            await new Promise(resolve => setTimeout(resolve, 600));
+            
+            // 播放技能音效
+            playSkillSound();
+            
+            if (player.skill.name === '群體護盾') {
+                // 為全隊增加護盾
+                addLogEntry('system', `🛡️ 群體護盾效果發動！`);
+                await new Promise(resolve => setTimeout(resolve, 300));
+                
+                gameState.playerTeam.forEach(teammate => {
+                    teammate.shield = (teammate.shield || 0) + shieldAmount;
+                    addLogEntry('system', `🛡️ ${teammate.zh} 獲得 ${shieldAmount} 點護盾！`);
+                });
+                await new Promise(resolve => setTimeout(resolve, 500));
+            } else if (player.skill.name === '反彈護盾') {
+                // 反彈護盾：護盾並反彈傷害
+                player.shield = (player.shield || 0) + shieldAmount;
+                player.reflectDamage = player.skill.reflectDamage || 0.5;
+                addLogEntry('player', `🛡️ 技能「${player.skill.name}」為 ${player.zh} 增加了 ${shieldAmount} 點護盾！`);
+                addLogEntry('player', `🔄 反彈傷害：${Math.round(player.reflectDamage * 100)}%`);
+                await new Promise(resolve => setTimeout(resolve, 500));
+            } else {
+                // 普通護盾
+                player.shield = (player.shield || 0) + shieldAmount;
+                addLogEntry('player', `🛡️ 技能「${player.skill.name}」為 ${player.zh} 增加了 ${shieldAmount} 點護盾！`);
+                await new Promise(resolve => setTimeout(resolve, 500));
+            }
+        }
+
+        // 執行生命汲取技能
+        async function performDrainSkill(player, enemy) {
+            // 檢查敵人是否處於防禦狀態
+            const isEnemyDefending = enemy.isDefending || false;
+            
+            // 計算升級後的攻擊力
+            const cardLevel = player.level || 1;
+            const levelBonus = (cardLevel - 1) * 0.2;
+            const baseAttack = player.attack || 50;
+            const upgradedAttack = Math.round(baseAttack * (1 + levelBonus));
+            
+            // 計算技能傷害
+            let skillDamage = Math.floor(upgradedAttack * player.skill.damage);
+            
+            // 如果敵人處於防禦狀態，傷害減半
+            if (isEnemyDefending) {
+                skillDamage = Math.floor(skillDamage * 0.5);
+                addLogEntry('enemy', `🛡️ ${enemy.zh} 處於防禦狀態，汲取傷害減半！`);
+                await new Promise(resolve => setTimeout(resolve, 600));
+            }
+            
+            // 執行技能動畫
+            await animateAttack(player, enemy, skillDamage, true, false);
+            // 播放技能音效
+            playSkillSound();
+            
+            enemy.hp -= skillDamage;
+            
+            addLogEntry('player', `💫 技能「${player.skill.name}」造成 ${skillDamage} 點傷害！`);
+            await new Promise(resolve => setTimeout(resolve, 300));
+            
+            // 計算恢復量
+            const healAmount = Math.floor(skillDamage * player.skill.healRatio);
+            const maxHp = player.maxHp || player.hp || 100;
+            const oldHp = player.hp;
+            player.hp = Math.min(maxHp, player.hp + healAmount);
+            const actualHeal = player.hp - oldHp;
+            
+            addLogEntry('player', `💚 汲取了 ${actualHeal} 點血量！`);
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            // 檢查敵人是否被擊敗
+            if (enemy.hp <= 0) {
+                addLogEntry('enemy', `💀 ${enemy.zh} 被汲取擊敗了！`);
+                await animateDefeat(enemy, false);
+                gameState.enemyTeam.splice(selectedEnemyIndex, 1);
+                await new Promise(resolve => setTimeout(resolve, 300));
+            }
+        }
+
+        // 執行反擊技能
+        async function performCounterSkill(player) {
+            addLogEntry('player', `🔄 ${player.zh} 設置反擊姿態！`);
+            await new Promise(resolve => setTimeout(resolve, 600));
+            
+            // 播放技能音效
+            playSkillSound();
+            
+            // 設置反擊狀態
+            player.counterAttack = true;
+            player.counterDamage = Math.floor((player.attack || 50) * player.skill.damage);
+            
+            addLogEntry('player', `🔄 技能「${player.skill.name}」已設置，下次受到攻擊時將反擊！`);
+            await new Promise(resolve => setTimeout(resolve, 500));
         }
 
         // 檢查戰鬥結果
         async function checkBattleResult() {
             if (gameState.enemyTeam.length === 0) {
+                // 播放勝利動畫
+                await playVictoryAnimation();
+                
                 addLogEntry('system', '🎉 戰鬥勝利！所有敵人都被擊敗了！');
                 await new Promise(resolve => setTimeout(resolve, 800));
                 addLogEntry('system', '🌟 你的隊伍展現了無與倫比的實力！');
                 await new Promise(resolve => setTimeout(resolve, 600));
-                console.log('戰鬥勝利，準備給予20顆星星獎勵');
-                addStarsToBattle(20);
-                console.log('已給予20顆星星獎勵，當前星星:', getCurrentStars());
-                addLogEntry('system', '💎 獲得星星獎勵：20顆！');
+                
+                // 關卡進度獎勵（增加獎勵）
+                const stageReward = 25 + (currentStage - 1) * 8; // 增加基礎獎勵和每關獎勵
+                console.log(`第${currentStage}關勝利，準備給予${stageReward}顆星星獎勵`);
+                console.log('給予星星前的數量:', getCurrentStars());
+                addStarsToBattle(stageReward);
+                console.log('給予星星後的數量:', getCurrentStars());
+                addLogEntry('system', `💎 獲得星星獎勵：${stageReward}顆！`);
                 await new Promise(resolve => setTimeout(resolve, 500));
-                addLogEntry('system', '🏆 恭喜你贏得了這場激烈的戰鬥！');
+                
+                // 結算卡牌經驗值
+                await settleCardExperience(true);
+                
+                // 進入下一關
+                currentStage++;
+                localStorage.setItem('battleStage', currentStage.toString());
+                stageMultiplier = 1 + (currentStage - 1) * 0.3;
+                
+                addLogEntry('system', `🚀 恭喜通過第${currentStage - 1}關！進入第${currentStage}關！`);
+                await new Promise(resolve => setTimeout(resolve, 800));
+                addLogEntry('system', `⚠️ 敵人將變得更強！當前關卡倍率：${stageMultiplier.toFixed(1)}x`);
+                await new Promise(resolve => setTimeout(resolve, 600));
+                
+                addLogEntry('system', '🏆 準備迎接更激烈的挑戰！');
+                clearBattleArea();
                 endBattle();
                 return;
             }
             
             if (gameState.playerTeam.length === 0) {
+                console.log('檢測到戰鬥失敗：所有玩家卡片都被擊敗');
+                // 播放失敗動畫
+                await playDefeatAnimation();
+                
                 addLogEntry('system', '💔 戰鬥失敗！所有玩家都被擊敗了！');
                 await new Promise(resolve => setTimeout(resolve, 800));
-                addLogEntry('system', '😔 敵人太強大了，下次再來挑戰吧！');
+                addLogEntry('system', `😔 第${currentStage}關的敵人太強大了，下次再來挑戰吧！`);
                 await new Promise(resolve => setTimeout(resolve, 600));
+                
+                // 結算卡牌經驗值（失敗時）
+                console.log('開始結算失敗時的經驗值...');
+                await settleCardExperience(false);
+                
                 addLogEntry('system', '💪 不要氣餒，強化你的隊伍後再戰！');
+                clearBattleArea();
                 endBattle();
                 return;
             }
+        }
+
+        // 播放勝利動畫
+        async function playVictoryAnimation() {
+            const battleArea = document.getElementById('battle-area');
+            if (!battleArea) return;
+            
+            // 創建勝利動畫元素
+            const victoryOverlay = document.createElement('div');
+            victoryOverlay.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(45deg, #ffd700, #ffed4e, #ffd700);
+                z-index: 9999;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                animation: victoryPulse 2s ease-in-out;
+            `;
+            
+            const victoryText = document.createElement('div');
+            victoryText.innerHTML = `
+                <div style="text-align: center; color: #fff; text-shadow: 2px 2px 4px rgba(0,0,0,0.8);">
+                    <h1 style="font-size: 4rem; margin: 0; animation: victoryBounce 1s ease-in-out;">🎉 勝利！</h1>
+                    <p style="font-size: 1.5rem; margin: 10px 0; animation: victoryFadeIn 1.5s ease-in-out;">戰鬥勝利！</p>
+                </div>
+            `;
+            
+            victoryOverlay.appendChild(victoryText);
+            document.body.appendChild(victoryOverlay);
+            
+            // 播放勝利音效
+            try {
+                const victorySound = new Audio('sound/午後放鬆時光（純音樂）.mp3');
+                victorySound.volume = 0.6;
+                victorySound.play();
+            } catch (e) {
+                console.log('無法播放勝利音效');
+            }
+            
+            // 等待動畫完成
+            await new Promise(resolve => setTimeout(resolve, 3000));
+            
+            // 移除動畫元素
+            if (victoryOverlay.parentNode) {
+                victoryOverlay.remove();
+            }
+        }
+
+        // 播放失敗動畫
+        async function playDefeatAnimation() {
+            const battleArea = document.getElementById('battle-area');
+            if (!battleArea) return;
+            
+            // 創建失敗動畫元素
+            const defeatOverlay = document.createElement('div');
+            defeatOverlay.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(45deg, #ff6b6b, #ff8e8e, #ff6b6b);
+                z-index: 9999;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                animation: defeatPulse 2s ease-in-out;
+            `;
+            
+            const defeatText = document.createElement('div');
+            defeatText.innerHTML = `
+                <div style="text-align: center; color: #fff; text-shadow: 2px 2px 4px rgba(0,0,0,0.8);">
+                    <h1 style="font-size: 4rem; margin: 0; animation: defeatShake 1s ease-in-out;">💔 失敗</h1>
+                    <p style="font-size: 1.5rem; margin: 10px 0; animation: defeatFadeIn 1.5s ease-in-out;">戰鬥失敗！</p>
+                </div>
+            `;
+            
+            defeatOverlay.appendChild(defeatText);
+            document.body.appendChild(defeatOverlay);
+            
+            // 播放失敗音效
+            try {
+                const defeatSound = new Audio('sound/8-bit-video-game-lose-sound-version-1-145828.mp3');
+                defeatSound.volume = 0.6;
+                defeatSound.play();
+            } catch (e) {
+                console.log('無法播放失敗音效');
+            }
+            
+            // 等待動畫完成
+            await new Promise(resolve => setTimeout(resolve, 3000));
+            
+            // 移除動畫元素
+            if (defeatOverlay.parentNode) {
+                defeatOverlay.remove();
+            }
+        }
+
+        // 結算卡牌經驗值
+        async function settleCardExperience(isVictory) {
+            console.log('settleCardExperience 被調用，isVictory:', isVictory);
+            console.log('當前玩家隊伍數量:', gameState.playerTeam.length);
+            console.log('原始隊伍數量:', gameState.originalTeam ? gameState.originalTeam.length : 'undefined');
+            
+            // 使用原始隊伍進行經驗值結算，確保所有參與戰鬥的卡片都能獲得經驗值
+            const teamForExp = gameState.originalTeam || gameState.playerTeam;
+            console.log('用於經驗值結算的隊伍數量:', teamForExp.length);
+            
+            if (isVictory) {
+                const baseExpReward = 50 + (currentStage - 1) * 10; // 基礎經驗值獎勵
+                addLogEntry('system', `📈 戰鬥勝利！所有參與戰鬥的卡牌獲得經驗值！`);
+                await new Promise(resolve => setTimeout(resolve, 300));
+                
+                teamForExp.forEach((originalCard, index) => {
+                    console.log(`處理第${index + 1}張原始卡片:`, originalCard.zh);
+                    // 找到對應的baseCard
+                    let baseCard = baseCards.find(c => c.zh === originalCard.zh);
+                    if (!baseCard) {
+                        baseCard = baseCards.find(c => c.id === originalCard.id);
+                    }
+                    if (!baseCard) {
+                        baseCard = baseCards.find(c => c.word === originalCard.word);
+                    }
+                    console.log('勝利時尋找卡片:', originalCard.zh, '找到:', baseCard ? '是' : '否');
+                    if (baseCard) {
+                        // 找到對應的戰鬥卡片，檢查其存活狀態
+                        const battleCard = gameState.playerTeam.find(c => c.zh === originalCard.zh);
+                        const survivalBonus = battleCard && battleCard.hp > 0 ? 20 : 10; // 存活獎勵更多，死亡也有獎勵
+                        const totalExp = baseExpReward + survivalBonus;
+                        console.log('勝利時為卡片', originalCard.zh, '添加經驗值:', totalExp);
+                        addExpToCard(baseCard, totalExp);
+                    } else {
+                        console.log('勝利時找不到對應的baseCard:', originalCard.zh);
+                    }
+                });
+            } else {
+                // 失敗時，所有出戰卡牌都能獲得經驗值
+                const baseExpReward = 25 + (currentStage - 1) * 5; // 提高失敗時的基礎經驗值
+                addLogEntry('system', `📈 戰鬥失敗！所有出戰卡牌獲得經驗值！`);
+                await new Promise(resolve => setTimeout(resolve, 300));
+                
+                console.log('失敗時處理玩家隊伍，隊伍數量:', teamForExp.length);
+                if (teamForExp.length === 0) {
+                    console.log('警告：失敗時沒有找到原始隊伍，使用當前隊伍');
+                    // 如果沒有原始隊伍，使用當前隊伍
+                    const currentTeam = gameState.playerTeam;
+                    currentTeam.forEach((card, index) => {
+                        console.log(`處理第${index + 1}張當前卡片:`, card.zh);
+                        // 找到對應的baseCard
+                        let baseCard = baseCards.find(c => c.zh === card.zh);
+                        if (!baseCard) {
+                            baseCard = baseCards.find(c => c.id === card.id);
+                        }
+                        if (!baseCard) {
+                            baseCard = baseCards.find(c => c.word === card.word);
+                        }
+                        console.log('失敗時尋找卡片:', card.zh, '找到:', baseCard ? '是' : '否');
+                        if (baseCard) {
+                            const survivalBonus = card.hp > 0 ? 15 : 8; // 存活獎勵更多，死亡也有獎勵
+                            const totalExp = baseExpReward + survivalBonus;
+                            console.log('失敗時為卡片', card.zh, '添加經驗值:', totalExp);
+                            addExpToCard(baseCard, totalExp);
+                        } else {
+                            console.log('失敗時找不到對應的baseCard:', card.zh);
+                        }
+                    });
+                } else {
+                    teamForExp.forEach((originalCard, index) => {
+                        console.log(`處理第${index + 1}張原始卡片:`, originalCard.zh);
+                        // 找到對應的baseCard
+                        let baseCard = baseCards.find(c => c.zh === originalCard.zh);
+                        if (!baseCard) {
+                            baseCard = baseCards.find(c => c.id === originalCard.id);
+                        }
+                        if (!baseCard) {
+                            baseCard = baseCards.find(c => c.word === originalCard.word);
+                        }
+                        console.log('失敗時尋找卡片:', originalCard.zh, '找到:', baseCard ? '是' : '否');
+                        if (baseCard) {
+                            // 找到對應的戰鬥卡片，檢查其存活狀態
+                            const battleCard = gameState.playerTeam.find(c => c.zh === originalCard.zh);
+                            const survivalBonus = battleCard && battleCard.hp > 0 ? 15 : 8; // 存活獎勵更多，死亡也有獎勵
+                            const totalExp = baseExpReward + survivalBonus;
+                            console.log('失敗時為卡片', originalCard.zh, '添加經驗值:', totalExp);
+                            addExpToCard(baseCard, totalExp);
+                        } else {
+                            console.log('失敗時找不到對應的baseCard:', originalCard.zh);
+                        }
+                    });
+                }
+            }
+            
+            await new Promise(resolve => setTimeout(resolve, 500));
+        }
+
+        // 清除戰鬥區卡牌
+        function clearBattleArea() {
+            // 清除玩家隊伍
+            gameState.playerTeam = [];
+            gameState.selectedCards.clear();
+            
+            // 清除敵人隊伍
+            gameState.enemyTeam = [];
+            
+            // 清除原始隊伍副本
+            gameState.originalTeam = null;
+            
+            // 更新顯示
+            updateTeamDisplay();
+            updateCardGrid();
+            updateBattleDisplay();
+            
+            addLogEntry('system', '🧹 戰鬥區已清空，準備下一場戰鬥！');
         }
 
         // 結束戰鬥
@@ -1875,10 +3709,22 @@
 
         // 處理被擊敗的卡片
         async function handleDefeatedCard(card, isPlayer) {
-            if (isPlayer && card.originalIndex !== undefined) {
-                gameState.usedCards.add(card.originalIndex);
-                saveUsedCards();
+            if (isPlayer) {
                 await animateDefeat(card, isPlayer); // 添加擊敗動畫
+                // 將被擊敗的卡片從隊伍中移除
+                const index = gameState.playerTeam.indexOf(card);
+                if (index > -1) {
+                    gameState.playerTeam.splice(index, 1);
+                    console.log('已將被擊敗的卡片從隊伍中移除:', card.zh);
+                    console.log('當前玩家隊伍數量:', gameState.playerTeam.length);
+                    addLogEntry('system', `💔 ${card.zh} 被擊敗並從隊伍中移除！`);
+                    
+                    // 檢查是否所有玩家都被擊敗
+                    if (gameState.playerTeam.length === 0) {
+                        console.log('所有玩家卡片都被擊敗，觸發失敗檢測');
+                        addLogEntry('system', '💔 所有玩家卡片都被擊敗！');
+                    }
+                }
             }
         }
 
@@ -1908,6 +3754,8 @@
         // 添加日誌條目
         function addLogEntry(type, message) {
             const battleLog = document.getElementById('battle-log');
+            if (!battleLog) return;
+            
             const logEntry = document.createElement('div');
             logEntry.className = `log-entry ${type}`;
             logEntry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
@@ -1919,8 +3767,11 @@
         function setupEventListeners() {
             document.getElementById('start-battle').addEventListener('click', startBattle);
             document.getElementById('manual-battle').addEventListener('click', startManualBattle);
+            document.getElementById('reset-stage').addEventListener('click', resetStage);
+    
             document.getElementById('attack-btn').addEventListener('click', performPlayerAttack);
             document.getElementById('skill-btn').addEventListener('click', performPlayerSkill);
+            document.getElementById('defend-btn').addEventListener('click', performPlayerDefend);
             document.getElementById('skip-btn').addEventListener('click', () => {
                 currentPlayerIndex++;
                 updateManualControls();
@@ -1930,11 +3781,141 @@
             });
         }
 
+
+
         // 頁面載入完成後初始化
         document.addEventListener('DOMContentLoaded', () => {
             console.log('頁面載入完成，開始初始化...');
             initGame();
         });
+
+        // 顯示卡片詳情Modal
+        function showCardDetailModal(card) {
+            // 計算升級後的素質
+            const cardLevel = card.level || 1;
+            const levelBonus = (cardLevel - 1) * 0.2;
+            const baseAttack = card.attack || 50;
+            const baseDefense = card.defense || 30;
+            const baseHp = card.hp || 100;
+            
+            const upgradedAttack = Math.round(baseAttack * (1 + levelBonus));
+            const upgradedDefense = Math.round(baseDefense * (1 + levelBonus));
+            const upgradedHp = Math.round(baseHp * (1 + levelBonus));
+            
+            // 經驗值信息
+            const currentExp = card.exp || 0;
+            const requiredExp = getExpForNextLevel(cardLevel);
+            const remainingExp = requiredExp - currentExp;
+            const expProgress = Math.min(100, Math.round((currentExp / requiredExp) * 100));
+            
+            // 稀有度信息
+            const rarityLabel = getRarityLabel(card.rarity);
+            const rarityColor = getRarityColor(card.rarity);
+            
+            // 技能信息
+            const skillInfo = card.skill ? `
+                <div style="margin: 15px 0; padding: 10px; background: rgba(255,215,0,0.1); border-radius: 8px; border: 1px solid rgba(255,215,0,0.3);">
+                    <div style="color: #ffd700; font-weight: bold; margin-bottom: 5px;">🎯 技能：${card.skill.name}</div>
+                    <div style="color: #fff; font-size: 0.9rem; opacity: 0.9;">${card.skill.description || '無技能描述'}</div>
+                    <div style="color: #4ecdc4; font-size: 0.8rem; margin-top: 5px;">冷卻時間：${card.skill.cooldown || 0} 回合</div>
+                </div>
+            ` : `
+                <div style="margin: 15px 0; padding: 10px; background: rgba(150,150,150,0.1); border-radius: 8px; border: 1px solid rgba(150,150,150,0.3);">
+                    <div style="color: #ccc; font-weight: bold;">❌ 無技能</div>
+                </div>
+            `;
+            
+            // 創建Modal內容
+            const modalContent = `
+                <div id="card-detail-modal" style="position:fixed; z-index:9999; left:0; top:0; width:100vw; height:100vh; background:rgba(0,0,0,0.8); display:flex; align-items:center; justify-content:center;">
+                    <div style="position:relative; background:rgba(20,30,40,0.98); border-radius:18px; box-shadow:0 0 32px #00ffff99; padding:30px; max-width:500px; width:90%; max-height:80vh; overflow-y:auto;">
+                        <button id="close-card-detail" style="position:absolute; top:10px; right:15px; background:#222; color:#fff; border:none; border-radius:50%; width:35px; height:35px; font-size:1.5rem; cursor:pointer; z-index:10;">×</button>
+                        
+                        <!-- 卡片圖片 -->
+                        <div style="text-align:center; margin-bottom:20px;">
+                            ${card.image && card.image.endsWith('.mp4') ? 
+                                `<video src="${card.image}" style="width:200px;height:280px;object-fit:cover;border-radius:12px;box-shadow:0 0 20px #00ffff99;" muted autoplay loop playsinline></video>` :
+                                `<img src="${card.image || 'img/card_back.jpeg'}" alt="${card.zh}" style="width:200px;height:280px;object-fit:cover;border-radius:12px;box-shadow:0 0 20px #00ffff99;">`
+                            }
+                        </div>
+                        
+                        <!-- 卡片名稱和稀有度 -->
+                        <div style="text-align:center; margin-bottom:20px;">
+                            <div style="font-size:1.5rem; color:#ffe066; font-weight:bold; margin-bottom:10px;">${card.zh}</div>
+                            <div style="display:inline-block; background:${rarityColor}; color:#fff; font-size:0.9rem; font-weight:bold; padding:5px 12px; border-radius:8px; box-shadow:0 0 8px ${rarityColor}99;">
+                                ${rarityLabel}
+                            </div>
+                            ${cardLevel > 1 ? `<div style="display:inline-block; background:rgba(255,215,0,0.8); color:#000; font-size:0.8rem; font-weight:bold; padding:3px 8px; border-radius:6px; margin-left:10px;">Lv.${cardLevel}</div>` : ''}
+                        </div>
+                        
+                        <!-- 素質信息 -->
+                        <div style="margin:20px 0; padding:15px; background:rgba(255,107,107,0.1); border-radius:10px; border:1px solid rgba(255,107,107,0.3);">
+                            <div style="color:#ff6b6b; font-weight:bold; margin-bottom:10px; font-size:1.1rem;">💪 戰鬥素質</div>
+                            <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; text-align:center;">
+                                <div>
+                                    <div style="color:#ff6b6b; font-weight:bold; font-size:1.2rem;">${upgradedAttack}</div>
+                                    <div style="color:#fff; font-size:0.8rem;">攻擊力</div>
+                                </div>
+                                <div>
+                                    <div style="color:#4ecdc4; font-weight:bold; font-size:1.2rem;">${upgradedDefense}</div>
+                                    <div style="color:#fff; font-size:0.8rem;">防禦力</div>
+                                </div>
+                                <div>
+                                    <div style="color:#45b7d1; font-weight:bold; font-size:1.2rem;">${upgradedHp}</div>
+                                    <div style="color:#fff; font-size:0.8rem;">生命值</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 等級加成信息 -->
+                        ${cardLevel > 1 ? `
+                            <div style="margin:20px 0; padding:15px; background:rgba(255,215,0,0.1); border-radius:10px; border:1px solid rgba(255,215,0,0.3);">
+                                <div style="color:#ffd700; font-weight:bold; margin-bottom:10px; font-size:1.1rem;">⭐ 等級加成</div>
+                                <div style="color:#fff; font-size:0.9rem;">
+                                    當前等級：${cardLevel} (每級增加20%素質)<br>
+                                    總加成：${Math.round(levelBonus * 100)}%
+                                </div>
+                            </div>
+                        ` : ''}
+                        
+                        <!-- 經驗值信息 -->
+                        <div style="margin:20px 0; padding:15px; background:rgba(78,205,196,0.1); border-radius:10px; border:1px solid rgba(78,205,196,0.3);">
+                            <div style="color:#4ecdc4; font-weight:bold; margin-bottom:10px; font-size:1.1rem;">📈 經驗值進度</div>
+                            <div style="margin-bottom:10px;">
+                                <div style="display:flex; justify-content:space-between; color:#fff; font-size:0.9rem; margin-bottom:5px;">
+                                    <span>當前經驗值：${currentExp}</span>
+                                    <span>所需經驗值：${requiredExp}</span>
+                                </div>
+                                <div style="width:100%; height:8px; background:#333; border-radius:4px; overflow:hidden;">
+                                    <div style="width:${expProgress}%; height:100%; background:linear-gradient(90deg, #4ecdc4, #45b7d1); border-radius:4px; box-shadow:0 0 6px rgba(78,205,196,0.6);"></div>
+                                </div>
+                            </div>
+                            <div style="color:#ff6b6b; font-weight:bold; font-size:1rem;">
+                                還差 ${remainingExp} 經驗值升級
+                            </div>
+                        </div>
+                        
+                        <!-- 技能信息 -->
+                        ${skillInfo}
+                    </div>
+                </div>
+            `;
+            
+            // 添加到頁面
+            document.body.insertAdjacentHTML('beforeend', modalContent);
+            
+            // 添加關閉事件
+            document.getElementById('close-card-detail').addEventListener('click', () => {
+                document.getElementById('card-detail-modal').remove();
+            });
+            
+            // 點擊背景關閉
+            document.getElementById('card-detail-modal').addEventListener('click', (e) => {
+                if (e.target.id === 'card-detail-modal') {
+                    document.getElementById('card-detail-modal').remove();
+                }
+            });
+        }
 
         // 顯示卡片放大預覽
         function showCardPreview(card) {
@@ -1945,7 +3926,38 @@
             // 清空
             mediaDiv.innerHTML = '';
             titleDiv.textContent = card.zh || '';
-            statsDiv.innerHTML = `<span style='color:#ff6b6b;'>攻:${card.attack||0}</span>　<span style='color:#4ecdc4;'>防:${card.defense||0}</span>　<span style='color:#45b7d1;'>血:${card.hp||0}</span>`;
+            // 計算升級後的素質
+            const cardLevel = card.level || 1;
+            const levelBonus = (cardLevel - 1) * 0.2;
+            const baseAttack = card.attack || 50;
+            const baseDefense = card.defense || 30;
+            const baseHp = card.hp || 100;
+            
+            const upgradedAttack = Math.round(baseAttack * (1 + levelBonus));
+            const upgradedDefense = Math.round(baseDefense * (1 + levelBonus));
+            const upgradedHp = Math.round(baseHp * (1 + levelBonus));
+            
+            // 經驗值信息
+            const currentExp = card.exp || 0;
+            const requiredExp = getExpForNextLevel(cardLevel);
+            const remainingExp = requiredExp - currentExp;
+            
+            statsDiv.innerHTML = `
+                <div style='margin-bottom: 8px;'>
+                    <span style='color:#ff6b6b;'>攻:${upgradedAttack}</span>　
+                    <span style='color:#4ecdc4;'>防:${upgradedDefense}</span>　
+                    <span style='color:#45b7d1;'>血:${upgradedHp}</span>
+                </div>
+                <div style='margin-bottom: 8px;'>
+                    <span style='color:#ffd700;'>等級: ${cardLevel}</span>
+                </div>
+                <div style='margin-bottom: 8px;'>
+                    <span style='color:#4ecdc4;'>經驗值: ${currentExp}/${requiredExp}</span>
+                </div>
+                <div style='color:#ff6b6b; font-size: 0.9rem;'>
+                    還差 ${remainingExp} 經驗值升級
+                </div>
+            `;
             // 放大內容
             if (card.image && card.image.endsWith('.mp4')) {
                 mediaDiv.innerHTML = `<video src="${card.image}" style="width:160px;height:220px;object-fit:cover;border-radius:12px;box-shadow:0 0 12px #00ffff99;" muted autoplay loop playsinline></video>`;
@@ -1967,6 +3979,383 @@
                 }
             };
         });
+
+        // 顯示升級對比Modal
+        function showLevelUpModal(card, upgradeData) {
+            const { oldLevel, newLevel, oldAttack, newAttack, oldDefense, newDefense, oldHp, newHp } = upgradeData;
+            
+            // 計算提升數值
+            const attackIncrease = newAttack - oldAttack;
+            const defenseIncrease = newDefense - oldDefense;
+            const hpIncrease = newHp - oldHp;
+            
+            // 稀有度信息
+            const rarityLabel = getRarityLabel(card.rarity);
+            const rarityColor = getRarityColor(card.rarity);
+            
+            // 創建Modal內容
+            const modalContent = `
+                <div id="levelup-modal" style="position:fixed; z-index:9999; left:0; top:0; width:100vw; height:100vh; background:rgba(0,0,0,0.9); display:flex; align-items:center; justify-content:center;">
+                    <div style="position:relative; background:rgba(20,30,40,0.98); border-radius:18px; box-shadow:0 0 32px #ffd70099; padding:30px; max-width:600px; width:90%; max-height:80vh; overflow-y:auto;">
+                        <button id="close-levelup-modal" style="position:absolute; top:10px; right:15px; background:#222; color:#fff; border:none; border-radius:50%; width:35px; height:35px; font-size:1.5rem; cursor:pointer; z-index:10;">×</button>
+                        
+                        <!-- 升級標題 -->
+                        <div style="text-align:center; margin-bottom:25px;">
+                            <div style="font-size:2rem; color:#ffd700; font-weight:bold; margin-bottom:10px;">🎉 升級成功！</div>
+                            <div style="font-size:1.3rem; color:#ffe066; font-weight:bold;">${card.zh}</div>
+                            <div style="display:inline-block; background:${rarityColor}; color:#fff; font-size:0.9rem; font-weight:bold; padding:5px 12px; border-radius:8px; box-shadow:0 0 8px ${rarityColor}99; margin-top:10px;">
+                                ${rarityLabel}
+                            </div>
+                        </div>
+                        
+                        <!-- 等級提升 -->
+                        <div style="text-align:center; margin-bottom:25px; padding:15px; background:rgba(255,215,0,0.1); border-radius:10px; border:1px solid rgba(255,215,0,0.3);">
+                            <div style="color:#ffd700; font-weight:bold; font-size:1.2rem; margin-bottom:10px;">⭐ 等級提升</div>
+                            <div style="display:flex; justify-content:center; align-items:center; gap:20px;">
+                                <div style="text-align:center;">
+                                    <div style="color:#fff; font-size:0.9rem; margin-bottom:5px;">升級前</div>
+                                    <div style="color:#ffd700; font-weight:bold; font-size:1.5rem;">Lv.${oldLevel}</div>
+                                </div>
+                                <div style="color:#ffd700; font-size:2rem;">→</div>
+                                <div style="text-align:center;">
+                                    <div style="color:#fff; font-size:0.9rem; margin-bottom:5px;">升級後</div>
+                                    <div style="color:#ffd700; font-weight:bold; font-size:1.5rem;">Lv.${newLevel}</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 素質對比 -->
+                        <div style="margin:25px 0;">
+                            <div style="color:#ffd700; font-weight:bold; font-size:1.2rem; margin-bottom:15px; text-align:center;">💪 素質提升對比</div>
+                            
+                            <!-- 攻擊力對比 -->
+                            <div style="margin:15px 0; padding:15px; background:rgba(255,107,107,0.1); border-radius:10px; border:1px solid rgba(255,107,107,0.3);">
+                                <div style="color:#ff6b6b; font-weight:bold; margin-bottom:10px;">⚔️ 攻擊力</div>
+                                <div style="display:flex; justify-content:space-between; align-items:center;">
+                                    <div style="text-align:center; flex:1;">
+                                        <div style="color:#fff; font-size:0.9rem; margin-bottom:5px;">升級前</div>
+                                        <div style="color:#ff6b6b; font-weight:bold; font-size:1.3rem;">${oldAttack}</div>
+                                    </div>
+                                    <div style="color:#ff6b6b; font-size:1.5rem; margin:0 15px;">→</div>
+                                    <div style="text-align:center; flex:1;">
+                                        <div style="color:#fff; font-size:0.9rem; margin-bottom:5px;">升級後</div>
+                                        <div style="color:#ff6b6b; font-weight:bold; font-size:1.3rem;">${newAttack}</div>
+                                    </div>
+                                    <div style="text-align:center; flex:1;">
+                                        <div style="color:#fff; font-size:0.9rem; margin-bottom:5px;">提升</div>
+                                        <div style="color:#4ecdc4; font-weight:bold; font-size:1.1rem;">+${attackIncrease}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- 防禦力對比 -->
+                            <div style="margin:15px 0; padding:15px; background:rgba(78,205,196,0.1); border-radius:10px; border:1px solid rgba(78,205,196,0.3);">
+                                <div style="color:#4ecdc4; font-weight:bold; margin-bottom:10px;">🛡️ 防禦力</div>
+                                <div style="display:flex; justify-content:space-between; align-items:center;">
+                                    <div style="text-align:center; flex:1;">
+                                        <div style="color:#fff; font-size:0.9rem; margin-bottom:5px;">升級前</div>
+                                        <div style="color:#4ecdc4; font-weight:bold; font-size:1.3rem;">${oldDefense}</div>
+                                    </div>
+                                    <div style="color:#4ecdc4; font-size:1.5rem; margin:0 15px;">→</div>
+                                    <div style="text-align:center; flex:1;">
+                                        <div style="color:#fff; font-size:0.9rem; margin-bottom:5px;">升級後</div>
+                                        <div style="color:#4ecdc4; font-weight:bold; font-size:1.3rem;">${newDefense}</div>
+                                    </div>
+                                    <div style="text-align:center; flex:1;">
+                                        <div style="color:#fff; font-size:0.9rem; margin-bottom:5px;">提升</div>
+                                        <div style="color:#4ecdc4; font-weight:bold; font-size:1.1rem;">+${defenseIncrease}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- 生命值對比 -->
+                            <div style="margin:15px 0; padding:15px; background:rgba(69,183,209,0.1); border-radius:10px; border:1px solid rgba(69,183,209,0.3);">
+                                <div style="color:#45b7d1; font-weight:bold; margin-bottom:10px;">❤️ 生命值</div>
+                                <div style="display:flex; justify-content:space-between; align-items:center;">
+                                    <div style="text-align:center; flex:1;">
+                                        <div style="color:#fff; font-size:0.9rem; margin-bottom:5px;">升級前</div>
+                                        <div style="color:#45b7d1; font-weight:bold; font-size:1.3rem;">${oldHp}</div>
+                                    </div>
+                                    <div style="color:#45b7d1; font-size:1.5rem; margin:0 15px;">→</div>
+                                    <div style="text-align:center; flex:1;">
+                                        <div style="color:#fff; font-size:0.9rem; margin-bottom:5px;">升級後</div>
+                                        <div style="color:#45b7d1; font-weight:bold; font-size:1.3rem;">${newHp}</div>
+                                    </div>
+                                    <div style="text-align:center; flex:1;">
+                                        <div style="color:#fff; font-size:0.9rem; margin-bottom:5px;">提升</div>
+                                        <div style="color:#4ecdc4; font-weight:bold; font-size:1.1rem;">+${hpIncrease}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 總提升統計 -->
+                        <div style="margin:25px 0; padding:15px; background:rgba(78,205,196,0.1); border-radius:10px; border:1px solid rgba(78,205,196,0.3);">
+                            <div style="color:#4ecdc4; font-weight:bold; margin-bottom:10px; font-size:1.1rem;">📊 總提升統計</div>
+                            <div style="color:#fff; font-size:0.9rem; line-height:1.5;">
+                                <div>🎯 攻擊力提升：<span style="color:#ff6b6b; font-weight:bold;">+${attackIncrease}</span></div>
+                                <div>🛡️ 防禦力提升：<span style="color:#4ecdc4; font-weight:bold;">+${defenseIncrease}</span></div>
+                                <div>❤️ 生命值提升：<span style="color:#45b7d1; font-weight:bold;">+${hpIncrease}</span></div>
+                                <div style="margin-top:10px; color:#ffd700; font-weight:bold;">
+                                    總戰力提升：<span style="color:#4ecdc4;">+${attackIncrease + defenseIncrease + hpIncrease}</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 確認按鈕 -->
+                        <div style="text-align:center; margin-top:25px;">
+                            <button id="confirm-levelup" style="background:linear-gradient(45deg, #ffd700, #ffed4e); border:none; border-radius:10px; padding:12px 30px; color:#000; font-weight:bold; font-size:1.1rem; cursor:pointer; box-shadow:0 0 15px rgba(255,215,0,0.4);">
+                                🎉 確認升級
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // 添加到頁面
+            document.body.insertAdjacentHTML('beforeend', modalContent);
+            
+            // 添加關閉事件
+            document.getElementById('close-levelup-modal').addEventListener('click', () => {
+                document.getElementById('levelup-modal').remove();
+            });
+            
+            // 確認按鈕事件
+            document.getElementById('confirm-levelup').addEventListener('click', () => {
+                document.getElementById('levelup-modal').remove();
+            });
+            
+            // 點擊背景關閉
+            document.getElementById('levelup-modal').addEventListener('click', (e) => {
+                if (e.target.id === 'levelup-modal') {
+                    document.getElementById('levelup-modal').remove();
+                }
+            });
+        }
+
+        // 執行魔法技能
+        async function performMagicSkill(player, enemy) {
+            // 檢查系列效果
+            const seriesEffects = gameState.seriesEffects || {};
+            let criticalRate = 0.25; // 魔法攻擊基礎25%暴擊率
+            let damageBonus = 0; // 傷害加成
+            
+            // 計算系列效果加成
+            Object.values(seriesEffects).forEach(effect => {
+                criticalRate += effect.bonus || 0;
+                damageBonus += effect.damageBonus || 0;
+            });
+            
+            // 計算升級後的攻擊力
+            const cardLevel = player.level || 1;
+            const levelBonus = (cardLevel - 1) * 0.2;
+            const baseAttack = player.attack || 50;
+            const upgradedAttack = Math.round(baseAttack * (1 + levelBonus));
+            
+            // 計算魔法傷害
+            let magicDamage = Math.floor(upgradedAttack * player.skill.damage);
+            
+            // 應用傷害加成
+            magicDamage = Math.floor(magicDamage * (1 + damageBonus));
+            
+            // 檢查是否暴擊
+            const isCritical = Math.random() < criticalRate;
+            if (isCritical) {
+                magicDamage = Math.floor(magicDamage * 1.8); // 魔法暴擊倍率更高
+            }
+            
+            // 魔法攻擊無視防禦狀態
+            addLogEntry('player', `✨ 魔法攻擊無視防禦！`);
+            await new Promise(resolve => setTimeout(resolve, 400));
+            
+            // 顯示系列效果加成
+            if (damageBonus > 0) {
+                addLogEntry('player', `✨ 同系列加成：傷害+${Math.round(damageBonus * 100)}%`);
+                await new Promise(resolve => setTimeout(resolve, 400));
+            }
+            
+            if (isCritical) {
+                addLogEntry('player', `💥 魔法暴擊！`);
+                await new Promise(resolve => setTimeout(resolve, 400));
+            }
+            
+            // 執行魔法動畫
+            await animateAttack(player, enemy, magicDamage, true, isCritical);
+            // 播放技能音效
+            playSkillSound();
+            
+            enemy.hp -= magicDamage;
+            
+            addLogEntry('player', `✨ 魔法技能「${player.skill.name}」造成 ${magicDamage} 點傷害！`);
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            // 檢查敵人是否被擊敗
+            if (enemy.hp <= 0) {
+                addLogEntry('enemy', `💀 ${enemy.zh} 被魔法擊敗了！`);
+                await animateDefeat(enemy, false);
+                gameState.enemyTeam.splice(selectedEnemyIndex, 1);
+                await new Promise(resolve => setTimeout(resolve, 300));
+            }
+        }
+
+        // 執行增益技能
+        async function performBuffSkill(player) {
+            addLogEntry('player', `🌟 ${player.zh} 開始施放增益法術...`);
+            await new Promise(resolve => setTimeout(resolve, 600));
+            
+            // 播放技能音效
+            playSkillSound();
+            
+            // 根據技能名稱設置不同的增益效果
+            const buffDuration = player.skill.duration || 3;
+            
+            if (player.skill.name === '暴擊強化') {
+                player.criticalBonus = (player.criticalBonus || 0) + player.skill.criticalBonus;
+                player.criticalBonusDuration = buffDuration;
+                addLogEntry('player', `🎯 技能「${player.skill.name}」提升暴擊率${Math.round(player.skill.criticalBonus * 100)}%！`);
+            } else if (player.skill.name === '攻擊強化') {
+                player.damageBonus = (player.damageBonus || 0) + player.skill.damageBonus;
+                player.damageBonusDuration = buffDuration;
+                addLogEntry('player', `⚔️ 技能「${player.skill.name}」提升攻擊力${Math.round(player.skill.damageBonus * 100)}%！`);
+            } else if (player.skill.name === '防禦強化') {
+                player.defenseBonus = (player.defenseBonus || 0) + player.skill.defenseBonus;
+                player.defenseBonusDuration = buffDuration;
+                addLogEntry('player', `🛡️ 技能「${player.skill.name}」提升防禦力${Math.round(player.skill.defenseBonus * 100)}%！`);
+            } else if (player.skill.name === '速度強化') {
+                player.speedBonus = (player.speedBonus || 0) + player.skill.speedBonus;
+                player.speedBonusDuration = buffDuration;
+                addLogEntry('player', `⚡ 技能「${player.skill.name}」提升行動速度！`);
+            }
+            
+            addLogEntry('system', `⏰ 增益效果持續${buffDuration}回合`);
+            await new Promise(resolve => setTimeout(resolve, 500));
+        }
+
+        // 處理增益效果持續時間
+        function updateBuffDurations() {
+            gameState.playerTeam.forEach(player => {
+                // 更新暴擊強化持續時間
+                if (player.criticalBonusDuration > 0) {
+                    player.criticalBonusDuration--;
+                    if (player.criticalBonusDuration <= 0) {
+                        player.criticalBonus = 0;
+                        addLogEntry('system', `⏰ ${player.zh} 的暴擊強化效果結束`);
+                    }
+                }
+                
+                // 更新攻擊強化持續時間
+                if (player.damageBonusDuration > 0) {
+                    player.damageBonusDuration--;
+                    if (player.damageBonusDuration <= 0) {
+                        player.damageBonus = 0;
+                        addLogEntry('system', `⏰ ${player.zh} 的攻擊強化效果結束`);
+                    }
+                }
+                
+                // 更新防禦強化持續時間
+                if (player.defenseBonusDuration > 0) {
+                    player.defenseBonusDuration--;
+                    if (player.defenseBonusDuration <= 0) {
+                        player.defenseBonus = 0;
+                        addLogEntry('system', `⏰ ${player.zh} 的防禦強化效果結束`);
+                    }
+                }
+                
+                // 更新速度強化持續時間
+                if (player.speedBonusDuration > 0) {
+                    player.speedBonusDuration--;
+                    if (player.speedBonusDuration <= 0) {
+                        player.speedBonus = 0;
+                        addLogEntry('system', `⏰ ${player.zh} 的速度強化效果結束`);
+                    }
+                }
+            });
+        }
+
+        // 顯示卡片
+        function displayCards() {
+            const cardGrid = document.getElementById('card-grid');
+            if (!cardGrid) {
+                console.error('找不到 card-grid 元素！');
+                return;
+            }
+            
+            cardGrid.innerHTML = '';
+            
+            // 獲取當前選中的分類
+            const activeCategory = document.querySelector('.category-btn.active').dataset.category;
+            
+            // 篩選卡片
+            const filteredCards = filterCardsByCategory(baseCards, activeCategory);
+            
+            // 更新統計信息
+            updateCardStats(filteredCards);
+            
+            // 調試信息：檢查技能
+            console.log('顯示卡片，檢查技能...');
+            filteredCards.forEach((card, index) => {
+                console.log(`卡片 ${card.zh}: 技能 = ${card.skill ? card.skill.name : '無技能'}`);
+                const cardElement = createCardElement(card, index);
+                cardGrid.appendChild(cardElement);
+            });
+        }
+
+        // 根據分類篩選卡片
+        function filterCardsByCategory(cards, category) {
+            if (category === 'all') {
+                return cards;
+            }
+            
+            return cards.filter(card => {
+                switch (category) {
+                    case 'common':
+                        return card.rarity === '普通';
+                    case 'rare':
+                        return card.rarity === '稀有';
+                    case 'ssr':
+                        return card.rarity === '超稀有';
+                    case 'heal':
+                        return card.skill && (card.skill.name.includes('治癒') || card.skill.name.includes('神聖治癒') || card.skill.name.includes('群體治癒'));
+                    case 'magic':
+                        return card.skill && (card.skill.type === 'magic' || card.skill.name.includes('術') || card.skill.name.includes('爆發'));
+                    case 'attack':
+                        return card.skill && (card.skill.type === 'attack' || card.skill.name.includes('攻擊') || card.skill.name.includes('一擊') || card.skill.name.includes('暴擊') || card.skill.name.includes('連擊'));
+                    case 'defense':
+                        return card.skill && (card.skill.type === 'defense' || card.skill.name.includes('防禦') || card.skill.name.includes('護盾') || card.skill.name.includes('反擊'));
+                    default:
+                        return true;
+                }
+            });
+        }
+
+        // 更新卡片統計信息
+        function updateCardStats(cards) {
+            const totalCardsElement = document.getElementById('total-cards');
+            const selectedCountElement = document.getElementById('selected-count');
+            
+            if (totalCardsElement) {
+                totalCardsElement.textContent = cards.length;
+            }
+            
+            if (selectedCountElement) {
+                selectedCountElement.textContent = gameState.selectedCards.size;
+            }
+        }
+
+        // 添加分類按鈕事件監聽器
+        function setupCategoryButtons() {
+            const categoryButtons = document.querySelectorAll('.category-btn');
+            categoryButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // 移除所有按鈕的active類
+                    categoryButtons.forEach(btn => btn.classList.remove('active'));
+                    // 添加當前按鈕的active類
+                    this.classList.add('active');
+                    // 重新顯示卡片
+                    displayCards();
+                });
+            });
+        }
     </script>
 </body>
 </html>
