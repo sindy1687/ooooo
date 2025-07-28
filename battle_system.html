@@ -1111,6 +1111,7 @@
             enemyTeam: [],
             isBattleActive: false,
             currentTurn: 0,
+            hasAttacked: false, // 標記是否已經攻擊過
 
             selectedCards: new Set() // 記錄已選入隊伍但未使用的卡片
         };
@@ -1371,7 +1372,6 @@
                 { name: '普通攻擊', damage: 1.0, cooldown: 0, description: '基礎攻擊' },
                 { name: '強力一擊', damage: 1.5, cooldown: 2, description: '造成1.5倍傷害' },
                 { name: '防禦姿態', damage: 0.5, cooldown: 1, description: '攻擊力減半但增加防禦' },
-                { name: '連擊', damage: 0.8, cooldown: 3, description: '連續攻擊兩次' },
                 { name: '暴擊', damage: 2.0, cooldown: 4, description: '造成雙倍傷害' }
             ];
             const skillIndex = seed % skills.length;
@@ -1589,7 +1589,6 @@
             const skills = [
                 { name: '防禦姿態', type: 'defense', effect: '增加防禦力30%', cooldown: 4 },
                 { name: '魔法攻擊', type: 'magic', effect: '造成1.2倍魔法傷害', cooldown: 5 },
-                { name: '連擊', type: 'combo', effect: '連續攻擊1.5次', cooldown: 6 },
                 { name: '治療術', type: 'heal', effect: '恢復20%血量', cooldown: 7 },
                 { name: '反擊', type: 'counter', effect: '受到攻擊時反擊', cooldown: 5 },
                 { name: '狂暴', type: 'rage', effect: '血量低於20%時攻擊力1.5倍', cooldown: 0 }
@@ -2345,6 +2344,7 @@
 
             gameState.isBattleActive = true;
             gameState.currentTurn = 0;
+            gameState.hasAttacked = false; // 初始化攻擊標記
             
             generateEnemyTeam();
             updateBattleDisplay();
@@ -2397,6 +2397,8 @@
             currentPlayerIndex = 0;
             currentEnemyIndex = 0;
             selectedEnemyIndex = -1;
+            // 重置攻擊標記
+            gameState.hasAttacked = false;
             document.getElementById('manual-controls').style.display = 'block';
             addLogEntry('system', '🎯 手動戰鬥開始！玩家先手');
             updateManualControls();
@@ -2499,6 +2501,7 @@
             
             // 隱藏選擇界面，改為直接點擊敵人卡片
             enemySelection.style.display = 'none';
+            
             addLogEntry('system', '🎯 直接點擊敵人卡片進行攻擊！');
         }
 
@@ -2507,6 +2510,15 @@
             if (isAnimating) return; // 防止動畫期間重複點擊
             
             if (currentAttacker !== 0) return; // 不是玩家回合
+            
+            // 檢查是否已經攻擊過
+            if (gameState.hasAttacked) {
+                addLogEntry('system', '⚠️ 本回合已經攻擊過了，請等待下一回合！');
+                return;
+            }
+            
+            // 立即設置攻擊標記，防止重複點擊
+            gameState.hasAttacked = true;
             
             const player = gameState.playerTeam[currentPlayerIndex];
             const enemy = gameState.enemyTeam[enemyIndex];
@@ -2590,6 +2602,8 @@
             
             updateBattleDisplay();
             
+            addLogEntry('system', '⏰ 本回合攻擊完成，等待下一回合！');
+            
             // 切換到敵人回合
             await switchToEnemyTurn();
         }
@@ -2618,6 +2632,8 @@
             currentAttacker = 0;
             // 每回合都要重新選擇
             selectedEnemyIndex = -1;
+            // 重置攻擊標記
+            gameState.hasAttacked = false;
             // 移動到下一個玩家卡片
             currentPlayerIndex = (currentPlayerIndex + 1) % gameState.playerTeam.length;
             // 移動到下一個敵人卡片
@@ -2936,6 +2952,15 @@ ${card.zh}
         // 玩家使用技能（魔法攻擊比普通攻擊強）
         async function performPlayerSkill() {
             if (isAnimating) return; // 防止動畫期間重複點擊
+            
+            // 檢查是否已經攻擊過
+            if (gameState.hasAttacked) {
+                addLogEntry('system', '⚠️ 本回合已經攻擊過了，請等待下一回合！');
+                return;
+            }
+            
+            // 立即設置攻擊標記，防止重複點擊
+            gameState.hasAttacked = true;
 
             if (currentPlayerIndex < gameState.playerTeam.length && gameState.enemyTeam.length > 0) {
                 // 如果沒有選擇目標但只剩一個敵人，自動選擇
@@ -3034,6 +3059,8 @@ ${card.zh}
                     
                     updateBattleDisplay();
                     selectedEnemyIndex = -1; // 重置選擇
+                    
+                    addLogEntry('system', '⏰ 本回合技能攻擊完成，等待下一回合！');
                     
                     // 切換到敵人回合
                     await switchToEnemyTurn();
