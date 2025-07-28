@@ -1053,6 +1053,13 @@
         // 增加星星（戰鬥系統專用）
         function addStarsToBattle(amount) {
             console.log('addStarsToBattle 被調用，數量:', amount);
+            
+            // 檢查是否已經給予過星星獎勵
+            if (gameState.starsAdded) {
+                console.log('已經給予過星星獎勵，跳過');
+                return;
+            }
+            
             let currentStars = 0;
             
             // 先獲取當前星星數量
@@ -1084,6 +1091,9 @@
                 localStorage.setItem('totalStars', newStars.toString());
             }
             
+            // 標記已經給予星星獎勵
+            gameState.starsAdded = true;
+            
             console.log('星星更新完成，當前星星:', getCurrentStars());
             updateStarsDisplay();
         }
@@ -1112,6 +1122,7 @@
             isBattleActive: false,
             currentTurn: 0,
             hasAttacked: false, // 標記是否已經攻擊過
+            starsAdded: false, // 標記是否已經給予星星獎勵
 
             selectedCards: new Set() // 記錄已選入隊伍但未使用的卡片
         };
@@ -2345,6 +2356,7 @@
             gameState.isBattleActive = true;
             gameState.currentTurn = 0;
             gameState.hasAttacked = false; // 初始化攻擊標記
+            gameState.starsAdded = false; // 重置星星獎勵標記
             
             generateEnemyTeam();
             updateBattleDisplay();
@@ -2399,6 +2411,8 @@
             selectedEnemyIndex = -1;
             // 重置攻擊標記
             gameState.hasAttacked = false;
+            // 重置星星獎勵標記
+            gameState.starsAdded = false;
             document.getElementById('manual-controls').style.display = 'block';
             addLogEntry('system', '🎯 手動戰鬥開始！玩家先手');
             updateManualControls();
