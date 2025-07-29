@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>雲端留言系統</title>
+    <!-- 使用 Unicode 字符作為圖標，避免外部依賴 -->
+    <style>
+        /* 圖標樣式 */
+        .icon {
+            display: inline-block;
+            font-style: normal;
+            font-weight: normal;
+            line-height: 1;
+            text-align: center;
+        }
+        
+        /* 使用 Unicode 字符作為圖標 */
+        .icon-cloud::before { content: "☁"; }
+        .icon-edit::before { content: "✏"; }
+        .icon-comments::before { content: "💬"; }
+        .icon-user::before { content: "👤"; }
+        .icon-comment::before { content: "💭"; }
+        .icon-arrow-left::before { content: "←"; }
+        .icon-sync::before { content: "🔄"; }
+        .icon-check::before { content: "✅"; }
+        .icon-exclamation::before { content: "⚠"; }
+        .icon-triangle::before { content: "🔺"; }
+        .icon-slash::before { content: "❌"; }
+        .icon-spinner::before { content: "⏳"; }
+        .icon-search::before { content: "🔍"; }
+        
+        /* 旋轉動畫 */
+        .icon-spinner {
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+    </style>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .app {
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            border: none;
+            padding: 12px 18px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-family: 'Noto Sans TC', sans-serif;
+            font-weight: 600;
+            color: #333;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 1);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .sync-status {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            color: #666;
+            font-family: 'Noto Sans TC', sans-serif;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 20px;
+        }
+
+        .feedback-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .feedback-card h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .google-form-container {
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .google-form-container iframe {
+            border: none;
+            width: 100%;
+            height: 500px;
+        }
+
+        .messages-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        .messages-card h3 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .comment-item {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 15px;
+            border-left: 4px solid #667eea;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .comment-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            font-size: 14px;
+        }
+
+        .comment-author {
+            font-weight: 600;
+            color: #667eea;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .comment-time {
+            color: #888;
+            font-size: 12px;
+        }
+
+        .comment-content {
+            color: #333;
+            line-height: 1.6;
+            font-size: 15px;
+        }
+
+        .loading {
+            text-align: center;
+            color: #666;
+            font-style: italic;
+            padding: 40px;
+        }
+
+        .error {
+            color: #e74c3c;
+            text-align: center;
+            padding: 20px;
+            background: rgba(231, 76, 60, 0.1);
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            color: #ddd;
+            margin-bottom: 15px;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 10px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .feedback-card,
+            .messages-card {
+                padding: 20px;
+            }
+
+            .back-btn {
+                top: 10px;
+                left: 10px;
+                padding: 10px 15px;
+                font-size: 14px;
+            }
+
+            .sync-status {
+                top: 10px;
+                right: 10px;
+                font-size: 12px;
+                padding: 8px 12px;
+            }
+        }
+
+        /* 滾動條美化 */
+        .messages-card::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .messages-card::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .messages-card::-webkit-scrollbar-thumb {
+            background: #667eea;
+            border-radius: 10px;
+        }
+
+        .messages-card::-webkit-scrollbar-thumb:hover {
+            background: #5a6fd8;
+        }
+
+        /* 處理高對比模式警告 */
+        @media (forced-colors: active) {
+            .back-btn,
+            .sync-status,
+            .feedback-card,
+            .messages-card {
+                border: 1px solid CanvasText;
+            }
+            
+            .comment-item {
+                border-left: 4px solid CanvasText;
+            }
+        }
+
+        /* 移除舊的 -ms-high-contrast 支援 */
+        @media (-ms-high-contrast: none) {
+            /* 空規則，移除舊的支援 */
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <a href="index.html" class="back-btn">
+            <span class="icon icon-arrow-left"></span> 返回首頁
+        </a>
+        
+        <div class="sync-status" id="syncStatus">
+            <span class="icon icon-spinner"></span> 同步中...
+        </div>
+
+        <div class="container">
+            <div class="header">
+                <h1><span class="icon icon-cloud"></span> 雲端留言系統</h1>
+                <p>你的留言會保存到雲端，所有用戶都能看到！</p>
+            </div>
+
+            <div class="main-content">
+                <!-- Google 表單區域 -->
+                <div class="feedback-card">
+                    <h2><span class="icon icon-edit"></span> 發表留言</h2>
+                    <p style="color: #666; margin-bottom: 20px;">使用下方的 Google 表單提交你的留言</p>
+                    
+                    <div class="google-form-container">
+                        <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSfncQfuK68IzZncCNKrkq700tyEXYIE75C7Tp3BulZhJMfPoQ/viewform?embedded=true"
+                                width="100%" height="500" frameborder="0" marginheight="0" marginwidth="0">
+                            載入中…
+                        </iframe>
+                    </div>
+                    
+                    <div style="margin-top: 15px; text-align: center;">
+                        <button onclick="loadFromGoogleSheets()" style="
+                            background: #667eea;
+                            color: white;
+                            border: none;
+                            padding: 8px 16px;
+                            border-radius: 8px;
+                            cursor: pointer;
+                            font-size: 14px;
+                        ">🔄 重新載入留言</button>
+                    </div>
+                </div>
+
+                <!-- 留言列表 -->
+                <div class="messages-card">
+                    <h3><span class="icon icon-comments"></span> 雲端留言</h3>
+                    
+                    <div class="stats" id="stats" style="display: none;">
+                        <div class="stat-item">
+                            <div class="stat-number" id="totalComments">0</div>
+                            <div class="stat-label">總留言數</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number" id="uniqueUsers">0</div>
+                            <div class="stat-label">參與用戶</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number" id="latestTime">-</div>
+                            <div class="stat-label">最新留言</div>
+                        </div>
+                    </div>
+
+                    <div id="commentList">載入雲端留言中...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let comments = [];
+        let lastSyncTime = 0;
+
+        // 更新同步狀態
+        function updateSyncStatus(message, type = 'info') {
+            const statusEl = document.getElementById('syncStatus');
+            const icons = {
+                'info': 'icon-spinner',
+                'success': 'icon-check',
+                'error': 'icon-exclamation',
+                'warning': 'icon-triangle'
+            };
+            
+            statusEl.innerHTML = `<span class="icon ${icons[type]}"></span> ${message}`;
+            statusEl.style.color = type === 'success' ? '#28a745' : 
+                                  type === 'error' ? '#dc3545' : 
+                                  type === 'warning' ? '#ffc107' : '#666';
+        }
+
+        // 更新統計資訊
+        function updateStats() {
+            if (comments.length > 0) {
+                const uniqueUsers = [...new Set(comments.map(c => c.author))].length;
+                const latestComment = comments[0];
+                const latestDate = new Date(latestComment.timestamp).toLocaleDateString('zh-TW');
+                
+                document.getElementById('totalComments').textContent = comments.length;
+                document.getElementById('uniqueUsers').textContent = uniqueUsers;
+                document.getElementById('latestTime').textContent = latestDate;
+                document.getElementById('stats').style.display = 'flex';
+            }
+        }
+
+        // 從 Google 試算表載入留言
+        async function loadFromGoogleSheets() {
+            try {
+                updateSyncStatus('正在載入雲端留言...', 'info');
+                
+                const url = "https://docs.google.com/spreadsheets/d/11kMAXtBxLICMUYysPLP1noZzTsjbfXmbRcZSKK8_6cw/gviz/tq?tqx=out:json";
+                const response = await fetch(url);
+                const text = await response.text();
+                const json = JSON.parse(text.substring(47, text.length - 2));
+                
+                console.log('Google Sheets 原始數據:', json);
+                
+                const rows = json.table.rows;
+                console.log('總行數:', rows.length);
+                
+                if (rows.length > 0) {
+                    comments = [];
+                    
+                    rows.forEach((row, index) => {
+                        console.log(`處理第 ${index} 行:`, row);
+                        console.log('行數據:', row.c);
+                        
+                        if (index === 0) {
+                            console.log('跳過標題行');
+                            return; // 跳過標題行
+                        }
+                        
+                        // 檢查是否有數據
+                        if (!row.c || row.c.length === 0) {
+                            console.log(`第 ${index} 行沒有數據`);
+                            return;
+                        }
+                        
+                        // 根據實際試算表結構：A=時間戳記, B=你給幾顆星, C=你的留言, D=你的名字
+                        let timestamp = '';
+                        let message = '';
+                        let author = '匿名用戶';
+                        let rating = '';
+                        
+                        // 解析各欄位
+                        if (row.c.length >= 1) timestamp = row.c[0]?.v || '';
+                        if (row.c.length >= 2) rating = row.c[1]?.v || '';
+                        if (row.c.length >= 3) message = row.c[2]?.v || '';
+                        if (row.c.length >= 4) author = row.c[3]?.v || '匿名用戶';
+                        
+                        console.log('解析數據:', { timestamp, rating, message, author });
+                        
+                        // 如果沒有留言內容，跳過這行
+                        if (!message && !rating) {
+                            console.log(`第 ${index} 行沒有有效內容，跳過`);
+                            return;
+                        }
+                        
+                        // 處理日期格式
+                        let time;
+                        let timestampISO;
+                        
+                        if (timestamp) {
+                            try {
+                                // 處理 Google Sheets 的 Date() 格式
+                                // 例如：Date(2025,6,29,23,53,14)
+                                if (timestamp.includes('Date(')) {
+                                    const dateMatch = timestamp.match(/Date\((\d+),(\d+),(\d+),(\d+),(\d+),(\d+)\)/);
+                                    if (dateMatch) {
+                                        const [_, year, month, day, hour, minute, second] = dateMatch;
+                                        const date = new Date(parseInt(year), parseInt(month), parseInt(day), parseInt(hour), parseInt(minute), parseInt(second));
+                                        timestampISO = date.toISOString();
+                                        time = date.toLocaleString('zh-TW');
+                                    } else {
+                                        timestampISO = new Date().toISOString();
+                                        time = new Date().toLocaleString('zh-TW');
+                                    }
+                                } else {
+                                    // 嘗試處理中文日期格式
+                                    // 例如：2025/7/29 下午 11:53:15
+                                    const dateMatch = timestamp.match(/(\d{4})\/(\d{1,2})\/(\d{1,2})\s+(上午|下午)\s+(\d{1,2}):(\d{1,2}):(\d{1,2})/);
+                                    if (dateMatch) {
+                                        const [_, year, month, day, ampm, hour, minute, second] = dateMatch;
+                                        let hour24 = parseInt(hour);
+                                        if (ampm === '下午' && hour24 !== 12) hour24 += 12;
+                                        if (ampm === '上午' && hour24 === 12) hour24 = 0;
+                                        
+                                        const date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day), hour24, parseInt(minute), parseInt(second));
+                                        timestampISO = date.toISOString();
+                                        time = date.toLocaleString('zh-TW');
+                                    } else {
+                                        // 嘗試直接解析
+                                        const parsedDate = new Date(timestamp);
+                                        if (!isNaN(parsedDate.getTime())) {
+                                            timestampISO = parsedDate.toISOString();
+                                            time = parsedDate.toLocaleString('zh-TW');
+                                        } else {
+                                            timestampISO = new Date().toISOString();
+                                            time = new Date().toLocaleString('zh-TW');
+                                        }
+                                    }
+                                }
+                            } catch (error) {
+                                console.log('日期解析失敗，使用當前時間:', error);
+                                timestampISO = new Date().toISOString();
+                                time = new Date().toLocaleString('zh-TW');
+                            }
+                        } else {
+                            timestampISO = new Date().toISOString();
+                            time = new Date().toLocaleString('zh-TW');
+                        }
+                        
+                        // 組合留言內容
+                        let fullMessage = '';
+                        if (rating && message) {
+                            fullMessage = `⭐ ${rating} - ${message}`;
+                        } else if (rating) {
+                            fullMessage = `⭐ ${rating}`;
+                        } else {
+                            fullMessage = message;
+                        }
+                        
+                        const comment = {
+                            id: Date.now() + index,
+                            author: author,
+                            message: fullMessage,
+                            timestamp: timestampISO,
+                            time: time
+                        };
+                        comments.push(comment);
+                        console.log('添加留言:', comment);
+                    });
+                    
+                    console.log('總共解析到留言數:', comments.length);
+                    console.log('所有留言:', comments);
+                    
+                    // 按時間倒序排列
+                    comments.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+                    
+                    lastSyncTime = Date.now();
+                    updateSyncStatus(`已同步 ${comments.length} 條留言`, 'success');
+                    
+                    displayComments();
+                    updateStats();
+                    return true;
+                } else {
+                    console.log('沒有找到任何行數據');
+                    updateSyncStatus('沒有找到留言數據', 'warning');
+                    displayComments(); // 顯示空狀態
+                    return false;
+                }
+            } catch (error) {
+                console.error('載入 Google Sheets 留言失敗:', error);
+                updateSyncStatus('雲端載入失敗', 'error');
+                
+                // 顯示錯誤訊息
+                const listDiv = document.getElementById("commentList");
+                listDiv.innerHTML = `
+                    <div class="error">
+                        <span class="icon icon-triangle"></span>
+                        <p>載入留言時發生錯誤，請稍後再試。</p>
+                        <p style="font-size: 12px; margin-top: 10px;">錯誤詳情: ${error.message}</p>
+                    </div>
+                `;
+                return false;
+            }
+        }
+
+        // 顯示留言
+        function displayComments() {
+            const listDiv = document.getElementById("commentList");
+            listDiv.innerHTML = "";
+            
+            if (comments.length === 0) {
+                listDiv.innerHTML = `
+                    <div class="empty-state">
+                        <span class="icon icon-slash"></span>
+                        <p>目前還沒有留言，來當第一個留言的人吧！</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            comments.forEach(comment => {
+                const div = document.createElement("div");
+                div.className = "comment-item";
+                
+                div.innerHTML = `
+                    <div class="comment-header">
+                        <span class="comment-author">
+                            <span class="icon icon-user"></span> ${comment.author}
+                        </span>
+                        <span class="comment-time">${comment.time}</span>
+                    </div>
+                    <div class="comment-content">
+                        <span class="icon icon-comment"></span> ${comment.message}
+                    </div>
+                `;
+                
+                listDiv.appendChild(div);
+            });
+        }
+
+        // 頁面載入時初始化
+        async function initialize() {
+            // 載入雲端留言
+            await loadFromGoogleSheets();
+            
+            // 每5分鐘自動同步一次
+            setInterval(loadFromGoogleSheets, 5 * 60 * 1000);
+        }
+
+
+
+        // 初始化
+        initialize();
+    </script>
+</body>
+</html>
