@@ -1,0 +1,2153 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>單字檔案下載中心</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* 性能優化 */
+        body {
+            font-family: 'Microsoft JhengHei', 'PingFang TC', 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 25%, #16213e 50%, #0f3460 75%, #533483 100%);
+            min-height: 100vh;
+            color: #e0e0e0;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* 連動星星效果 */
+        .star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: #fff;
+            border-radius: 50%;
+            opacity: 0.8;
+            transition: all 0.3s ease;
+            pointer-events: none;
+        }
+
+        .star:nth-child(odd) {
+            background: #00ffff;
+            box-shadow: 0 0 4px #00ffff;
+        }
+
+        .star:nth-child(even) {
+            background: #ff00ff;
+            box-shadow: 0 0 4px #ff00ff;
+        }
+
+        .star:nth-child(3n) {
+            background: #ffff00;
+            box-shadow: 0 0 4px #ffff00;
+        }
+
+        .star:nth-child(4n) {
+            background: #00ff00;
+            box-shadow: 0 0 4px #00ff00;
+        }
+
+        .star:nth-child(5n) {
+            background: #ff8000;
+            box-shadow: 0 0 4px #ff8000;
+        }
+
+        /* 星星懸停效果 */
+        .star:hover {
+            transform: scale(2);
+            opacity: 1;
+        }
+
+        /* 確保星星在容器之上但不會干擾互動 */
+        .interactive-stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* 移除複雜的背景動畫 */
+        body::before,
+        body::after {
+            display: none;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+            position: relative;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #00ffff, #ff00ff, transparent);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 0 0 20px rgba(0,255,255,0.5);
+            background: linear-gradient(45deg, #00ffff, #ff00ff, #ffff00, #00ff00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            position: relative;
+        }
+
+        .header h1::after {
+            content: '🚀';
+            position: absolute;
+            right: -40px;
+            top: 0;
+            font-size: 1.5rem;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            color: #b0b0b0;
+        }
+
+        .download-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .download-card {
+            background: rgba(20, 20, 40, 0.8);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 
+                0 10px 30px rgba(0,0,0,0.3),
+                0 0 0 1px rgba(0,255,255,0.1);
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(0,255,255,0.2);
+        }
+
+        .download-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 
+                0 15px 35px rgba(0,0,0,0.4),
+                0 0 0 1px rgba(0,255,255,0.3);
+        }
+
+        .download-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #00ffff, #ff00ff, #ffff00);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .download-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .card-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 20px;
+            font-size: 24px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.2s ease;
+            background: linear-gradient(135deg, #00ffff, #ff00ff);
+            box-shadow: 0 0 20px rgba(0,255,255,0.3);
+        }
+
+        .card-icon:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 25px rgba(0,255,255,0.5);
+        }
+
+        .card-icon::after {
+            display: none;
+        }
+
+        .basic-icon {
+            background: linear-gradient(135deg, #00ffff, #0080ff);
+        }
+
+        .ielts-icon {
+            background: linear-gradient(135deg, #ff00ff, #ff0080);
+        }
+
+        .auto-icon {
+            background: linear-gradient(135deg, #ffff00, #ff8000);
+        }
+
+        .daily-icon {
+            background: linear-gradient(135deg, #00ff00, #00ff80);
+        }
+
+        .toeic-icon {
+            background: linear-gradient(135deg, #ff8000, #ff4000);
+        }
+
+        .toefl-icon {
+            background: linear-gradient(135deg, #8000ff, #4000ff);
+        }
+
+        .business-icon {
+            background: linear-gradient(135deg, #ff0080, #ff0040);
+        }
+
+        .sports-icon {
+            background: linear-gradient(135deg, #00ff80, #00ff40);
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #ffffff;
+            text-shadow: 0 0 10px rgba(0,255,255,0.3);
+        }
+
+        .card-subtitle {
+            color: #b0b0b0;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+
+        .card-stats {
+            display: flex;
+            justify-content: space-between;
+            margin: 20px 0;
+            padding: 15px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 15px;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            border: 1px solid rgba(0,255,255,0.2);
+        }
+
+        .stat-item {
+            text-align: center;
+            transition: all 0.2s ease;
+        }
+
+        .stat-item:hover {
+            transform: scale(1.02);
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #00ffff;
+            text-shadow: 0 0 10px rgba(0,255,255,0.5);
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: #b0b0b0;
+            margin-top: 5px;
+            font-weight: 500;
+        }
+
+        .card-description {
+            color: #d0d0d0;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        /* 優化按鈕動畫 */
+        .download-btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #00ffff, #ff00ff);
+            color: white;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0,255,255,0.3);
+        }
+
+        .download-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 0 25px rgba(0,255,255,0.5);
+            background: linear-gradient(135deg, #00e6e6, #e600e6);
+        }
+
+        .download-btn:active {
+            transform: translateY(0);
+        }
+
+        .download-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .preview-section {
+            background: rgba(20, 20, 40, 0.8);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-top: 40px;
+            box-shadow: 
+                0 10px 30px rgba(0,0,0,0.3),
+                0 0 0 1px rgba(0,255,255,0.2);
+            border: 1px solid rgba(0,255,255,0.2);
+        }
+
+        .preview-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .preview-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #00ffff, #ff00ff);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            color: white;
+            box-shadow: 0 0 15px rgba(0,255,255,0.4);
+        }
+
+        .preview-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #ffffff;
+            text-shadow: 0 0 10px rgba(0,255,255,0.3);
+        }
+
+        .preview-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            background: rgba(0,0,0,0.4);
+            border: 1px solid rgba(0,255,255,0.2);
+        }
+
+        .preview-table th {
+            background: linear-gradient(135deg, #00ffff, #ff00ff);
+            color: white;
+            padding: 18px 15px;
+            text-align: left;
+            font-weight: bold;
+            position: relative;
+            text-shadow: 0 0 10px rgba(0,255,255,0.5);
+        }
+
+        .preview-table th::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent);
+        }
+
+        .preview-table td {
+            padding: 15px;
+            border-bottom: 1px solid rgba(0,255,255,0.1);
+            transition: all 0.2s ease;
+            color: #e0e0e0;
+        }
+
+        .preview-table tr:nth-child(even) {
+            background: rgba(0,255,255,0.05);
+        }
+
+        .preview-table tr:hover {
+            background: rgba(0,255,255,0.1);
+        }
+
+        .preview-table tr:hover td {
+            color: #00ffff;
+            font-weight: 500;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(0,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: #00ffff;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .success-message {
+            background: linear-gradient(135deg, rgba(0,255,0,0.2), rgba(0,200,0,0.1));
+            color: #00ff00;
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 20px;
+            border: 1px solid rgba(0,255,0,0.3);
+            box-shadow: 0 5px 15px rgba(0,255,0,0.2);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .success-message::before {
+            display: none;
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .error-message {
+            background: linear-gradient(135deg, rgba(255,0,0,0.2), rgba(200,0,0,0.1));
+            color: #ff0000;
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 20px;
+            border: 1px solid rgba(255,0,0,0.3);
+            box-shadow: 0 5px 15px rgba(255,0,0,0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            color: #b0b0b0;
+            opacity: 0.8;
+        }
+
+        /* 簡化統計數據 */
+        .card-stats {
+            display: flex;
+            justify-content: space-between;
+            margin: 20px 0;
+            padding: 15px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 15px;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            border: 1px solid rgba(0,255,255,0.2);
+        }
+
+        .stat-item {
+            text-align: center;
+            transition: all 0.2s ease;
+        }
+
+        .stat-item:hover {
+            transform: scale(1.02);
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #00ffff;
+            text-shadow: 0 0 10px rgba(0,255,255,0.5);
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: #b0b0b0;
+            margin-top: 5px;
+            font-weight: 500;
+        }
+
+        .card-description {
+            color: #d0d0d0;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        /* 添加響應式改進 */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .download-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .card-stats {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .preview-table {
+                font-size: 0.9rem;
+            }
+            
+            .preview-table th,
+            .preview-table td {
+                padding: 12px 10px;
+            }
+
+            .download-card {
+                padding: 25px;
+            }
+
+            .card-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 20px;
+            }
+
+            /* 移動設備上減少動畫 */
+            .download-card:hover {
+                transform: translateY(-2px) scale(1.005);
+            }
+
+            .card-icon:hover {
+                transform: scale(1.02);
+            }
+
+            .download-btn:hover {
+                transform: translateY(-1px);
+            }
+
+            /* 減少背景動畫 */
+            body::before {
+                animation: twinkle 8s ease-in-out infinite;
+            }
+
+            body::after {
+                animation: meteor 16s linear infinite;
+            }
+        }
+
+        /* 性能優化 - 減少動畫在低性能設備上 */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+
+            .download-card:hover {
+                transform: none;
+            }
+
+            .card-icon:hover {
+                transform: none;
+            }
+
+            .download-btn:hover {
+                transform: none;
+            }
+        }
+
+        /* 添加深色模式支持 */
+        @media (prefers-color-scheme: dark) {
+            .download-card {
+                background: rgba(30, 30, 30, 0.95);
+                color: #fff;
+            }
+
+            .preview-section {
+                background: rgba(30, 30, 30, 0.95);
+                color: #fff;
+            }
+
+            .preview-table {
+                background: rgba(40, 40, 40, 0.9);
+            }
+
+            .preview-table tr:nth-child(even) {
+                background: rgba(50, 50, 50, 0.8);
+            }
+
+            .card-stats {
+                background: rgba(40, 40, 40, 0.8);
+            }
+        }
+
+        /* 星星顯示動畫 */
+        @keyframes starGlow {
+            0% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.2); }
+            100% { box-shadow: 0 0 30px rgba(255, 215, 0, 0.4); }
+        }
+
+        /* 星星獎勵動畫 */
+        @keyframes starRewardPop {
+            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+            20% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
+            80% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 0; }
+        }
+
+        /* 星星音效動畫 */
+        @keyframes starSound {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <!-- 連動星星容器 -->
+    <div class="interactive-stars" id="interactiveStars"></div>
+    
+    <div id="app">
+        <div class="container">
+            <!-- 添加星星顯示區域 -->
+            <div class="stars-display" style="
+                background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(255, 170, 0, 0.1));
+                border: 2px solid rgba(255, 215, 0, 0.3);
+                border-radius: 15px;
+                padding: 15px 25px;
+                margin-bottom: 30px;
+                text-align: center;
+                backdrop-filter: blur(10px);
+                box-shadow: 0 0 20px rgba(255, 215, 0, 0.2);
+                animation: starGlow 2s ease-in-out infinite alternate;
+            ">
+                <div style="
+                    font-size: 1.5rem;
+                    font-weight: bold;
+                    color: #ffd700;
+                    text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 10px;
+                ">
+                    <span id="totalStarsCount">⭐ 0</span>
+                    <span style="font-size: 1rem; color: #b0b0b0;">| 使用星星解鎖檔案下載</span>
+                </div>
+            </div>
+
+            <div class="header">
+                <h1>🚀 單字檔案下載中心 🌌</h1>
+                <p>✨ 精選高品質單字檔案，助您提升英語能力 ✨</p>
+                <div style="
+                    background: rgba(0,255,255,0.1);
+                    border: 1px solid rgba(0,255,255,0.3);
+                    border-radius: 10px;
+                    padding: 10px;
+                    margin-top: 15px;
+                    font-size: 0.9rem;
+                    color: #00ffff;
+                ">
+                    💡 使用提示：點擊按鈕解鎖或下載檔案
+                </div>
+            </div>
+
+            <!-- 添加搜尋和篩選功能 -->
+            <div class="search-section" style="background: rgba(0,0,0,0.3); backdrop-filter: blur(15px); border-radius: 15px; padding: 20px; margin-bottom: 30px; border: 1px solid rgba(0,255,255,0.2); box-shadow: 0 0 20px rgba(0,255,255,0.1);">
+                <div style="display: flex; gap: 15px; flex-wrap: wrap; align-items: center;">
+                    <input 
+                        v-model="searchQuery" 
+                        type="text" 
+                        placeholder="搜尋單字檔案..." 
+                        style="flex: 1; min-width: 200px; padding: 12px 15px; border: none; border-radius: 10px; background: rgba(0,0,0,0.6); color: #ffffff; font-size: 1rem; border: 1px solid rgba(0,255,255,0.3); transition: all 0.3s ease;"
+                        @focus="$event.target.style.boxShadow='0 0 15px rgba(0,255,255,0.4)'"
+                        @blur="$event.target.style.boxShadow='none'"
+                    >
+                    <select 
+                        v-model="selectedLevel" 
+                        style="padding: 12px 15px; border: none; border-radius: 10px; background: rgba(0,0,0,0.6); color: #ffffff; font-size: 1rem; min-width: 120px; border: 1px solid rgba(0,255,255,0.3); transition: all 0.3s ease;"
+                        @focus="$event.target.style.boxShadow='0 0 15px rgba(0,255,255,0.4)'"
+                        @blur="$event.target.style.boxShadow='none'"
+                    >
+                        <option value="">所有等級</option>
+                        <option value="初級">初級</option>
+                        <option value="中級">中級</option>
+                        <option value="中高級">中高級</option>
+                        <option value="高級">高級</option>
+                    </select>
+                    <button 
+                        @click="resetFilters" 
+                        style="padding: 12px 20px; border: none; border-radius: 10px; background: linear-gradient(135deg, #00ffff, #ff00ff); color: white; font-weight: bold; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 0 15px rgba(0,255,255,0.3);"
+                        @mouseover="$event.target.style.transform='translateY(-2px)'; $event.target.style.boxShadow='0 0 25px rgba(0,255,255,0.5)'"
+                        @mouseout="$event.target.style.transform='translateY(0)'; $event.target.style.boxShadow='0 0 15px rgba(0,255,255,0.3)'"
+                    >
+                        🔄 重置篩選
+                    </button>
+
+
+                </div>
+                <div style="margin-top: 15px; color: #00ffff; font-size: 0.9rem; text-shadow: 0 0 5px rgba(0,255,255,0.5);">
+                    ✨ 找到 {{ filteredFiles.length }} 個檔案
+                </div>
+            </div>
+
+            <div class="download-grid">
+                <div class="download-card" v-for="file in filteredFiles" :key="file.id" @click="selectFile(file)">
+                    <div class="card-header">
+                        <div class="card-icon" :class="file.iconClass">
+                            {{ file.icon }}
+                        </div>
+                        <div>
+                            <div class="card-title">{{ file.title }}</div>
+                            <div class="card-subtitle">{{ file.subtitle }}</div>
+                        </div>
+                    </div>
+
+                    <div class="card-stats">
+                        <div class="stat-item">
+                            <div class="stat-number">{{ file.wordCount }}</div>
+                            <div class="stat-label">單字數量</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">{{ file.fileSize }}</div>
+                            <div class="stat-label">檔案大小</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number" style="color: #ffd700;">{{ file.unlockCost || 10 }}</div>
+                            <div class="stat-label">解鎖費用</div>
+                        </div>
+                    </div>
+
+                    <div class="card-description">
+                        {{ file.description }}
+                    </div>
+
+                    <button 
+                        class="download-btn" 
+                        @click.stop="isUnlocked(file.id) ? downloadFile(file) : unlockFile(file)"
+                        :disabled="downloading === file.id || (!isUnlocked(file.id) && !canUnlock(file))"
+                        :style="getUnlockButtonStyle(file)"
+                        :title="isUnlocked(file.id) ? '點擊下載檔案' : '點擊解鎖檔案'"
+                    >
+                        <span v-if="downloading === file.id" class="loading"></span>
+                        <span v-else-if="isUnlocked(file.id)">
+                            📥 下載檔案
+                        </span>
+                        <span v-else>
+                            🔓 解鎖檔案 ({{ file.unlockCost || 10 }} ⭐)
+                        </span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="preview-section" v-if="selectedFile">
+                <div class="preview-header">
+                    <div class="preview-icon">👁️</div>
+                    <div class="preview-title">{{ selectedFile.title }} - 檔案預覽</div>
+                    <button 
+                        @click="selectedFile = null" 
+                        style="margin-left: auto; background: none; border: none; color: #667eea; font-size: 1.5rem; cursor: pointer; padding: 5px; border-radius: 50%; transition: all 0.3s ease;"
+                        title="關閉預覽"
+                    >
+                        ✕
+                    </button>
+                </div>
+                
+                <table class="preview-table">
+                    <thead>
+                        <tr>
+                            <th>英文單字</th>
+                            <th>中文翻譯</th>
+                            <th>英文例句</th>
+                            <th>中文例句</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="word in selectedFile.preview" :key="word.english">
+                            <td><strong>{{ word.english }}</strong></td>
+                            <td>{{ word.chinese }}</td>
+                            <td>{{ word.example_en }}</td>
+                            <td>{{ word.example_ch }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div v-if="message" :class="messageClass">
+                {{ message }}
+            </div>
+
+            <!-- 星星獎勵歷史區域 -->
+            <div v-if="starRewardHistory.length > 0" class="star-history-section" style="
+                background: rgba(20, 20, 40, 0.8);
+                backdrop-filter: blur(15px);
+                border-radius: 20px;
+                padding: 30px;
+                margin-top: 40px;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+                border: 1px solid rgba(255, 215, 0, 0.2);
+            ">
+                <div style="display: flex; align-items: center; margin-bottom: 20px;">
+                    <div style="
+                        width: 40px;
+                        height: 40px;
+                        border-radius: 50%;
+                        background: linear-gradient(135deg, #ffd700, #ffaa00);
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        margin-right: 15px;
+                        color: #000;
+                        font-weight: bold;
+                        box-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
+                    ">🔓</div>
+                    <div style="font-size: 1.3rem; font-weight: bold; color: #ffffff;">
+                        解鎖歷史記錄
+                    </div>
+                </div>
+                
+                <div style="max-height: 200px; overflow-y: auto;">
+                    <div v-for="(record, index) in starRewardHistory.slice(-5)" :key="index" style="
+                        background: rgba(0,0,0,0.3);
+                        border-radius: 10px;
+                        padding: 15px;
+                        margin-bottom: 10px;
+                        border: 1px solid rgba(255, 215, 0, 0.2);
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                    ">
+                        <div>
+                            <div style="color: #ffd700; font-weight: bold;">{{ record.file }}</div>
+                            <div style="color: #b0b0b0; font-size: 0.9rem;">
+                                {{ new Date(record.timestamp).toLocaleString() }}
+                            </div>
+                        </div>
+                        <div style="
+                            background: linear-gradient(135deg, #ff0000, #ff4000);
+                            color: #ffffff;
+                            padding: 8px 15px;
+                            border-radius: 20px;
+                            font-weight: bold;
+                            font-size: 1.1rem;
+                        ">
+                            -{{ record.stars }} ⭐
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer">
+                <p>🚀 © 2024 宇宙單字學習平台 - 讓英語學習更有效率 🌌</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 連動星星效果
+        function createInteractiveStars() {
+            const starsContainer = document.getElementById('interactiveStars');
+            const starCount = 40; // 增加星星數量
+            
+            // 創建星星
+            for (let i = 0; i < starCount; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 2 + 's';
+                starsContainer.appendChild(star);
+            }
+            
+            // 滑鼠移動事件 - 優化連動效果
+            let mouseX = 0;
+            let mouseY = 0;
+            let isMouseMoving = false;
+            let animationFrame;
+            
+            document.addEventListener('mousemove', (e) => {
+                mouseX = e.clientX;
+                mouseY = e.clientY;
+                isMouseMoving = true;
+                
+                if (!animationFrame) {
+                    animationFrame = requestAnimationFrame(updateAllStars);
+                }
+            });
+            
+            function updateAllStars() {
+                if (!isMouseMoving) {
+                    animationFrame = null;
+                    return;
+                }
+                
+                const stars = document.querySelectorAll('.star');
+                const centerX = window.innerWidth / 2;
+                const centerY = window.innerHeight / 2;
+                
+                stars.forEach((star, index) => {
+                    const rect = star.getBoundingClientRect();
+                    const starX = rect.left + rect.width / 2;
+                    const starY = rect.top + rect.height / 2;
+                    
+                    // 計算到滑鼠的距離
+                    const distanceToMouse = Math.sqrt(
+                        Math.pow(mouseX - starX, 2) + Math.pow(mouseY - starY, 2)
+                    );
+                    
+                    // 計算到中心的距離
+                    const distanceToCenter = Math.sqrt(
+                        Math.pow(centerX - starX, 2) + Math.pow(centerY - starY, 2)
+                    );
+                    
+                    // 滑鼠影響效果
+                    let mouseEffect = 0;
+                    if (distanceToMouse < 150) {
+                        mouseEffect = 1 - (distanceToMouse / 150);
+                    }
+                    
+                    // 中心引力效果
+                    let centerEffect = 0;
+                    if (distanceToCenter < 200) {
+                        centerEffect = 1 - (distanceToCenter / 200);
+                    }
+                    
+                    // 組合效果
+                    const totalEffect = Math.max(mouseEffect, centerEffect * 0.3);
+                    
+                    // 應用變換
+                    const scale = 1 + totalEffect * 0.4;
+                    const opacity = 0.6 + totalEffect * 0.4;
+                    const glow = 4 + totalEffect * 8;
+                    
+                    star.style.transform = `scale(${scale})`;
+                    star.style.opacity = opacity;
+                    star.style.boxShadow = `0 0 ${glow}px currentColor`;
+                    
+                    // 添加輕微的移動效果
+                    if (totalEffect > 0.1) {
+                        const moveX = (mouseX - starX) * 0.01 * totalEffect;
+                        const moveY = (mouseY - starY) * 0.01 * totalEffect;
+                        star.style.transform += ` translate(${moveX}px, ${moveY}px)`;
+                    }
+                });
+                
+                isMouseMoving = false;
+                animationFrame = requestAnimationFrame(updateAllStars);
+            }
+            
+            // 波浪式連動效果
+            let waveTime = 0;
+            function createWaveEffect() {
+                waveTime += 0.02;
+                const stars = document.querySelectorAll('.star');
+                
+                stars.forEach((star, index) => {
+                    const waveOffset = index * 0.3;
+                    const wave = Math.sin(waveTime + waveOffset) * 0.1;
+                    const currentTransform = star.style.transform || '';
+                    
+                    // 保持原有的變換，添加波浪效果
+                    if (currentTransform.includes('scale')) {
+                        const scaleMatch = currentTransform.match(/scale\(([^)]+)\)/);
+                        if (scaleMatch) {
+                            const currentScale = parseFloat(scaleMatch[1]);
+                            const newScale = currentScale + wave;
+                            star.style.transform = currentTransform.replace(
+                                /scale\([^)]+\)/,
+                                `scale(${Math.max(0.8, newScale)})`
+                            );
+                        }
+                    }
+                });
+                
+                requestAnimationFrame(createWaveEffect);
+            }
+            
+            // 啟動波浪效果
+            createWaveEffect();
+            
+            // 隨機閃爍效果
+            setInterval(() => {
+                const stars = document.querySelectorAll('.star');
+                const randomStar = stars[Math.floor(Math.random() * stars.length)];
+                const originalOpacity = randomStar.style.opacity;
+                const originalTransform = randomStar.style.transform;
+                
+                randomStar.style.opacity = '1';
+                randomStar.style.transform = originalTransform.replace(/scale\([^)]+\)/, 'scale(1.5)');
+                
+                setTimeout(() => {
+                    randomStar.style.opacity = originalOpacity;
+                    randomStar.style.transform = originalTransform;
+                }, 400);
+            }, 1500);
+        }
+        
+        // 頁面載入完成後初始化星星
+        document.addEventListener('DOMContentLoaded', createInteractiveStars);
+
+        const { createApp } = Vue;
+
+        createApp({
+            data() {
+                return {
+                    downloading: null,
+                    message: '',
+                    messageClass: '',
+                    selectedFile: null,
+                    searchQuery: '',
+                    selectedLevel: '',
+                    // 添加星星系統數據
+                    totalStars: 0,
+                    starRewardHistory: [],
+                    vocabularyFiles: [
+                        {
+                            id: 'basic400',
+                            title: '🌟 宇宙入門單字集',
+                            subtitle: '400個基礎英文單字 - 探索英語的起點',
+                            icon: '⭐',
+                            iconClass: 'basic-icon',
+                            wordCount: '400',
+                            fileSize: '26KB',
+                            level: '初級',
+                            unlockCost: 5,
+                            description: '精選最基礎的400個英文單字，適合英語初學者，包含日常生活最常用的詞彙和簡單例句。',
+                            filename: '400單.csv',
+                            preview: [
+                                {
+                                    english: 'I',
+                                    chinese: '我',
+                                    example_en: 'I am a student.',
+                                    example_ch: '我是一名學生。'
+                                },
+                                {
+                                    english: 'you',
+                                    chinese: '你；你們',
+                                    example_en: 'You are my friend.',
+                                    example_ch: '你是我的朋友。'
+                                },
+                                {
+                                    english: 'he',
+                                    chinese: '他',
+                                    example_en: 'He has a dog.',
+                                    example_ch: '他有一隻狗。'
+                                },
+                                {
+                                    english: 'she',
+                                    chinese: '她',
+                                    example_en: 'She is my sister.',
+                                    example_ch: '她是我姐姐。'
+                                },
+                                {
+                                    english: 'it',
+                                    chinese: '牠；它',
+                                    example_en: 'It is a cat.',
+                                    example_ch: '牠是一隻貓。'
+                                }
+                            ]
+                        },
+                        {
+                            id: 'ielts',
+                            title: '🌠 星際考試單字集',
+                            subtitle: '1000個IELTS必備單字 - 征服英語考試',
+                            icon: '🌠',
+                            iconClass: 'ielts-icon',
+                            wordCount: '1000+',
+                            fileSize: '75KB',
+                            level: '中級',
+                            unlockCost: 15,
+                            description: '精選 IELTS 考試中最常出現的 1000 個單字，包含詳細的中英文翻譯和實用例句，幫助您快速提升詞彙量。',
+                            filename: '1000英檢單字.csv',
+                            preview: [
+                                {
+                                    english: 'abandon',
+                                    chinese: '拋棄',
+                                    example_en: 'He decided to abandon the car on the roadside.',
+                                    example_ch: '他決定把車子拋棄在路邊。'
+                                },
+                                {
+                                    english: 'ability',
+                                    chinese: '能力',
+                                    example_en: 'She has the ability to solve complex problems.',
+                                    example_ch: '她有能力解決複雜的問題。'
+                                },
+                                {
+                                    english: 'accept',
+                                    chinese: '接受',
+                                    example_en: 'He accepted the job offer.',
+                                    example_ch: '他接受了那份工作機會。'
+                                },
+                                {
+                                    english: 'active',
+                                    chinese: '活躍的',
+                                    example_en: 'He is very active in school activities.',
+                                    example_ch: '他在學校活動中非常活躍。'
+                                },
+                                {
+                                    english: 'advice',
+                                    chinese: '建議',
+                                    example_en: 'She gave me good advice.',
+                                    example_ch: '她給了我好的建議。'
+                                }
+                            ]
+                        },
+                        {
+                            id: 'daily',
+                            title: '🏠 地球生活單字集',
+                            subtitle: '150個日常生活單字 - 地球人的日常',
+                            icon: '🏠',
+                            iconClass: 'daily-icon',
+                            wordCount: '150+',
+                            fileSize: '15KB',
+                            level: '初級',
+                            unlockCost: 8,
+                            description: '精選日常生活中最常用的英文單字，包含食物、家庭、工作、天氣等實用詞彙，適合日常交流使用。',
+                            filename: '基礎生活單字.csv',
+                            preview: [
+                                {
+                                    english: 'breakfast',
+                                    chinese: '早餐',
+                                    example_en: 'I eat breakfast at 7 AM every morning.',
+                                    example_ch: '我每天早上7點吃早餐。'
+                                },
+                                {
+                                    english: 'lunch',
+                                    chinese: '午餐',
+                                    example_en: 'Let\'s have lunch together today.',
+                                    example_ch: '今天我們一起吃午餐吧。'
+                                },
+                                {
+                                    english: 'dinner',
+                                    chinese: '晚餐',
+                                    example_en: 'We usually have dinner at 6 PM.',
+                                    example_ch: '我們通常晚上6點吃晚餐。'
+                                },
+                                {
+                                    english: 'coffee',
+                                    chinese: '咖啡',
+                                    example_en: 'I drink coffee every morning.',
+                                    example_ch: '我每天早上都喝咖啡。'
+                                },
+                                {
+                                    english: 'water',
+                                    chinese: '水',
+                                    example_en: 'Please drink more water.',
+                                    example_ch: '請多喝水。'
+                                }
+                            ]
+                        },
+                        {
+                            id: 'toeic',
+                            title: '🛰️ 太空職場單字集',
+                            subtitle: '100個TOEIC核心單字 - 征服職場英語',
+                            icon: '🛰️',
+                            iconClass: 'toeic-icon',
+                            wordCount: '100',
+                            fileSize: '10KB',
+                            level: '中級',
+                            unlockCost: 12,
+                            description: '專為 TOEIC 考試設計的100個核心單字，包含商業和職場常用詞彙，適合準備職場英語考試。',
+                            filename: 'TOEIC___100.csv',
+                            preview: [
+                                {
+                                    english: 'accommodate',
+                                    chinese: '容納；提供膳宿',
+                                    example_en: 'The hotel can accommodate up to 200 guests.',
+                                    example_ch: '這家飯店最多可容納200位客人。'
+                                },
+                                {
+                                    english: 'accomplish',
+                                    chinese: '完成；達成',
+                                    example_en: 'She accomplished all her tasks before the deadline.',
+                                    example_ch: '她在截止日期前完成了所有任務。'
+                                },
+                                {
+                                    english: 'agenda',
+                                    chinese: '議程',
+                                    example_en: 'The meeting agenda includes budget review and planning.',
+                                    example_ch: '會議議程包括預算審查與規劃。'
+                                },
+                                {
+                                    english: 'allocate',
+                                    chinese: '分配；撥給',
+                                    example_en: 'They allocated funds for the new project.',
+                                    example_ch: '他們為新專案撥款。'
+                                },
+                                {
+                                    english: 'annual',
+                                    chinese: '年度的',
+                                    example_en: 'The annual report was published in March.',
+                                    example_ch: '年度報告在三月發佈。'
+                                }
+                            ]
+                        },
+                        {
+                            id: 'toefl',
+                            title: '🔬 學術研究單字集',
+                            subtitle: '600個TOEFL高級單字 - 學術英語大師',
+                            icon: '🔬',
+                            iconClass: 'toefl-icon',
+                            wordCount: '600+',
+                            fileSize: '78KB',
+                            level: '高級',
+                            unlockCost: 25,
+                            description: '專為 TOEFL 考試設計的高級單字集，包含學術性詞彙和複雜表達，適合準備留學考試的學習者。',
+                            filename: '托福單字.csv',
+                            preview: [
+                                {
+                                    english: 'equivocal',
+                                    chinese: '模稜兩可的',
+                                    example_en: 'Her answer was equivocal, leaving us more confused.',
+                                    example_ch: '她的回答模稜兩可，反而讓我們更困惑。'
+                                },
+                                {
+                                    english: 'eradicate',
+                                    chinese: '根除，消滅',
+                                    example_en: 'The goal is to eradicate poverty within a generation.',
+                                    example_ch: '目標是在一代人之內根除貧困。'
+                                },
+                                {
+                                    english: 'eschew',
+                                    chinese: '避開，戒絕',
+                                    example_en: 'He decided to eschew all forms of processed sugar.',
+                                    example_ch: '他決定戒絕所有加工糖。'
+                                },
+                                {
+                                    english: 'euphemism',
+                                    chinese: '委婉說法',
+                                    example_en: '"Passed away" is a common euphemism for "died."',
+                                    example_ch: '"過世"是"死亡"的常見委婉說法。'
+                                },
+                                {
+                                    english: 'exacerbate',
+                                    chinese: '加劇，使惡化',
+                                    example_en: 'His comments only served to exacerbate the tension.',
+                                    example_ch: '他的言論只會加劇緊張氣氛。'
+                                }
+                            ]
+                        },
+                        {
+                            id: 'business',
+                            title: '👨‍🚀 太空商務單字集',
+                            subtitle: '200個商務英語單字 - 星際商業精英',
+                            icon: '👨‍🚀',
+                            iconClass: 'business-icon',
+                            wordCount: '200+',
+                            fileSize: '25KB',
+                            level: '中高級',
+                            unlockCost: 18,
+                            description: '精選商業和職場最常用的英文單字，包含會議、談判、管理、財務等專業詞彙，適合職場英語學習。',
+                            filename: '商務英語單字.csv',
+                            preview: [
+                                {
+                                    english: 'meeting',
+                                    chinese: '會議',
+                                    example_en: 'We have a meeting at 2 PM today.',
+                                    example_ch: '我們今天下午2點有會議。'
+                                },
+                                {
+                                    english: 'presentation',
+                                    chinese: '簡報',
+                                    example_en: 'She gave an excellent presentation.',
+                                    example_ch: '她做了一個出色的簡報。'
+                                },
+                                {
+                                    english: 'deadline',
+                                    chinese: '截止日期',
+                                    example_en: 'The project deadline is next Friday.',
+                                    example_ch: '專案截止日期是下週五。'
+                                },
+                                {
+                                    english: 'budget',
+                                    chinese: '預算',
+                                    example_en: 'We need to stay within the budget.',
+                                    example_ch: '我們需要保持在預算內。'
+                                },
+                                {
+                                    english: 'negotiation',
+                                    chinese: '談判',
+                                    example_en: 'The negotiation lasted for three hours.',
+                                    example_ch: '談判持續了三個小時。'
+                                }
+                            ]
+                        },
+                        {
+                            id: 'sports',
+                            title: '⚽ 運動星球單字集',
+                            subtitle: '22個運動生活單字 - 活力四射的運動員',
+                            icon: '⚽',
+                            iconClass: 'sports-icon',
+                            wordCount: '22',
+                            fileSize: '2KB',
+                            level: '初級',
+                            unlockCost: 3,
+                            description: '精選運動和日常生活相關的英文單字，包含各種運動項目、時間概念和日常用語，適合初學者學習。',
+                            filename: '運動生活單字.csv',
+                            preview: [
+                                {
+                                    english: 'something',
+                                    chinese: '某事；某物',
+                                    example_en: 'I have something to tell you.',
+                                    example_ch: '我有事要告訴你。'
+                                },
+                                {
+                                    english: 'everything',
+                                    chinese: '每件事',
+                                    example_en: 'Everything is ready for the trip.',
+                                    example_ch: '旅行的一切已經準備好了。'
+                                },
+                                {
+                                    english: 'tennis',
+                                    chinese: '網球',
+                                    example_en: 'She plays tennis every Saturday.',
+                                    example_ch: '她每星期六打網球。'
+                                },
+                                {
+                                    english: 'badminton',
+                                    chinese: '羽球',
+                                    example_en: 'They play badminton after school.',
+                                    example_ch: '他們放學後打羽球。'
+                                },
+                                {
+                                    english: 'sport',
+                                    chinese: '運動',
+                                    example_en: 'Soccer is a popular sport.',
+                                    example_ch: '足球是一項受歡迎的運動。'
+                                }
+                            ]
+                        },
+                        {
+                            id: '800words',
+                            title: '🌌 銀河基礎單字集',
+                            subtitle: '800個基礎英文單字 - 銀河系必備詞彙',
+                            icon: '🌌',
+                            iconClass: 'basic-icon',
+                            wordCount: '800',
+                            fileSize: '45KB',
+                            level: '初級',
+                            unlockCost: 10,
+                            description: '精選800個基礎英文單字，包含日常生活、運動、時間等常用詞彙，適合英語初學者學習。',
+                            filename: '800單字.csv',
+                            preview: [
+                                {
+                                    english: 'something',
+                                    chinese: '某事；某物',
+                                    example_en: 'I have something to tell you.',
+                                    example_ch: '我有事要告訴你。'
+                                },
+                                {
+                                    english: 'everything',
+                                    chinese: '每件事',
+                                    example_en: 'Everything is ready for the trip.',
+                                    example_ch: '旅行的一切已經準備好了。'
+                                },
+                                {
+                                    english: 'tennis',
+                                    chinese: '網球',
+                                    example_en: 'She plays tennis every Saturday.',
+                                    example_ch: '她每星期六打網球。'
+                                },
+                                {
+                                    english: 'badminton',
+                                    chinese: '羽球',
+                                    example_en: 'They play badminton after school.',
+                                    example_ch: '他們放學後打羽球。'
+                                },
+                                {
+                                    english: 'sport',
+                                    chinese: '運動',
+                                    example_en: 'Soccer is a popular sport.',
+                                    example_ch: '足球是一項受歡迎的運動。'
+                                }
+                            ]
+                        },
+                        {
+                            id: 'newvocab1',
+                            title: '🌟 新星探索單字集',
+                            subtitle: '50個精選實用單字 - 探索新的語言星球',
+                            icon: '🌟',
+                            iconClass: 'basic-icon',
+                            wordCount: '50',
+                            fileSize: '8KB',
+                            level: '初級',
+                            unlockCost: 6,
+                            description: '精選50個實用英文單字，包含日常生活、情感表達、自然環境等詞彙，適合英語學習者使用。',
+                            filename: '新增單字集1.csv',
+                            preview: [
+                                {
+                                    english: 'difficult',
+                                    chinese: '困難的',
+                                    example_en: 'This math problem is difficult.',
+                                    example_ch: '這道數學題很困難。'
+                                },
+                                {
+                                    english: 'as',
+                                    chinese: '作為；依照',
+                                    example_en: 'She works as a volunteer on weekends.',
+                                    example_ch: '她週末作為志工工作。'
+                                },
+                                {
+                                    english: 'own',
+                                    chinese: '自己的',
+                                    example_en: 'I have my own desk at home.',
+                                    example_ch: '我在家裡有自己的書桌。'
+                                },
+                                {
+                                    english: 'true',
+                                    chinese: '真實的',
+                                    example_en: 'Is this story true?',
+                                    example_ch: '這個故事是真的嗎？'
+                                },
+                                {
+                                    english: 'sea',
+                                    chinese: '海',
+                                    example_en: 'We swim in the sea during summer vacation.',
+                                    example_ch: '暑假我們在海裡游泳。'
+                                }
+                            ]
+                        },
+                        {
+                            id: 'newvocab2',
+                            title: '🌠 流星進階單字集',
+                            subtitle: '50個進階實用單字 - 流星的智慧光芒',
+                            icon: '🌠',
+                            iconClass: 'ielts-icon',
+                            wordCount: '50',
+                            fileSize: '8KB',
+                            level: '中級',
+                            unlockCost: 8,
+                            description: '精選50個進階英文單字，包含抽象概念、情感表達、社會互動等詞彙，適合提升英語表達能力。',
+                            filename: '新增單字集2.csv',
+                            preview: [
+                                {
+                                    english: 'basket',
+                                    chinese: '籃子',
+                                    example_en: 'I carry apples in a basket to the picnic.',
+                                    example_ch: '我用籃子把蘋果帶到野餐。'
+                                },
+                                {
+                                    english: 'church',
+                                    chinese: '教堂',
+                                    example_en: 'We go to church on Sunday morning.',
+                                    example_ch: '我們星期天早上去教堂。'
+                                },
+                                {
+                                    english: 'hunt',
+                                    chinese: '打獵',
+                                    example_en: 'My grandfather used to hunt in the forest.',
+                                    example_ch: '我爺爺以前在森林裡打獵。'
+                                },
+                                {
+                                    english: 'roll',
+                                    chinese: '滾動；晃動',
+                                    example_en: 'The ball will roll down the hill.',
+                                    example_ch: '球會從小山滾下來。'
+                                },
+                                {
+                                    english: 'hang',
+                                    chinese: '掛；懸吊',
+                                    example_en: 'Please hang your coat on that hook.',
+                                    example_ch: '請把外套掛在那個掛勾上。'
+                                }
+                            ]
+                        },
+                        {
+                            id: 'newvocab3',
+                            title: '🌍 地球環境單字集',
+                            subtitle: '50個自然環境單字 - 探索地球的美麗',
+                            icon: '🌍',
+                            iconClass: 'daily-icon',
+                            wordCount: '50',
+                            fileSize: '8KB',
+                            level: '初級',
+                            unlockCost: 7,
+                            description: '精選50個自然環境相關英文單字，包含自然現象、地理環境、天氣變化等詞彙，適合學習自然科學英語。',
+                            filename: '新增單字集3.csv',
+                            preview: [
+                                {
+                                    english: 'cut',
+                                    chinese: '切；傷口',
+                                    example_en: 'Be careful not to cut your finger when you slice the bread.',
+                                    example_ch: '當你切麵包時，小心別割到手指。'
+                                },
+                                {
+                                    english: 'fill',
+                                    chinese: '裝滿',
+                                    example_en: 'Please fill the water bottle before the hike.',
+                                    example_ch: '請在健行前把水瓶裝滿。'
+                                },
+                                {
+                                    english: 'pack',
+                                    chinese: '包；裝箱',
+                                    example_en: 'I need to pack my clothes for the weekend trip.',
+                                    example_ch: '我需要為週末旅行把衣服打包。'
+                                },
+                                {
+                                    english: 'package',
+                                    chinese: '包裹；包裝',
+                                    example_en: 'The delivery man dropped off a package at our door.',
+                                    example_ch: '送貨員把一個包裹放在我們家門口。'
+                                },
+                                {
+                                    english: 'air',
+                                    chinese: '空氣',
+                                    example_en: 'Open the window to let fresh air into the room.',
+                                    example_ch: '打開窗戶讓新鮮空氣進入房間。'
+                                }
+                            ]
+                        },
+                        {
+                            id: 'newvocab4',
+                            title: '🛸 情感飛船單字集',
+                            subtitle: '50個安全與情感單字 - 情感的宇宙航行',
+                            icon: '🛸',
+                            iconClass: 'business-icon',
+                            wordCount: '50',
+                            fileSize: '8KB',
+                            level: '中級',
+                            unlockCost: 9,
+                            description: '精選50個安全與情感相關英文單字，包含安全概念、情感表達、人際關係等詞彙，適合學習情感表達英語。',
+                            filename: '新增單字集4.csv',
+                            preview: [
+                                {
+                                    english: 'safe',
+                                    chinese: '安全的',
+                                    example_en: 'Always wear a helmet to stay safe when you ride a bike.',
+                                    example_ch: '騎腳踏車時一定要戴安全帽才能保持安全。'
+                                },
+                                {
+                                    english: 'sharp',
+                                    chinese: '鋒利的；劇烈的',
+                                    example_en: 'Be careful with that knife; it is very sharp.',
+                                    example_ch: '要小心那把刀，它非常鋒利。'
+                                },
+                                {
+                                    english: 'lazy',
+                                    chinese: '懶散的',
+                                    example_en: 'The lazy cat sleeps on the sofa all day.',
+                                    example_ch: '那隻懶散的貓整天躺在沙發上睡覺。'
+                                },
+                                {
+                                    english: 'glad',
+                                    chinese: '高興的',
+                                    example_en: 'I am glad we won the game today.',
+                                    example_ch: '我很高興我們今天贏得了比賽。'
+                                },
+                                {
+                                    english: 'excellent',
+                                    chinese: '優秀的',
+                                    example_en: 'She did an excellent job on her science project.',
+                                    example_ch: '她在科學專題上做得很優秀。'
+                                }
+                            ]
+                        },
+                        {
+                            id: 'newvocab5',
+                            title: '🌙 文化月球單字集',
+                            subtitle: '50個節日與文化單字 - 月球的傳統文化',
+                            icon: '🌙',
+                            iconClass: 'sports-icon',
+                            wordCount: '50',
+                            fileSize: '8KB',
+                            level: '初級',
+                            unlockCost: 6,
+                            description: '精選50個節日與文化相關英文單字，包含節日慶祝、文化活動、傳統習俗等詞彙，適合學習文化英語。',
+                            filename: '新增單字集5.csv',
+                            preview: [
+                                {
+                                    english: 'row',
+                                    chinese: '排；列',
+                                    example_en: 'Please sit in a row during assembly.',
+                                    example_ch: '請在集合時排成一列。'
+                                },
+                                {
+                                    english: 'million',
+                                    chinese: '百萬',
+                                    example_en: 'The population of the city is over one million.',
+                                    example_ch: '這個城市的人口超過一百萬。'
+                                },
+                                {
+                                    english: 'goose',
+                                    chinese: '鵝',
+                                    example_en: 'A goose swam across the pond.',
+                                    example_ch: '一隻鵝游過池塘。'
+                                },
+                                {
+                                    english: 'bug',
+                                    chinese: '蟲子',
+                                    example_en: 'I found a bug crawling on the window.',
+                                    example_ch: '我發現一隻蟲子在窗戶上爬行。'
+                                },
+                                {
+                                    english: 'hen',
+                                    chinese: '母雞',
+                                    example_en: 'The hen laid five eggs this morning.',
+                                    example_ch: '這隻母雞今天早上下了五顆蛋。'
+                                }
+                            ]
+                        },
+                        {
+                            id: 'newvocab6',
+                            title: '🏛️ 建築神殿單字集',
+                            subtitle: '50個建築與空間單字 - 宇宙建築的藝術',
+                            icon: '🏛️',
+                            iconClass: 'toeic-icon',
+                            wordCount: '50',
+                            fileSize: '8KB',
+                            level: '中級',
+                            unlockCost: 8,
+                            description: '精選50個建築與空間相關英文單字，包含建築結構、空間概念、室內設計等詞彙，適合學習建築英語。',
+                            filename: '新增單字集6.csv',
+                            preview: [
+                                {
+                                    english: 'paint',
+                                    chinese: '動畫圖；油漆',
+                                    example_en: 'Please paint the wall blue.',
+                                    example_ch: '請把牆壁漆成藍色。'
+                                },
+                                {
+                                    english: 'bridge',
+                                    chinese: '橋樑',
+                                    example_en: 'We walked across the bridge to get to the park.',
+                                    example_ch: '我們走過橋樑到達公園。'
+                                },
+                                {
+                                    english: 'airport',
+                                    chinese: '機場',
+                                    example_en: 'They arrived at the airport early in the morning.',
+                                    example_ch: '他們一大早就到達機場。'
+                                },
+                                {
+                                    english: 'postcard',
+                                    chinese: '明信片',
+                                    example_en: 'She sent a postcard from her vacation in Japan.',
+                                    example_ch: '她從日本度假時寄了一張明信片。'
+                                },
+                                {
+                                    english: 'stair',
+                                    chinese: '樓梯',
+                                    example_en: 'He climbed the stair to reach his room.',
+                                    example_ch: '他爬樓梯到他的房間。'
+                                }
+                            ]
+                        },
+                        {
+                            id: 'newvocab7',
+                            title: '👨‍🚀 職業太空單字集',
+                            subtitle: '50個職業與工作單字 - 太空人的職業生涯',
+                            icon: '💼',
+                            iconClass: 'business-icon',
+                            wordCount: '50',
+                            fileSize: '8KB',
+                            level: '中級',
+                            unlockCost: 9,
+                            description: '精選50個職業與工作相關英文單字，包含職業類型、工作環境、職場技能等詞彙，適合學習職場英語。',
+                            filename: '新增單字集7.csv',
+                            preview: [
+                                {
+                                    english: 'set',
+                                    chinese: '創立；擺設',
+                                    example_en: 'Please set the table before dinner.',
+                                    example_ch: '請在晚餐前擺好桌子。'
+                                },
+                                {
+                                    english: 'bite',
+                                    chinese: '咬',
+                                    example_en: 'Be careful, the dog might bite.',
+                                    example_ch: '小心，那隻狗可能會咬人。'
+                                },
+                                {
+                                    english: 'die',
+                                    chinese: '死亡',
+                                    example_en: 'The flowers will die without water.',
+                                    example_ch: '花若沒水就會枯死。'
+                                },
+                                {
+                                    english: 'somewhere',
+                                    chinese: '某處',
+                                    example_en: 'I left my book somewhere in the classroom.',
+                                    example_ch: '我把書放在教室的某處。'
+                                },
+                                {
+                                    english: 'abroad',
+                                    chinese: '到國外；在國外',
+                                    example_en: 'She studies abroad next year.',
+                                    example_ch: '她明年到國外念書。'
+                                }
+                            ]
+                        },
+                        {
+                            id: 'newvocab8',
+                            title: '🛰️ 科技衛星單字集',
+                            subtitle: '50個科技與現代生活單字 - 未來科技的語言',
+                            icon: '🛰️',
+                            iconClass: 'toefl-icon',
+                            wordCount: '50',
+                            fileSize: '8KB',
+                            level: '中級',
+                            unlockCost: 10,
+                            description: '精選50個科技與現代生活相關英文單字，包含科技產品、網路概念、現代生活方式等詞彙，適合學習科技英語。',
+                            filename: '新增單字集8.csv',
+                            preview: [
+                                {
+                                    english: 'screen',
+                                    chinese: '螢幕',
+                                    example_en: 'The teacher shows the video on the screen.',
+                                    example_ch: '老師在螢幕上播放影片。'
+                                },
+                                {
+                                    english: 'puppy',
+                                    chinese: '幼犬',
+                                    example_en: 'The puppy plays with a ball in the yard.',
+                                    example_ch: '幼犬在院子裡玩球。'
+                                },
+                                {
+                                    english: 'lid',
+                                    chinese: '蓋子',
+                                    example_en: 'Put the lid on the jar after you finish.',
+                                    example_ch: '用完後把蓋子蓋上罐子。'
+                                },
+                                {
+                                    english: 'cage',
+                                    chinese: '籠子',
+                                    example_en: 'The bird sings in its cage every morning.',
+                                    example_ch: '那隻鳥每天早上在籠子裡唱歌。'
+                                },
+                                {
+                                    english: 'sight',
+                                    chinese: '視力；景象',
+                                    example_en: 'The mountain view is a beautiful sight.',
+                                    example_ch: '那座山的景象非常美麗。'
+                                }
+                            ]
+                        }
+                    ]
+                }
+            },
+            methods: {
+                // 星星系統方法
+                getStars() {
+                    return parseInt(localStorage.getItem('totalStars') || '0');
+                },
+                
+                addStars(amount) {
+                    const currentStars = this.getStars();
+                    const newStars = currentStars + amount;
+                    localStorage.setItem('totalStars', newStars);
+                    this.totalStars = newStars;
+                    this.updateStarsDisplay();
+                    this.playStarSound();
+                    this.showStarReward(amount);
+                    return newStars;
+                },
+                
+                updateStarsDisplay() {
+                    const starsCount = document.getElementById('totalStarsCount');
+                    if (starsCount) {
+                        starsCount.textContent = `⭐ ${this.totalStars}`;
+                    }
+                },
+                
+                playStarSound() {
+                    try {
+                        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                        const oscillator = audioContext.createOscillator();
+                        const gainNode = audioContext.createGain();
+                        
+                        oscillator.connect(gainNode);
+                        gainNode.connect(audioContext.destination);
+                        
+                        oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+                        oscillator.frequency.setValueAtTime(1000, audioContext.currentTime + 0.1);
+                        oscillator.frequency.setValueAtTime(1200, audioContext.currentTime + 0.2);
+                        
+                        gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+                        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+                        
+                        oscillator.start(audioContext.currentTime);
+                        oscillator.stop(audioContext.currentTime + 0.3);
+                    } catch (e) {
+                        // 如果音效API不可用，靜默處理
+                    }
+                },
+                
+                showStarReward(amount) {
+                    const rewardDiv = document.createElement('div');
+                    rewardDiv.style.cssText = `
+                        position: fixed;
+                        top: 50%;
+                        left: 50%;
+                        transform: translate(-50%, -50%);
+                        background: linear-gradient(135deg, rgba(255, 215, 0, 0.9), rgba(255, 170, 0, 0.9));
+                        color: #000;
+                        padding: 20px 30px;
+                        border-radius: 15px;
+                        font-size: 1.5rem;
+                        font-weight: bold;
+                        z-index: 1000;
+                        box-shadow: 0 0 30px #ffd700;
+                        animation: starRewardPop 3s cubic-bezier(.4,2,.6,1) forwards;
+                        font-family: 'Orbitron', sans-serif;
+                    `;
+                    rewardDiv.innerHTML = `⭐ +${amount} 星星 ⭐`;
+                    
+                    document.body.appendChild(rewardDiv);
+                    
+                    setTimeout(() => {
+                        if (document.body.contains(rewardDiv)) {
+                            document.body.removeChild(rewardDiv);
+                        }
+                    }, 3000);
+                },
+                
+                calculateStarReward(file) {
+                    let baseReward = 5; // 基礎下載獎勵
+                    
+                    // 根據檔案大小給予獎勵
+                    const fileSize = parseInt(file.fileSize.replace('KB', ''));
+                    if (fileSize >= 50) {
+                        baseReward += 3; // 大檔案額外獎勵
+                    } else if (fileSize >= 20) {
+                        baseReward += 2; // 中等檔案獎勵
+                    } else {
+                        baseReward += 1; // 小檔案獎勵
+                    }
+                    
+                    // 根據單字數量給予獎勵
+                    const wordCount = parseInt(file.wordCount.replace('+', ''));
+                    if (wordCount >= 1000) {
+                        baseReward += 5; // 1000+單字額外獎勵
+                    } else if (wordCount >= 500) {
+                        baseReward += 3; // 500+單字獎勵
+                    } else if (wordCount >= 100) {
+                        baseReward += 2; // 100+單字獎勵
+                    } else {
+                        baseReward += 1; // 其他獎勵
+                    }
+                    
+                    // 根據難度等級給予獎勵
+                    if (file.level === '高級') {
+                        baseReward += 3;
+                    } else if (file.level === '中高級') {
+                        baseReward += 2;
+                    } else if (file.level === '中級') {
+                        baseReward += 1;
+                    }
+                    
+                    return baseReward;
+                },
+
+                unlockFile(file) {
+                    // 檢查是否已經解鎖
+                    if (this.isUnlocked(file.id)) {
+                        this.message = `✅ ${file.title} 已經解鎖，可以直接下載！`;
+                        return;
+                    }
+                    
+                    const unlockCost = file.unlockCost || 10;
+                    const currentStars = this.getStars();
+                    
+                    if (currentStars < unlockCost) {
+                        this.message = `❌ 星星不足！需要 ${unlockCost} 顆星星，當前只有 ${currentStars} 顆星星`;
+                        this.messageClass = 'error-message';
+                        setTimeout(() => {
+                            this.message = '';
+                        }, 3000);
+                        return;
+                    }
+                    
+                    // 扣除星星
+                    const newStars = currentStars - unlockCost;
+                    localStorage.setItem('totalStars', newStars);
+                    this.totalStars = newStars;
+                    this.updateStarsDisplay();
+                    
+                    // 記錄已解鎖的檔案
+                    let unlockedFiles = JSON.parse(localStorage.getItem('unlockedFiles') || '[]');
+                    if (!unlockedFiles.includes(file.id)) {
+                        unlockedFiles.push(file.id);
+                        localStorage.setItem('unlockedFiles', JSON.stringify(unlockedFiles));
+                    }
+                    
+                    // 記錄解鎖歷史
+                    this.starRewardHistory.push({
+                        file: file.title,
+                        stars: unlockCost,
+                        timestamp: new Date().toISOString()
+                    });
+                    
+                    // 播放解鎖音效
+                    this.playUnlockSound();
+                    
+                    // 顯示解鎖成功訊息
+                    this.message = `🔓 ${file.title} 解鎖成功！扣除 ${unlockCost} 顆星星`;
+                    this.messageClass = 'success-message';
+                    
+                    // 3秒後清除訊息
+                    setTimeout(() => {
+                        this.message = '';
+                    }, 3000);
+                    
+                    console.log(`🔓 檔案解鎖成功: ${file.title}, 扣除 ${unlockCost} 顆星星`);
+                },
+                
+                downloadFile(file) {
+                    if (!this.isUnlocked(file.id)) {
+                        this.message = `❌ 請先解鎖檔案才能下載！`;
+                        this.messageClass = 'error-message';
+                        setTimeout(() => {
+                            this.message = '';
+                        }, 3000);
+                        return;
+                    }
+                    
+                    this.downloading = file.id;
+                    this.message = '';
+                    
+                    // 檢查是否通過HTTP服務器訪問
+                    if (window.location.protocol === 'file:') {
+                        this.message = `❌ 請通過HTTP服務器訪問此頁面才能下載檔案！\n請運行: python -m http.server 8000\n然後訪問: http://localhost:8000/vocabulary_download.html`;
+                        this.messageClass = 'error-message';
+                        this.downloading = null;
+                        setTimeout(() => {
+                            this.message = '';
+                        }, 5000);
+                        return;
+                    }
+                    
+                    // 使用 encodeURIComponent 處理中文路徑
+                    const fileUrl = `單字下載區/${encodeURIComponent(file.filename)}`;
+                    
+                    // 先檢查檔案是否存在
+                    fetch(fileUrl, {
+                        method: 'GET',
+                        headers: {
+                            'Accept': 'text/csv,application/octet-stream,*/*'
+                        }
+                    })
+                        .then(response => {
+                            if (response.ok) {
+                                return response.blob();
+                            } else {
+                                throw new Error(`檔案不存在 (HTTP ${response.status})`);
+                            }
+                        })
+                        .then(blob => {
+                            // 創建下載連結
+                            const url = window.URL.createObjectURL(blob);
+                            const link = document.createElement('a');
+                            link.href = url;
+                            link.download = file.filename;
+                            link.style.display = 'none';
+                            
+                            document.body.appendChild(link);
+                            link.click();
+                            
+                            // 清理
+                            setTimeout(() => {
+                                if (document.body.contains(link)) {
+                                    document.body.removeChild(link);
+                                }
+                                window.URL.revokeObjectURL(url);
+                            }, 1000);
+                            
+                            this.message = `✅ ${file.title} 下載成功！`;
+                            this.messageClass = 'success-message';
+                            this.selectedFile = file;
+                            this.downloading = null;
+                            
+                            setTimeout(() => {
+                                this.message = '';
+                            }, 3000);
+                        })
+                        .catch(error => {
+                            console.error('下載錯誤:', error);
+                            
+                            let errorMessage = '下載失敗';
+                            if (error.message.includes('Failed to fetch')) {
+                                errorMessage = `❌ 網路錯誤：無法連接到檔案\n\n可能的原因：\n1. 服務器未啟動\n2. 檔案路徑錯誤\n3. 網路連接問題\n\n請檢查：\n- 服務器是否運行在 http://localhost:8000\n- 檔案是否存在於 單字下載區/${file.filename}`;
+                            } else if (error.message.includes('檔案不存在')) {
+                                errorMessage = `❌ 檔案不存在：${file.filename}\n\n請檢查檔案路徑：單字下載區/${file.filename}`;
+                            } else {
+                                errorMessage = `❌ 下載失敗：${error.message}`;
+                            }
+                            
+                            this.message = errorMessage;
+                            this.messageClass = 'error-message';
+                            this.downloading = null;
+                            
+                            setTimeout(() => {
+                                this.message = '';
+                            }, 5000);
+                        });
+                },
+                
+                canUnlock(file) {
+                    const unlockCost = file.unlockCost || 10;
+                    return this.getStars() >= unlockCost;
+                },
+                
+                isUnlocked(fileId) {
+                    const unlockedFiles = JSON.parse(localStorage.getItem('unlockedFiles') || '[]');
+                    return unlockedFiles.includes(fileId);
+                },
+                
+                playUnlockSound() {
+                    try {
+                        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                        const oscillator = audioContext.createOscillator();
+                        const gainNode = audioContext.createGain();
+                        
+                        oscillator.connect(gainNode);
+                        gainNode.connect(audioContext.destination);
+                        
+                        // 解鎖音效：上升音調
+                        oscillator.frequency.setValueAtTime(400, audioContext.currentTime);
+                        oscillator.frequency.setValueAtTime(600, audioContext.currentTime + 0.1);
+                        oscillator.frequency.setValueAtTime(800, audioContext.currentTime + 0.2);
+                        oscillator.frequency.setValueAtTime(1000, audioContext.currentTime + 0.3);
+                        
+                        gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+                        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.4);
+                        
+                        oscillator.start(audioContext.currentTime);
+                        oscillator.stop(audioContext.currentTime + 0.4);
+                    } catch (e) {
+                        // 如果音效API不可用，靜默處理
+                    }
+                },
+                
+
+                
+
+                
+                selectFile(file) {
+                    this.selectedFile = file;
+                },
+                resetFilters() {
+                    this.searchQuery = '';
+                    this.selectedLevel = '';
+                    this.selectedFile = null; // 關閉預覽
+                },
+
+                getUnlockButtonStyle(file) {
+                    if (this.isUnlocked(file.id)) {
+                        return {
+                            background: 'linear-gradient(135deg, #00ffff, #ff00ff)',
+                            color: '#ffffff',
+                            boxShadow: '0 0 20px rgba(0,255,255,0.3)'
+                        };
+                    } else if (this.canUnlock(file)) {
+                        return {
+                            background: 'linear-gradient(135deg, #ffd700, #ffaa00)',
+                            color: '#000000',
+                            boxShadow: '0 0 20px rgba(255,215,0,0.3)'
+                        };
+                    } else {
+                        return {
+                            background: 'linear-gradient(135deg, #666666, #444444)',
+                            color: '#cccccc',
+                            boxShadow: 'none',
+                            cursor: 'not-allowed'
+                        };
+                    }
+                },
+
+            },
+            computed: {
+                filteredFiles() {
+                    let files = this.vocabularyFiles;
+
+                    if (this.searchQuery) {
+                        const query = this.searchQuery.toLowerCase();
+                        files = files.filter(file => 
+                            file.title.toLowerCase().includes(query) ||
+                            file.subtitle.toLowerCase().includes(query) ||
+                            file.description.toLowerCase().includes(query)
+                        );
+                    }
+
+                    if (this.selectedLevel) {
+                        files = files.filter(file => file.level === this.selectedLevel);
+                    }
+
+                    return files;
+                }
+            },
+            mounted() {
+                // 初始化星星系統
+                this.totalStars = this.getStars();
+                this.updateStarsDisplay();
+                
+                // 檢查是否通過HTTP服務器訪問
+                if (window.location.protocol === 'file:') {
+                    this.message = `⚠️ 檢測到您直接打開了HTML檔案！\n\n為了正常下載檔案，請：\n1. 在終端機運行：python -m http.server 8000\n2. 訪問：http://localhost:8000/vocabulary_download.html\n\n這樣可以避免CORS錯誤。`;
+                    this.messageClass = 'error-message';
+                    setTimeout(() => {
+                        this.message = '';
+                    }, 8000);
+                }
+                
+                // 預設顯示第一個檔案的預覽
+                this.selectedFile = this.vocabularyFiles[0];
+                
+                console.log('🌟 單字下載中心星星系統已初始化，當前星星:', this.totalStars);
+            }
+        }).mount('#app');
+    </script>
+</body>
+</html> 
