@@ -1,0 +1,1881 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>進階動物卡牌相克遊戲</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #0c0c0c 0%, #1a1a2e 25%, #16213e 50%, #0f3460 75%, #533483 100%);
+            min-height: 100vh;
+            color: #333;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(2px 2px at 20px 30px, #ffffff, transparent),
+                radial-gradient(2px 2px at 40px 70px, #ffffff, transparent),
+                radial-gradient(1px 1px at 90px 40px, #ffffff, transparent),
+                radial-gradient(1px 1px at 130px 80px, #ffffff, transparent),
+                radial-gradient(2px 2px at 160px 30px, #ffffff, transparent);
+            background-repeat: repeat;
+            background-size: 200px 100px;
+            animation: stars 20s linear infinite;
+            opacity: 0.3;
+            z-index: -1;
+        }
+
+        .stars-interactive {
+            animation: stars-fast 5s linear infinite !important;
+            opacity: 0.6 !important;
+        }
+
+        .stars-victory {
+            animation: stars-victory 2s ease-in-out !important;
+            opacity: 0.8 !important;
+        }
+
+        .stars-damage {
+            animation: stars-damage 0.5s ease-in-out !important;
+            opacity: 0.7 !important;
+        }
+
+        @keyframes stars-fast {
+            from { opacity: 0.3; }
+            to { opacity: 0.6; }
+        }
+
+        @keyframes stars-victory {
+            0% { opacity: 0.3; }
+            50% { opacity: 0.8; }
+            100% { opacity: 0.3; }
+        }
+
+        @keyframes stars-damage {
+            0% { opacity: 0.3; }
+            50% { opacity: 0.7; }
+            100% { opacity: 0.3; }
+        }
+
+        @keyframes stars {
+            from { opacity: 0.3; }
+            to { opacity: 0.5; }
+        }
+
+        .game-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .game-header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: white;
+        }
+
+        .game-header h1 {
+            font-size: 3.5rem;
+            margin-bottom: 10px;
+            text-shadow: 0 0 20px rgba(255,255,255,0.5);
+            background: linear-gradient(45deg, #00ffff, #0080ff, #8000ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: cosmic-glow 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes cosmic-glow {
+            from { filter: drop-shadow(0 0 10px rgba(0,255,255,0.5)); }
+            to { filter: drop-shadow(0 0 20px rgba(128,0,255,0.8)); }
+        }
+
+        .game-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: rgba(0,255,255,0.1);
+            padding: 20px;
+            border-radius: 15px;
+            backdrop-filter: blur(15px);
+            text-align: center;
+            color: white;
+            border: 1px solid rgba(0,255,255,0.3);
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 32px rgba(0,255,255,0.1);
+        }
+
+        .stat-card:hover {
+            box-shadow: 0 15px 40px rgba(0,255,255,0.3);
+            border-color: rgba(0,255,255,0.6);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .health-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .health-fill {
+            height: 100%;
+            transition: width 0.5s ease;
+            border-radius: 4px;
+        }
+
+        .player-health { background: linear-gradient(90deg, #00b894, #00cec9); }
+        .opponent-health { background: linear-gradient(90deg, #e17055, #d63031); }
+
+        .game-area {
+            display: grid;
+            grid-template-columns: 1fr 2.5fr 1fr;
+            gap: 25px;
+            margin-bottom: 25px;
+        }
+
+        .player-area, .opponent-area {
+            background: rgba(0,255,255,0.1);
+            padding: 30px;
+            border-radius: 20px;
+            backdrop-filter: blur(15px);
+            min-height: 320px;
+            border: 1px solid rgba(0,255,255,0.3);
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 8px 32px rgba(0,255,255,0.1);
+        }
+
+        .player-title {
+            text-align: center;
+            color: white;
+            margin-bottom: 25px;
+            font-size: 1.4rem;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+            padding: 10px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 15px;
+            justify-items: center;
+            min-height: 200px;
+            padding: 10px;
+        }
+
+        .player-area .cards-container {
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            max-width: 100%;
+        }
+
+        .opponent-area .cards-container {
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            max-width: 100%;
+        }
+
+        .card {
+            width: 140px;
+            height: 190px;
+            background: linear-gradient(145deg, rgba(255,255,255,0.9), rgba(240,240,240,0.8));
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2), 0 0 20px rgba(0,255,255,0.1);
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            color: #333;
+            border: 2px solid rgba(0,255,255,0.3);
+            overflow: hidden;
+            padding: 15px 10px;
+            backdrop-filter: blur(5px);
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.3) 50%, transparent 70%);
+            transform: translateX(-100%);
+            transition: transform 0.6s;
+        }
+
+        .card:hover::before {
+            transform: translateX(100%);
+        }
+
+        .card:hover {
+            box-shadow: 0 15px 30px rgba(0,0,0,0.4), 0 0 30px rgba(0,255,255,0.4);
+            border: 3px solid rgba(0,255,255,0.6);
+        }
+
+        .player-area .card:hover {
+            border-color: #00ffff;
+            box-shadow: 0 15px 30px rgba(0,255,255,0.4);
+        }
+
+        .opponent-area .card:hover {
+            border-color: #ff0080;
+            box-shadow: 0 15px 30px rgba(255,0,128,0.4);
+        }
+
+        .card.selected {
+            box-shadow: 0 0 30px rgba(0,255,255,0.8);
+            border: 4px solid #00ffff;
+            animation: selected-pulse 1s ease-in-out infinite alternate;
+            z-index: 10;
+        }
+
+        .player-area .card.selected {
+            border-color: #00ffff;
+            box-shadow: 0 0 30px rgba(0,255,255,0.8);
+        }
+
+        @keyframes selected-pulse {
+            from { box-shadow: 0 0 25px rgba(0,255,255,0.6); }
+            to { box-shadow: 0 0 35px rgba(0,255,255,0.8); }
+        }
+
+        .card.played {
+            opacity: 0.7;
+        }
+
+        .card-image {
+            width: 80px;
+            height: 80px;
+            font-size: 3.5rem;
+            margin-bottom: 8px;
+            margin-top: 15px;
+        }
+
+        .card-name {
+            font-size: 1rem;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 8px;
+            margin-top: 5px;
+            padding: 0 5px;
+            line-height: 1.2;
+            max-width: 100%;
+        }
+
+        .card-power {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #e17055;
+            padding: 6px 10px;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.95);
+            border: 2px solid #e17055;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            z-index: 3;
+        }
+
+        .card-power::before {
+            content: 'ATK';
+            position: absolute;
+            top: -6px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #e17055;
+            color: white;
+            font-size: 0.5rem;
+            padding: 1px 4px;
+            border-radius: 6px;
+            font-weight: bold;
+        }
+
+        .card-type {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            z-index: 2;
+        }
+
+        .card-weakness {
+            position: absolute;
+            bottom: 8px;
+            left: 8px;
+            background: linear-gradient(45deg, #e17055, #d63031);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            z-index: 3;
+        }
+
+        .card-special {
+            position: absolute;
+            bottom: 8px;
+            right: 8px;
+            background: linear-gradient(45deg, #9c27b0, #7b1fa2);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            z-index: 3;
+        }
+
+        .battlefield {
+            background: rgba(0,255,255,0.1);
+            padding: 30px;
+            border-radius: 20px;
+            backdrop-filter: blur(15px);
+            min-height: 450px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            border: 1px solid rgba(0,255,255,0.3);
+            box-shadow: 0 8px 32px rgba(0,255,255,0.1);
+        }
+
+        .battlefield-title {
+            text-align: center;
+            color: white;
+            margin-bottom: 25px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        }
+
+        .battlefield-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 25px;
+            justify-items: center;
+            min-height: 300px;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .battlefield-cards .card {
+            margin: 10px;
+        }
+
+        .battlefield-card {
+            position: relative;
+            animation: card-fade 0.6s ease-out;
+        }
+
+        .battlefield-card .card-power {
+            animation: power-glow 2s ease-in-out infinite;
+        }
+
+        @keyframes power-glow {
+            0%, 100% { box-shadow: 0 2px 6px rgba(0,0,0,0.2); }
+            50% { box-shadow: 0 4px 12px rgba(0,0,0,0.4); }
+        }
+
+        @keyframes card-fade {
+            0% { opacity: 0; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        .game-controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary {
+            background: linear-gradient(145deg, #00ffff, #0080ff);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 8px 16px rgba(0,255,255,0.4);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(145deg, #8000ff, #4000ff);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            box-shadow: 0 8px 16px rgba(128,0,255,0.4);
+        }
+
+        .btn-danger {
+            background: linear-gradient(145deg, #ff0080, #ff0040);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            box-shadow: 0 8px 16px rgba(255,0,128,0.4);
+        }
+
+        .btn-warning {
+            background: linear-gradient(145deg, #ff8000, #ff4000);
+            color: white;
+        }
+
+        .btn-warning:hover {
+            box-shadow: 0 8px 16px rgba(255,128,0,0.4);
+        }
+
+        .game-message {
+            text-align: center;
+            color: white;
+            font-size: 1.3rem;
+            margin: 20px 0;
+            padding: 20px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            animation: message-fade 0.5s ease-in;
+        }
+
+        @keyframes message-fade {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .card-back {
+            background: linear-gradient(145deg, #2d3436, #636e72);
+            color: white;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .winner {
+            animation: winner-glow 2s ease-in-out infinite alternate;
+        }
+
+        .winner .card-power {
+            background: rgba(255,255,255,0.98);
+            border-color: #ffd700;
+            box-shadow: 0 0 15px rgba(255,215,0,0.6);
+        }
+
+        @keyframes winner-glow {
+            from { 
+                box-shadow: 0 0 25px rgba(255,215,0,0.6);
+            }
+            to { 
+                box-shadow: 0 0 35px rgba(255,215,0,0.8);
+            }
+        }
+
+
+
+        .damage-animation {
+            animation: damage-shake 0.5s ease-in-out;
+        }
+
+        @keyframes damage-shake {
+            0%, 100% { opacity: 1; }
+            25% { opacity: 0.7; }
+            75% { opacity: 0.7; }
+        }
+
+        .game-over {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            animation: fade-in 0.5s ease-in;
+        }
+
+        @keyframes fade-in {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .game-over-content {
+            background: linear-gradient(145deg, #ffffff, #f0f0f0);
+            padding: 50px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 500px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            animation: fade-in 0.5s ease-out;
+            position: relative; /* 為關閉按鈕定位 */
+        }
+
+        @keyframes fade-in {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .game-over h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 2rem;
+        }
+
+        .game-over p {
+            margin-bottom: 30px;
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .food-chain-info {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            color: white;
+            font-size: 0.9rem;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .food-chain-info h3 {
+            margin-bottom: 15px;
+            color: #ffd700;
+            font-size: 1.2rem;
+        }
+
+        .food-chain-rule {
+            margin: 8px 0;
+            padding: 8px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 8px;
+            border-left: 3px solid #ffd700;
+        }
+
+        .special-effects {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 999;
+        }
+
+        .effect-particle {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: #ffd700;
+            border-radius: 50%;
+            animation: particle-fall 2s linear infinite;
+        }
+
+        @keyframes particle-fall {
+            0% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+
+        .skill-button {
+            background: linear-gradient(145deg, #9c27b0, #7b1fa2);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 5px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .skill-button:hover {
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .skill-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .sound-controls {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1001;
+            display: flex;
+            gap: 10px;
+        }
+
+        .sound-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .sound-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .sound-btn.active {
+            background: rgba(255,215,0,0.3);
+            color: #ffd700;
+        }
+
+        .sound-btn[title="背景音樂"] {
+            background: rgba(255,107,107,0.2);
+        }
+
+        .sound-btn[title="背景音樂"]:hover {
+            background: rgba(255,107,107,0.3);
+        }
+
+        .sound-btn[title="背景音樂"].active {
+            background: rgba(255,215,0,0.3);
+            color: #ffd700;
+        }
+
+        /* 星星顯示 */
+        #starsDisplay {
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            background: rgba(10, 20, 40, 0.6);
+            padding: 4px 8px;
+            border-radius: 10px;
+            color: #ffd700;
+            font-weight: bold;
+            box-shadow: 0 0 12px #ffd700, 0 0 32px #00ffff;
+            border: 2px solid #00ffff;
+            font-size: 1.1rem;
+            backdrop-filter: blur(1px);
+            z-index: 1000;
+        }
+
+        @media (max-width: 768px) {
+            .game-area {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .cards-container {
+                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+                gap: 12px;
+            }
+            
+            .battlefield-cards {
+                grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+                gap: 15px;
+            }
+            
+            .card {
+                width: 120px;
+                height: 170px;
+                padding: 10px 8px;
+            }
+            
+            .battlefield-cards .card {
+                /* 移除縮放效果，保持原有樣式 */
+                transform: none;
+            }
+            
+            .card-image {
+                width: 60px;
+                height: 60px;
+                font-size: 2.8rem;
+            }
+            
+            .card-name {
+                font-size: 0.9rem;
+            }
+            
+            .card-power {
+                font-size: 1.3rem;
+                padding: 4px 8px;
+            }
+            
+            .card-power::before {
+                font-size: 0.4rem;
+                padding: 1px 3px;
+            }
+            
+            .game-header h1 {
+                font-size: 2.5rem;
+            }
+
+            .game-controls {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn {
+                width: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+            <div id="app">
+            <!-- 星星顯示 -->
+            <div id="starsDisplay">
+                ⭐<span id="totalStarsCount">0</span>
+            </div>
+
+            <!-- 音效控制 -->
+            <div class="sound-controls">
+                <button class="sound-btn" :class="{ active: soundEnabled }" @click="toggleSound">
+                    🔊
+                </button>
+                <button class="sound-btn" :class="{ active: musicEnabled }" @click="toggleMusic">
+                    🎵
+                </button>
+                <button class="sound-btn" :class="{ active: isMusicPlaying }" @click="toggleBackgroundMusic" title="背景音樂">
+                    🎼
+                </button>
+            </div>
+
+            <div class="game-container">
+            <div class="game-header">
+                <h1>🦁 進階動物卡牌相克遊戲</h1>
+                <p>複雜食物鏈系統與特殊技能</p>
+                <p style="color: #ffd700; font-size: 1rem; margin-top: 10px;">🎮 每次遊戲需要10顆星星，勝利可獲得20顆星星，失敗扣除2顆星星！</p>
+                <p style="color: #00ff00; font-size: 0.9rem; margin-top: 5px;">🌟 遊戲已優化：AI更友善，更容易獲勝！</p>
+                <button class="btn btn-secondary" onclick="location.href='index.html'" style="margin-top: 15px;">
+                    🏠 返回首頁
+                </button>
+            </div>
+
+            <div class="game-stats">
+                <div class="stat-card">
+                    <span class="stat-value">{{ playerHealth }}</span>
+                    <span class="stat-label">玩家生命</span>
+                    <div class="health-bar">
+                        <div class="health-fill player-health" :style="{ width: (playerHealth / 25 * 100) + '%' }"></div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-value">{{ turn }}</span>
+                    <span class="stat-label">回合數</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-value">{{ playerEnergy }}</span>
+                    <span class="stat-label">玩家能量</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-value">{{ opponentHealth }}</span>
+                    <span class="stat-label">對手生命</span>
+                    <div class="health-bar">
+                        <div class="health-fill opponent-health" :style="{ width: (opponentHealth / 25 * 100) + '%' }"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="food-chain-info">
+                <h3>🌿 複雜食物鏈相克系統：</h3>
+                <div class="food-chain-rule">🦁 獅子 > 🦒 長頸鹿 > 🌿 草</div>
+                <div class="food-chain-rule">🐍 蛇 > 🐭 老鼠 > 🌿 草</div>
+                <div class="food-chain-rule">🦅 老鷹 > 🐍 蛇 > 🐭 老鼠</div>
+                <div class="food-chain-rule">🐺 狼 > 🦌 鹿 > 🌿 草</div>
+                <div class="food-chain-rule">🦊 狐狸 > 🐰 兔子 > 🌿 草</div>
+                <div class="food-chain-rule">🐯 老虎 > 🐺 狼 > 🦌 鹿</div>
+                <div class="food-chain-rule">🐻 熊 > 🐟 魚 > 🦐 蝦</div>
+                <div class="food-chain-rule">🦈 鯊魚 > 🐟 魚 > 🦐 蝦</div>
+                <div class="food-chain-rule">🦉 貓頭鷹 > 🐭 老鼠 > 🌿 草</div>
+                <div class="food-chain-rule">相克時攻擊力翻倍，被克時攻擊力減半</div>
+            </div>
+
+            <div class="game-area">
+                <!-- 對手區域 -->
+                <div class="opponent-area">
+                    <div class="player-title">🤖 對手</div>
+                    <div class="cards-container">
+                        <div v-for="(card, index) in opponentHand" 
+                             :key="'opponent-' + index"
+                             class="card card-back">
+                            <div>?</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 戰場區域 -->
+                <div class="battlefield">
+                    <div class="battlefield-title">⚔️ 戰場</div>
+                    <div class="battlefield-cards">
+                        <div v-for="(card, index) in battlefield" 
+                             :key="'battlefield-' + index"
+                             class="card battlefield-card"
+                             :class="{ 'winner': card.winner, 'damage-animation': card.damage }">
+                            <div class="card-type">{{ card.type }}</div>
+                            <div class="card-image">{{ card.emoji }}</div>
+                            <div class="card-name">{{ card.name }}</div>
+                            <div class="card-power">{{ card.power }}</div>
+                            <div v-if="card.weakness" class="card-weakness">弱點: {{ card.weakness }}</div>
+                            <div v-if="card.special" class="card-special">{{ card.special }}</div>
+                        </div>
+                    </div>
+                    
+                    <div class="game-message" v-if="gameMessage">
+                        <div v-if="!gameStarted && !gameOver" style="color: #ffd700; font-weight: bold;">
+                            {{ gameMessage }}
+                        </div>
+                        <div v-else-if="gameOver" style="color: #ff6b6b; font-weight: bold;">
+                            {{ gameMessage }}
+                        </div>
+                        <div v-else style="color: #4ecdc4; font-weight: bold;">
+                            {{ gameMessage }}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 玩家區域 -->
+                <div class="player-area">
+                    <div class="player-title">👤 玩家</div>
+                    <div class="cards-container">
+                        <div v-for="(card, index) in playerHand" 
+                             :key="'player-' + index"
+                             class="card"
+                             :class="{ 'selected': selectedCard === index }"
+                             @click="selectCard(index)">
+                            <div class="card-type">{{ card.type }}</div>
+                            <div class="card-image">{{ card.emoji }}</div>
+                            <div class="card-name">{{ card.name }}</div>
+                            <div class="card-power">{{ card.power }}</div>
+                            <div v-if="card.weakness" class="card-weakness">弱點: {{ card.weakness }}</div>
+                            <div v-if="card.special" class="card-special">{{ card.special }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="game-controls">
+                <button class="btn btn-primary" 
+                        @click="startGame" 
+                        :disabled="gameStarted || totalStars < 10">
+                    開始遊戲
+                </button>
+                <button class="btn btn-primary" 
+                        @click="playCard" 
+                        :disabled="selectedCard === null || gameOver || !gameStarted">
+                    出牌
+                </button>
+                <button class="btn btn-secondary" 
+                        @click="endTurn" 
+                        :disabled="gameOver || !gameStarted || playerHand.length > 0">
+                    結束回合
+                </button>
+                <button class="btn btn-warning" 
+                        @click="useSpecialSkill" 
+                        :disabled="playerEnergy < 3 || gameOver || !gameStarted">
+                    特殊技能 (3能量)
+                </button>
+                <button class="btn btn-danger" 
+                        @click="newGame">
+                    新遊戲
+                </button>
+            </div>
+        </div>
+
+        <!-- 遊戲結束彈窗 -->
+        <div class="game-over" v-if="gameOver">
+            <div class="game-over-content">
+                <button @click="gameOver = false" 
+                        style="
+                            position: absolute;
+                            top: 10px;
+                            right: 15px;
+                            background: #ff4444;
+                            color: white;
+                            border: none;
+                            border-radius: 50%;
+                            width: 30px;
+                            height: 30px;
+                            font-size: 18px;
+                            cursor: pointer;
+                            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+                            transition: all 0.3s ease;
+                        "
+                        onmouseover="this.style.background='#ff6666'"
+                        onmouseout="this.style.background='#ff4444'">
+                    ×
+                </button>
+                <h2>{{ gameOverMessage }}</h2>
+                <p>最終分數: {{ playerHealth }} vs {{ opponentHealth }}</p>
+                <p>總回合數: {{ turn }}</p>
+                <button class="btn btn-primary" @click="newGame">再玩一次</button>
+            </div>
+        </div>
+
+        <!-- 特效區域 -->
+        <div class="special-effects" v-if="showEffects">
+            <div v-for="i in 25" :key="i" 
+                 class="effect-particle"
+                 :style="{ 
+                     left: Math.random() * 100 + '%',
+                     animationDelay: Math.random() * 2 + 's',
+                     animationDuration: (Math.random() * 2 + 1) + 's'
+                 }">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const { createApp } = Vue;
+
+        createApp({
+            data() {
+                return {
+                    playerHealth: 25,
+                    opponentHealth: 20, // 降低對手初始血量
+                    playerEnergy: 5,
+                    turn: 1,
+                    playerHand: [],
+                    opponentHand: [],
+                    battlefield: [],
+                    selectedCard: null,
+                    gameMessage: '',
+                    gameOver: false,
+                    gameOverMessage: '',
+                    currentPlayer: 'player',
+                    deck: [],
+                    showEffects: false,
+                    soundEnabled: true,
+                    musicEnabled: true,
+                    audioContext: null,
+                    sounds: {},
+                    totalStars: 0,
+                    gameStarted: false, // 新增：遊戲是否已開始
+                    foodChain: {
+                        '獅子': ['長頸鹿', '鹿', '斑馬'],
+                        '長頸鹿': ['草'],
+                        '蛇': ['老鼠', '青蛙'],
+                        '老鼠': ['草', '種子'],
+                        '老鷹': ['蛇', '兔子'],
+                        '狼': ['鹿', '兔子'],
+                        '鹿': ['草'],
+                        '狐狸': ['兔子', '雞'],
+                        '兔子': ['草'],
+                        '老虎': ['狼', '鹿'],
+                        '熊': ['魚', '蜂蜜'],
+                        '魚': ['蝦', '蟲'],
+                        '鯊魚': ['魚'],
+                        '貓頭鷹': ['老鼠', '青蛙'],
+                        '草': []
+                    }
+                }
+            },
+            mounted() {
+                this.initializeAudio();
+                this.loadTotalStars();
+                this.initBackgroundMusic();
+                // 不自動初始化遊戲，等待玩家點擊開始
+                this.gameMessage = '請點擊「開始遊戲」按鈕開始遊戲！';
+            },
+            methods: {
+                initializeAudio() {
+                    // 初始化音效系統
+                    try {
+                        this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                        this.createSounds();
+                    } catch (error) {
+                        console.log('音效系統初始化失敗:', error);
+                    }
+                },
+
+                createSounds() {
+                    // 創建各種音效
+                    this.sounds = {
+                        cardPlay: this.createTone(440, 0.1, 'sine'), // 出牌音效
+                        victory: this.createTone(523, 0.3, 'square'), // 勝利音效
+                        damage: this.createTone(220, 0.2, 'sawtooth'), // 傷害音效
+                        special: this.createTone(659, 0.4, 'triangle'), // 特殊技能音效
+                        button: this.createTone(330, 0.1, 'sine'), // 按鈕音效
+                        heal: this.createTone(784, 0.3, 'sine'), // 治癒音效
+                        shuffle: this.createTone(196, 0.5, 'sawtooth'), // 洗牌音效
+                        gameOver: this.createTone(110, 0.8, 'square'), // 遊戲結束音效
+                        background: this.createBackgroundMusic() // 背景音樂
+                    };
+                },
+
+                createTone(frequency, duration, type) {
+                    return () => {
+                        if (!this.soundEnabled || !this.audioContext) return;
+                        
+                        const oscillator = this.audioContext.createOscillator();
+                        const gainNode = this.audioContext.createGain();
+                        
+                        oscillator.connect(gainNode);
+                        gainNode.connect(this.audioContext.destination);
+                        
+                        oscillator.frequency.setValueAtTime(frequency, this.audioContext.currentTime);
+                        oscillator.type = type;
+                        
+                        gainNode.gain.setValueAtTime(0.3, this.audioContext.currentTime);
+                        gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + duration);
+                        
+                        oscillator.start(this.audioContext.currentTime);
+                        oscillator.stop(this.audioContext.currentTime + duration);
+                    };
+                },
+
+                createBackgroundMusic() {
+                    return () => {
+                        if (!this.musicEnabled || !this.audioContext) return;
+                        
+                        // 創建簡單的背景音樂循環
+                        const notes = [261, 293, 329, 349, 392, 440, 493, 523]; // C大調音階
+                        let currentNote = 0;
+                        
+                        const playNote = () => {
+                            if (!this.musicEnabled) return;
+                            
+                            const oscillator = this.audioContext.createOscillator();
+                            const gainNode = this.audioContext.createGain();
+                            
+                            oscillator.connect(gainNode);
+                            gainNode.connect(this.audioContext.destination);
+                            
+                            oscillator.frequency.setValueAtTime(notes[currentNote], this.audioContext.currentTime);
+                            oscillator.type = 'sine';
+                            
+                            gainNode.gain.setValueAtTime(0.1, this.audioContext.currentTime);
+                            gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.5);
+                            
+                            oscillator.start(this.audioContext.currentTime);
+                            oscillator.stop(this.audioContext.currentTime + 0.5);
+                            
+                            currentNote = (currentNote + 1) % notes.length;
+                            
+                            setTimeout(playNote, 2000); // 每2秒播放一個音符
+                        };
+                        
+                        playNote();
+                    };
+                },
+
+                toggleSound() {
+                    this.soundEnabled = !this.soundEnabled;
+                    if (this.soundEnabled) {
+                        this.sounds.button();
+                    }
+                },
+
+                toggleMusic() {
+                    this.musicEnabled = !this.musicEnabled;
+                    if (this.musicEnabled) {
+                        this.sounds.background();
+                        this.playBackgroundMusic();
+                    } else {
+                        this.pauseBackgroundMusic();
+                    }
+                },
+
+                playSound(soundName) {
+                    if (this.sounds[soundName]) {
+                        this.sounds[soundName]();
+                    }
+                },
+
+                // 背景音樂系統
+                bgMusic: null,
+                isMusicPlaying: false,
+
+                initBackgroundMusic() {
+                    try {
+                        this.bgMusic = new Audio('sound/adventures-loop-music-226836.mp3');
+                        this.bgMusic.loop = true;
+                        this.bgMusic.volume = 0.3;
+                        this.bgMusic.preload = 'auto';
+                        
+                        // 監聽音樂載入完成
+                        this.bgMusic.addEventListener('canplaythrough', () => {
+                            console.log('背景音樂載入完成');
+                        });
+                        
+                        // 監聽音樂錯誤
+                        this.bgMusic.addEventListener('error', (e) => {
+                            console.error('背景音樂載入失敗:', e);
+                        });
+                    } catch (error) {
+                        console.error('初始化背景音樂失敗:', error);
+                    }
+                },
+
+                playBackgroundMusic() {
+                    if (this.bgMusic && !this.isMusicPlaying) {
+                        this.bgMusic.play().then(() => {
+                            this.isMusicPlaying = true;
+                            console.log('背景音樂開始播放');
+                        }).catch(error => {
+                            console.error('播放背景音樂失敗:', error);
+                        });
+                    }
+                },
+
+                pauseBackgroundMusic() {
+                    if (this.bgMusic && this.isMusicPlaying) {
+                        this.bgMusic.pause();
+                        this.isMusicPlaying = false;
+                        console.log('背景音樂暫停');
+                    }
+                },
+
+                toggleBackgroundMusic() {
+                    if (this.isMusicPlaying) {
+                        this.pauseBackgroundMusic();
+                    } else {
+                        this.playBackgroundMusic();
+                    }
+                },
+
+                triggerStarsEffect(effectType) {
+                    const starsElement = document.querySelector('body::before');
+                    const body = document.querySelector('body');
+                    
+                    // 移除之前的星星效果類別
+                    body.classList.remove('stars-interactive', 'stars-victory', 'stars-damage');
+                    
+                    // 添加新的星星效果類別
+                    body.classList.add(`stars-${effectType}`);
+                    
+                    // 根據效果類型設置不同的持續時間
+                    let duration = 2000;
+                    if (effectType === 'damage') duration = 500;
+                    if (effectType === 'victory') duration = 2000;
+                    if (effectType === 'interactive') duration = 5000;
+                    
+                    // 延遲移除效果類別
+                    setTimeout(() => {
+                        body.classList.remove(`stars-${effectType}`);
+                    }, duration);
+                },
+
+                loadTotalStars() {
+                    // 從 localStorage 載入總星星數
+                    const savedStars = localStorage.getItem('totalStars');
+                    this.totalStars = savedStars ? parseInt(savedStars) : 0;
+                    this.updateStarsDisplay();
+                },
+
+                updateStarsDisplay() {
+                    // 更新星星顯示
+                    const starsElement = document.getElementById('totalStarsCount');
+                    if (starsElement) {
+                        starsElement.textContent = this.totalStars;
+                    }
+                },
+
+                addStars(amount) {
+                    this.totalStars += amount;
+                    localStorage.setItem('totalStars', this.totalStars.toString());
+                    this.updateStarsDisplay();
+                    
+                    // 如果是獲得星星（正數），顯示彈窗和音效
+                    if (amount > 0) {
+                        this.showStarRewardPopup(amount);
+                        this.playSound('victory');
+                    } else if (amount < 0) {
+                        // 如果是扣除星星（負數），播放扣除音效
+                        this.playSound('damage');
+                    }
+                },
+
+                showStarRewardPopup(amount) {
+                    // 創建星星獎勵彈窗
+                    const popup = document.createElement('div');
+                    popup.style.cssText = `
+                        position: fixed;
+                        top: 50%;
+                        left: 50%;
+                        transform: translate(-50%, -50%);
+                        background: linear-gradient(135deg, rgba(255, 215, 0, 0.95), rgba(255, 170, 0, 0.95));
+                        color: #000;
+                        padding: 30px 40px;
+                        border-radius: 20px;
+                        font-size: 1.8rem;
+                        font-weight: bold;
+                        z-index: 10000;
+                        box-shadow: 0 0 40px #ffd700, 0 0 80px rgba(255, 215, 0, 0.5);
+                        animation: starPopup 1.5s ease-out forwards;
+                        text-align: center;
+                        min-width: 300px;
+                        font-family: 'Arial', sans-serif;
+                    `;
+                    
+                    popup.innerHTML = `
+                        <div style="position: relative;">
+                            <button onclick="this.parentElement.parentElement.remove()" 
+                                    style="
+                                        position: absolute;
+                                        top: -15px;
+                                        right: -15px;
+                                        background: #ff4444;
+                                        color: white;
+                                        border: none;
+                                        border-radius: 50%;
+                                        width: 30px;
+                                        height: 30px;
+                                        font-size: 18px;
+                                        cursor: pointer;
+                                        box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+                                        transition: all 0.3s ease;
+                                    "
+                                    onmouseover="this.style.background='#ff6666'"
+                                    onmouseout="this.style.background='#ff4444'">
+                                ×
+                            </button>
+                            <div style="font-size: 4rem; margin-bottom: 15px; animation: starBounce 0.6s ease-in-out;">⭐</div>
+                            <div style="font-size: 2.2rem; margin-bottom: 10px; color: #000;">+${amount} 星星</div>
+                            <div style="font-size: 1.2rem; color: #666;">獲得星星獎勵！</div>
+                        </div>
+                    `;
+                    
+                    // 添加動畫樣式
+                    const style = document.createElement('style');
+                    style.textContent = `
+                        @keyframes starPopup {
+                            0% { transform: translate(-50%, -50%) scale(0.3); opacity: 0; }
+                            50% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
+                            100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+                        }
+                        @keyframes starBounce {
+                            0%, 100% { transform: scale(1); }
+                            50% { transform: scale(1.3); }
+                        }
+                    `;
+                    document.head.appendChild(style);
+                    
+                    document.body.appendChild(popup);
+                    
+                    // 5秒後自動移除（增加時間）
+                    setTimeout(() => {
+                        if (document.body.contains(popup)) {
+                            popup.style.animation = 'starPopupOut 0.5s ease-in forwards';
+                            popup.style.setProperty('--animation', 'starPopupOut 0.5s ease-in forwards');
+                        }
+                        setTimeout(() => {
+                            if (document.body.contains(popup)) {
+                                document.body.removeChild(popup);
+                            }
+                            if (document.head.contains(style)) {
+                                document.head.removeChild(style);
+                            }
+                        }, 500);
+                    }, 5000);
+                    
+                    // 添加移除動畫
+                    const removeStyle = document.createElement('style');
+                    removeStyle.textContent = `
+                        @keyframes starPopupOut {
+                            0% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+                            100% { transform: translate(-50%, -50%) scale(0.3); opacity: 0; }
+                        }
+                    `;
+                    document.head.appendChild(removeStyle);
+                },
+
+                initializeGame() {
+                    // 檢查星星是否足夠
+                    if (this.totalStars < 10) {
+                        this.gameMessage = '星星不足！需要10顆星星才能開始遊戲！';
+                        return;
+                    }
+                    
+                    // 扣除10顆星星
+                    this.addStars(-10);
+                    this.gameMessage = '遊戲開始！已扣除10顆星星';
+                    
+                    this.createDeck();
+                    this.shuffleDeck();
+                    this.dealCards();
+                    this.gameOver = false;
+                    this.gameStarted = true; // 標記遊戲已開始
+                    this.playerEnergy = 5;
+                    this.playSound('shuffle');
+                    // 開始背景音樂
+                    if (this.musicEnabled) {
+                        setTimeout(() => this.sounds.background(), 1000);
+                        this.playBackgroundMusic();
+                    }
+                },
+
+                startGame() {
+                    // 檢查星星是否足夠
+                    if (this.totalStars < 10) {
+                        this.gameMessage = '星星不足！需要10顆星星才能開始遊戲！';
+                        return;
+                    }
+                    
+                    this.initializeGame();
+                },
+
+                createDeck() {
+                    const animals = [
+                        { name: '獅子', emoji: '🦁', power: 8, type: '肉食', weakness: '老鷹', special: '王者威嚴' },
+                        { name: '長頸鹿', emoji: '🦒', power: 6, type: '草食', weakness: '獅子', special: '長頸優勢' },
+                        { name: '蛇', emoji: '🐍', power: 5, type: '肉食', weakness: '老鷹', special: '毒液攻擊' },
+                        { name: '老鼠', emoji: '🐭', power: 3, type: '雜食', weakness: '蛇', special: '快速逃脫' },
+                        { name: '老鷹', emoji: '🦅', power: 7, type: '肉食', weakness: '無', special: '空中優勢' },
+                        { name: '狼', emoji: '🐺', power: 6, type: '肉食', weakness: '老虎', special: '群體戰術' },
+                        { name: '鹿', emoji: '🦌', power: 5, type: '草食', weakness: '狼', special: '敏捷跳躍' },
+                        { name: '狐狸', emoji: '🦊', power: 4, type: '肉食', weakness: '狼', special: '狡猾計謀' },
+                        { name: '兔子', emoji: '🐰', power: 3, type: '草食', weakness: '狐狸', special: '快速繁殖' },
+                        { name: '老虎', emoji: '🐯', power: 9, type: '肉食', weakness: '無', special: '虎嘯震懾' },
+                        { name: '熊', emoji: '🐻', power: 7, type: '雜食', weakness: '無', special: '巨力拍擊' },
+                        { name: '魚', emoji: '🐟', power: 3, type: '肉食', weakness: '鯊魚', special: '水中游動' },
+                        { name: '鯊魚', emoji: '🦈', power: 8, type: '肉食', weakness: '無', special: '深海獵手' },
+                        { name: '貓頭鷹', emoji: '🦉', power: 6, type: '肉食', weakness: '無', special: '夜視能力' },
+                        { name: '草', emoji: '🌿', power: 1, type: '植物', weakness: '草食動物', special: '光合作用' }
+                    ];
+                    
+                    this.deck = [];
+                    // 每種動物4張牌，確保有足夠的牌組支持五個回合
+                    for (let animal of animals) {
+                        for (let i = 0; i < 4; i++) {
+                            this.deck.push({...animal});
+                        }
+                    }
+                    
+                    console.log(`牌組創建完成，總共 ${this.deck.length} 張牌`);
+                },
+
+                shuffleDeck() {
+                    for (let i = this.deck.length - 1; i > 0; i--) {
+                        const j = Math.floor(Math.random() * (i + 1));
+                        [this.deck[i], this.deck[j]] = [this.deck[j], this.deck[i]];
+                    }
+                },
+
+                dealCards() {
+                    // 確保有足夠的牌發給雙方
+                    if (this.deck.length < 10) {
+                        console.log('牌組不足，重新洗牌');
+                        this.reshuffleDeck();
+                    }
+                    
+                    this.playerHand = this.deck.slice(0, 5);
+                    this.opponentHand = this.deck.slice(5, 10);
+                    this.deck = this.deck.slice(10);
+                    
+                    console.log(`發牌完成 - 玩家: ${this.playerHand.length} 張，對手: ${this.opponentHand.length} 張，剩餘牌組: ${this.deck.length} 張`);
+                },
+
+                selectCard(index) {
+                    if (!this.gameOver && this.gameStarted) {
+                        // 隨時可以出牌
+                        this.playCard(index);
+                    }
+                },
+
+                playCard(index) {
+                    if (index === null || this.gameOver || !this.gameStarted) {
+                        return;
+                    }
+
+                    const card = this.playerHand[index];
+                    this.battlefield.push({
+                        ...card,
+                        player: 'player',
+                        winner: false,
+                        damage: false
+                    });
+
+                    this.playerHand.splice(index, 1);
+                    this.selectedCard = null;
+
+                    // 播放出牌音效
+                    this.playSound('cardPlay');
+
+                    // 星星互動效果
+                    this.triggerStarsEffect('interactive');
+
+                    // 對手AI同時出牌
+                    this.opponentPlayCard();
+
+                    // 檢查戰場勝負
+                    this.checkBattlefield();
+                    
+                    // 移除自動下一回合檢查，讓玩家自己控制
+                },
+
+                // 玩家回合開始時，AI自動出牌
+                startPlayerTurn() {
+                    // 移除AI自動出牌，讓玩家先出牌
+                },
+
+                opponentPlayCard() {
+                    if (this.opponentHand.length === 0) {
+                        console.log('對手沒有手牌，跳過出牌');
+                        return;
+                    }
+
+                    // 大幅降低AI智能，增加隨機性
+                    let selectedCardIndex;
+                    
+                    // 70%機率隨機選擇，30%機率選擇較好的卡牌
+                    if (Math.random() < 0.7) {
+                        selectedCardIndex = Math.floor(Math.random() * this.opponentHand.length);
+                        console.log('AI隨機選擇卡牌');
+                    } else {
+                        // 簡化的最佳卡牌選擇
+                        let bestCardIndex = 0;
+                        let bestScore = this.evaluateCard(this.opponentHand[0]);
+
+                        for (let i = 1; i < this.opponentHand.length; i++) {
+                            const score = this.evaluateCard(this.opponentHand[i]);
+                            if (score > bestScore) {
+                                bestScore = score;
+                                bestCardIndex = i;
+                            }
+                        }
+                        selectedCardIndex = bestCardIndex;
+                        console.log('AI選擇較好的卡牌');
+                    }
+
+                    const card = this.opponentHand[selectedCardIndex];
+                    this.battlefield.push({
+                        ...card,
+                        player: 'opponent',
+                        winner: false,
+                        damage: false
+                    });
+
+                    this.opponentHand.splice(selectedCardIndex, 1);
+                    
+                    console.log(`對手出牌: ${card.name}，剩餘手牌: ${this.opponentHand.length} 張`);
+                    
+                    // 播放AI出牌音效
+                    setTimeout(() => this.playSound('cardPlay'), 200);
+                    
+                    // 移除連續出牌邏輯，一次只出一張
+                },
+
+                evaluateCard(card) {
+                    let score = card.power;
+                    
+                    // 大幅降低AI的戰略思考
+                    // 檢查是否有相克關係，但權重降低
+                    const playerCard = this.battlefield[this.battlefield.length - 1];
+                    if (this.isPredator(card.name, playerCard.name)) {
+                        score += 2; // 相克加分（大幅降低）
+                    } else if (this.isPredator(playerCard.name, card.name)) {
+                        score -= 1; // 被克減分（大幅降低）
+                    }
+                    
+                    // 降低特殊技能的權重
+                    if (this.opponentHealth < 8 && card.special) {
+                        score += 1; // 低血量時特殊技能加分（大幅降低）
+                    }
+                    
+                    // 大幅增加隨機性，讓AI更不穩定
+                    score += Math.random() * 6 - 3; // 隨機加減3分
+                    
+                    // 有時候AI會故意選擇較差的卡牌
+                    if (Math.random() < 0.3) {
+                        score -= 5; // 30%機率故意選擇較差的卡牌
+                    }
+                    
+                    return score;
+                },
+
+                isPredator(predator, prey) {
+                    return this.foodChain[predator] && this.foodChain[predator].includes(prey);
+                },
+
+                checkBattlefield() {
+                    if (this.battlefield.length >= 2) {
+                        const playerCard = this.battlefield[this.battlefield.length - 2];
+                        const opponentCard = this.battlefield[this.battlefield.length - 1];
+
+                        let playerPower = playerCard.power;
+                        let opponentPower = opponentCard.power;
+
+                        // 檢查相克關係
+                        if (this.isPredator(playerCard.name, opponentCard.name)) {
+                            playerPower *= 2;
+                            this.gameMessage = `${playerCard.name} 克制 ${opponentCard.name}！攻擊力翻倍！`;
+                        } else if (this.isPredator(opponentCard.name, playerCard.name)) {
+                            opponentPower *= 2;
+                            this.gameMessage = `${opponentCard.name} 克制 ${playerCard.name}！攻擊力翻倍！`;
+                        } else {
+                            this.gameMessage = '雙方勢均力敵！';
+                        }
+
+                        // 處理特殊技能
+                        this.processSpecialEffects(playerCard, 'player');
+                        this.processSpecialEffects(opponentCard, 'opponent');
+
+                        if (playerPower > opponentPower) {
+                            // 玩家勝利
+                            const damage = Math.max(1, Math.floor((playerPower - opponentPower) / 2));
+                            this.opponentHealth -= damage;
+                            this.gameMessage += ` 玩家勝利！對手受到${damage}點傷害`;
+                            this.showDamageEffect('opponent');
+                            playerCard.winner = true;
+                            this.playSound('victory');
+                            this.playSound('damage');
+                            this.triggerStarsEffect('victory');
+                            
+                            // 獎勵星星（增加）
+                            const starsEarned = Math.max(2, Math.floor(damage / 1.5));
+                            this.addStars(starsEarned);
+                            this.gameMessage += ` 獲得${starsEarned}顆星星！`;
+                            // 星星獎勵彈窗會在 addStars 方法中自動顯示
+                        } else if (opponentPower > playerPower) {
+                            // 對手勝利
+                            const damage = Math.max(1, Math.floor((opponentPower - playerPower) / 2));
+                            this.playerHealth -= damage;
+                            this.gameMessage += ` 對手勝利！玩家受到${damage}點傷害`;
+                            this.showDamageEffect('player');
+                            opponentCard.winner = true;
+                            this.playSound('damage');
+                            this.triggerStarsEffect('damage');
+                        } else {
+                            // 平手
+                            this.gameMessage += ' 平手！雙方都沒有受到傷害';
+                            // 平手也給一點星星獎勵
+                            this.addStars(1);
+                            this.gameMessage += ' 平手獎勵1顆星星！';
+                        }
+
+                        // 檢查遊戲結束
+                        this.checkGameOver();
+                        
+                        // 延遲清除戰場
+                        setTimeout(() => {
+                            this.battlefield = [];
+                            // 移除自動下一回合檢查，讓玩家自己控制
+                        }, 5000); // 增加到5秒，讓玩家有更多時間觀察戰鬥結果
+                    }
+                },
+
+
+
+                processSpecialEffects(card, player) {
+                    if (!card.special) return;
+
+                    switch (card.special) {
+                        case '王者威嚴':
+                            if (player === 'player') {
+                                this.playerHealth = Math.min(25, this.playerHealth + 2);
+                                this.gameMessage += ' 玩家恢復2點生命！';
+                                this.playSound('heal');
+                            } else {
+                                this.opponentHealth = Math.min(25, this.opponentHealth + 2);
+                                this.gameMessage += ' 對手恢復2點生命！';
+                            }
+                            break;
+                        case '毒液攻擊':
+                            if (player === 'player') {
+                                this.opponentHealth -= 1;
+                                this.gameMessage += ' 玩家額外造成1點毒液傷害！';
+                                this.playSound('damage');
+                            } else {
+                                this.playerHealth -= 1;
+                                this.gameMessage += ' 對手額外造成1點毒液傷害！';
+                            }
+                            break;
+                        case '快速逃脫':
+                            // 移除多抽一張效果，改為簡單的閃避效果
+                            this.gameMessage += ' 快速逃脫！沒有額外效果';
+                            break;
+                        case '虎嘯震懾':
+                            if (player === 'player') {
+                                this.opponentHealth -= 2;
+                                this.gameMessage += ' 玩家造成2點震懾傷害！';
+                                this.playSound('damage');
+                            } else {
+                                this.playerHealth -= 2;
+                                this.gameMessage += ' 對手造成2點震懾傷害！';
+                            }
+                            break;
+                    }
+                },
+
+                showDamageEffect(target) {
+                    const cards = target === 'player' ? this.playerHand : this.opponentHand;
+                    cards.forEach(card => {
+                        card.damage = true;
+                        setTimeout(() => {
+                            card.damage = false;
+                        }, 500);
+                    });
+                },
+
+                useSpecialSkill() {
+                    if (!this.gameStarted) {
+                        this.gameMessage = '請先開始遊戲！';
+                        return;
+                    }
+                    
+                    if (this.playerEnergy < 3) return;
+
+                    this.playerEnergy -= 3;
+                    this.showEffects = true;
+                    this.playSound('special');
+
+                    // 星星互動效果
+                    this.triggerStarsEffect('interactive');
+
+                    // 隨機特殊效果
+                    const effects = [
+                        () => { 
+                            this.playerHealth = Math.min(25, this.playerHealth + 5); 
+                            this.gameMessage = '玩家使用治癒技能！恢復5點生命！'; 
+                            this.playSound('heal');
+                            this.addStars(3); // 治癒技能獎勵3顆星星（增加）
+                            // 星星獎勵彈窗會在 addStars 方法中自動顯示
+                        },
+                        () => { 
+                            this.opponentHealth -= 3; 
+                            this.gameMessage = '玩家使用攻擊技能！對手受到3點傷害！'; 
+                            this.playSound('damage');
+                            this.addStars(4); // 攻擊技能獎勵4顆星星（增加）
+                            // 星星獎勵彈窗會在 addStars 方法中自動顯示
+                        },
+                        () => { 
+                            this.gameMessage = '玩家使用抽牌技能！但沒有額外效果'; 
+                            this.playSound('shuffle');
+                            this.addStars(2); // 抽牌技能獎勵2顆星星（增加）
+                            // 星星獎勵彈窗會在 addStars 方法中自動顯示
+                        },
+                        () => {
+                            this.gameMessage = '玩家使用召喚技能！但沒有額外效果';
+                            this.playSound('victory');
+                            this.addStars(5); // 召喚技能獎勵5顆星星（增加）
+                            // 星星獎勵彈窗會在 addStars 方法中自動顯示
+                        }
+                    ];
+
+                    const randomEffect = effects[Math.floor(Math.random() * effects.length)];
+                    randomEffect();
+
+                    setTimeout(() => {
+                        this.showEffects = false;
+                    }, 2000);
+                },
+
+                endTurn() {
+                    if (!this.gameStarted) {
+                        this.gameMessage = '請先開始遊戲！';
+                        return;
+                    }
+                    
+                    // 檢查是否還有手牌
+                    if (this.playerHand.length > 0) {
+                        this.gameMessage = '請先出完所有手牌！';
+                        return;
+                    }
+                    
+                    this.turn++;
+                    
+                    // 檢查是否達到第五回合
+                    if (this.turn > 5) {
+                        this.gameMessage = '遊戲已達到第五回合上限！';
+                        this.checkGameOver();
+                        return;
+                    }
+                    
+                    // 補充手牌和能量
+                    this.drawCards();
+                    this.playerEnergy = Math.min(10, this.playerEnergy + 2);
+                    
+                    this.gameMessage = `回合 ${this.turn} - 手牌已補充`;
+                    this.playSound('button');
+                    
+                    // 顯示當前手牌數量
+                    console.log(`回合 ${this.turn}: 玩家手牌 ${this.playerHand.length} 張，對手手牌 ${this.opponentHand.length} 張`);
+                },
+
+                drawCards() {
+                    // 玩家抽牌
+                    while (this.playerHand.length < 5 && this.deck.length > 0) {
+                        this.playerHand.push(this.deck.shift());
+                    }
+
+                    // 對手抽牌
+                    while (this.opponentHand.length < 5 && this.deck.length > 0) {
+                        this.opponentHand.push(this.deck.shift());
+                    }
+                    
+                    // 如果牌組用完，重新洗牌並補充
+                    if (this.deck.length === 0) {
+                        this.reshuffleDeck();
+                    }
+                },
+
+                reshuffleDeck() {
+                    // 重新創建牌組
+                    this.createDeck();
+                    this.shuffleDeck();
+                    console.log('牌組已重新洗牌，剩餘牌數:', this.deck.length);
+                },
+
+                checkGameOver() {
+                    if (this.playerHealth <= 0) {
+                        this.gameOver = true;
+                        this.gameOverMessage = '遊戲結束！對手獲勝！';
+                        this.addStars(-2); // 失敗扣除2顆星星
+                        this.gameMessage += ' 失敗扣除2顆星星！';
+                        this.playSound('gameOver');
+                    } else if (this.opponentHealth <= 0) {
+                        this.gameOver = true;
+                        this.gameOverMessage = '遊戲結束！玩家獲勝！';
+                        this.playSound('victory');
+                        // 勝利獎勵20顆星星
+                        this.addStars(20);
+                        this.gameMessage += ` 勝利獎勵20顆星星！`;
+                        // 星星獎勵彈窗會在 addStars 方法中自動顯示
+                    } else if (this.turn >= 5 && this.playerHand.length === 0 && this.opponentHand.length === 0) {
+                        // 第五回合結束且雙方都沒有手牌，比較血量決定勝負
+                        this.gameOver = true;
+                        if (this.playerHealth > this.opponentHealth) {
+                            this.gameOverMessage = '第五回合結束！玩家血量較多獲勝！';
+                            this.playSound('victory');
+                            // 勝利獎勵20顆星星
+                            this.addStars(20);
+                            this.gameMessage += ` 勝利獎勵20顆星星！`;
+                            // 星星獎勵彈窗會在 addStars 方法中自動顯示
+                        } else if (this.opponentHealth > this.playerHealth) {
+                            this.gameOverMessage = '第五回合結束！對手血量較多獲勝！';
+                            this.addStars(-2); // 失敗扣除2顆星星
+                            this.gameMessage += ' 失敗扣除2顆星星！';
+                            this.playSound('gameOver');
+                        } else {
+                            this.gameOverMessage = '第五回合結束！平手！';
+                            this.addStars(5); // 平手獎勵5顆星星
+                            this.gameMessage += ' 平手獎勵5顆星星！';
+                            // 星星獎勵彈窗會在 addStars 方法中自動顯示
+                        }
+                    } else if (this.deck.length === 0 && this.playerHand.length === 0 && this.opponentHand.length === 0) {
+                        // 牌組用完且雙方都沒有手牌的情況
+                        this.gameOver = true;
+                        if (this.playerHealth > this.opponentHealth) {
+                            this.gameOverMessage = '遊戲結束！玩家獲勝！';
+                            this.playSound('victory');
+                            // 勝利獎勵20顆星星
+                            this.addStars(20);
+                            this.gameMessage += ` 勝利獎勵20顆星星！`;
+                            // 星星獎勵彈窗會在 addStars 方法中自動顯示
+                        } else if (this.opponentHealth > this.playerHealth) {
+                            this.gameOverMessage = '遊戲結束！對手獲勝！';
+                            this.addStars(-2); // 失敗扣除2顆星星
+                            this.gameMessage += ' 失敗扣除2顆星星！';
+                            this.playSound('gameOver');
+                        } else {
+                            this.gameOverMessage = '遊戲結束！平手！';
+                            this.addStars(5); // 平手獎勵5顆星星
+                            this.gameMessage += ' 平手獎勵5顆星星！';
+                            // 星星獎勵彈窗會在 addStars 方法中自動顯示
+                        }
+                    }
+                },
+
+                newGame() {
+                    // 重置遊戲狀態
+                    this.playerHealth = 25;
+                    this.opponentHealth = 20; // 降低對手初始血量
+                    this.playerEnergy = 5;
+                    this.turn = 1;
+                    this.playerHand = [];
+                    this.opponentHand = [];
+                    this.battlefield = [];
+                    this.selectedCard = null;
+                    this.gameMessage = '請點擊「開始遊戲」按鈕開始新遊戲！';
+                    this.gameOver = false;
+                    this.gameOverMessage = '';
+                    this.currentPlayer = 'player';
+                    this.showEffects = false;
+                    this.gameStarted = false; // 重置遊戲開始狀態
+                    this.playSound('button');
+                }
+            }
+        }).mount('#app');
+    </script>
+</body>
+</html> 
