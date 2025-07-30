@@ -905,6 +905,7 @@
   <script src="js/starRewardSystem.js"></script>
   <script src="js/cardUtils.js"></script>
   <script src="js/cards.js"></script>
+  <script src="js/achievementSystem.js"></script>
 
   <script>
     // 商城系統
@@ -1087,6 +1088,7 @@
         document.head.appendChild(style);
       }
     };
+    window.ShopSystem = ShopSystem; // ←加這行
 
     // 頁面載入時初始化
     window.addEventListener('load', function() {
