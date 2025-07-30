@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>遊戲整合範例 - 聊天室與排行榜</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft JhengHei', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1800px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 3fr 1fr;
+            gap: 20px;
+            height: calc(100vh - 40px);
+        }
+
+        .game-section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-panel {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            min-width: 350px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+            text-align: center;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .game-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            min-height: 500px;
+            overflow: hidden;
+        }
+
+
+
+        .game-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .game-button {
+            padding: 12px 24px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: transform 0.2s;
+        }
+
+        .game-button:hover {
+            transform: translateY(-2px);
+        }
+
+        .game-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* 動物卡牌遊戲樣式 */
+        .animal-game-section {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            border: 2px solid rgba(255, 107, 107, 0.3);
+        }
+
+        .animal-game-info {
+            margin: 15px 0;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            border-left: 4px solid #ff6b6b;
+        }
+
+        .animal-game-info p {
+            margin: 8px 0;
+            font-size: 14px;
+            color: #e8f5e8;
+        }
+
+        .animal-game-btn {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ff8e8e 100%) !important;
+            color: white !important;
+            font-weight: bold;
+            border: 2px solid rgba(255, 107, 107, 0.5);
+        }
+
+        .animal-game-btn:hover {
+            background: linear-gradient(135deg, #ff5252 0%, #ff7676 100%) !important;
+            box-shadow: 0 8px 16px rgba(255, 107, 107, 0.4) !important;
+        }
+
+        /* 嵌入遊戲樣式 */
+        .embedded-game {
+            margin-top: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 15px;
+            border: 2px solid rgba(255, 107, 107, 0.5);
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            max-height: 70vh;
+        }
+
+        .embedded-game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background: linear-gradient(135deg, #ff6b6b 0%, #ff8e8e 100%);
+            color: white;
+            font-weight: bold;
+        }
+
+        .embedded-game-header h3 {
+            margin: 0;
+            font-size: 1.2rem;
+        }
+
+        .close-game-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .close-game-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+
+        .embedded-game-content {
+            padding: 0;
+            background: #000;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .embedded-game-content iframe {
+            border: none;
+            background: #000;
+            flex: 1;
+            min-height: 500px;
+            height: 100vh;
+            overflow: auto;
+        }
+
+        /* 自定義 iframe 滾動條樣式 */
+        .embedded-game-content iframe::-webkit-scrollbar {
+            width: 16px;
+        }
+
+        .embedded-game-content iframe::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+        }
+
+        .embedded-game-content iframe::-webkit-scrollbar-thumb {
+            background: linear-gradient(45deg, #ff6b6b, #ff8e8e);
+            border-radius: 8px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .embedded-game-content iframe::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(45deg, #ff5252, #ff7676);
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #e9ecef;
+            max-height: 200px;
+        }
+
+        .chat-messages::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .chat-messages::-webkit-scrollbar-track {
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 4px;
+        }
+
+        .chat-messages::-webkit-scrollbar-thumb {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border-radius: 4px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .chat-messages::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(45deg, #5a6fd8, #6a4190);
+        }
+
+        .message {
+            margin-bottom: 8px;
+            padding: 8px;
+            border-radius: 8px;
+            max-width: 100%;
+            word-wrap: break-word;
+            font-size: 12px;
+        }
+
+        .message.system {
+            background: #e3f2fd;
+            border-left: 3px solid #2196f3;
+            text-align: center;
+        }
+
+        .message.user {
+            background: #e8f5e8;
+            border-left: 3px solid #4caf50;
+        }
+
+        .message.other {
+            background: #fff3e0;
+            border-left: 3px solid #ff9800;
+        }
+
+        .message-header {
+            font-size: 10px;
+            color: #666;
+            margin-bottom: 3px;
+        }
+
+        .message-content {
+            font-size: 11px;
+            line-height: 1.3;
+        }
+
+        .chat-input {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .chat-input input {
+            flex: 1;
+            padding: 8px 12px;
+            border: 2px solid #ddd;
+            border-radius: 20px;
+            font-size: 12px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .chat-input input:focus {
+            border-color: #667eea;
+        }
+
+        .chat-input button {
+            padding: 8px 16px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: bold;
+            transition: transform 0.2s;
+        }
+
+        .chat-input button:hover {
+            transform: translateY(-1px);
+        }
+
+        .chat-input button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+
+
+        .user-panel {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 10px;
+            margin-bottom: 10px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .user-info-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .user-details h3 {
+            margin: 0;
+            color: #333;
+            font-size: 14px;
+        }
+
+        .user-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 6px;
+            background: #f8f9fa;
+            border-radius: 6px;
+        }
+
+        .stat-value {
+            font-size: 14px;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            font-size: 10px;
+            color: #666;
+            margin-top: 3px;
+        }
+
+        .error-message {
+            background: #ffebee;
+            color: #c62828;
+            padding: 8px;
+            border-radius: 5px;
+            margin: 8px 0;
+            border-left: 3px solid #c62828;
+            font-size: 12px;
+        }
+
+        .success-message {
+            background: #e8f5e8;
+            color: #2e7d32;
+            padding: 8px;
+            border-radius: 5px;
+            margin: 8px 0;
+            border-left: 3px solid #2e7d32;
+            font-size: 12px;
+        }
+
+        @media (max-width: 1200px) {
+            .container {
+                grid-template-columns: 2fr 1fr;
+                max-width: 1400px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+                height: auto;
+                max-width: 100%;
+            }
+
+            .game-section, .chat-panel {
+                height: auto;
+                min-height: 400px;
+            }
+            
+            .embedded-game {
+                max-height: 50vh;
+            }
+            
+            .embedded-game-content iframe {
+                min-height: 350px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 遊戲區域 -->
+        <div class="game-section">
+            <div class="section-title">🎮 動物卡牌遊戲</div>
+            
+            <div class="game-area">
+                <div class="animal-game-info">
+                    <p>🎮 每次遊戲需要10顆星星，勝利可獲得20顆星星，失敗扣除2顆星星！</p>
+                    <p>🌟 遊戲已優化：AI更友善，更容易獲勝！</p>
+                </div>
+                <div class="game-buttons">
+                    <button class="game-button animal-game-btn" onclick="toggleAnimalGame()">開始動物卡牌遊戲</button>
+                </div>
+                
+                <!-- 嵌入的動物卡牌遊戲 -->
+                <div id="embeddedAnimalGame" class="embedded-game" style="display: none;">
+                    <div class="embedded-game-header">
+                        <h3>🦁 動物卡牌遊戲</h3>
+                        <button class="close-game-btn" onclick="toggleAnimalGame()">×</button>
+                    </div>
+                                            <div class="embedded-game-content">
+                            <iframe id="animalGameFrame" src="advanced-animal-card-game.html" width="100%" height="100%" frameborder="0" scrolling="auto"></iframe>
+                        </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 聊天與排行榜面板 -->
+        <div class="chat-panel">
+            <!-- 用戶資訊 -->
+            <div class="user-panel">
+                <div class="user-info-header">
+                    <div class="user-avatar" id="userAvatar">?</div>
+                    <div class="user-details">
+                        <h3 id="userName">請登入</h3>
+                        <p id="userStatus">未登入</p>
+                    </div>
+                </div>
+                <div class="user-stats">
+                    <div class="stat-item">
+                        <div class="stat-value" id="userRank">-</div>
+                        <div class="stat-label">排名</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="userScore">0</div>
+                        <div class="stat-label">最高分</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="messageCount">0</div>
+                        <div class="stat-label">訊息數</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 聊天室 -->
+            <div class="section-title">💬 聊天室</div>
+            <div class="chat-messages" id="chatMessages">
+                <div class="message system">歡迎來到遊戲聊天室！</div>
+            </div>
+            <div class="chat-input">
+                <input type="text" id="messageInput" placeholder="輸入訊息..." maxlength="200">
+                <button id="sendButton">發送</button>
+            </div>
+
+
+        </div>
+    </div>
+
+    <script>
+        // 配置
+        const API_BASE_URL = 'https://script.google.com/macros/s/AKfycby6gzLGN6b1bwkdf7u2aM_nfjT8DM1JV4v_6QPD9ZWuqfCGRhfWH4NtL33W4rjV-gU8/exec';
+        const CURRENT_USER = localStorage.getItem('currentUser') || '玩家' + Math.floor(Math.random() * 1000);
+        
+
+        let userStats = {};
+        let chatMessages = [];
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeGame();
+        });
+
+        // 初始化遊戲
+        function initializeGame() {
+            // 設定用戶資訊
+            document.getElementById('userName').textContent = CURRENT_USER;
+            document.getElementById('userAvatar').textContent = CURRENT_USER.charAt(0).toUpperCase();
+            document.getElementById('userStatus').textContent = '遊戲中';
+            
+            // 載入資料
+            loadChatMessages();
+            loadUserStats();
+            
+            // 設定事件監聽器
+            setupEventListeners();
+            
+            // 開始自動更新
+            startAutoRefresh();
+            
+            // 發送歡迎訊息
+            setTimeout(() => {
+                sendSystemMessage(`${CURRENT_USER} 加入了遊戲！`);
+            }, 1000);
+        }
+
+        // 設定事件監聽器
+        function setupEventListeners() {
+            const messageInput = document.getElementById('messageInput');
+            const sendButton = document.getElementById('sendButton');
+
+            sendButton.addEventListener('click', sendMessage);
+            messageInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+        }
+
+
+
+        // 聊天功能
+        async function loadChatMessages() {
+            try {
+                const response = await fetch(`${API_BASE_URL}?action=getChatMessages&callback=handleChatMessages`);
+                const script = document.createElement('script');
+                script.src = response.url;
+                document.head.appendChild(script);
+            } catch (error) {
+                console.error('載入聊天訊息失敗:', error);
+            }
+        }
+
+        function handleChatMessages(data) {
+            if (data.error) {
+                console.error('載入聊天訊息失敗:', data.error);
+                return;
+            }
+
+            chatMessages = data;
+            displayChatMessages();
+        }
+
+        function displayChatMessages() {
+            const chatContainer = document.getElementById('chatMessages');
+            chatContainer.innerHTML = '';
+
+            if (chatMessages.length === 0) {
+                chatContainer.innerHTML = '<div class="message system">歡迎來到聊天室！</div>';
+                return;
+            }
+
+            chatMessages.forEach(message => {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message ${message.user === '系統' ? 'system' : 
+                    message.user === CURRENT_USER ? 'user' : 'other'}`;
+                
+                messageDiv.innerHTML = `
+                    <div class="message-header">
+                        <strong>${message.user}</strong> - ${message.time}
+                    </div>
+                    <div class="message-content">${message.message}</div>
+                `;
+                
+                chatContainer.appendChild(messageDiv);
+            });
+
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        async function sendMessage() {
+            const messageInput = document.getElementById('messageInput');
+            const sendButton = document.getElementById('sendButton');
+            const message = messageInput.value.trim();
+
+            if (!message) {
+                showError('請輸入訊息');
+                return;
+            }
+
+            sendButton.disabled = true;
+            sendButton.textContent = '發送中...';
+
+            try {
+                const response = await fetch(`${API_BASE_URL}?action=sendChatMessage&user=${encodeURIComponent(CURRENT_USER)}&message=${encodeURIComponent(message)}&callback=handleSendMessage`);
+                const script = document.createElement('script');
+                script.src = response.url;
+                document.head.appendChild(script);
+            } catch (error) {
+                console.error('發送訊息失敗:', error);
+                showError('發送訊息失敗');
+                sendButton.disabled = false;
+                sendButton.textContent = '發送';
+            }
+        }
+
+        function handleSendMessage(data) {
+            const sendButton = document.getElementById('sendButton');
+            const messageInput = document.getElementById('messageInput');
+
+            sendButton.disabled = false;
+            sendButton.textContent = '發送';
+
+            if (data.error) {
+                showError('發送訊息失敗: ' + data.error);
+                return;
+            }
+
+            messageInput.value = '';
+            loadChatMessages();
+            loadUserStats();
+        }
+
+        function sendSystemMessage(message) {
+            const systemMessage = {
+                user: '系統',
+                message: message,
+                time: new Date().toLocaleString('zh-TW')
+            };
+            
+            // 直接添加到本地顯示
+            chatMessages.push(systemMessage);
+            displayChatMessages();
+        }
+
+
+
+        // 用戶統計
+        async function loadUserStats() {
+            try {
+                const response = await fetch(`${API_BASE_URL}?action=getUserStats&user=${encodeURIComponent(CURRENT_USER)}&callback=handleUserStats`);
+                const script = document.createElement('script');
+                script.src = response.url;
+                document.head.appendChild(script);
+            } catch (error) {
+                console.error('載入用戶統計失敗:', error);
+            }
+        }
+
+        function handleUserStats(data) {
+            if (data.error) {
+                console.error('載入用戶統計失敗:', data.error);
+                return;
+            }
+
+            userStats = data;
+            updateUserStatsDisplay();
+        }
+
+        function updateUserStatsDisplay() {
+            document.getElementById('userRank').textContent = userStats.rank || '-';
+            document.getElementById('userScore').textContent = userStats.score || 0;
+            document.getElementById('messageCount').textContent = userStats.messageCount || 0;
+        }
+
+        // 更新分數
+        async function updateScore(score, level) {
+            try {
+                const response = await fetch(`${API_BASE_URL}?action=updateScore&user=${encodeURIComponent(CURRENT_USER)}&score=${score}&level=${level}&callback=handleUpdateScore`);
+                const script = document.createElement('script');
+                script.src = response.url;
+                document.head.appendChild(script);
+            } catch (error) {
+                console.error('更新分數失敗:', error);
+            }
+        }
+
+        function handleUpdateScore(data) {
+            if (data.error) {
+                console.error('更新分數失敗:', data.error);
+                return;
+            }
+
+            loadLeaderboard();
+            loadUserStats();
+        }
+
+        // 自動更新
+        function startAutoRefresh() {
+            setInterval(() => {
+                loadChatMessages();
+            }, 30000);
+
+            setInterval(() => {
+                loadUserStats();
+            }, 60000);
+        }
+
+        // 訊息顯示
+        function showError(message) {
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error-message';
+            errorDiv.textContent = message;
+            
+            document.body.insertBefore(errorDiv, document.body.firstChild);
+            
+            setTimeout(() => {
+                errorDiv.remove();
+            }, 3000);
+        }
+
+        function showSuccess(message) {
+            const successDiv = document.createElement('div');
+            successDiv.className = 'success-message';
+            successDiv.textContent = message;
+            
+            document.body.insertBefore(successDiv, document.body.firstChild);
+            
+            setTimeout(() => {
+                successDiv.remove();
+            }, 3000);
+        }
+
+        // 動物卡牌遊戲功能
+        function toggleAnimalGame() {
+            const gameContainer = document.getElementById('embeddedAnimalGame');
+            const button = document.querySelector('.animal-game-btn');
+            
+            if (gameContainer.style.display === 'none') {
+                // 檢查星星是否足夠
+                const currentStars = parseInt(localStorage.getItem('totalStars') || '0');
+                if (currentStars < 10) {
+                    showError('星星不足！需要10顆星星才能開始動物卡牌遊戲！');
+                    return;
+                }
+                
+                // 扣除10顆星星
+                const newStars = currentStars - 10;
+                localStorage.setItem('totalStars', newStars.toString());
+                
+                // 發送系統訊息
+                sendSystemMessage(`${CURRENT_USER} 開始了動物卡牌遊戲！消耗10顆星星`);
+                
+                // 顯示嵌入遊戲
+                gameContainer.style.display = 'block';
+                button.textContent = '隱藏遊戲';
+                
+                // 更新用戶統計顯示
+                updateUserStatsDisplay();
+            } else {
+                // 隱藏嵌入遊戲
+                gameContainer.style.display = 'none';
+                button.textContent = '開始動物卡牌遊戲';
+            }
+        }
+
+        // 監聽來自動物卡牌遊戲的星星更新和遊戲結果
+        window.addEventListener('message', function(event) {
+            if (event.data.type === 'starUpdate') {
+                // 更新本地星星顯示
+                const starsElement = document.getElementById('userScore');
+                if (starsElement) {
+                    starsElement.textContent = event.data.stars;
+                }
+                
+                // 發送聊天訊息
+                if (event.data.message) {
+                    sendSystemMessage(event.data.message);
+                }
+            } else if (event.data.type === 'gameResult') {
+                // 處理遊戲結果
+                const starsElement = document.getElementById('userScore');
+                if (starsElement) {
+                    starsElement.textContent = event.data.stars;
+                }
+                
+                // 發送遊戲結果聊天訊息
+                if (event.data.message) {
+                    sendSystemMessage(event.data.message);
+                }
+                
+                // 根據遊戲結果顯示不同的系統訊息
+                if (event.data.result === '勝利') {
+                    sendSystemMessage(`🎉 ${event.data.player} 在動物卡牌遊戲中獲得勝利！`);
+                } else if (event.data.result === '失敗') {
+                    sendSystemMessage(`😔 ${event.data.player} 在動物卡牌遊戲中失敗了，下次再接再厲！`);
+                } else if (event.data.result === '平手') {
+                    sendSystemMessage(`🤝 ${event.data.player} 在動物卡牌遊戲中與對手打成平手！`);
+                }
+            }
+        });
+
+        // 全域函數供外部調用
+        window.updateScore = updateScore;
+        window.loadChatMessages = loadChatMessages;
+        window.sendSystemMessage = sendSystemMessage;
+        window.toggleAnimalGame = toggleAnimalGame;
+    </script>
+</body>
+</html> 
