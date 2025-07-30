@@ -1842,6 +1842,6 @@
     {"code": "D9E7F5G3", "stars": 5000, "used": false, "usedAt": null, "usedBy": null, "createdAt": "2024-07-01T00:00:00.000Z"},
     {"code": "H8I6J4K2", "stars": 5000, "used": false, "usedAt": null, "usedBy": null, "createdAt": "2024-07-01T00:00:00.000Z"},
     {"code": "L1M3N5O7", "stars": 5000, "used": false, "usedAt": null, "usedBy": null, "createdAt": "2024-07-01T00:00:00.000Z"}
-    // 新增邀請碼結束
+    }
   ]
 } 
