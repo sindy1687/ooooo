@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <title>📣 最新公告</title>
+  <style>
+    body { font-family: 'Noto Sans TC', sans-serif; padding: 20px; background: #f9f9f9; }
+    #announcements { max-width: 600px; margin: 0 auto; }
+    .announcement {
+      border-left: 6px solid #888;
+      background: #fff;
+      padding: 12px 16px;
+      margin: 10px 0;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+    .🔴 { border-color: crimson; background: #ffecec; }
+    .🟢 { border-color: green; background: #ecfff1; }
+    .🔵 { border-color: dodgerblue; background: #e6f2ff; }
+    .announcement small { display: block; color: #888; margin-top: 6px; }
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .back-btn {
+      display: inline-block;
+      padding: 8px 16px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      transition: all 0.3s ease;
+    }
+    .back-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+    .error-message {
+      background: #fff3cd;
+      border: 1px solid #ffeaa7;
+      color: #856404;
+      padding: 15px;
+      border-radius: 8px;
+      margin: 10px 0;
+    }
+    .loading {
+      text-align: center;
+      color: #666;
+      font-style: italic;
+    }
+    .refresh-btn {
+      display: inline-block;
+      padding: 8px 16px;
+      background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      margin-left: 10px;
+      transition: all 0.3s ease;
+      border: none;
+      cursor: pointer;
+    }
+    .refresh-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <a href="index.html" class="back-btn">🏠 返回首頁</a>
+    <button class="refresh-btn" onclick="loadAnnouncements()">🔄 重新載入</button>
+    <h2>📣 系統公告</h2>
+  </div>
+  <div id="announcements">載入中...</div>
+
+  <script src="js/announcements.js"></script>
+  <script>
+    // Google Sheets API 網址
+    const GOOGLE_SHEETS_API = "https://script.google.com/macros/s/AKfycbyfM8pLiWIjRsvg7u3rJ5Zh4XdKLFuScaQ5t_0yQviBp11IwOZSyrgZ-KFHkrJT43UBPg/exec";
+    
+    // 本地備用公告數據
+    const fallbackAnnouncements = [
+      {
+        type: "🔴",
+        content: "系統維護中，部分功能可能暫時無法使用",
+        time: "2024-01-15 10:00"
+      },
+      {
+        type: "🟢",
+        content: "歡迎使用英打小英雄！新功能陸續推出中",
+        time: "2024-01-10 09:30"
+      },
+      {
+        type: "🔵",
+        content: "如有問題請聯繫客服或使用玩家信箱功能",
+        time: "2024-01-05 14:20"
+      }
+    ];
+
+    function loadAnnouncements() {
+      const box = document.getElementById("announcements");
+      box.innerHTML = '<div class="loading">正在從 Google Sheets 載入公告...</div>';
+
+      // 從 Google Sheets 載入
+      fetch(GOOGLE_SHEETS_API)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        })
+        .then(data => {
+          if (data && data.length > 0) {
+            displayAnnouncements(data);
+          } else {
+            throw new Error('No data received');
+          }
+        })
+        .catch(error => {
+          console.log('Google Sheets 載入失敗，使用本地數據:', error);
+          // 如果 Google Sheets 失敗，使用本地數據
+          if (typeof localAnnouncements !== 'undefined' && localAnnouncements.length > 0) {
+            displayAnnouncements(localAnnouncements);
+          } else {
+            displayAnnouncements(fallbackAnnouncements);
+          }
+        });
+    }
+
+    function displayAnnouncements(announcements) {
+      const box = document.getElementById("announcements");
+      
+      if (!announcements || announcements.length === 0) {
+        box.innerHTML = "🚫 目前沒有公告";
+        return;
+      }
+
+      box.innerHTML = announcements.map(a => `
+        <div class="announcement ${a.type}">
+          <strong>${a.type}</strong> ${a.content}
+          <small>🕒 ${a.time}</small>
+        </div>
+      `).join("");
+    }
+
+    // 頁面載入時執行
+    document.addEventListener('DOMContentLoaded', function() {
+      loadAnnouncements();
+    });
+  </script>
+</body>
+</html> 
