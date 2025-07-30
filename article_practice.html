@@ -868,6 +868,34 @@
       
       // 檢查閱讀關卡成就
       setTimeout(checkReadingAchievements, 2000);
+      
+      // 延遲測試語音品質，確保語音列表已加載
+      setTimeout(() => {
+        if ('speechSynthesis' in window) {
+          const voices = speechSynthesis.getVoices();
+          if (voices.length > 0) {
+            console.log('=== 語音系統初始化完成 ===');
+            console.log(`找到 ${voices.length} 個可用語音`);
+            
+            // 顯示最佳語音信息
+            const bestVoice = voices.find(voice => 
+              voice.name.includes('Samantha') && voice.lang === 'en-US'
+            ) || voices.find(voice => 
+              voice.name.includes('Google') && voice.name.includes('Female') && voice.lang === 'en-US'
+            ) || voices.find(voice => 
+              voice.lang === 'en-US' && voice.name.includes('Female')
+            ) || voices.find(voice => voice.lang === 'en-US');
+            
+            if (bestVoice) {
+              const quality = getVoiceQuality(bestVoice);
+              console.log(`🎯 最佳語音：${bestVoice.name} - ${quality}`);
+            }
+            
+            // 提供測試命令
+            console.log('💡 在控制台輸入 testVoiceQuality() 可以測試語音品質');
+          }
+        }
+      }, 2000);
     });
     
     // 設置答案輸入框的 Enter 鍵事件
@@ -1572,8 +1600,8 @@
       // 記錄使用發音功能
       recordAudioUsage();
       
-      // 播放音效提示
-      playSound('correct');
+      // 移除音效提示，讓朗讀更安靜
+      // playSound('correct');
       
       // 顯示文章內容供閱讀
       const fullText = `${articleTitle}\n\n${articleContent}`;
@@ -1583,17 +1611,24 @@
         // 獲取可用的語音
         const voices = speechSynthesis.getVoices();
         
-        // 尋找最佳的美式英語語音
+        // 尋找最佳的美式英語語音，優先選擇高品質的自然語音
         let selectedVoice = null;
         
-        // 優先選擇：Google 美式英語女聲
+        // 第一優先：Samantha（macOS 高品質美式英語女聲）
         selectedVoice = voices.find(voice => 
-          voice.lang === 'en-US' && 
-          voice.name.includes('Google') && 
-          voice.name.includes('Female')
+          voice.name.includes('Samantha') && voice.lang === 'en-US'
         );
         
-        // 其次：Microsoft 美式英語女聲
+        // 第二優先：Google 美式英語女聲（通常音質較好）
+        if (!selectedVoice) {
+          selectedVoice = voices.find(voice => 
+            voice.lang === 'en-US' && 
+            voice.name.includes('Google') && 
+            voice.name.includes('Female')
+          );
+        }
+        
+        // 第三優先：Microsoft 美式英語女聲
         if (!selectedVoice) {
           selectedVoice = voices.find(voice => 
             voice.lang === 'en-US' && 
@@ -1602,7 +1637,14 @@
           );
         }
         
-        // 再次：任何美式英語女聲
+        // 第四優先：Alex（macOS 高品質美式英語男聲）
+        if (!selectedVoice) {
+          selectedVoice = voices.find(voice => 
+            voice.name.includes('Alex') && voice.lang === 'en-US'
+          );
+        }
+        
+        // 第五優先：任何美式英語女聲
         if (!selectedVoice) {
           selectedVoice = voices.find(voice => 
             voice.lang === 'en-US' && 
@@ -1610,7 +1652,7 @@
           );
         }
         
-        // 最後：任何美式英語語音
+        // 第六優先：任何美式英語語音
         if (!selectedVoice) {
           selectedVoice = voices.find(voice => 
             voice.lang === 'en-US'
@@ -1624,14 +1666,20 @@
         
         const utterance = new SpeechSynthesisUtterance(fullText);
         utterance.lang = 'en-US';
-        utterance.rate = 1.0; // 正常速度
-        utterance.pitch = 1.1; // 稍微提高音調，更有活力
-        utterance.volume = 1.0;
+        utterance.rate = 0.75; // 進一步降低速度，讓發音更清楚自然
+        utterance.pitch = 0.95; // 稍微降低音調，讓聲音更溫暖自然
+        utterance.volume = 0.85; // 調整音量，讓發音更柔和舒適
         
         // 如果找到了合適的語音，使用它
         if (selectedVoice) {
           utterance.voice = selectedVoice;
           console.log('使用語音：', selectedVoice.name, selectedVoice.lang);
+          
+          // 顯示語音品質信息
+          const voiceQuality = getVoiceQuality(selectedVoice);
+          if (voiceQuality) {
+            console.log('語音品質：', voiceQuality);
+          }
         } else {
           console.log('未找到合適的語音，使用默認語音');
         }
@@ -1659,6 +1707,80 @@
         // 如果瀏覽器不支持語音合成，靜默處理
         console.log('瀏覽器不支持語音合成');
       }
+    }
+    
+    // 測試語音品質
+    function testVoiceQuality() {
+      if (!('speechSynthesis' in window)) {
+        alert('您的瀏覽器不支持語音合成功能');
+        return;
+      }
+      
+      const voices = speechSynthesis.getVoices();
+      const testText = "Hello, this is a test of American English pronunciation quality.";
+      
+      // 顯示可用的語音列表
+      console.log('=== 可用的語音列表 ===');
+      voices.forEach((voice, index) => {
+        const quality = getVoiceQuality(voice);
+        console.log(`${index + 1}. ${voice.name} (${voice.lang}) - ${quality}`);
+      });
+      
+      // 測試最佳語音
+      const bestVoice = voices.find(voice => 
+        voice.name.includes('Samantha') && voice.lang === 'en-US'
+      ) || voices.find(voice => 
+        voice.name.includes('Google') && voice.name.includes('Female') && voice.lang === 'en-US'
+      ) || voices.find(voice => 
+        voice.lang === 'en-US' && voice.name.includes('Female')
+      ) || voices.find(voice => voice.lang === 'en-US');
+      
+      if (bestVoice) {
+        const utterance = new SpeechSynthesisUtterance(testText);
+        utterance.voice = bestVoice;
+        utterance.rate = 0.75;
+        utterance.pitch = 0.95;
+        utterance.volume = 0.85;
+        
+        const quality = getVoiceQuality(bestVoice);
+        console.log(`正在測試最佳語音：${bestVoice.name} - ${quality}`);
+        
+        speechSynthesis.speak(utterance);
+      }
+    }
+    
+    // 評估語音品質
+    function getVoiceQuality(voice) {
+      if (!voice) return null;
+      
+      const voiceName = voice.name.toLowerCase();
+      
+      // 高品質語音
+      if (voiceName.includes('samantha') || voiceName.includes('alex')) {
+        return '⭐ 高品質 macOS 語音';
+      }
+      
+      // Google 語音
+      if (voiceName.includes('google') && voiceName.includes('female')) {
+        return '⭐ 高品質 Google 語音';
+      }
+      
+      // Microsoft 語音
+      if (voiceName.includes('microsoft') && voiceName.includes('female')) {
+        return '⭐ 高品質 Microsoft 語音';
+      }
+      
+      // 一般美式英語語音
+      if (voice.lang === 'en-US' && voiceName.includes('female')) {
+        return '✅ 美式英語女聲';
+      }
+      
+      // 其他美式英語語音
+      if (voice.lang === 'en-US') {
+        return '✅ 美式英語語音';
+      }
+      
+      return '⚠️ 一般語音';
     }
     
     // 暫停文章發音
@@ -2399,20 +2521,65 @@
       if ('speechSynthesis' in window) {
         const utterance = new SpeechSynthesisUtterance(fullText);
         utterance.lang = 'en-US';
-        utterance.rate = 1.0;
-        utterance.pitch = 1.1;
-        utterance.volume = 1.0;
+        utterance.rate = 0.75; // 進一步降低速度，讓發音更清楚自然
+        utterance.pitch = 0.95; // 稍微降低音調，讓聲音更溫暖自然
+        utterance.volume = 0.85; // 調整音量，讓發音更柔和舒適
         
         // 選擇最佳語音
         const voices = speechSynthesis.getVoices();
-        const preferredVoice = voices.find(voice => 
-          voice.name.includes('Google US English Female') ||
-          voice.name.includes('Microsoft US English Female') ||
-          (voice.lang.includes('en-US') && voice.name.includes('Female'))
-        ) || voices.find(voice => voice.lang.includes('en-US')) || voices[0];
+        let preferredVoice = null;
+        
+        // 第一優先：Samantha（macOS 高品質美式英語女聲）
+        preferredVoice = voices.find(voice => 
+          voice.name.includes('Samantha') && voice.lang === 'en-US'
+        );
+        
+        // 第二優先：Google 美式英語女聲
+        if (!preferredVoice) {
+          preferredVoice = voices.find(voice => 
+            voice.name.includes('Google US English Female') && voice.lang === 'en-US'
+          );
+        }
+        
+        // 第三優先：Microsoft 美式英語女聲
+        if (!preferredVoice) {
+          preferredVoice = voices.find(voice => 
+            voice.name.includes('Microsoft US English Female') && voice.lang === 'en-US'
+          );
+        }
+        
+        // 第四優先：Alex（macOS 高品質美式英語男聲）
+        if (!preferredVoice) {
+          preferredVoice = voices.find(voice => 
+            voice.name.includes('Alex') && voice.lang === 'en-US'
+          );
+        }
+        
+        // 第五優先：任何美式英語女聲
+        if (!preferredVoice) {
+          preferredVoice = voices.find(voice => 
+            voice.lang === 'en-US' && voice.name.includes('Female')
+          );
+        }
+        
+        // 第六優先：任何美式英語語音
+        if (!preferredVoice) {
+          preferredVoice = voices.find(voice => voice.lang === 'en-US');
+        }
+        
+        // 最後：使用第一個可用的語音
+        if (!preferredVoice && voices.length > 0) {
+          preferredVoice = voices[0];
+        }
         
         if (preferredVoice) {
           utterance.voice = preferredVoice;
+          
+          // 顯示語音品質信息
+          const voiceQuality = getVoiceQuality(preferredVoice);
+          if (voiceQuality) {
+            console.log('遊戲模式語音品質：', voiceQuality);
+          }
         }
         
         // 更新按鈕狀態
