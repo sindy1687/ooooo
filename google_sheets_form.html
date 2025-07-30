@@ -462,7 +462,10 @@
           return;
         }
         
+        // 如果已有訊息，表示玩家已存在，直接顯示
         displayMessages(data);
+        showStatus(`✅ 歡迎回來，${user}！`, "success");
+        
         // 清理全域回調函數
         delete window[callbackName];
         document.head.removeChild(script);
@@ -715,9 +718,9 @@
 
     function selectName(name) {
       document.getElementById('playerName').value = name;
-      showStatus(`已選擇名稱：${name}，正在新增到系統...`, "success");
+      showStatus(`已選擇名稱：${name}，正在檢查是否可用...`, "success");
       
-      // 自動新增玩家並載入信箱
+      // 自動檢查並新增玩家
       setTimeout(() => {
         addNewPlayer();
       }, 1000);
@@ -729,9 +732,9 @@
       const name = generatePlayerName(randomType);
       
       document.getElementById('playerName').value = name;
-      showStatus(`已生成隨機名稱：${name}，正在新增到系統...`, "success");
+      showStatus(`已生成隨機名稱：${name}，正在檢查是否可用...`, "success");
       
-      // 自動新增玩家
+      // 自動檢查並新增玩家
       setTimeout(() => {
         addNewPlayer();
       }, 1000);
@@ -745,11 +748,12 @@
         return;
       }
 
-      showStatus("正在新增玩家到系統...", "info");
+      showStatus("正在檢查玩家是否已存在...", "info");
 
       if (isTestMode) {
-        // 測試模式：模擬新增
+        // 測試模式：模擬檢查和新增
         setTimeout(() => {
+          // 模擬檢查結果（假設名稱不重複）
           showStatus(`✅ 測試模式：玩家 ${playerName} 已新增到系統`, "success");
           setTimeout(() => {
             loadInbox();
@@ -758,34 +762,65 @@
         return;
       }
 
-      // 實際模式：使用 JSONP 新增玩家
-      const script = document.createElement('script');
-      const callbackName = 'addPlayerCallback_' + Date.now();
+      // 實際模式：先檢查玩家是否已存在
+      const checkScript = document.createElement('script');
+      const checkCallbackName = 'checkPlayerCallback_' + Date.now();
       
-      window[callbackName] = function(data) {
-        if (data.success) {
-          showStatus(`✅ 玩家 ${playerName} 已成功新增到系統！`, "success");
-          setTimeout(() => {
-            loadInbox();
-          }, 2000);
-        } else {
-          showStatus(`❌ 新增失敗：${data.error || '未知錯誤'}`, "error");
+      window[checkCallbackName] = function(data) {
+        // 如果玩家已存在（有訊息），顯示錯誤
+        if (Array.isArray(data) && data.length > 0) {
+          showStatus(`❌ 玩家名稱「${playerName}」已存在，請使用其他名稱`, "error");
+          delete window[checkCallbackName];
+          document.head.removeChild(checkScript);
+          return;
         }
-        delete window[callbackName];
-        document.head.removeChild(script);
+        
+        // 如果玩家不存在，則新增玩家
+        showStatus("正在新增玩家到系統...", "info");
+        
+        const addScript = document.createElement('script');
+        const addCallbackName = 'addPlayerCallback_' + Date.now();
+        
+        window[addCallbackName] = function(addData) {
+          if (addData.success) {
+            showStatus(`✅ 玩家 ${playerName} 已成功新增到系統！`, "success");
+            setTimeout(() => {
+              loadInbox();
+            }, 2000);
+          } else {
+            showStatus(`❌ 新增失敗：${addData.error || '未知錯誤'}`, "error");
+          }
+          delete window[addCallbackName];
+          document.head.removeChild(addScript);
+        };
+        
+        addScript.onerror = function() {
+          showStatus("新增玩家失敗，請稍後再試", "error");
+          delete window[addCallbackName];
+          if (document.head.contains(addScript)) {
+            document.head.removeChild(addScript);
+          }
+        };
+        
+        // 發送歡迎訊息來新增玩家
+        addScript.src = `${API}?action=sendMessage&to=${encodeURIComponent(playerName)}&title=歡迎來到遊戲！&content=親愛的 ${playerName}，歡迎來到我們的遊戲世界！這裡是您的個人信箱，您可以在這裡收到系統通知、任務獎勵、活動訊息和卡片獎勵。祝您遊戲愉快！&cardId=WELCOME_CARD_001&callback=${addCallbackName}`;
+        document.head.appendChild(addScript);
+        
+        delete window[checkCallbackName];
+        document.head.removeChild(checkScript);
       };
       
-      script.onerror = function() {
-        showStatus("新增玩家失敗，請稍後再試", "error");
-        delete window[callbackName];
-        if (document.head.contains(script)) {
-          document.head.removeChild(script);
+      checkScript.onerror = function() {
+        showStatus("檢查玩家失敗，請稍後再試", "error");
+        delete window[checkCallbackName];
+        if (document.head.contains(checkScript)) {
+          document.head.removeChild(checkScript);
         }
       };
       
-      // 發送歡迎訊息來新增玩家
-      script.src = `${API}?action=sendMessage&to=${encodeURIComponent(playerName)}&title=歡迎來到遊戲！&content=親愛的 ${playerName}，歡迎來到我們的遊戲世界！這裡是您的個人信箱，您可以在這裡收到系統通知、任務獎勵、活動訊息和卡片獎勵。祝您遊戲愉快！&cardId=WELCOME_CARD_001&callback=${callbackName}`;
-      document.head.appendChild(script);
+      // 先檢查玩家是否存在
+      checkScript.src = `${API}?action=getInbox&user=${encodeURIComponent(playerName)}&callback=${checkCallbackName}`;
+      document.head.appendChild(checkScript);
     }
 
     // 按 Enter 鍵載入信箱
