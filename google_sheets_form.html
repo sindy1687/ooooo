@@ -333,10 +333,92 @@
       input, button {
         width: 100%;
       }
+
+      /* 手機版音樂按鈕調整 */
+      #audioControls {
+        top: 20px;
+        right: 20px;
+      }
+
+      #toggleMusic {
+        width: 45px;
+        height: 45px;
+        font-size: 1rem;
+      }
+
+      /* 手機版返回首頁按鈕調整 */
+      a[href="index.html"] {
+        top: 20px;
+        left: 20px;
+        padding: 12px 20px;
+        font-size: 1rem;
+      }
+    }
+
+    /* 音樂按鈕動畫 */
+    @keyframes musicPulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    #toggleMusic.playing {
+      animation: musicPulse 2s infinite;
+    }
+
+    /* 返回首頁按鈕懸停效果 */
+    a[href="index.html"]:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+    }
+
+    a[href="index.html"]:active {
+      transform: translateY(-1px);
     }
   </style>
 </head>
 <body>
+  <!-- 返回首頁按鈕 -->
+  <a href="index.html" style="
+    position: fixed;
+    top: 30px;
+    left: 30px;
+    padding: 15px 30px;
+    background: linear-gradient(45deg, #ff6b6b, #ff8e8e);
+    color: white;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 1.1rem;
+    font-weight: bold;
+    text-decoration: none;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+    z-index: 1000;
+  ">← 返回首頁</a>
+
+  <!-- 背景音樂控制按鈕 -->
+  <div id="audioControls" style="position: fixed; top: 30px; right: 30px; z-index: 1000;">
+    <button id="toggleMusic" title="背景音樂" style="
+      background: rgba(0,0,0,0.6);
+      color: #fff;
+      border: none;
+      padding: 12px;
+      border-radius: 50%;
+      font-size: 1.2rem;
+      cursor: pointer;
+      box-shadow: 2px 2px 6px rgba(0,0,0,0.3);
+      transition: all 0.3s ease;
+      width: 50px;
+      height: 50px;
+    ">🔊</button>
+  </div>
+
+  <!-- 背景音樂元素 -->
+  <audio id="backgroundMusic" loop>
+    <source src="sound/午後放鬆時光（純音樂）.mp3" type="audio/mpeg">
+  </audio>
+
   <div class="container">
     <div class="header">
       <h1>📬 玩家信箱</h1>
@@ -823,6 +905,97 @@
       document.head.appendChild(checkScript);
     }
 
+    // 背景音樂控制
+    let backgroundMusic = null;
+    let isMusicPlaying = false;
+
+    // 初始化背景音樂
+    function initBackgroundMusic() {
+      console.log('🎵 初始化背景音樂...');
+      
+      backgroundMusic = document.getElementById('backgroundMusic');
+      
+      if (!backgroundMusic) {
+        console.error('❌ 找不到背景音樂元素');
+        return;
+      }
+
+      // 設置音樂屬性
+      backgroundMusic.volume = 0.3;
+      backgroundMusic.loop = true;
+
+      // 預載入音樂
+      backgroundMusic.load();
+
+      // 從localStorage讀取音樂狀態
+      const musicState = localStorage.getItem('bgMusicState');
+      if (musicState === 'playing') {
+        playBackgroundMusic();
+      }
+
+      console.log('✅ 背景音樂初始化完成');
+    }
+
+    // 播放背景音樂
+    function playBackgroundMusic() {
+      if (!backgroundMusic) return;
+      
+      if (backgroundMusic.paused) {
+        backgroundMusic.play().then(() => {
+          isMusicPlaying = true;
+          localStorage.setItem('bgMusicState', 'playing');
+          updateMusicButton();
+          console.log('🎵 背景音樂開始播放');
+        }).catch(err => {
+          console.error('❌ 背景音樂播放失敗:', err);
+        });
+      }
+    }
+
+    // 暫停背景音樂
+    function pauseBackgroundMusic() {
+      if (!backgroundMusic) return;
+      
+      backgroundMusic.pause();
+      isMusicPlaying = false;
+      localStorage.setItem('bgMusicState', 'paused');
+      updateMusicButton();
+      console.log('⏸️ 背景音樂已暫停');
+    }
+
+    // 切換背景音樂播放狀態
+    function toggleBackgroundMusic() {
+      if (isMusicPlaying) {
+        pauseBackgroundMusic();
+      } else {
+        playBackgroundMusic();
+      }
+    }
+
+    // 更新音樂按鈕狀態
+    function updateMusicButton() {
+      const musicBtn = document.getElementById('toggleMusic');
+      if (musicBtn) {
+        if (isMusicPlaying) {
+          musicBtn.textContent = '🔊';
+          musicBtn.style.background = 'rgba(0,0,0,0.8)';
+          musicBtn.classList.add('playing');
+        } else {
+          musicBtn.textContent = '🔇';
+          musicBtn.style.background = 'rgba(0,0,0,0.6)';
+          musicBtn.classList.remove('playing');
+        }
+      }
+    }
+
+    // 設置音樂音量
+    function setMusicVolume(volume) {
+      if (backgroundMusic) {
+        backgroundMusic.volume = volume;
+        localStorage.setItem('musicVolume', volume.toString());
+      }
+    }
+
     // 按 Enter 鍵載入信箱
     document.getElementById('playerName').addEventListener('keypress', function(e) {
       if (e.key === 'Enter') {
@@ -832,6 +1005,9 @@
 
     // 頁面載入時的歡迎訊息
     window.addEventListener('load', function() {
+      // 初始化背景音樂
+      initBackgroundMusic();
+      
       if (isTestMode) {
         showStatus("測試模式已啟用，使用模擬資料", "demo-mode");
       } else {
@@ -840,6 +1016,42 @@
       
       // 自動生成一些名稱供選擇
       generateName('chinese');
+    });
+
+    // 添加音樂按鈕事件監聽器
+    document.addEventListener('DOMContentLoaded', function() {
+      const musicBtn = document.getElementById('toggleMusic');
+      if (musicBtn) {
+        musicBtn.addEventListener('click', toggleBackgroundMusic);
+        
+        // 添加懸停效果
+        musicBtn.addEventListener('mouseenter', () => {
+          musicBtn.style.transform = 'scale(1.1)';
+          musicBtn.style.background = 'rgba(0,0,0,0.8)';
+        });
+
+        musicBtn.addEventListener('mouseleave', () => {
+          musicBtn.style.transform = 'scale(1)';
+          musicBtn.style.background = isMusicPlaying ? 'rgba(0,0,0,0.8)' : 'rgba(0,0,0,0.6)';
+        });
+      }
+    });
+
+    // 頁面可見性變化時處理音樂播放
+    document.addEventListener('visibilitychange', function() {
+      if (document.hidden) {
+        // 頁面隱藏時暫停音樂
+        if (isMusicPlaying && backgroundMusic && !backgroundMusic.paused) {
+          backgroundMusic.pause();
+        }
+      } else {
+        // 頁面顯示時恢復音樂
+        if (isMusicPlaying && backgroundMusic && backgroundMusic.paused) {
+          backgroundMusic.play().catch(err => {
+            console.log('恢復音樂播放失敗:', err);
+          });
+        }
+      }
     });
   </script>
 </body>
