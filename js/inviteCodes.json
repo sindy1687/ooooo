@@ -1226,7 +1226,6 @@
       "usedBy": null,
       "createdAt": "2024-07-01T00:00:00.000Z"
     },
-
     {
       "code": "Q8W2E7R",
       "stars": 100,
@@ -1810,6 +1809,806 @@
       "usedAt": null,
       "usedBy": null,
       "createdAt": "2025-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "NEW100Z1",
+      "stars": 100,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "GIFT100Z2",
+      "stars": 100,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "PLAY100Z3",
+      "stars": 100,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "FUN100Z4",
+      "stars": 100,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "WIN100Z5",
+      "stars": 100,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "LUCK100Z6",
+      "stars": 100,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "VIP100Z7",
+      "stars": 100,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "STAR100Z8",
+      "stars": 100,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "BONUS100Z9",
+      "stars": 100,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "EXTRA100Z0",
+      "stars": 100,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "NEW300Z1",
+      "stars": 300,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "GIFT300Z2",
+      "stars": 300,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "PLAY300Z3",
+      "stars": 300,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "FUN300Z4",
+      "stars": 300,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "WIN300Z5",
+      "stars": 300,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "LUCK300Z6",
+      "stars": 300,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "VIP300Z7",
+      "stars": 300,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "STAR300Z8",
+      "stars": 300,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "BONUS300Z9",
+      "stars": 300,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "EXTRA300Z0",
+      "stars": 300,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "Q8W2E7R5",
+      "stars": 500,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "A7S3D9F1",
+      "stars": 500,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "Z6X1C8V4",
+      "stars": 500,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "B2N5M7L3",
+      "stars": 500,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "P4O8I2U6",
+      "stars": 500,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "L3K7J5H2",
+      "stars": 500,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "M8N2B4V7",
+      "stars": 500,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "T1Y5U9I8",
+      "stars": 500,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "C7V3B6N5",
+      "stars": 500,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "G5F9D1S4",
+      "stars": 500,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "H2J6K8L9",
+      "stars": 500,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "W9E4R7T2",
+      "stars": 500,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "U3I7O5P6",
+      "stars": 500,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "D8F2G6H1",
+      "stars": 500,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "S1A5Z9X3",
+      "stars": 500,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "V6B1N3M8",
+      "stars": 500,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "E2R8T4Y7",
+      "stars": 500,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "O7P3L5K6",
+      "stars": 500,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "J4K8H2G5",
+      "stars": 500,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "N5M9B7V4",
+      "stars": 500,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "K7M2N8P4",
+      "stars": 100,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "Q1R5S9T3",
+      "stars": 100,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "U6V2W7X1",
+      "stars": 100,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "Y4Z8A3B7",
+      "stars": 100,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "C9D5E1F6",
+      "stars": 100,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "G2H7I4J9",
+      "stars": 100,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "L8M3N6P2",
+      "stars": 100,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "Q4R1S7T5",
+      "stars": 100,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "U9V6W2X8",
+      "stars": 100,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "Y1Z5A7B3",
+      "stars": 100,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "C6D2E9F4",
+      "stars": 300,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "G8H3I7J1",
+      "stars": 300,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "L5M9N2P6",
+      "stars": 300,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "Q7R4S1T8",
+      "stars": 300,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "U2V9W5X3",
+      "stars": 300,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "Y6Z1A4B8",
+      "stars": 300,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "C3D7E2F9",
+      "stars": 300,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "G1H6I3J7",
+      "stars": 300,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "L4M8N5P1",
+      "stars": 300,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "Q2R9S6T4",
+      "stars": 300,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "U5V1W8X6",
+      "stars": 500,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "Y3Z7A2B5",
+      "stars": 500,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "C8D4E1F7",
+      "stars": 500,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "G6H2I9J4",
+      "stars": 500,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "L1M5N8P3",
+      "stars": 500,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "Q9R3S7T2",
+      "stars": 500,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "U4V8W1X5",
+      "stars": 500,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "Y7Z2A6B1",
+      "stars": 500,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "C2D6E3F8",
+      "stars": 500,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "G5H9I2J6",
+      "stars": 500,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "L3M7N1P9",
+      "stars": 1000,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "Q6R2S8T4",
+      "stars": 1000,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "U1V5W9X3",
+      "stars": 1000,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "Y8Z4A1B7",
+      "stars": 1000,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "C5D9E6F2",
+      "stars": 1000,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "G2H6I3J9",
+      "stars": 1000,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "L7M1N5P8",
+      "stars": 1000,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "Q4R8S2T6",
+      "stars": 1000,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "U9V3W7X1",
+      "stars": 1000,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "Y2Z6A9B4",
+      "stars": 1000,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "C7D1E8F5",
+      "stars": 3000,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "G4H8I2J6",
+      "stars": 3000,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "L1M5N9P3",
+      "stars": 3000,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "Q8R2S6T4",
+      "stars": 3000,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "U3V7W1X9",
+      "stars": 3000,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "Y6Z1A5B8",
+      "stars": 3000,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "C2D6E9F3",
+      "stars": 3000,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "G9H3I7J1",
+      "stars": 3000,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "L4M8N2P6",
+      "stars": 3000,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "Q1R5S9T3",
+      "stars": 3000,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "U6V2W7X1",
+      "stars": 5000,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "Y4Z8A3B7",
+      "stars": 5000,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "C9D5E1F6",
+      "stars": 5000,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "G2H7I4J9",
+      "stars": 5000,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "L8M3N6P2",
+      "stars": 5000,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "Q4R1S7T5",
+      "stars": 5000,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "U9V6W2X8",
+      "stars": 5000,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "Y1Z5A7B3",
+      "stars": 5000,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "C6D2E9F4",
+      "stars": 5000,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "G8H3I7J1",
+      "stars": 5000,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2024-07-01T00:00:00.000Z"
     }
   ]
 } 
