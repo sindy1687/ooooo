@@ -1810,38 +1810,6 @@
       "usedAt": null,
       "usedBy": null,
       "createdAt": "2025-07-01T00:00:00.000Z"
-    },
-    // 新增邀請碼開始
-    {"code": "QW8Z2X1C", "stars": 100, "used": false, "usedAt": null, "usedBy": null, "createdAt": "2024-07-01T00:00:00.000Z"},
-    {"code": "A7S9D3F5", "stars": 100, "used": false, "usedAt": null, "usedBy": null, "createdAt": "2024-07-01T00:00:00.000Z"},
-    {"code": "G6H4J2K8", "stars": 100, "used": false, "usedAt": null, "usedBy": null, "createdAt": "2024-07-01T00:00:00.000Z"},
-    {"code": "L1M3N5O7", "stars": 100, "used": false, "usedAt": null, "usedBy": null, "createdAt": "2024-07-01T00:00:00.000Z"},
-    {"code": "P9Q2R4S6", "stars": 100, "used": false, "usedAt": null, "usedBy": null, "createdAt": "2024-07-01T00:00:00.000Z"},
-    {"code": "T8U6V4W2", "stars": 300, "used": false, "usedAt": null, "usedBy": null, "createdAt": "2024-07-01T00:00:00.000Z"},
-    {"code": "X5Y7Z9A1", "stars": 300, "used": false, "usedAt": null, "usedBy": null, "createdAt": "2024-07-01T00:00:00.000Z"},
-    {"code": "B3C5D7E9", "stars": 300, "used": false, "usedAt": null, "usedBy": null, "createdAt": "2024-07-01T00:00:00.000Z"},
-    {"code": "F1G3H5I7", "stars": 300, "used": false, "usedAt": null, "usedBy": null, "createdAt": "2024-07-01T00:00:00.000Z"},
-    {"code": "J9K7L5M3", "stars": 300, "used": false, "usedAt": null, "usedBy": null, "createdAt": "2024-07-01T00:00:00.000Z"},
-    {"code": "N2O4P6Q8", "stars": 500, "used": false, "usedAt": null, "usedBy": null, "createdAt": "2024-07-01T00:00:00.000Z"},
-    {"code": "R1S3T5U7", "stars": 500, "used": false, "usedAt": null, "usedBy": null, "createdAt": "2024-07-01T00:00:00.000Z"},
-    {"code": "V9W7X5Y3", "stars": 500, "used": false, "usedAt": null, "usedBy": null, "createdAt": "2024-07-01T00:00:00.000Z"},
-    {"code": "Z8A6B4C2", "stars": 500, "used": false, "usedAt": null, "usedBy": null, "createdAt": "2024-07-01T00:00:00.000Z"},
-    {"code": "D1E3F5G7", "stars": 500, "used": false, "usedAt": null, "usedBy": null, "createdAt": "2024-07-01T00:00:00.000Z"},
-    {"code": "H9I7J5K3", "stars": 1000, "used": false, "usedAt": null, "usedBy": null, "createdAt": "2024-07-01T00:00:00.000Z"},
-    {"code": "L2M4N6O8", "stars": 1000, "used": false, "usedAt": null, "usedBy": null, "createdAt": "2024-07-01T00:00:00.000Z"},
-    {"code": "P1Q3R5S7", "stars": 1000, "used": false, "usedAt": null, "usedBy": null, "createdAt": "2024-07-01T00:00:00.000Z"},
-    {"code": "T9U7V5W3", "stars": 1000, "used": false, "usedAt": null, "usedBy": null, "createdAt": "2024-07-01T00:00:00.000Z"},
-    {"code": "X8Y6Z4A2", "stars": 1000, "used": false, "usedAt": null, "usedBy": null, "createdAt": "2024-07-01T00:00:00.000Z"},
-    {"code": "B1C3D5E7", "stars": 3000, "used": false, "usedAt": null, "usedBy": null, "createdAt": "2024-07-01T00:00:00.000Z"},
-    {"code": "F9G7H5I3", "stars": 3000, "used": false, "usedAt": null, "usedBy": null, "createdAt": "2024-07-01T00:00:00.000Z"},
-    {"code": "J8K6L4M2", "stars": 3000, "used": false, "usedAt": null, "usedBy": null, "createdAt": "2024-07-01T00:00:00.000Z"},
-    {"code": "N1O3P5Q7", "stars": 3000, "used": false, "usedAt": null, "usedBy": null, "createdAt": "2024-07-01T00:00:00.000Z"},
-    {"code": "R9S7T5U3", "stars": 3000, "used": false, "usedAt": null, "usedBy": null, "createdAt": "2024-07-01T00:00:00.000Z"},
-    {"code": "V8W6X4Y2", "stars": 5000, "used": false, "usedAt": null, "usedBy": null, "createdAt": "2024-07-01T00:00:00.000Z"},
-    {"code": "Z1A3B5C7", "stars": 5000, "used": false, "usedAt": null, "usedBy": null, "createdAt": "2024-07-01T00:00:00.000Z"},
-    {"code": "D9E7F5G3", "stars": 5000, "used": false, "usedAt": null, "usedBy": null, "createdAt": "2024-07-01T00:00:00.000Z"},
-    {"code": "H8I6J4K2", "stars": 5000, "used": false, "usedAt": null, "usedBy": null, "createdAt": "2024-07-01T00:00:00.000Z"},
-    {"code": "L1M3N5O7", "stars": 5000, "used": false, "usedAt": null, "usedBy": null, "createdAt": "2024-07-01T00:00:00.000Z"}
     }
   ]
 } 
