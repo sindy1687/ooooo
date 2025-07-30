@@ -1,0 +1,1740 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⭐ 星星排行榜</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft JhengHei', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 3.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            color: #FFD700;
+        }
+
+        .stats-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 215, 0, 0.3);
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #FFD700;
+            margin-bottom: 5px;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            color: #666;
+            font-weight: bold;
+        }
+
+        .leaderboard-section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 215, 0, 0.3);
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 30px;
+            text-align: center;
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .leaderboard-content {
+            min-height: 400px;
+        }
+
+        .leaderboard-item {
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 15px;
+            border-left: 6px solid #FFD700;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .leaderboard-item:hover {
+            transform: translateX(8px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            border-left-color: #FFA500;
+        }
+
+        .leaderboard-item.current-user {
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            color: white;
+            border-left-color: #FF6B6B;
+        }
+
+        .rank {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #FFD700;
+            min-width: 60px;
+            text-align: center;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+
+        .rank.gold {
+            color: #FFD700;
+            text-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
+        }
+
+        .rank.silver {
+            color: #C0C0C0;
+            text-shadow: 0 0 15px rgba(192, 192, 192, 0.8);
+        }
+
+        .rank.bronze {
+            color: #CD7F32;
+            text-shadow: 0 0 15px rgba(205, 127, 50, 0.8);
+        }
+
+        .current-user .rank {
+            color: white;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+        }
+
+        .user-info {
+            flex: 1;
+            margin-left: 20px;
+        }
+
+        .user-name {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .current-user .user-name {
+            color: white;
+        }
+
+        .user-stats {
+            font-size: 1rem;
+            color: #666;
+        }
+
+        .current-user .user-stats {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .stars {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #FFD700;
+            margin-left: 20px;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+
+        .current-user .stars {
+            color: white;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 50px;
+            color: #666;
+            font-size: 1.3rem;
+        }
+
+        .error {
+            text-align: center;
+            padding: 50px;
+            color: #f44336;
+            font-size: 1.3rem;
+        }
+
+        .refresh-button {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.8rem;
+            box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .refresh-button:hover {
+            transform: scale(1.1) rotate(180deg);
+            box-shadow: 0 8px 25px rgba(255, 215, 0, 0.6);
+        }
+
+        .back-button {
+            position: fixed;
+            top: 30px;
+            left: 30px;
+            padding: 15px 30px;
+            background: linear-gradient(45deg, #ff6b6b, #ff8e8e);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: bold;
+            text-decoration: none;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+        }
+
+        .add-stars-button {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.8rem;
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .add-stars-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 25px rgba(76, 175, 80, 0.6);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: rgba(255, 255, 255, 0.95);
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .modal-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #FFD700;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+        }
+
+        .form-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            color: #333;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(45deg, #6c757d, #5a6268);
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .success-message {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .error-message {
+            background: linear-gradient(45deg, #f44336, #d32f2f);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .crown {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            font-size: 1.5rem;
+            color: #FFD700;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
+        }
+
+        .leaderboard-item {
+            position: relative;
+        }
+
+        /* 星星連動系統樣式 */
+        .stars-sync-section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 215, 0, 0.3);
+        }
+
+        .sync-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .sync-card {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border: 2px solid rgba(255, 215, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .sync-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            border-color: #FFD700;
+        }
+
+        .sync-icon {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .sync-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .sync-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #FFD700;
+            margin-bottom: 5px;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+
+        .sync-desc {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .sync-controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .sync-btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            color: #333;
+        }
+
+        .sync-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.4);
+        }
+
+        .sync-btn:active {
+            transform: translateY(0);
+        }
+
+        /* 星星總數顯示樣式 */
+        .total-stars-display {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 215, 0, 0.3);
+        }
+
+        .total-stars-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .total-stars-header h2 {
+            font-size: 2rem;
+            color: #333;
+            margin-bottom: 8px;
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .total-stars-header p {
+            color: #666;
+            font-size: 1rem;
+        }
+
+        .total-stars-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .total-stars-card {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border: 2px solid rgba(255, 215, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .total-stars-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            border-color: #FFD700;
+        }
+
+        .total-stars-card.highlight {
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            border-color: #FF6B6B;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+        }
+
+        .total-stars-card.highlight .total-stars-label,
+        .total-stars-card.highlight .total-stars-value {
+            color: #333;
+        }
+
+        .total-stars-icon {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .total-stars-label {
+            font-size: 1rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .total-stars-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #FFD700;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+
+        .total-stars-summary {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 15px;
+            padding: 20px;
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 20px;
+            border: 2px solid rgba(255, 215, 0, 0.2);
+        }
+
+        .summary-item {
+            text-align: center;
+            min-width: 150px;
+        }
+
+        .summary-label {
+            display: block;
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .summary-value {
+            display: block;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #FFD700;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            .header h1 {
+                font-size: 2.5rem;
+            }
+
+            .stats-cards {
+                grid-template-columns: 1fr;
+            }
+
+            .leaderboard-item {
+                flex-direction: column;
+                text-align: center;
+                padding: 15px;
+            }
+
+            .user-info {
+                margin-left: 0;
+                margin-top: 10px;
+            }
+
+            .stars {
+                margin-left: 0;
+                margin-top: 10px;
+            }
+
+            .rank {
+                margin-bottom: 10px;
+            }
+
+            /* 手機版音樂按鈕調整 */
+            #audioControls {
+                top: 20px;
+                right: 20px;
+            }
+
+            #toggleMusic {
+                width: 45px;
+                height: 45px;
+                font-size: 1rem;
+            }
+        }
+
+        /* 音樂按鈕動畫 */
+        @keyframes musicPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        #toggleMusic.playing {
+            animation: musicPulse 2s infinite;
+        }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="back-button">← 返回首頁</a>
+    
+    <!-- 背景音樂控制按鈕 -->
+    <div id="audioControls" style="position: fixed; top: 30px; right: 30px; z-index: 1000;">
+        <button id="toggleMusic" title="背景音樂" style="
+            background: rgba(0,0,0,0.6);
+            color: #fff;
+            border: none;
+            padding: 12px;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            cursor: pointer;
+            box-shadow: 2px 2px 6px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+            width: 50px;
+            height: 50px;
+        ">🔊</button>
+    </div>
+
+    <!-- 背景音樂元素 -->
+    <audio id="backgroundMusic" loop>
+        <source src="sound/午後放鬆時光（純音樂）.mp3" type="audio/mpeg">
+    </audio>
+    
+    <div class="container">
+        <div class="header">
+            <h1>⭐ 星星排行榜</h1>
+            <p>看看誰擁有最多的星星！</p>
+            <div id="currentUserDisplay" style="margin-top: 10px; font-size: 1.1rem; color: #FFD700; text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);">
+                👤 當前用戶: <span id="currentUserName">未設定</span>
+            </div>
+        </div>
+
+        <div class="stats-cards">
+            <div class="stat-card">
+                <div class="stat-value" id="totalPlayers">-</div>
+                <div class="stat-label">總玩家數</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="totalStars">-</div>
+                <div class="stat-label">總星星數</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="topStars">-</div>
+                <div class="stat-label">最高星星</div>
+            </div>
+        </div>
+
+        <!-- 星星總數顯示 -->
+        <div class="total-stars-display">
+            <div class="total-stars-header">
+                <h2>⭐ 星星總數統計</h2>
+                <p>所有系統的星星總數</p>
+                <button class="sync-btn" onclick="updateTotalStarsDisplay()" style="margin-top: 10px; font-size: 0.9rem; padding: 8px 16px;">🔄 手動更新</button>
+            </div>
+            <div class="total-stars-grid">
+                <div class="total-stars-card">
+                    <div class="total-stars-icon">🎮</div>
+                    <div class="total-stars-label">遊戲星星</div>
+                    <div class="total-stars-value" id="displayGameStars">0</div>
+                </div>
+                <div class="total-stars-card">
+                    <div class="total-stars-icon">🏆</div>
+                    <div class="total-stars-label">排行榜星星</div>
+                    <div class="total-stars-value" id="displayLeaderboardStars">0</div>
+                </div>
+
+                <div class="total-stars-card">
+                    <div class="total-stars-icon">📱</div>
+                    <div class="total-stars-label">本地星星</div>
+                    <div class="total-stars-value" id="displayLocalStars">0</div>
+                </div>
+                <div class="total-stars-card highlight">
+                    <div class="total-stars-icon">⭐</div>
+                    <div class="total-stars-label">系統總星星</div>
+                    <div class="total-stars-value" id="displaySystemTotalStars">0</div>
+                </div>
+            </div>
+            <div class="total-stars-summary">
+                <div class="summary-item">
+                    <span class="summary-label">📊 平均星星:</span>
+                    <span class="summary-value" id="averageStars">0</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">📈 最高星星:</span>
+                    <span class="summary-value" id="highestStars">0</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">📉 最低星星:</span>
+                    <span class="summary-value" id="lowestStars">0</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 星星連動系統 -->
+        <div class="stars-sync-section">
+            <div class="section-title">⭐ 星星連動系統</div>
+            <div class="sync-cards">
+                <div class="sync-card">
+                    <div class="sync-icon">🎮</div>
+                    <div class="sync-title">遊戲連動</div>
+                    <div class="sync-value" id="gameStars">0</div>
+                    <div class="sync-desc">遊戲中獲得的星星</div>
+                </div>
+                <div class="sync-card">
+                    <div class="sync-icon">🏆</div>
+                    <div class="sync-title">排行榜連動</div>
+                    <div class="sync-value" id="leaderboardStars">0</div>
+                    <div class="sync-desc">排行榜中的星星</div>
+                </div>
+
+            </div>
+            <div class="sync-controls">
+                <button class="sync-btn" onclick="syncAllStars()">🔄 同步所有星星</button>
+                <button class="sync-btn" onclick="readLocalTotalStars()">📖 讀取本地星星</button>
+                <button class="sync-btn" onclick="manualAutoUpload()">📤 手動自動上傳</button>
+                <button class="sync-btn" id="autoUploadToggle" onclick="toggleAutoUpload()">⏸️ 停用自動上傳</button>
+                <button class="sync-btn" onclick="refreshUserDisplay()">👤 刷新用戶</button>
+            </div>
+        </div>
+
+        <div class="leaderboard-section">
+            <div class="section-title">🏆 星星排行榜</div>
+            
+            <div class="leaderboard-content" id="leaderboardContent">
+                <div class="loading">載入中...</div>
+            </div>
+        </div>
+    </div>
+
+    <button class="refresh-button" onclick="refreshData()" title="重新整理">🔄</button>
+    
+    <!-- 寫入星星資料的按鈕 -->
+    <button class="add-stars-button" onclick="showAddStarsForm()" title="新增星星">➕</button>
+
+    <!-- 新增星星的彈窗 -->
+    <div id="addStarsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">⭐ 上傳您的星星</div>
+                <p>輸入用戶名稱，系統會自動使用您的本地星星數上傳</p>
+            </div>
+            
+            <form id="addStarsForm">
+                <div class="form-group">
+                    <label class="form-label" for="userName">用戶名稱</label>
+                    <input type="text" id="userName" class="form-input" placeholder="輸入用戶名稱" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">您的星星資料</label>
+                    <div style="background: #f8f9fa; padding: 15px; border-radius: 10px; margin-top: 10px;">
+                        <div style="color: #666; font-size: 0.9rem;">
+                            <div>⭐ 總星星數: <span id="autoStars" style="color: #FFD700; font-weight: bold;">載入中...</span></div>
+                            <div>📊 計算等級: <span id="autoLevel" style="color: #FFD700; font-weight: bold;">載入中...</span></div>
+                            <div>💬 計算訊息: <span id="autoMessages" style="color: #FFD700; font-weight: bold;">載入中...</span></div>
+                        </div>
+                        <div style="margin-top: 10px; padding: 10px; background: #e8f5e8; border-radius: 8px; border-left: 4px solid #4CAF50;">
+                            <div style="color: #2E7D32; font-size: 0.9rem;">
+                                <strong>💡 提示：</strong>系統會自動使用您的本地星星數上傳
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-buttons">
+                    <button type="submit" class="btn btn-primary">✅ 上傳我的星星</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeAddStarsForm()">❌ 取消</button>
+                </div>
+            </form>
+            
+            <div id="formMessage"></div>
+        </div>
+    </div>
+
+    <script>
+        // 配置
+        const API_BASE_URL = 'https://script.google.com/macros/s/AKfycbxoktND9L-KKwSaih5SNzdJWLhRP9dQdI5oHbUNIE3HJhdLjhLIwnL8xFnNtFfGE-rH9A/exec';
+        const CURRENT_USER = localStorage.getItem('currentUser') || '玩家' + Math.floor(Math.random() * 1000);
+        let leaderboardData = [];
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            loadData();
+        });
+
+        // 載入資料
+        async function loadData() {
+            try {
+                // 載入星星排行榜
+                await loadStarsLeaderboard();
+                
+                // 載入統計資料
+                await loadStats();
+                
+            } catch (error) {
+                console.error('載入資料失敗:', error);
+                showError('載入資料失敗，請稍後再試');
+            }
+        }
+
+        // 載入模擬資料
+        function loadMockData() {
+            // 模擬星星排行榜資料
+            const mockLeaderboard = [
+                { user: '玩家A', stars: 150, level: 5, messages: 25 },
+                { user: '玩家B', stars: 120, level: 4, messages: 18 },
+                { user: '玩家C', stars: 95, level: 3, messages: 12 },
+                { user: '玩家D', stars: 80, level: 3, messages: 10 },
+                { user: '玩家E', stars: 65, level: 2, messages: 8 },
+                { user: '玩家F', stars: 50, level: 2, messages: 6 },
+                { user: '玩家G', stars: 35, level: 1, messages: 4 },
+                { user: '玩家H', stars: 20, level: 1, messages: 2 }
+            ];
+
+            leaderboardData = mockLeaderboard;
+            displayStarsLeaderboard();
+
+            // 模擬統計資料
+            const mockStats = {
+                totalPlayers: 8,
+                totalStars: 615,
+                topStars: 150
+            };
+
+            // 更新統計卡片
+            document.getElementById('totalPlayers').textContent = mockStats.totalPlayers;
+            document.getElementById('totalStars').textContent = mockStats.totalStars;
+            document.getElementById('topStars').textContent = mockStats.topStars;
+        }
+
+        // 載入星星排行榜
+        async function loadStarsLeaderboard() {
+            try {
+                // 嘗試使用星星排行榜 API
+                const response = await fetch(`${API_BASE_URL}?action=getStarsLeaderboard`);
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                const data = await response.json();
+                handleStarsLeaderboard(data);
+            } catch (error) {
+                console.error('載入星星排行榜失敗:', error);
+                // 如果星星排行榜 API 不可用，使用一般排行榜 API
+                try {
+                    const response = await fetch(`${API_BASE_URL}?action=getLeaderboard`);
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+                    const data = await response.json();
+                    handleStarsLeaderboard(data);
+                } catch (fallbackError) {
+                    console.error('載入排行榜失敗:', fallbackError);
+                    showError('載入排行榜失敗');
+                }
+            }
+        }
+
+        // 處理星星排行榜資料
+        function handleStarsLeaderboard(data) {
+            console.log('收到星星排行榜資料:', data);
+            
+            if (data.error) {
+                console.error('載入星星排行榜失敗:', data.error);
+                // 如果 API 失敗，使用模擬資料
+                loadMockData();
+                return;
+            }
+
+            // 檢查資料是否為陣列
+            if (!Array.isArray(data)) {
+                console.error('排行榜資料格式錯誤:', data);
+                loadMockData();
+                return;
+            }
+
+            // 處理星星排行榜資料
+            const starsData = data.map(item => ({
+                user: item.user || '未知用戶',
+                stars: parseInt(item.stars) || parseInt(item.score) || 0,
+                level: parseInt(item.level) || 1,
+                messages: parseInt(item.messages) || 0
+            }));
+
+            console.log('處理後的星星資料:', starsData);
+            leaderboardData = starsData;
+            displayStarsLeaderboard();
+        }
+
+        // 顯示星星排行榜
+        function displayStarsLeaderboard() {
+            const content = document.getElementById('leaderboardContent');
+            
+            if (!leaderboardData || leaderboardData.length === 0) {
+                content.innerHTML = '<div class="error">尚無星星排行榜資料</div>';
+                return;
+            }
+
+            let html = '';
+
+            leaderboardData.forEach((item, index) => {
+                const rankClass = index === 0 ? 'gold' : index === 1 ? 'silver' : index === 2 ? 'bronze' : '';
+                const rank = index + 1;
+                const isCurrentUser = item.user === CURRENT_USER;
+                const itemClass = isCurrentUser ? 'leaderboard-item current-user' : 'leaderboard-item';
+                
+                html += `
+                    <div class="${itemClass}">
+                        ${index < 3 ? '<div class="crown">👑</div>' : ''}
+                        <div class="rank ${rankClass}">${rank}</div>
+                        <div class="user-info">
+                            <div class="user-name">${item.user}</div>
+                            <div class="user-stats">
+                                ${item.level ? `等級: ${item.level}` : ''}
+                                ${item.messages ? `訊息: ${item.messages}` : ''}
+                            </div>
+                        </div>
+                        <div class="stars">⭐ ${item.stars || 0}</div>
+                    </div>
+                `;
+            });
+
+            content.innerHTML = html;
+            
+            // 更新星星統計資料
+            calculateStarsStatistics();
+        }
+
+        // 載入統計資料
+        async function loadStats() {
+            try {
+                // 嘗試使用星星統計 API
+                const response = await fetch(`${API_BASE_URL}?action=getStarsStats`);
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                const data = await response.json();
+                handleStarsStats(data);
+            } catch (error) {
+                console.error('載入星星統計失敗:', error);
+                // 如果星星統計 API 不可用，使用系統統計 API
+                try {
+                    const response = await fetch(`${API_BASE_URL}?action=getSystemStats`);
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+                    const data = await response.json();
+                    handleStarsStats(data);
+                } catch (fallbackError) {
+                    console.error('載入統計資料失敗:', fallbackError);
+                }
+            }
+        }
+
+        // 處理統計資料
+        function handleStarsStats(data) {
+            if (data.error) {
+                console.error('載入統計資料失敗:', data.error);
+                // 如果 API 失敗，使用模擬統計資料
+                const mockStats = {
+                    totalPlayers: 8,
+                    totalStars: 615,
+                    topStars: 150
+                };
+                document.getElementById('totalPlayers').textContent = mockStats.totalPlayers;
+                document.getElementById('totalStars').textContent = mockStats.totalStars;
+                document.getElementById('topStars').textContent = mockStats.topStars;
+                
+                // 更新連動系統
+                syncStarsData.leaderboardStars = mockStats.totalStars;
+                updateSyncDisplay();
+                return;
+            }
+
+            // 將現有的統計資料轉換為星星統計
+            const totalPlayers = data.totalPlayers || 0;
+            const totalStars = data.totalStars || data.topScore || 0;
+            const topStars = data.topStars || data.topScore || 0;
+
+            // 更新統計卡片
+            document.getElementById('totalPlayers').textContent = totalPlayers;
+            document.getElementById('totalStars').textContent = totalStars;
+            document.getElementById('topStars').textContent = topStars;
+            
+            // 更新連動系統
+            syncStarsData.leaderboardStars = totalStars;
+            updateSyncDisplay();
+            
+            // 儲存到 localStorage
+            localStorage.setItem('syncStarsData', JSON.stringify(syncStarsData));
+            
+            // 更新星星總數顯示
+            updateTotalStarsDisplay();
+        }
+
+        // 重新整理資料
+        function refreshData() {
+            const refreshBtn = document.querySelector('.refresh-button');
+            refreshBtn.style.transform = 'rotate(360deg)';
+            
+            setTimeout(() => {
+                refreshBtn.style.transform = 'rotate(0deg)';
+            }, 1000);
+            
+            loadData();
+        }
+
+        // 顯示錯誤訊息
+        function showError(message) {
+            const content = document.getElementById('leaderboardContent');
+            content.innerHTML = `<div class="error">${message}</div>`;
+        }
+
+        // 全域函數供外部調用
+        window.handleStarsLeaderboard = handleStarsLeaderboard;
+        window.handleStarsStats = handleStarsStats;
+
+        // 背景音樂控制
+        let backgroundMusic = null;
+        let isMusicPlaying = false;
+
+        // 初始化背景音樂
+        function initBackgroundMusic() {
+            console.log('🎵 初始化背景音樂...');
+            
+            backgroundMusic = document.getElementById('backgroundMusic');
+            
+            if (!backgroundMusic) {
+                console.error('❌ 找不到背景音樂元素');
+                return;
+            }
+
+            // 設置音樂屬性
+            backgroundMusic.volume = 0.3;
+            backgroundMusic.loop = true;
+
+            // 預載入音樂
+            backgroundMusic.load();
+
+            // 從localStorage讀取音樂狀態
+            const musicState = localStorage.getItem('bgMusicState');
+            if (musicState === 'playing') {
+                playBackgroundMusic();
+            }
+
+            console.log('✅ 背景音樂初始化完成');
+        }
+
+        // 播放背景音樂
+        function playBackgroundMusic() {
+            if (!backgroundMusic) return;
+            
+            if (backgroundMusic.paused) {
+                backgroundMusic.play().then(() => {
+                    isMusicPlaying = true;
+                    localStorage.setItem('bgMusicState', 'playing');
+                    updateMusicButton();
+                    console.log('🎵 背景音樂開始播放');
+                }).catch(err => {
+                    console.error('❌ 背景音樂播放失敗:', err);
+                });
+            }
+        }
+
+        // 暫停背景音樂
+        function pauseBackgroundMusic() {
+            if (!backgroundMusic) return;
+            
+            backgroundMusic.pause();
+            isMusicPlaying = false;
+            localStorage.setItem('bgMusicState', 'paused');
+            updateMusicButton();
+            console.log('⏸️ 背景音樂已暫停');
+        }
+
+        // 切換背景音樂播放狀態
+        function toggleBackgroundMusic() {
+            if (isMusicPlaying) {
+                pauseBackgroundMusic();
+            } else {
+                playBackgroundMusic();
+            }
+        }
+
+        // 更新音樂按鈕狀態
+        function updateMusicButton() {
+            const musicBtn = document.getElementById('toggleMusic');
+            if (musicBtn) {
+                if (isMusicPlaying) {
+                    musicBtn.textContent = '🔊';
+                    musicBtn.style.background = 'rgba(0,0,0,0.8)';
+                    musicBtn.classList.add('playing');
+                } else {
+                    musicBtn.textContent = '🔇';
+                    musicBtn.style.background = 'rgba(0,0,0,0.6)';
+                    musicBtn.classList.remove('playing');
+                }
+            }
+        }
+
+        // 設置音樂音量
+        function setMusicVolume(volume) {
+            if (backgroundMusic) {
+                backgroundMusic.volume = volume;
+                localStorage.setItem('musicVolume', volume.toString());
+            }
+        }
+
+        // 星星連動系統
+        let syncStarsData = {
+            gameStars: 0,
+            leaderboardStars: 0,
+            localTotalStars: 0,  // 本地總星星數
+            autoUploadEnabled: false  // 自動上傳開關
+        };
+
+        // 初始化星星連動系統
+        function initStarsSync() {
+            console.log('🔧 初始化星星連動系統...');
+            
+            // 從 localStorage 載入星星資料
+            const savedStars = localStorage.getItem('syncStarsData');
+            if (savedStars) {
+                syncStarsData = JSON.parse(savedStars);
+                console.log('📦 載入已保存的星星資料:', syncStarsData);
+            } else {
+                console.log('📦 沒有找到已保存的星星資料，使用預設值');
+            }
+            
+            // 更新自動上傳按鈕狀態
+            updateAutoUploadButton();
+            
+            // 更新當前用戶顯示
+            updateCurrentUserDisplay();
+            
+            // 讀取本地總星星數
+            readLocalTotalStars();
+            
+            updateSyncDisplay();
+            console.log('✅ 星星連動系統初始化完成');
+        }
+
+        // 更新自動上傳按鈕狀態
+        function updateAutoUploadButton() {
+            const toggleBtn = document.getElementById('autoUploadToggle');
+            if (toggleBtn) {
+                if (syncStarsData.autoUploadEnabled) {
+                    toggleBtn.textContent = '🔄 啟用自動上傳';
+                    toggleBtn.style.background = 'linear-gradient(135deg, #4CAF50, #45a049)';
+                } else {
+                    toggleBtn.textContent = '⏸️ 停用自動上傳';
+                    toggleBtn.style.background = 'linear-gradient(135deg, #FFD700, #FFA500)';
+                }
+            }
+        }
+
+        // 更新當前用戶顯示
+        function updateCurrentUserDisplay() {
+            const currentUser = localStorage.getItem('currentUser');
+            const userNameElement = document.getElementById('currentUserName');
+            
+            if (currentUser && currentUser.trim()) {
+                userNameElement.textContent = currentUser.trim();
+                userNameElement.style.color = '#4CAF50';
+                console.log(`👤 顯示當前用戶: ${currentUser.trim()}`);
+            } else {
+                userNameElement.textContent = '未設定';
+                userNameElement.style.color = '#FF9800';
+                console.log('⚠️ 沒有找到首頁用戶名稱');
+            }
+        }
+
+        // 刷新用戶顯示
+        function refreshUserDisplay() {
+            console.log('👤 刷新用戶顯示...');
+            updateCurrentUserDisplay();
+            showCustomMessage('👤 用戶顯示已刷新', 'success');
+        }
+
+        // 讀取本地總星星數
+        function readLocalTotalStars() {
+            console.log('📖 讀取本地總星星數...');
+            
+            try {
+                // 嘗試從多個可能的本地存儲位置讀取
+                const possibleKeys = [
+                    'totalStars',
+                    'localStars',
+                    'userStars',
+                    'gameTotalStars',
+                    'starsData',
+                    'playerStars'
+                ];
+                
+                let foundStars = 0;
+                let foundKey = '';
+                
+                for (const key of possibleKeys) {
+                    const value = localStorage.getItem(key);
+                    if (value) {
+                        const parsedValue = parseInt(value);
+                        if (!isNaN(parsedValue) && parsedValue > 0) {
+                            foundStars = parsedValue;
+                            foundKey = key;
+                            console.log(`✅ 從 ${key} 讀取到星星數: ${foundStars}`);
+                            break;
+                        }
+                    }
+                }
+                
+                // 如果沒有找到，嘗試讀取 JSON 格式的資料
+                if (foundStars === 0) {
+                    const jsonKeys = ['starsData', 'userData', 'gameData'];
+                    for (const key of jsonKeys) {
+                        const value = localStorage.getItem(key);
+                        if (value) {
+                            try {
+                                const data = JSON.parse(value);
+                                if (data.stars || data.totalStars || data.starCount) {
+                                    foundStars = data.stars || data.totalStars || data.starCount;
+                                    foundKey = key;
+                                    console.log(`✅ 從 ${key} JSON 讀取到星星數: ${foundStars}`);
+                                    break;
+                                }
+                            } catch (e) {
+                                console.log(`❌ 解析 ${key} JSON 失敗:`, e);
+                            }
+                        }
+                    }
+                }
+                
+                if (foundStars > 0) {
+                    syncStarsData.localTotalStars = foundStars;
+
+                    console.log(`📊 本地總星星數: ${foundStars} (來源: ${foundKey})`);
+                    
+                    // 如果啟用了自動上傳，則自動上傳本地星星數
+                    if (syncStarsData.autoUploadEnabled) {
+                        console.log('🔄 自動上傳已啟用，開始上傳...');
+                        autoUploadLocalStars(foundStars, foundKey);
+                    } else {
+                        console.log('⏸️ 自動上傳已停用，僅讀取本地星星');
+                    }
+                } else {
+                    console.log('📊 沒有找到本地星星資料');
+                }
+                
+            } catch (error) {
+                console.error('❌ 讀取本地總星星數失敗:', error);
+            }
+        }
+
+        // 自動上傳本地星星數
+        async function autoUploadLocalStars(stars, source) {
+            console.log('📤 開始自動上傳本地星星數...');
+            
+            try {
+                // 獲取首頁用戶名稱
+                const currentUser = localStorage.getItem('currentUser');
+                let userName;
+                
+                if (currentUser && currentUser.trim()) {
+                    userName = currentUser.trim();
+                    console.log(`✅ 使用首頁用戶名稱: ${userName}`);
+                } else {
+                    // 如果沒有用戶名稱，生成一個基於時間戳的名稱
+                    const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
+                    userName = `玩家_${timestamp}`;
+                    console.log(`⚠️ 沒有找到首頁用戶名稱，使用生成名稱: ${userName}`);
+                }
+                
+                // 計算等級和訊息數
+                const userLevel = Math.floor(stars / 20) + 1;
+                const messageCount = Math.floor(stars / 10);
+                
+                console.log(`📊 準備上傳資料:`, {
+                    userName: userName,
+                    stars: stars,
+                    level: userLevel,
+                    messages: messageCount,
+                    source: source,
+                    currentUser: currentUser
+                });
+                
+                // 顯示上傳進度
+                showCustomMessage('📤 正在上傳本地星星...', 'success');
+                
+                // 上傳到 Google Sheets
+                await addStarsToGoogleSheets(userName, stars, userLevel, messageCount);
+                
+                // 更新本地顯示
+                syncStarsData.leaderboardStars = stars;
+                updateSyncDisplay();
+                
+                // 顯示成功訊息
+                showCustomMessage(`✅ 本地星星已自動上傳！\n用戶: ${userName}\n星星: ${stars}\n等級: ${userLevel}\n訊息: ${messageCount}`, 'success');
+                
+                console.log('✅ 本地星星自動上傳完成');
+                
+                // 延遲重新載入排行榜
+                setTimeout(() => {
+                    loadStarsLeaderboard();
+                }, 2000);
+                
+            } catch (error) {
+                console.error('❌ 自動上傳本地星星失敗:', error);
+                showCustomMessage('❌ 自動上傳失敗，請稍後再試', 'error');
+            }
+        }
+
+        // 手動觸發自動上傳
+        async function manualAutoUpload() {
+            console.log('📤 手動觸發自動上傳...');
+            
+            // 檢查用戶名稱
+            const currentUser = localStorage.getItem('currentUser');
+            if (currentUser && currentUser.trim()) {
+                console.log(`👤 當前用戶: ${currentUser.trim()}`);
+            } else {
+                console.log('⚠️ 沒有找到首頁用戶名稱');
+                showCustomMessage('⚠️ 建議先在首頁設定用戶名稱', 'success');
+            }
+            
+            // 先讀取本地星星
+            readLocalTotalStars();
+            
+            // 延遲一點時間確保讀取完成
+            setTimeout(() => {
+                if (syncStarsData.localTotalStars > 0) {
+                    autoUploadLocalStars(syncStarsData.localTotalStars, '手動觸發');
+                } else {
+                    showCustomMessage('❌ 沒有找到本地星星資料，請先確保有本地星星', 'error');
+                }
+            }, 1000);
+        }
+
+        // 切換自動上傳開關
+        function toggleAutoUpload() {
+            syncStarsData.autoUploadEnabled = !syncStarsData.autoUploadEnabled;
+            
+            const toggleBtn = document.getElementById('autoUploadToggle');
+            if (syncStarsData.autoUploadEnabled) {
+                toggleBtn.textContent = '🔄 啟用自動上傳';
+                toggleBtn.style.background = 'linear-gradient(135deg, #4CAF50, #45a049)';
+                showCustomMessage('✅ 自動上傳已啟用', 'success');
+                console.log('✅ 自動上傳已啟用');
+            } else {
+                toggleBtn.textContent = '⏸️ 停用自動上傳';
+                toggleBtn.style.background = 'linear-gradient(135deg, #FFD700, #FFA500)';
+                showCustomMessage('⏸️ 自動上傳已停用', 'success');
+                console.log('⏸️ 自動上傳已停用');
+            }
+            
+            // 儲存設定到 localStorage
+            localStorage.setItem('syncStarsData', JSON.stringify(syncStarsData));
+        }
+
+        // 更新連動顯示
+        function updateSyncDisplay() {
+            console.log('🔄 更新連動顯示...');
+            
+            document.getElementById('gameStars').textContent = syncStarsData.gameStars;
+            document.getElementById('leaderboardStars').textContent = syncStarsData.leaderboardStars;
+            
+            // 更新星星總數顯示
+            updateTotalStarsDisplay();
+            
+            // 如果表單是開啟的，也更新表單中的資料
+            const modal = document.getElementById('addStarsModal');
+            if (modal && modal.style.display === 'block') {
+                updateActualStarsData();
+            }
+            
+            console.log('✅ 連動顯示更新完成');
+        }
+
+        // 更新星星總數顯示
+        function updateTotalStarsDisplay() {
+            console.log('⭐ 更新星星總數顯示...');
+            
+            try {
+                // 更新基本顯示
+                document.getElementById('displayGameStars').textContent = syncStarsData.gameStars;
+                document.getElementById('displayLeaderboardStars').textContent = syncStarsData.leaderboardStars;
+                document.getElementById('displayLocalStars').textContent = syncStarsData.localTotalStars;
+                
+                // 計算系統總星星（包括排行榜中的總星星）
+                const totalStarsElement = document.getElementById('totalStars');
+                const totalStarsValue = totalStarsElement ? parseInt(totalStarsElement.textContent) || 0 : 0;
+                const systemTotalStars = syncStarsData.localTotalStars + totalStarsValue;
+                document.getElementById('displaySystemTotalStars').textContent = systemTotalStars;
+                
+                console.log('📊 星星資料:', {
+                    gameStars: syncStarsData.gameStars,
+                    leaderboardStars: syncStarsData.leaderboardStars,
+                    localTotalStars: syncStarsData.localTotalStars,
+                    systemTotalStars: systemTotalStars
+                });
+                
+                // 計算統計資料
+                calculateStarsStatistics();
+                
+                console.log('✅ 星星總數顯示更新完成');
+            } catch (error) {
+                console.error('❌ 更新星星總數顯示失敗:', error);
+            }
+        }
+
+        // 計算星星統計資料
+        function calculateStarsStatistics() {
+            if (!leaderboardData || leaderboardData.length === 0) {
+                document.getElementById('averageStars').textContent = '0';
+                document.getElementById('highestStars').textContent = '0';
+                document.getElementById('lowestStars').textContent = '0';
+                return;
+            }
+            
+            const starsArray = leaderboardData.map(item => item.stars || 0);
+            const totalStars = starsArray.reduce((sum, stars) => sum + stars, 0);
+            const averageStars = Math.round(totalStars / starsArray.length);
+            const highestStars = Math.max(...starsArray);
+            const lowestStars = Math.min(...starsArray);
+            
+            document.getElementById('averageStars').textContent = averageStars;
+            document.getElementById('highestStars').textContent = highestStars;
+            document.getElementById('lowestStars').textContent = lowestStars;
+        }
+
+        // 同步所有星星
+        async function syncAllStars() {
+            try {
+                // 從排行榜獲取星星資料
+                const response = await fetch(`${API_BASE_URL}?action=getStarsStats`);
+                if (response.ok) {
+                    const data = await response.json();
+                    const totalStars = data.totalStars || 0;
+                    
+                    // 更新連動資料
+                    syncStarsData.leaderboardStars = totalStars;
+                    
+                    // 儲存到 localStorage
+                    localStorage.setItem('syncStarsData', JSON.stringify(syncStarsData));
+                    
+                    // 更新顯示
+                    updateSyncDisplay();
+                    
+                    showCustomMessage('✅ 星星同步成功！', 'success');
+                } else {
+                    throw new Error('API 請求失敗');
+                }
+            } catch (error) {
+                console.error('同步星星失敗:', error);
+                showCustomMessage('❌ 同步失敗，請稍後再試', 'error');
+            }
+        }
+
+
+
+        // 顯示自訂訊息
+        function showCustomMessage(message, type) {
+            const messageDiv = document.createElement('div');
+            messageDiv.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 15px 20px;
+                border-radius: 10px;
+                color: white;
+                font-weight: bold;
+                z-index: 10000;
+                animation: slideIn 0.3s ease;
+            `;
+            
+            if (type === 'success') {
+                messageDiv.style.background = 'linear-gradient(45deg, #4CAF50, #45a049)';
+            } else if (type === 'error') {
+                messageDiv.style.background = 'linear-gradient(45deg, #f44336, #d32f2f)';
+            }
+            
+            messageDiv.textContent = message;
+            document.body.appendChild(messageDiv);
+            
+            setTimeout(() => {
+                messageDiv.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => {
+                    document.body.removeChild(messageDiv);
+                }, 300);
+            }, 3000);
+        }
+
+        // 添加動畫樣式
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOut {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // 頁面載入時初始化星星連動系統
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 頁面載入完成，開始初始化...');
+            
+            // 初始化背景音樂
+            initBackgroundMusic();
+            
+            // 立即初始化
+            initStarsSync();
+            
+            // 延遲一點時間再次更新，確保所有元素都已載入
+            setTimeout(() => {
+                console.log('🔄 延遲更新星星總數顯示...');
+                updateTotalStarsDisplay();
+            }, 1000);
+            
+            // 每30秒自動更新星星總數顯示
+            setInterval(() => {
+                updateTotalStarsDisplay();
+            }, 30000);
+        });
+
+        // 添加音樂按鈕事件監聽器
+        document.addEventListener('DOMContentLoaded', function() {
+            const musicBtn = document.getElementById('toggleMusic');
+            if (musicBtn) {
+                musicBtn.addEventListener('click', toggleBackgroundMusic);
+                
+                // 添加懸停效果
+                musicBtn.addEventListener('mouseenter', () => {
+                    musicBtn.style.transform = 'scale(1.1)';
+                    musicBtn.style.background = 'rgba(0,0,0,0.8)';
+                });
+
+                musicBtn.addEventListener('mouseleave', () => {
+                    musicBtn.style.transform = 'scale(1)';
+                    musicBtn.style.background = isMusicPlaying ? 'rgba(0,0,0,0.8)' : 'rgba(0,0,0,0.6)';
+                });
+            }
+        });
+
+        // 頁面可見性變化時處理音樂播放
+        document.addEventListener('visibilitychange', function() {
+            if (document.hidden) {
+                // 頁面隱藏時暫停音樂
+                if (isMusicPlaying && backgroundMusic && !backgroundMusic.paused) {
+                    backgroundMusic.pause();
+                }
+            } else {
+                // 頁面顯示時恢復音樂
+                if (isMusicPlaying && backgroundMusic && backgroundMusic.paused) {
+                    backgroundMusic.play().catch(err => {
+                        console.log('恢復音樂播放失敗:', err);
+                    });
+                }
+            }
+        });
+
+        // 顯示新增星星表單
+        function showAddStarsForm() {
+            document.getElementById('addStarsModal').style.display = 'block';
+            document.getElementById('userName').focus();
+            
+            // 更新實際星星資料
+            updateActualStarsData();
+        }
+        
+        // 更新實際星星資料
+        function updateActualStarsData() {
+            const totalStars = syncStarsData.localTotalStars || 0;
+            const userLevel = Math.floor(totalStars / 20) + 1; // 根據星星數計算等級
+            const messageCount = Math.floor(totalStars / 10); // 根據星星數計算訊息數
+            
+            document.getElementById('autoStars').textContent = totalStars;
+            document.getElementById('autoLevel').textContent = userLevel;
+            document.getElementById('autoMessages').textContent = messageCount;
+        }
+
+        // 關閉新增星星表單
+        function closeAddStarsForm() {
+            document.getElementById('addStarsModal').style.display = 'none';
+            document.getElementById('addStarsForm').reset();
+            document.getElementById('formMessage').innerHTML = '';
+        }
+
+        // 處理表單提交
+        document.getElementById('addStarsForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const userName = document.getElementById('userName').value.trim();
+            
+            if (!userName) {
+                showFormMessage('請輸入用戶名稱', 'error');
+                return;
+            }
+            
+            // 使用本地星星數作為上傳的星星數
+            const totalStars = syncStarsData.localTotalStars || 0;
+            const userLevel = Math.floor(totalStars / 20) + 1; // 根據星星數計算等級
+            const messageCount = Math.floor(totalStars / 10); // 根據星星數計算訊息數
+            
+            try {
+                await addStarsToGoogleSheets(userName, totalStars, userLevel, messageCount);
+            } catch (error) {
+                console.error('新增星星失敗:', error);
+                showFormMessage('新增星星失敗，請稍後再試', 'error');
+            }
+        });
+
+        // 新增星星到 Google Sheets
+        async function addStarsToGoogleSheets(userName, starsCount, userLevel, messageCount) {
+            const messageDiv = document.getElementById('formMessage');
+            messageDiv.innerHTML = '<div class="success-message">正在新增星星資料...</div>';
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}?action=updateStars`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: new URLSearchParams({
+                        user: userName,
+                        stars: starsCount,
+                        level: userLevel,
+                        messages: messageCount
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showFormMessage(`✅ 成功上傳您的星星！\n用戶: ${userName}\n本地星星: ${starsCount}\n等級: ${userLevel}\n訊息: ${messageCount}`, 'success');
+                    
+                    // 清空表單
+                    document.getElementById('addStarsForm').reset();
+                    
+                    // 重新載入資料
+                    setTimeout(() => {
+                        loadData();
+                    }, 2000);
+                    
+                    // 3秒後關閉彈窗
+                    setTimeout(() => {
+                        closeAddStarsForm();
+                    }, 3000);
+                } else {
+                    showFormMessage(`❌ 新增失敗: ${result.error || '未知錯誤'}`, 'error');
+                }
+                
+            } catch (error) {
+                console.error('API 請求失敗:', error);
+                showFormMessage(`❌ 網路錯誤: ${error.message}`, 'error');
+            }
+        }
+
+        // 顯示表單訊息
+        function showFormMessage(message, type) {
+            const messageDiv = document.getElementById('formMessage');
+            const className = type === 'success' ? 'success-message' : 'error-message';
+            messageDiv.innerHTML = `<div class="${className}">${message}</div>`;
+        }
+
+        // 點擊彈窗外部關閉
+        window.onclick = function(event) {
+            const modal = document.getElementById('addStarsModal');
+            if (event.target === modal) {
+                closeAddStarsForm();
+            }
+        }
+    </script>
+</body>
+</html>
