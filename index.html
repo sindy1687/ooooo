@@ -1330,15 +1330,18 @@
       <button class="btn" onclick="location.href='shop.html'">🛒 商城</button>
       <button class="btn" onclick="location.href='gacha.html'">🎲 抽卡</button>
       <button class="btn" onclick="location.href='battle_system.html'">🃏 卡牌對戰</button>
-      <button class="btn" onclick="location.href='advanced-animal-card-game.html'">🦁 動物卡牌遊戲</button>
+      <button class="btn" onclick="location.href='chat_integration_example.html'" style="background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%);">🐾 動物卡牌遊戲</button>
+
       <button class="btn" onclick="location.href='google_sheets_form.html'" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">📬 玩家信箱</button>
+      <button class="btn" onclick="location.href='announcements.html'" style="background: linear-gradient(135deg, #ff6b6b 0%, #ffd700 100%);">📣 最新公告</button>
     </div>
 
     <div class="nav-buttons">
               <button class="nav-btn" id="cardsBtn" onclick="location.href='cards.html'">📁 卡片收藏</button>
-        <button class="nav-btn" id="achievementBtn" onclick="location.href='achievement.html'">🏆 成就勳章</button>
-        <button class="nav-btn" onclick="location.href='leaderboard_simple_cloud.html'">🏆 富豪排行榜</button>
         <button class="nav-btn" onclick="location.href='feedback_cloud.html'">💬 雲端留言</button>
+        <button class="nav-btn" id="achievementBtn" onclick="location.href='achievement.html'">🏆 成就勳章</button>
+            <button class="nav-btn" onclick="location.href='stars_leaderboard.html'" style="background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);">⭐ 星星排行榜</button>
+
     </div>
   </div>
 
@@ -1571,33 +1574,7 @@
     // 頁面獲得焦點時也檢查一次
     window.addEventListener('focus', updateAchievementBadge);
     
-    // 測試函數：手動檢查成就狀態
-    function testAchievementBadge() {
-      console.log('=== 成就泡泡測試 ===');
-      console.log('allCards載入狀態:', !!window.allCards);
-      console.log('ownedCards:', JSON.parse(localStorage.getItem('ownedCards') || '{}'));
-      console.log('claimedAchievements:', getClaimedAchievements());
-      
-      // 測試幾個成就的狀態
-      const testAchievements = achievements.slice(0, 5);
-      testAchievements.forEach(ach => {
-        const unlocked = checkAchievementUnlocked(ach);
-        console.log(`${ach.name}: ${unlocked ? '已解鎖' : '未解鎖'}`);
-      });
-      
-      // 測試程式碼已移除
-      
-      // 重新檢查成就
-      const newUnclaimedCount = getUnclaimedAchievementsCount();
-      console.log('測試後可領取成就數量:', newUnclaimedCount);
-      
-      updateAchievementBadge();
-    }
-    
-    // 頁面完全載入後測試
-    window.addEventListener('load', function() {
-      setTimeout(testAchievementBadge, 3000);
-    });
+
 
     // 頭像選擇
     function selectAvatar(element, imagePath, slogan, voiceSettings) {
@@ -2241,59 +2218,7 @@
       }
     });
 
-    // 音樂系統診斷函數
-    function diagnoseMusicSystem() {
-      console.log('🔍 === 音樂系統診斷 ===');
-      console.log('背景音樂元素:', backgroundMusic);
-      console.log('音樂控制按鈕:', toggleMusicBtn);
-      console.log('當前播放狀態:', isMusicPlaying);
-      console.log('LinkageSystem 可用:', typeof LinkageSystem !== 'undefined');
-      console.log('SoundSystem 可用:', typeof SoundSystem !== 'undefined');
-      
-      if (backgroundMusic) {
-        console.log('音樂檔案路徑:', backgroundMusic.src);
-        console.log('音樂音量:', backgroundMusic.volume);
-        console.log('音樂是否循環:', backgroundMusic.loop);
-        console.log('音樂是否暫停:', backgroundMusic.paused);
-        console.log('音樂當前時間:', backgroundMusic.currentTime);
-      }
-      
-      if (typeof LinkageSystem !== 'undefined' && LinkageSystem.music) {
-        console.log('LinkageSystem 音樂狀態:', LinkageSystem.music.isPlaying());
-        console.log('LinkageSystem 音樂音量:', LinkageSystem.music.getVolume());
-      }
-      
-      if (typeof SoundSystem !== 'undefined' && SoundSystem.bgm) {
-        console.log('SoundSystem 音樂狀態:', SoundSystem.bgm.getPlayingState());
-        console.log('SoundSystem 音樂音量:', SoundSystem.bgm.getVolume());
-      }
-      
-      const musicState = localStorage.getItem('bgMusicState');
-      console.log('localStorage 音樂狀態:', musicState);
-      
-      console.log('🔍 === 診斷完成 ===');
-    }
 
-    // 強制重新初始化音樂系統
-    function reinitMusicSystem() {
-      console.log('🔄 強制重新初始化音樂系統...');
-      
-      // 重置狀態
-      isMusicPlaying = false;
-      backgroundMusic = null;
-      toggleMusicBtn = null;
-      
-      // 重新初始化
-      setTimeout(() => {
-        initBackgroundMusic();
-        console.log('✅ 音樂系統重新初始化完成');
-      }, 100);
-    }
-
-    // 頁面載入完成後執行診斷
-    window.addEventListener('load', function() {
-      setTimeout(diagnoseMusicSystem, 2000);
-    });
 
     // 處理彈窗頭像上傳
     document.addEventListener('DOMContentLoaded', function() {
