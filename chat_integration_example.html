@@ -652,7 +652,10 @@
             }
 
             messageInput.value = '';
-            loadChatMessages();
+            // 延遲載入聊天訊息，避免覆蓋本地的系統訊息
+            setTimeout(() => {
+                loadChatMessages();
+            }, 2000);
             loadUserStats();
         }
 
@@ -663,9 +666,18 @@
                 time: new Date().toLocaleString('zh-TW')
             };
             
-            // 直接添加到本地顯示
-            chatMessages.push(systemMessage);
-            displayChatMessages();
+            // 直接添加到本地顯示，但避免重複
+            // 檢查是否已經有相同的系統訊息
+            const existingMessage = chatMessages.find(msg => 
+                msg.user === '系統' && 
+                msg.message === message && 
+                Math.abs(new Date(msg.time) - new Date(systemMessage.time)) < 5000 // 5秒內的相同訊息
+            );
+            
+            if (!existingMessage) {
+                chatMessages.push(systemMessage);
+                displayChatMessages();
+            }
         }
 
 
@@ -809,18 +821,21 @@
                     starsElement.textContent = event.data.stars;
                 }
                 
-                // 發送遊戲結果聊天訊息
-                if (event.data.message) {
-                    sendSystemMessage(event.data.message);
+                // 根據遊戲結果顯示系統訊息（只發送一次）
+                let resultMessage = '';
+                if (event.data.result === '勝利') {
+                    resultMessage = `🎉 ${event.data.player} 在動物卡牌遊戲中獲得勝利！`;
+                } else if (event.data.result === '失敗') {
+                    resultMessage = `😔 ${event.data.player} 在動物卡牌遊戲中失敗了，下次再接再厲！`;
+                } else if (event.data.result === '平手') {
+                    resultMessage = `🤝 ${event.data.player} 在動物卡牌遊戲中與對手打成平手！`;
                 }
                 
-                // 根據遊戲結果顯示不同的系統訊息
-                if (event.data.result === '勝利') {
-                    sendSystemMessage(`🎉 ${event.data.player} 在動物卡牌遊戲中獲得勝利！`);
-                } else if (event.data.result === '失敗') {
-                    sendSystemMessage(`😔 ${event.data.player} 在動物卡牌遊戲中失敗了，下次再接再厲！`);
-                } else if (event.data.result === '平手') {
-                    sendSystemMessage(`🤝 ${event.data.player} 在動物卡牌遊戲中與對手打成平手！`);
+                // 如果有自定義訊息，優先使用自定義訊息，否則使用預設結果訊息
+                if (event.data.message) {
+                    sendSystemMessage(event.data.message);
+                } else if (resultMessage) {
+                    sendSystemMessage(resultMessage);
                 }
             }
         });
