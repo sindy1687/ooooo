@@ -557,9 +557,6 @@
   <div class="all-buttons-container">
     <a href="index.html" class="back-btn">🏠 返回首頁</a>
     <button class="refresh-btn" onclick="loadAnnouncements()">🔄 重新載入</button>
-    <button class="comm-btn" onclick="testStats()" style="background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);">
-      🧪 測試統計
-    </button>
     <button class="comm-btn" onclick="location.href='feedback_cloud.html'" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
       💬 雲端留言
     </button>
@@ -751,17 +748,7 @@
       console.log('公告顯示完成');
     }
 
-    // 測試統計功能
-    function testStats() {
-      console.log('測試統計功能...');
-      const testData = [
-        { type: "🔴", content: "測試緊急公告1", time: "2024-01-15 10:00" },
-        { type: "🔴", content: "測試緊急公告2", time: "2024-01-14 15:30" },
-        { type: "🟢", content: "測試資訊公告", time: "2024-01-10 09:30" },
-        { type: "🔵", content: "測試藍色公告", time: "2024-01-05 14:20" }
-      ];
-      updateStats(testData);
-    }
+
 
     // 頁面載入時執行
     document.addEventListener('DOMContentLoaded', function() {
@@ -774,8 +761,7 @@
       
       loadAnnouncements();
       
-      // 延遲測試統計功能
-      setTimeout(testStats, 2000);
+
     });
   </script>
 </body>
