@@ -372,6 +372,34 @@
       box-shadow: 0 0 8px #ffd70033;
     }
     
+    /* 可領取成就的特殊樣式 */
+    .claimable-achievement {
+      border: 3px solid #00ff00;
+      box-shadow: 0 0 25px #00ff00, 0 0 40px #00ff0044 inset;
+      animation: claimableGlow 2s ease-in-out infinite alternate;
+      position: relative;
+    }
+    
+    .claimable-achievement::before {
+      content: '🎁';
+      position: absolute;
+      top: -10px;
+      right: -10px;
+      font-size: 1.5rem;
+      animation: giftBounce 1s ease-in-out infinite alternate;
+      z-index: 10;
+    }
+    
+    @keyframes claimableGlow {
+      0% { box-shadow: 0 0 25px #00ff00, 0 0 40px #00ff0044 inset; }
+      100% { box-shadow: 0 0 35px #00ff00, 0 0 50px #00ff0066 inset; }
+    }
+    
+    @keyframes giftBounce {
+      0% { transform: scale(1) rotate(0deg); }
+      100% { transform: scale(1.2) rotate(10deg); }
+    }
+    
     .toggle-details {
       background: rgba(0, 255, 255, 0.15);
       border: 2px solid #00ffff;
@@ -512,6 +540,43 @@
     
     .achievement-badge.hidden {
       display: none;
+    }
+    
+    /* 新增：標題數字泡泡樣式 */
+    .achievement-title {
+      position: relative;
+      display: inline-block;
+    }
+    
+    .total-claimable-badge {
+      position: absolute;
+      top: -15px;
+      right: -25px;
+      background: linear-gradient(135deg, #ff6b6b, #ff4757);
+      color: white;
+      border-radius: 50%;
+      min-width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      font-weight: bold;
+      box-shadow: 0 0 15px rgba(255, 107, 107, 0.8);
+      border: 3px solid white;
+      animation: totalBadgePulse 2s ease-in-out infinite;
+      z-index: 10;
+    }
+    
+    @keyframes totalBadgePulse {
+      0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 0 15px rgba(255, 107, 107, 0.8);
+      }
+      50% {
+        transform: scale(1.15);
+        box-shadow: 0 0 25px rgba(255, 107, 107, 1);
+      }
     }
     
     .stats-section {
@@ -1372,7 +1437,10 @@
   </div>
   
   <div class="achievement-section">
-    <h2>所有成就徽章</h2>
+    <h2 class="achievement-title">
+      所有成就徽章
+      <span id="totalClaimableBadge" class="total-claimable-badge" style="display: none;">0</span>
+    </h2>
     <div id="achievementBadges" class="achievement-badges"></div>
   </div>
   <script src="js/cards.js"></script>
@@ -1395,6 +1463,10 @@
       renderBadges();
       // 更新總星星顯示
       updateTotalStarsDisplay();
+      // 更新標題數字泡泡
+      updateTitleBadge();
+      // 檢查並顯示可領取成就通知
+      checkAndShowClaimableNotification();
     }
 
     // 這裡複製 cards.html 內的 achievements 陣列
@@ -1794,6 +1866,22 @@
           typeBadge.remove();
         }
       });
+      
+      // 更新標題數字泡泡
+      updateTitleBadge();
+    }
+    
+    // 新增：更新標題數字泡泡
+    function updateTitleBadge() {
+      const titleBadge = document.getElementById('totalClaimableBadge');
+      const totalCount = getUnclaimedAchievementsCount();
+      
+      if (totalCount > 0) {
+        titleBadge.textContent = totalCount;
+        titleBadge.style.display = 'flex';
+      } else {
+        titleBadge.style.display = 'none';
+      }
     }
     
     // 新增：設置篩選條件
@@ -2076,6 +2164,8 @@
       renderBadges();
       updateAllBadges();
       updateTotalStarsDisplay();
+      // 重新檢查可領取成就通知
+      setTimeout(checkAndShowClaimableNotification, 1000);
     }
 
     function renderBadges() {
@@ -2096,14 +2186,46 @@
       let greekRewards = {};
       try { greekRewards = JSON.parse(localStorage.getItem('greekRewards') || '{}'); } catch {}
       
-      // 直接渲染所有成就卡片到網格中
-      filteredAchievements.forEach(ach => {
+      // 排序成就：可領取的排在前面，已領取的排在後面
+      const sortedAchievements = filteredAchievements.sort((a, b) => {
+        const aUnlocked = checkAchievementUnlocked(a);
+        const bUnlocked = checkAchievementUnlocked(b);
+        const aClaimed = claimed.includes(a.id);
+        const bClaimed = claimed.includes(b.id);
+        
+        // 可領取的成就排在前面
+        if (aUnlocked && !aClaimed && !(bUnlocked && !bClaimed)) {
+          return -1;
+        }
+        if (bUnlocked && !bClaimed && !(aUnlocked && !aClaimed)) {
+          return 1;
+        }
+        
+        // 已領取的成就排在後面
+        if (aClaimed && !bClaimed) {
+          return 1;
+        }
+        if (bClaimed && !aClaimed) {
+          return -1;
+        }
+        
+        // 如果都是已領取或都是未達成，按原始順序排列
+        return 0;
+      });
+      
+      // 渲染排序後的成就卡片到網格中
+      sortedAchievements.forEach(ach => {
         const unlocked = checkAchievementUnlocked(ach);
         const isClaimed = claimed.includes(ach.id);
         const currentProgress = getAchievementProgress(ach);
         const progressPercentage = getProgressPercentage(ach);
         const achievementDetail = document.createElement('div');
         achievementDetail.className = 'achievement-detail';
+        
+        // 為可領取的成就添加特殊樣式
+        if (unlocked && !isClaimed) {
+          achievementDetail.classList.add('claimable-achievement');
+        }
         
         // 成就標題區域
         const header = document.createElement('div');
@@ -2227,6 +2349,82 @@
         
         container.appendChild(achievementDetail);
       });
+    }
+    
+    // 新增：檢查並顯示可領取成就通知
+    function checkAndShowClaimableNotification() {
+      const claimed = getClaimedAchievements();
+      const claimableAchievements = achievements.filter(ach => 
+        checkAchievementUnlocked(ach) && !claimed.includes(ach.id)
+      );
+      
+      if (claimableAchievements.length > 0) {
+        showClaimableNotification(claimableAchievements.length);
+      }
+    }
+    
+    // 顯示可領取成就通知
+    function showClaimableNotification(count) {
+      // 檢查是否已經顯示過通知
+      if (document.getElementById('claimableNotification')) {
+        return;
+      }
+      
+      const notification = document.createElement('div');
+      notification.id = 'claimableNotification';
+      notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: linear-gradient(135deg, #00ff00, #00cc00);
+        color: #000;
+        padding: 15px 20px;
+        border-radius: 15px;
+        box-shadow: 0 0 30px #00ff00;
+        z-index: 10000;
+        text-align: center;
+        min-width: 200px;
+        animation: notificationPop 0.8s cubic-bezier(.68, -0.55, .27, 1.55);
+        border: 2px solid #fff;
+        font-weight: bold;
+        font-size: 1.1rem;
+      `;
+      
+      notification.innerHTML = `
+        <div style="font-size: 2rem; margin-bottom: 8px;">🎁</div>
+        <div style="margin-bottom: 5px;">有 ${count} 個成就可以領取！</div>
+        <button onclick="this.parentElement.remove()" style="
+          background: rgba(255, 255, 255, 0.3);
+          color: #000;
+          border: none;
+          padding: 5px 10px;
+          border-radius: 5px;
+          cursor: pointer;
+          font-weight: bold;
+          margin-top: 8px;
+        ">關閉</button>
+      `;
+      
+      // 添加動畫樣式
+      const style = document.createElement('style');
+      style.textContent = `
+        @keyframes notificationPop {
+          0% { transform: translateX(100%) scale(0.3); opacity: 0; }
+          50% { transform: translateX(0) scale(1.1); }
+          100% { transform: translateX(0) scale(1); opacity: 1; }
+        }
+      `;
+      document.head.appendChild(style);
+      
+      // 添加到頁面
+      document.body.appendChild(notification);
+      
+      // 5秒後自動關閉
+      setTimeout(() => {
+        if (notification.parentElement) {
+          notification.remove();
+        }
+      }, 5000);
     }
     
     // 新增：點擊回饋音效處理
@@ -2457,6 +2655,8 @@
         alert(`🎉 已自動領取 ${count} 個成就！`);
         // 更新泡泡數量（因為claimAchievement已經會更新，這裡確保最後更新一次）
         updateAllBadges();
+        // 重新檢查可領取成就通知
+        setTimeout(checkAndShowClaimableNotification, 1000);
       } else {
         alert('目前沒有可領取的成就。');
       }
