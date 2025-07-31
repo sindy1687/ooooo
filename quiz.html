@@ -449,6 +449,55 @@
       transform: translateY(0);
     }
     
+    /* 下拉選單樣式 */
+    .category-select {
+      background: linear-gradient(135deg, rgba(10, 20, 40, 0.9), rgba(20, 40, 80, 0.9));
+      border: 2px solid #00ffff;
+      color: #fff;
+      padding: 12px 16px;
+      border-radius: 25px;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-family: 'Orbitron', sans-serif;
+      min-width: 200px;
+      outline: none;
+      box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2300ffff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      background-size: 16px;
+      padding-right: 40px;
+    }
+    
+    .category-select:hover {
+      border-color: #a259ff;
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+      transform: translateY(-1px);
+    }
+    
+    .category-select:focus {
+      border-color: #ffd700;
+      box-shadow: 0 0 25px rgba(255, 215, 0, 0.5);
+      outline: none;
+    }
+    
+    .category-select option {
+      background: rgba(10, 20, 40, 0.95);
+      color: #fff;
+      padding: 8px;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.9rem;
+    }
+    
+    .category-select option:hover {
+      background: rgba(0, 255, 255, 0.2);
+    }
+    
     /* 排行榜載入狀態 */
     .loading {
       text-align: center;
@@ -606,6 +655,31 @@
     <div id="leaderboardModal" class="modal">
       <div class="modal-content">
         <h2>🏆 星座挑戰排行榜</h2>
+        
+        <!-- 關卡選擇器 -->
+        <div style="margin-bottom: 20px; text-align: center;">
+          <div style="margin-bottom: 10px; color: #00ffff; font-weight: bold; font-size: 1rem;">
+            選擇關卡：
+          </div>
+          <div style="position: relative; display: inline-block; min-width: 200px;">
+            <select id="categorySelect" class="category-select" onchange="selectCategory(this.value)">
+              <option value="all">🌟 全部關卡</option>
+              <option value="aries">♈ 白羊座</option>
+              <option value="taurus">♉ 金牛座</option>
+              <option value="gemini">♊ 雙子座</option>
+              <option value="cancer">♋ 巨蟹座</option>
+              <option value="leo">♌ 獅子座</option>
+              <option value="virgo">♍ 處女座</option>
+              <option value="libra">♎ 天秤座</option>
+              <option value="scorpio">♏ 天蠍座</option>
+              <option value="sagittarius">♐ 射手座</option>
+              <option value="capricorn">♑ 摩羯座</option>
+              <option value="aquarius">♒ 水瓶座</option>
+              <option value="pisces">♓ 雙魚座</option>
+            </select>
+          </div>
+        </div>
+        
         <div id="leaderboardContent">
           <div class="loading">正在載入排行榜...</div>
         </div>
@@ -1020,15 +1094,36 @@
     const GOOGLE_SHEETS_API = "https://script.google.com/macros/s/AKfycbxg_xEZZd94RUsLXWvMokPN1LWQ288llpraGLSDRHYZAsYfMds3lS3vB999jS6z6ks9/exec";
     const LEADERBOARD_SHEET_ID = "11kMAXtBxLICMUYysPLP1noZzTsjbfXmbRcZSKK8_6cw";
     
+    // 當前選擇的關卡
+    let currentCategory = 'all';
+    
     // 顯示排行榜
     function showLeaderboard() {
       document.getElementById('leaderboardModal').style.display = 'flex';
+      // 重置為全部關卡
+      currentCategory = 'all';
+      updateCategorySelect();
       loadLeaderboard();
     }
     
     // 關閉排行榜
     function closeLeaderboard() {
       document.getElementById('leaderboardModal').style.display = 'none';
+    }
+    
+    // 選擇關卡
+    function selectCategory(category) {
+      currentCategory = category;
+      updateCategorySelect();
+      loadLeaderboard();
+    }
+    
+    // 更新下拉選單狀態
+    function updateCategorySelect() {
+      const select = document.getElementById('categorySelect');
+      if (select) {
+        select.value = currentCategory;
+      }
     }
     
     // 載入排行榜數據
@@ -1053,7 +1148,12 @@
         if (response.ok) {
           const data = await response.json();
           if (data.success && data.leaderboard) {
-            displayLeaderboard(data.leaderboard);
+            // 根據選擇的關卡過濾數據
+            let filteredData = data.leaderboard;
+            if (currentCategory !== 'all') {
+              filteredData = data.leaderboard.filter(item => item.category === currentCategory);
+            }
+            displayLeaderboard(filteredData);
             return;
           }
         }
@@ -1063,9 +1163,17 @@
         const testData = [
           { rank: 1, playerName: '測試玩家1', score: 40, correctCount: 20, category: 'aries', date: '2024/1/15' },
           { rank: 2, playerName: '測試玩家2', score: 36, correctCount: 18, category: 'taurus', date: '2024/1/15' },
-          { rank: 3, playerName: '測試玩家3', score: 32, correctCount: 16, category: 'gemini', date: '2024/1/14' }
+          { rank: 3, playerName: '測試玩家3', score: 32, correctCount: 16, category: 'gemini', date: '2024/1/14' },
+          { rank: 4, playerName: '測試玩家4', score: 38, correctCount: 19, category: 'aries', date: '2024/1/13' },
+          { rank: 5, playerName: '測試玩家5', score: 34, correctCount: 17, category: 'leo', date: '2024/1/12' }
         ];
-        displayLeaderboard(testData);
+        
+        // 根據選擇的關卡過濾測試數據
+        let filteredTestData = testData;
+        if (currentCategory !== 'all') {
+          filteredTestData = testData.filter(item => item.category === currentCategory);
+        }
+        displayLeaderboard(filteredTestData);
         
       } catch (error) {
         console.error('載入排行榜失敗:', error);
@@ -1088,11 +1196,32 @@
     function displayLeaderboard(data) {
       const content = document.getElementById('leaderboardContent');
       
+      // 獲取關卡名稱
+      const categoryNames = {
+        'all': '全部關卡',
+        'aries': '白羊座',
+        'taurus': '金牛座',
+        'gemini': '雙子座',
+        'cancer': '巨蟹座',
+        'leo': '獅子座',
+        'virgo': '處女座',
+        'libra': '天秤座',
+        'scorpio': '天蠍座',
+        'sagittarius': '射手座',
+        'capricorn': '摩羯座',
+        'aquarius': '水瓶座',
+        'pisces': '雙魚座'
+      };
+      
+      const categoryName = categoryNames[currentCategory] || '未知關卡';
+      
       if (data.length === 0) {
         content.innerHTML = `
           <div style="text-align: center; padding: 30px; color: #666; background: rgba(0, 255, 255, 0.1); border-radius: 15px; border: 2px solid rgba(0, 255, 255, 0.3);">
             <div style="font-size: 3rem; margin-bottom: 15px; animation: bounce 2s infinite;">📊</div>
-            <div style="font-size: 1.2rem; font-weight: bold; margin-bottom: 10px; color: #00ffff;">目前還沒有排行榜數據</div>
+            <div style="font-size: 1.2rem; font-weight: bold; margin-bottom: 10px; color: #00ffff;">
+              ${categoryName} 目前還沒有排行榜數據
+            </div>
             <div style="font-size: 1rem; margin-top: 15px; color: #a0a0ff;">
               🎯 成為第一個上榜的玩家吧！
             </div>
@@ -1102,6 +1231,14 @@
       }
       
       let html = `
+        <div style="margin-bottom: 15px; text-align: center;">
+          <div style="color: #00ffff; font-size: 1.1rem; font-weight: bold; margin-bottom: 5px;">
+            📊 ${categoryName} 排行榜
+          </div>
+          <div style="color: #a0a0ff; font-size: 0.9rem;">
+            共 ${data.length} 條記錄
+          </div>
+        </div>
         <div style="max-height: 350px; overflow-y: auto; margin-bottom: 20px; border-radius: 12px; background: rgba(0, 0, 0, 0.2); padding: 10px;">
           <table style="width: 100%; border-collapse: collapse; font-family: 'Orbitron', sans-serif;">
             <thead>
@@ -1122,6 +1259,9 @@
         const rowStyle = isTop3 ? 
           `background: linear-gradient(90deg, ${index === 0 ? '#ffd70022' : index === 1 ? '#c0c0c022' : '#cd7f3222'}, transparent);` : '';
         
+        // 獲取星座顯示名稱
+        const categoryDisplayName = categoryNames[item.category] || item.category;
+        
         html += `
           <tr style="${rowStyle}; transition: all 0.3s ease;" onmouseover="this.style.background='rgba(0, 255, 255, 0.1)'" onmouseout="this.style.background='${rowStyle}'">
             <td style="padding: 10px 8px; text-align: center; font-weight: bold; color: ${isTop3 ? '#ffd700' : '#fff'}; font-size: 1.1rem;">
@@ -1137,7 +1277,7 @@
               ${item.correctCount}/20
             </td>
             <td style="padding: 10px 8px; text-align: center; color: #a0a0ff; font-size: 0.9rem; font-style: italic;">
-              ${item.category}
+              ${currentCategory === 'all' ? categoryDisplayName : ''}
             </td>
           </tr>
         `;
