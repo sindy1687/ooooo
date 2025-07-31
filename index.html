@@ -18,6 +18,7 @@
       min-height: 100vh;
       display: block;
       text-align: center;
+      overflow: visible !important;
     }
 
     /* 標題 */
@@ -88,6 +89,8 @@
       text-align: center;
       color: #f3f6fa;
       font-family: 'Noto Sans TC', 'Microsoft JhengHei', Arial, sans-serif;
+      overflow: visible !important;
+      position: relative;
     }
 
     /* 玩家名稱輸入 */
@@ -198,6 +201,65 @@
       overflow: hidden;
     }
 
+    /* 公告數字泡泡樣式 */
+    .notification-badge {
+      position: absolute;
+      top: -12px;
+      right: -12px;
+      background: linear-gradient(135deg, #ff4757 0%, #ff3838 100%);
+      color: white;
+      border-radius: 50%;
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: bold;
+      font-family: 'Orbitron', monospace;
+      box-shadow: 
+        0 0 15px rgba(255, 71, 87, 0.8),
+        0 0 30px rgba(255, 71, 87, 0.6),
+        inset 0 0 8px rgba(255, 255, 255, 0.3);
+      border: 3px solid rgba(255, 255, 255, 0.4);
+      animation: badgePulse 2s ease-in-out infinite;
+      z-index: 1000;
+      pointer-events: none;
+    }
+
+    @keyframes badgePulse {
+      0%, 100% { 
+        transform: scale(1);
+        box-shadow: 
+          0 0 15px rgba(255, 71, 87, 0.8),
+          0 0 30px rgba(255, 71, 87, 0.6),
+          inset 0 0 8px rgba(255, 255, 255, 0.3);
+      }
+      50% { 
+        transform: scale(1.15);
+        box-shadow: 
+          0 0 20px rgba(255, 71, 87, 0.9),
+          0 0 40px rgba(255, 71, 87, 0.7),
+          inset 0 0 10px rgba(255, 255, 255, 0.4);
+      }
+    }
+
+    .announcement-btn {
+      position: relative;
+      overflow: visible !important;
+      z-index: 1;
+    }
+
+    .announcement-btn:hover .notification-badge {
+      animation: badgeHover 0.3s ease-in-out;
+    }
+
+    @keyframes badgeHover {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.25); }
+      100% { transform: scale(1.15); }
+    }
+
     .custom-avatar-option::before {
       content: '';
       position: absolute;
@@ -259,6 +321,18 @@
       50% { box-shadow: 0 0 40px #ffd700, 0 0 80px #ffd70099; }
     }
 
+    /* 自動清除聊天室按鈕動畫 */
+    @keyframes autoClearPulse {
+      0%, 100% { 
+        box-shadow: 0 0 20px #667eea, 0 0 40px #764ba299;
+        transform: scale(1);
+      }
+      50% { 
+        box-shadow: 0 0 30px #667eea, 0 0 60px #764ba2cc;
+        transform: scale(1.02);
+      }
+    }
+
     /* 按鈕樣式 */
     .btn {
       display: inline-block;
@@ -295,6 +369,13 @@
       transform: translateY(-3px) scale(1.05);
       box-shadow: 0 0 30px #00ffff, 0 0 60px #a259ffcc, 0 12px 24px rgba(0, 0, 0, 0.4);
       background: linear-gradient(135deg, #00ffff 0%, #a259ff 30%, #ff6b6b 70%, #ffd700 100%);
+    }
+
+    /* 自動清除聊天室按鈕懸停效果 */
+    .btn[onclick*="auto_clear_chat.html"]:hover {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #a259ff 100%) !important;
+      box-shadow: 0 0 40px #667eea, 0 0 80px #764ba2cc, 0 12px 24px rgba(0, 0, 0, 0.4) !important;
+      transform: translateY(-3px) scale(1.08) !important;
     }
 
     .btn:hover::before {
@@ -720,6 +801,8 @@
     /* 主按鈕區域 */
     .main-buttons {
       margin: 16px 0;
+      overflow: visible !important;
+      position: relative;
     }
 
     /* 角色標語 */
@@ -1325,20 +1408,20 @@
       <button class="btn" onclick="location.href='book.html'">📚 單字本</button>
       <button class="btn" onclick="location.href='grammar_tower_select.html'">🏛️ 文法塔</button>
       <button class="btn" onclick="location.href='article_practice.html'">📝 文章練習</button>
-      <button class="btn" onclick="location.href='word_spin_game.html'">🎰 單字拉霸機</button>
-      <button class="btn" onclick="location.href='vocabulary_download.html'">📥 單字下載中心</button>
+      <button class="btn" onclick="location.href='game_center_simple.html'">🎮 遊戲大廳</button>
+      <button class="btn" onclick="location.href='chat_room.html'">💬 聊天室</button>
+      <button class="btn" onclick="location.href='auto_clear_chat_simple.html'" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); box-shadow: 0 0 20px #667eea, 0 0 40px #764ba299; animation: autoClearPulse 2s ease-in-out infinite alternate;">💬 自動清除聊天室</button>
       <button class="btn" onclick="location.href='shop.html'">🛒 商城</button>
       <button class="btn" onclick="location.href='gacha.html'">🎲 抽卡</button>
-      <button class="btn" onclick="location.href='battle_system.html'">🃏 卡牌對戰</button>
-      <button class="btn" onclick="location.href='chat_integration_example.html'" style="background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%);">🐾 動物卡牌遊戲</button>
 
-      <button class="btn" onclick="location.href='google_sheets_form.html'" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">📬 玩家信箱</button>
-      <button class="btn" onclick="location.href='announcements.html'" style="background: linear-gradient(135deg, #ff6b6b 0%, #ffd700 100%);">📣 最新公告</button>
+      <button class="btn announcement-btn" onclick="location.href='announcements.html'" style="background: linear-gradient(135deg, #ff6b6b 0%, #ffd700 100%); position: relative;">
+        📣 最新公告
+        <span class="notification-badge" id="announcementBadge" style="display: none;">0</span>
+      </button>
     </div>
 
     <div class="nav-buttons">
               <button class="nav-btn" id="cardsBtn" onclick="location.href='cards.html'">📁 卡片收藏</button>
-        <button class="nav-btn" onclick="location.href='feedback_cloud.html'">💬 雲端留言</button>
         <button class="nav-btn" id="achievementBtn" onclick="location.href='achievement.html'">🏆 成就勳章</button>
             <button class="nav-btn" onclick="location.href='stars_leaderboard.html'" style="background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);">⭐ 星星排行榜</button>
 
@@ -2175,86 +2258,3 @@
         
         // 添加用戶互動觸發音樂播放
         let hasUserInteracted = false;
-        
-        function handleUserInteraction() {
-          if (!hasUserInteracted) {
-            hasUserInteracted = true;
-            console.log('👆 用戶首次互動，嘗試播放音樂');
-            
-            // 如果音樂應該播放但還沒開始，現在嘗試播放
-            if (isMusicPlaying && backgroundMusic && backgroundMusic.paused) {
-              playBackgroundMusic();
-            }
-            
-            // 移除事件監聽器
-            document.removeEventListener('click', handleUserInteraction);
-            document.removeEventListener('keydown', handleUserInteraction);
-            document.removeEventListener('touchstart', handleUserInteraction);
-          }
-        }
-        
-        // 監聽用戶互動事件
-        document.addEventListener('click', handleUserInteraction);
-        document.addEventListener('keydown', handleUserInteraction);
-        document.addEventListener('touchstart', handleUserInteraction);
-        
-      }, 500);
-    });
-
-    // 監聽頁面可見性變化，處理音樂暫停/恢復
-    document.addEventListener('visibilitychange', function() {
-      if (document.hidden) {
-        // 頁面隱藏時暫停音樂
-        if (isMusicPlaying && backgroundMusic) {
-          backgroundMusic.pause();
-        }
-      } else {
-        // 頁面顯示時恢復音樂
-        if (isMusicPlaying && backgroundMusic && backgroundMusic.paused) {
-          backgroundMusic.play().catch(err => {
-            console.log('頁面恢復時音樂播放失敗:', err);
-          });
-        }
-      }
-    });
-
-
-
-    // 處理彈窗頭像上傳
-    document.addEventListener('DOMContentLoaded', function() {
-      const modalAvatarUpload = document.getElementById('modalAvatarUpload');
-      if (modalAvatarUpload) {
-        modalAvatarUpload.addEventListener('change', function(e) {
-          console.log('📁 處理頭像上傳...');
-          const file = e.target.files[0];
-          if (file) {
-            console.log('📁 選擇的檔案:', file.name, file.size, 'bytes');
-            const reader = new FileReader();
-            reader.onload = function(event) {
-              const modalAvatarImage = document.getElementById('modalAvatarImage');
-              if (modalAvatarImage) {
-                modalAvatarImage.src = event.target.result;
-                console.log('✅ 頭像上傳成功');
-                showCustomMessage('✅ 頭像上傳成功！', 'success');
-              } else {
-                console.error('❌ 找不到頭像預覽元素');
-                showCustomMessage('❌ 頭像預覽載入失敗', 'error');
-              }
-            };
-            reader.onerror = function() {
-              console.error('❌ 檔案讀取失敗');
-              showCustomMessage('❌ 檔案讀取失敗', 'error');
-            };
-            reader.readAsDataURL(file);
-          } else {
-            console.log('📁 沒有選擇檔案');
-          }
-        });
-        console.log('✅ 頭像上傳事件監聽器已綁定');
-      } else {
-        console.error('❌ 找不到頭像上傳元素');
-      }
-    });
-  </script>
-</body>
-</html>
