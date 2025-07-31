@@ -321,17 +321,7 @@
       50% { box-shadow: 0 0 40px #ffd700, 0 0 80px #ffd70099; }
     }
 
-    /* 自動清除聊天室按鈕動畫 */
-    @keyframes autoClearPulse {
-      0%, 100% { 
-        box-shadow: 0 0 20px #667eea, 0 0 40px #764ba299;
-        transform: scale(1);
-      }
-      50% { 
-        box-shadow: 0 0 30px #667eea, 0 0 60px #764ba2cc;
-        transform: scale(1.02);
-      }
-    }
+
 
     /* 按鈕樣式 */
     .btn {
@@ -371,12 +361,7 @@
       background: linear-gradient(135deg, #00ffff 0%, #a259ff 30%, #ff6b6b 70%, #ffd700 100%);
     }
 
-    /* 自動清除聊天室按鈕懸停效果 */
-    .btn[onclick*="auto_clear_chat.html"]:hover {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #a259ff 100%) !important;
-      box-shadow: 0 0 40px #667eea, 0 0 80px #764ba2cc, 0 12px 24px rgba(0, 0, 0, 0.4) !important;
-      transform: translateY(-3px) scale(1.08) !important;
-    }
+
 
     .btn:hover::before {
       left: 100%;
@@ -1410,7 +1395,6 @@
       <button class="btn" onclick="location.href='article_practice.html'">📝 文章練習</button>
       <button class="btn" onclick="location.href='game_center_simple.html'">🎮 遊戲大廳</button>
       <button class="btn" onclick="location.href='chat_room.html'">💬 聊天室</button>
-      <button class="btn" onclick="location.href='auto_clear_chat_simple.html'" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); box-shadow: 0 0 20px #667eea, 0 0 40px #764ba299; animation: autoClearPulse 2s ease-in-out infinite alternate;">💬 自動清除聊天室</button>
       <button class="btn" onclick="location.href='shop.html'">🛒 商城</button>
       <button class="btn" onclick="location.href='gacha.html'">🎲 抽卡</button>
 
@@ -2258,3 +2242,198 @@
         
         // 添加用戶互動觸發音樂播放
         let hasUserInteracted = false;
+        
+        function handleUserInteraction() {
+          if (!hasUserInteracted) {
+            hasUserInteracted = true;
+            console.log('👆 用戶首次互動，嘗試播放音樂');
+            
+            // 如果音樂應該播放但還沒開始，現在嘗試播放
+            if (isMusicPlaying && backgroundMusic && backgroundMusic.paused) {
+              playBackgroundMusic();
+            }
+            
+            // 移除事件監聽器
+            document.removeEventListener('click', handleUserInteraction);
+            document.removeEventListener('keydown', handleUserInteraction);
+            document.removeEventListener('touchstart', handleUserInteraction);
+          }
+        }
+        
+        // 監聽用戶互動事件
+        document.addEventListener('click', handleUserInteraction);
+        document.addEventListener('keydown', handleUserInteraction);
+        document.addEventListener('touchstart', handleUserInteraction);
+        
+      }, 500);
+    });
+
+    // 監聽頁面可見性變化，處理音樂暫停/恢復
+    document.addEventListener('visibilitychange', function() {
+      if (document.hidden) {
+        // 頁面隱藏時暫停音樂
+        if (isMusicPlaying && backgroundMusic) {
+          backgroundMusic.pause();
+        }
+      } else {
+        // 頁面顯示時恢復音樂
+        if (isMusicPlaying && backgroundMusic && backgroundMusic.paused) {
+          backgroundMusic.play().catch(err => {
+            console.log('頁面恢復時音樂播放失敗:', err);
+          });
+        }
+      }
+    });
+
+
+
+    // 處理彈窗頭像上傳
+    document.addEventListener('DOMContentLoaded', function() {
+      const modalAvatarUpload = document.getElementById('modalAvatarUpload');
+      if (modalAvatarUpload) {
+        modalAvatarUpload.addEventListener('change', function(e) {
+          console.log('📁 處理頭像上傳...');
+          const file = e.target.files[0];
+          if (file) {
+            console.log('📁 選擇的檔案:', file.name, file.size, 'bytes');
+            const reader = new FileReader();
+            reader.onload = function(event) {
+              const modalAvatarImage = document.getElementById('modalAvatarImage');
+              if (modalAvatarImage) {
+                modalAvatarImage.src = event.target.result;
+                console.log('✅ 頭像上傳成功');
+                showCustomMessage('✅ 頭像上傳成功！', 'success');
+              } else {
+                console.error('❌ 找不到頭像預覽元素');
+                showCustomMessage('❌ 頭像預覽載入失敗', 'error');
+              }
+            };
+            reader.onerror = function() {
+              console.error('❌ 檔案讀取失敗');
+              showCustomMessage('❌ 檔案讀取失敗', 'error');
+            };
+            reader.readAsDataURL(file);
+          } else {
+            console.log('📁 沒有選擇檔案');
+          }
+        });
+        console.log('✅ 頭像上傳事件監聽器已綁定');
+      } else {
+        console.error('❌ 找不到頭像上傳元素');
+      }
+    });
+
+    // 公告檢查和數字泡泡功能
+    const GOOGLE_SHEETS_API = "https://script.google.com/macros/s/AKfycbyfM8pLiWIjRsvg7u3rJ5Zh4XdKLFuScaQ5t_0yQviBp11IwOZSyrgZ-KFHkrJT43UBPg/exec";
+    
+    // 檢查新公告並更新數字泡泡
+    function checkNewAnnouncements() {
+      const badge = document.getElementById('announcementBadge');
+      if (!badge) return;
+
+      // 從 localStorage 獲取上次檢查的時間
+      const lastCheckTime = localStorage.getItem('lastAnnouncementCheck') || '0';
+      const currentTime = Date.now();
+
+      // 先嘗試從 Google Sheets 獲取數據
+      fetch(GOOGLE_SHEETS_API)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        })
+        .then(data => {
+          if (data && data.length > 0) {
+            updateBadgeWithData(data, lastCheckTime, badge);
+          } else {
+            throw new Error('No data received');
+          }
+        })
+        .catch(error => {
+          console.log('Google Sheets 載入失敗，使用本地數據:', error);
+          // 使用本地公告數據進行測試
+          const localAnnouncements = [
+            {
+              type: "🔴",
+              content: "系統維護中，部分功能可能暫時無法使用",
+              time: "2024-01-15 10:00"
+            },
+            {
+              type: "🟢",
+              content: "歡迎使用英打小英雄！新功能陸續推出中",
+              time: "2024-01-10 09:30"
+            },
+            {
+              type: "🔵",
+              content: "如有問題請聯繫客服或使用玩家信箱功能",
+              time: "2024-01-05 14:20"
+            },
+            {
+              type: "🟡",
+              content: "新增宇宙科技風格公告頁面！",
+              time: new Date().toISOString().slice(0, 19).replace('T', ' ')
+            }
+          ];
+          
+          updateBadgeWithData(localAnnouncements, lastCheckTime, badge);
+        });
+    }
+
+    // 更新數字泡泡的輔助函數
+    function updateBadgeWithData(announcements, lastCheckTime, badge) {
+      let newAnnouncementCount = 0;
+      
+      // 檢查每個公告的時間
+      announcements.forEach(announcement => {
+        if (announcement.time) {
+          const announcementTime = new Date(announcement.time).getTime();
+          if (announcementTime > parseInt(lastCheckTime)) {
+            newAnnouncementCount++;
+          }
+        }
+      });
+
+      // 更新數字泡泡
+      if (newAnnouncementCount > 0) {
+        badge.textContent = newAnnouncementCount > 99 ? '99+' : newAnnouncementCount.toString();
+        badge.style.display = 'flex';
+        
+        // 添加閃爍動畫
+        badge.style.animation = 'badgePulse 1s ease-in-out infinite';
+        
+        console.log(`📣 發現 ${newAnnouncementCount} 個新公告`);
+      } else {
+        badge.style.display = 'none';
+        console.log('📣 沒有新公告');
+      }
+    }
+
+    // 點擊公告按鈕時更新檢查時間
+    function updateAnnouncementCheckTime() {
+      localStorage.setItem('lastAnnouncementCheck', Date.now().toString());
+      const badge = document.getElementById('announcementBadge');
+      if (badge) {
+        badge.style.display = 'none';
+      }
+    }
+
+    // 頁面載入時檢查公告
+    document.addEventListener('DOMContentLoaded', function() {
+      // 延遲檢查，避免影響頁面載入速度
+      setTimeout(() => {
+        checkNewAnnouncements();
+      }, 2000);
+
+      // 綁定公告按鈕點擊事件
+      const announcementBtn = document.querySelector('.announcement-btn');
+      if (announcementBtn) {
+        announcementBtn.addEventListener('click', updateAnnouncementCheckTime);
+      }
+
+      // 每5分鐘檢查一次新公告
+      setInterval(checkNewAnnouncements, 5 * 60 * 1000);
+    });
+  </script>
+</body>
+</html>
