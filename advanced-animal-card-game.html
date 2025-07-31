@@ -1803,6 +1803,8 @@
                         this.addStars(-2); // 失敗扣除2顆星星
                         this.gameMessage += ' 失敗扣除2顆星星！';
                         this.playSound('gameOver');
+                        // 立即清空牌面
+                        this.clearAllCards();
                     } else if (this.opponentHealth <= 0) {
                         this.gameOver = true;
                         this.gameOverMessage = '遊戲結束！玩家獲勝！';
@@ -1811,6 +1813,8 @@
                         this.addStars(20);
                         this.gameMessage += ` 勝利獎勵20顆星星！`;
                         // 星星獎勵彈窗會在 addStars 方法中自動顯示
+                        // 立即清空牌面
+                        this.clearAllCards();
                     } else if (this.turn >= 5 && this.playerHand.length === 0 && this.opponentHand.length === 0) {
                         // 第五回合結束且雙方都沒有手牌，比較血量決定勝負
                         this.gameOver = true;
@@ -1832,6 +1836,8 @@
                             this.gameMessage += ' 平手獎勵5顆星星！';
                             // 星星獎勵彈窗會在 addStars 方法中自動顯示
                         }
+                        // 立即清空牌面
+                        this.clearAllCards();
                     } else if (this.deck.length === 0 && this.playerHand.length === 0 && this.opponentHand.length === 0) {
                         // 牌組用完且雙方都沒有手牌的情況
                         this.gameOver = true;
@@ -1853,7 +1859,18 @@
                             this.gameMessage += ' 平手獎勵5顆星星！';
                             // 星星獎勵彈窗會在 addStars 方法中自動顯示
                         }
+                        // 立即清空牌面
+                        this.clearAllCards();
                     }
+                },
+
+                clearAllCards() {
+                    // 立即清空所有牌面
+                    this.playerHand = [];
+                    this.opponentHand = [];
+                    this.battlefield = [];
+                    this.selectedCard = null;
+                    console.log('遊戲結束，所有牌面已清空');
                 },
 
                 newGame() {
