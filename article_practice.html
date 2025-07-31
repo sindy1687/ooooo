@@ -1322,9 +1322,6 @@
         // 更新連續閱讀天數
         updateReadingStreak();
         
-        // 觸發成就檢查
-        checkReadingAchievements();
-        
         // 關卡完成獎勵 - 隨機給予10-100顆星星
         const starsEarned = Math.floor(Math.random() * 91) + 10; // 10-100顆星星
         
@@ -1351,9 +1348,6 @@
         
         // 檢查成就
         checkReadingAchievements();
-        
-        // 新增：檢查文章練習關卡通關成就
-        checkArticleLevelAchievements(level, practiceAccuracy, quizScore);
       }
     }
     
@@ -3174,86 +3168,118 @@
       localStorage.setItem('readingComprehensionCorrect', (current + 1).toString());
     }
     
-    // 檢查閱讀成就
+    // 獲取成就資料的函數
+    function getAchievementData(achievementId) {
+      // 文章練習成就資料（與 achievement.html 保持一致）
+      const articleAchievements = {
+        'article_practice_3': { name: '文章練習新星', reward: 20, icon: '📝', description: '完成1篇英文文章練習，展現閱讀與寫作實力' },
+        'article_perfect_score': { name: '完美閱讀者', reward: 100, icon: '💯', description: '在文章練習中獲得滿分，展現卓越的閱讀能力' },
+        'article_level_1': { name: '文章練習初學者', reward: 30, icon: '📖', description: '通過第1個文章練習關卡，開始閱讀之旅' },
+        'article_level_2': { name: '文章練習進階者', reward: 50, icon: '📚', description: '通過第2個文章練習關卡，展現學習熱情' },
+        'article_level_3': { name: '文章練習專家', reward: 80, icon: '🎓', description: '通過第3個文章練習關卡，成為閱讀專家' },
+        'article_level_4': { name: '文章練習大師', reward: 120, icon: '👑', description: '通過第4個文章練習關卡，成為閱讀大師' },
+        'article_level_5': { name: '文章練習王者', reward: 150, icon: '🏆', description: '通過第5個文章練習關卡，成為閱讀王者' },
+        'article_level_6': { name: '文章練習傳奇', reward: 200, icon: '🌟', description: '通過第6個文章練習關卡，創造閱讀傳奇' },
+        'article_level_7': { name: '文章練習神話', reward: 250, icon: '💎', description: '通過第7個文章練習關卡，達到神話境界' },
+        'article_level_8': { name: '文章練習至尊', reward: 300, icon: '👑', description: '通過第8個文章練習關卡，成為閱讀至尊' },
+        'article_level_9': { name: '文章練習聖者', reward: 350, icon: '✨', description: '通過第9個文章練習關卡，成為閱讀聖者' },
+        'article_level_10': { name: '文章練習神靈', reward: 400, icon: '🔮', description: '通過第10個文章練習關卡，化身閱讀神靈' },
+        'article_level_11': { name: '文章練習星辰', reward: 450, icon: '⭐', description: '通過第11個文章練習關卡，如星辰般閃耀' },
+        'article_level_12': { name: '文章練習銀河', reward: 500, icon: '🌌', description: '通過第12個文章練習關卡，跨越銀河界限' },
+        'article_level_13': { name: '文章練習宇宙', reward: 550, icon: '🌍', description: '通過第13個文章練習關卡，探索宇宙奧秘' },
+        'article_level_14': { name: '文章練習時空', reward: 600, icon: '⏰', description: '通過第14個文章練習關卡，掌控時空之力' },
+        'article_level_15': { name: '文章練習維度', reward: 650, icon: '🔲', description: '通過第15個文章練習關卡，突破維度壁壘' },
+        'article_level_16': { name: '文章練習次元', reward: 700, icon: '🌀', description: '通過第16個文章練習關卡，穿梭次元之間' },
+        'article_level_17': { name: '文章練習虛空', reward: 750, icon: '⚫', description: '通過第17個文章練習關卡，征服虛空深淵' },
+        'article_level_18': { name: '文章練習混沌', reward: 800, icon: '🌪️', description: '通過第18個文章練習關卡，駕馭混沌之力' },
+        'article_level_19': { name: '文章練習秩序', reward: 850, icon: '⚖️', description: '通過第19個文章練習關卡，建立秩序法則' },
+        'article_level_20': { name: '文章練習平衡', reward: 900, icon: '⚖️', description: '通過第20個文章練習關卡，掌握平衡之道' },
+        'article_level_21': { name: '文章練習智慧', reward: 950, icon: '🧠', description: '通過第21個文章練習關卡，獲得無上智慧' },
+        'article_level_22': { name: '文章練習知識', reward: 1000, icon: '📚', description: '通過第22個文章練習關卡，積累浩瀚知識' },
+        'article_level_23': { name: '文章練習真理', reward: 1050, icon: '💡', description: '通過第23個文章練習關卡，領悟真理奧義' },
+        'article_level_24': { name: '文章練習啟示', reward: 1100, icon: '✨', description: '通過第24個文章練習關卡，獲得神聖啟示' },
+        'article_level_25': { name: '文章練習覺醒', reward: 1150, icon: '👁️', description: '通過第25個文章練習關卡，覺醒內在潛能' },
+        'article_level_26': { name: '文章練習超越', reward: 1200, icon: '🚀', description: '通過第26個文章練習關卡，超越自我極限' },
+        'article_level_27': { name: '文章練習昇華', reward: 1250, icon: '⬆️', description: '通過第27個文章練習關卡，靈魂得到昇華' },
+        'article_level_28': { name: '文章練習涅槃', reward: 1300, icon: '🔥', description: '通過第28個文章練習關卡，經歷涅槃重生' },
+        'article_level_29': { name: '文章練習永恆', reward: 1350, icon: '♾️', description: '通過第29個文章練習關卡，觸摸永恆之門' },
+        'article_level_30': { name: '文章練習不朽', reward: 1400, icon: '💎', description: '通過第30個文章練習關卡，成就不朽傳奇' },
+        'article_level_31': { name: '文章練習神話', reward: 1450, icon: '🏛️', description: '通過第31個文章練習關卡，書寫神話篇章' },
+        'article_level_32': { name: '文章練習傳說', reward: 1500, icon: '📖', description: '通過第32個文章練習關卡，成為傳說存在' },
+        'article_level_33': { name: '文章練習史詩', reward: 1550, icon: '📜', description: '通過第33個文章練習關卡，創造史詩篇章' },
+        'article_level_34': { name: '文章練習神聖', reward: 1600, icon: '👼', description: '通過第34個文章練習關卡，獲得神聖祝福' },
+        'article_level_35': { name: '文章練習天選', reward: 1650, icon: '👑', description: '通過第35個文章練習關卡，成為天選之人' },
+        'article_level_36': { name: '文章練習命運', reward: 1700, icon: '🎲', description: '通過第36個文章練習關卡，掌控命運之輪' },
+        'article_level_37': { name: '文章練習因果', reward: 1750, icon: '🔗', description: '通過第37個文章練習關卡，參透因果奧秘' },
+        'article_level_38': { name: '文章練習輪迴', reward: 1800, icon: '🔄', description: '通過第38個文章練習關卡，超脫輪迴束縛' },
+        'article_level_39': { name: '文章練習終極', reward: 1850, icon: '⚡', description: '通過第39個文章練習關卡，達到終極境界' },
+        'article_level_40': { name: '文章練習無上', reward: 2000, icon: '👑', description: '通過第40個文章練習關卡，成就無上至尊' }
+      };
+      
+      return articleAchievements[achievementId] || null;
+    }
+
+    // 檢查文章練習成就
     function checkReadingAchievements() {
       // 獲取各種統計數據
       const completedLevels = completedReadingLevels.length;
       const perfectScores = JSON.parse(localStorage.getItem('readingPerfectScores') || '[]').length;
-      const fastCompletions = JSON.parse(localStorage.getItem('readingFastCompletions') || '[]').length;
-      const streakDays = parseInt(localStorage.getItem('readingStreakDays') || '0');
-      const vocabCorrect = parseInt(localStorage.getItem('readingVocabCorrect') || '0');
-      const comprehensionCorrect = parseInt(localStorage.getItem('readingComprehensionCorrect') || '0');
-      const writingCompleted = parseInt(localStorage.getItem('readingWritingCompleted') || '0');
-      const audioUsed = parseInt(localStorage.getItem('readingAudioUsed') || '0');
-      const levelsUnlocked = parseInt(localStorage.getItem('readingLevelsUnlocked') || '0');
+      const articlePracticeCount = parseInt(localStorage.getItem('articlePracticeCount') || '0');
       
-      // 定義成就列表
-      const achievements = [
-        { id: 'reading_beginner', requirement: 1, reward: 10, icon: '📚', name: '閱讀新手', description: '完成第一個閱讀關卡，開始閱讀學習之旅' },
-        { id: 'reading_regular', requirement: 5, reward: 25, icon: '📖', name: '閱讀常客', description: '完成5個閱讀關卡，養成閱讀習慣' },
-        { id: 'reading_expert', requirement: 10, reward: 50, icon: '🎓', name: '閱讀專家', description: '完成10個閱讀關卡，成為閱讀專家' },
-        { id: 'reading_master', requirement: 20, reward: 100, icon: '👑', name: '閱讀大師', description: '完成20個閱讀關卡，成為閱讀大師' },
-        { id: 'reading_legend', requirement: 30, reward: 200, icon: '🏆', name: '閱讀傳奇', description: '完成30個閱讀關卡，創造閱讀傳奇' },
-        { id: 'reading_perfect', requirement: 1, reward: 30, icon: '💯', name: '完美閱讀', description: '在閱讀關卡中獲得滿分（練習和測驗都100%）' },
-        { id: 'reading_speed', requirement: 5, reward: 25, icon: '⚡', name: '快速閱讀', description: '在5個閱讀關卡中平均時間少於10分鐘' },
-        { id: 'reading_streak', requirement: 7, reward: 40, icon: '🔥', name: '連續閱讀', description: '連續7天完成閱讀關卡' },
-        { id: 'reading_vocab', requirement: 100, reward: 60, icon: '📝', name: '詞彙閱讀', description: '在閱讀關卡中答對100個詞彙問題' },
-        { id: 'reading_comprehension', requirement: 50, reward: 80, icon: '🧠', name: '理解大師', description: '在閱讀測驗中答對50個理解問題' },
-        { id: 'reading_writing', requirement: 10, reward: 40, icon: '✍️', name: '寫作練習', description: '完成10次寫作練習，提升表達能力' },
-        { id: 'reading_audio', requirement: 20, reward: 30, icon: '🔊', name: '聽力練習', description: '使用20次文章發音功能，提升聽力理解' },
-        { id: 'reading_unlock', requirement: 10, reward: 50, icon: '🔓', name: '關卡解鎖者', description: '使用星星解鎖10個閱讀關卡' },
-        { id: 'reading_all', requirement: 1, reward: 300, icon: '🌟', name: '全關卡通關', description: '完成所有閱讀關卡，達到閱讀學習的巔峰' }
-      ];
-      
-      // 檢查每個成就
-      achievements.forEach(achievement => {
-        let isUnlocked = false;
-        
-        // 根據成就類型檢查是否解鎖
-        switch (achievement.id) {
-          case 'reading_beginner':
-          case 'reading_regular':
-          case 'reading_expert':
-          case 'reading_master':
-          case 'reading_legend':
-            isUnlocked = completedLevels >= achievement.requirement;
-            break;
-          case 'reading_perfect':
-            isUnlocked = perfectScores >= achievement.requirement;
-            break;
-          case 'reading_speed':
-            isUnlocked = fastCompletions >= achievement.requirement;
-            break;
-          case 'reading_streak':
-            isUnlocked = streakDays >= achievement.requirement;
-            break;
-          case 'reading_vocab':
-            isUnlocked = vocabCorrect >= achievement.requirement;
-            break;
-          case 'reading_comprehension':
-            isUnlocked = comprehensionCorrect >= achievement.requirement;
-            break;
-          case 'reading_writing':
-            isUnlocked = writingCompleted >= achievement.requirement;
-            break;
-          case 'reading_audio':
-            isUnlocked = audioUsed >= achievement.requirement;
-            break;
-          case 'reading_unlock':
-            isUnlocked = levelsUnlocked >= achievement.requirement;
-            break;
-          case 'reading_all':
-            isUnlocked = completedLevels >= articleLevels.length; // 完成所有關卡
-            break;
-        }
-        
-        // 檢查是否已經領取過這個成就
+      // 檢查文章練習新星成就
+      if (articlePracticeCount >= 1) {
         const claimedAchievements = JSON.parse(localStorage.getItem('claimedAchievements') || '[]');
-        if (isUnlocked && !claimedAchievements.includes(achievement.id)) {
-          // 觸發成就達成事件
-          showReadingAchievementNotification(achievement);
+        if (!claimedAchievements.includes('article_practice_3')) {
+          const achievementData = getAchievementData('article_practice_3');
+          if (achievementData) {
+            showReadingAchievementNotification({
+              id: 'article_practice_3',
+              name: achievementData.name,
+              reward: achievementData.reward,
+              icon: achievementData.icon,
+              description: achievementData.description
+            });
+          }
         }
-      });
+      }
+      
+      // 檢查滿分成就
+      if (perfectScores >= 1) {
+        const claimedAchievements = JSON.parse(localStorage.getItem('claimedAchievements') || '[]');
+        if (!claimedAchievements.includes('article_perfect_score')) {
+          const achievementData = getAchievementData('article_perfect_score');
+          if (achievementData) {
+            showReadingAchievementNotification({
+              id: 'article_perfect_score',
+              name: achievementData.name,
+              reward: achievementData.reward,
+              icon: achievementData.icon,
+              description: achievementData.description
+            });
+          }
+        }
+      }
+      
+      // 檢查關卡通關成就（1-40關）
+      for (let i = 1; i <= 40; i++) {
+        if (completedReadingLevels.includes(i)) {
+          const claimedAchievements = JSON.parse(localStorage.getItem('claimedAchievements') || '[]');
+          const achievementId = `article_level_${i}`;
+          
+          if (!claimedAchievements.includes(achievementId)) {
+            const achievementData = getAchievementData(achievementId);
+            if (achievementData) {
+              showReadingAchievementNotification({
+                id: achievementId,
+                name: achievementData.name,
+                reward: achievementData.reward,
+                icon: achievementData.icon,
+                description: achievementData.description
+              });
+            }
+          }
+        }
+      }
     }
     
     // 顯示閱讀成就通知
@@ -3573,77 +3599,7 @@
       }, 5000);
     }
     
-    // 新增：檢查文章練習關卡通關成就
-    function checkArticleLevelAchievements(level, practiceAccuracy, quizScore) {
-      const claimedAchievements = JSON.parse(localStorage.getItem('claimedAchievements') || '[]');
-      
-      // 檢查關卡通關成就 - 40個關卡都可以領取
-      const levelAchievements = [
-        { id: 'article_level_1', name: '文章練習初學者', reward: 30, icon: '📖', description: '通過第1個文章練習關卡，開始閱讀之旅' },
-        { id: 'article_level_2', name: '文章練習進階者', reward: 50, icon: '📚', description: '通過第2個文章練習關卡，展現學習熱情' },
-        { id: 'article_level_3', name: '文章練習專家', reward: 80, icon: '🎓', description: '通過第3個文章練習關卡，成為閱讀專家' },
-        { id: 'article_level_4', name: '文章練習大師', reward: 120, icon: '👑', description: '通過第4個文章練習關卡，成為閱讀大師' },
-        { id: 'article_level_5', name: '文章練習王者', reward: 150, icon: '🏆', description: '通過第5個文章練習關卡，成為閱讀王者' },
-        { id: 'article_level_6', name: '文章練習傳奇', reward: 200, icon: '🌟', description: '通過第6個文章練習關卡，創造閱讀傳奇' },
-        { id: 'article_level_7', name: '文章練習神話', reward: 250, icon: '💎', description: '通過第7個文章練習關卡，達到神話境界' },
-        { id: 'article_level_8', name: '文章練習至尊', reward: 300, icon: '👑', description: '通過第8個文章練習關卡，成為閱讀至尊' },
-        { id: 'article_level_9', name: '文章練習聖者', reward: 350, icon: '✨', description: '通過第9個文章練習關卡，成為閱讀聖者' },
-        { id: 'article_level_10', name: '文章練習神靈', reward: 400, icon: '🔮', description: '通過第10個文章練習關卡，化身閱讀神靈' },
-        { id: 'article_level_11', name: '文章練習星辰', reward: 450, icon: '⭐', description: '通過第11個文章練習關卡，如星辰般閃耀' },
-        { id: 'article_level_12', name: '文章練習銀河', reward: 500, icon: '🌌', description: '通過第12個文章練習關卡，跨越銀河界限' },
-        { id: 'article_level_13', name: '文章練習宇宙', reward: 550, icon: '🌍', description: '通過第13個文章練習關卡，探索宇宙奧秘' },
-        { id: 'article_level_14', name: '文章練習時空', reward: 600, icon: '⏰', description: '通過第14個文章練習關卡，掌控時空之力' },
-        { id: 'article_level_15', name: '文章練習維度', reward: 650, icon: '🔲', description: '通過第15個文章練習關卡，突破維度壁壘' },
-        { id: 'article_level_16', name: '文章練習次元', reward: 700, icon: '🌀', description: '通過第16個文章練習關卡，穿梭次元之間' },
-        { id: 'article_level_17', name: '文章練習虛空', reward: 750, icon: '⚫', description: '通過第17個文章練習關卡，征服虛空深淵' },
-        { id: 'article_level_18', name: '文章練習混沌', reward: 800, icon: '🌪️', description: '通過第18個文章練習關卡，駕馭混沌之力' },
-        { id: 'article_level_19', name: '文章練習秩序', reward: 850, icon: '⚖️', description: '通過第19個文章練習關卡，建立秩序法則' },
-        { id: 'article_level_20', name: '文章練習平衡', reward: 900, icon: '⚖️', description: '通過第20個文章練習關卡，掌握平衡之道' },
-        { id: 'article_level_21', name: '文章練習智慧', reward: 950, icon: '🧠', description: '通過第21個文章練習關卡，獲得無上智慧' },
-        { id: 'article_level_22', name: '文章練習知識', reward: 1000, icon: '📚', description: '通過第22個文章練習關卡，積累浩瀚知識' },
-        { id: 'article_level_23', name: '文章練習真理', reward: 1050, icon: '💡', description: '通過第23個文章練習關卡，領悟真理奧義' },
-        { id: 'article_level_24', name: '文章練習啟示', reward: 1100, icon: '✨', description: '通過第24個文章練習關卡，獲得神聖啟示' },
-        { id: 'article_level_25', name: '文章練習覺醒', reward: 1150, icon: '👁️', description: '通過第25個文章練習關卡，覺醒內在潛能' },
-        { id: 'article_level_26', name: '文章練習超越', reward: 1200, icon: '🚀', description: '通過第26個文章練習關卡，超越自我極限' },
-        { id: 'article_level_27', name: '文章練習昇華', reward: 1250, icon: '⬆️', description: '通過第27個文章練習關卡，靈魂得到昇華' },
-        { id: 'article_level_28', name: '文章練習涅槃', reward: 1300, icon: '🔥', description: '通過第28個文章練習關卡，經歷涅槃重生' },
-        { id: 'article_level_29', name: '文章練習永恆', reward: 1350, icon: '♾️', description: '通過第29個文章練習關卡，觸摸永恆之門' },
-        { id: 'article_level_30', name: '文章練習不朽', reward: 1400, icon: '💎', description: '通過第30個文章練習關卡，成就不朽傳奇' },
-        { id: 'article_level_31', name: '文章練習神話', reward: 1450, icon: '🏛️', description: '通過第31個文章練習關卡，書寫神話篇章' },
-        { id: 'article_level_32', name: '文章練習傳說', reward: 1500, icon: '📖', description: '通過第32個文章練習關卡，成為傳說存在' },
-        { id: 'article_level_33', name: '文章練習史詩', reward: 1550, icon: '📜', description: '通過第33個文章練習關卡，創造史詩篇章' },
-        { id: 'article_level_34', name: '文章練習神聖', reward: 1600, icon: '👼', description: '通過第34個文章練習關卡，獲得神聖祝福' },
-        { id: 'article_level_35', name: '文章練習天選', reward: 1650, icon: '👑', description: '通過第35個文章練習關卡，成為天選之人' },
-        { id: 'article_level_36', name: '文章練習命運', reward: 1700, icon: '🎲', description: '通過第36個文章練習關卡，掌控命運之輪' },
-        { id: 'article_level_37', name: '文章練習因果', reward: 1750, icon: '🔗', description: '通過第37個文章練習關卡，參透因果奧秘' },
-        { id: 'article_level_38', name: '文章練習輪迴', reward: 1800, icon: '🔄', description: '通過第38個文章練習關卡，超脫輪迴束縛' },
-        { id: 'article_level_39', name: '文章練習終極', reward: 1850, icon: '⚡', description: '通過第39個文章練習關卡，達到終極境界' },
-        { id: 'article_level_40', name: '文章練習無上', reward: 2000, icon: '👑', description: '通過第40個文章練習關卡，成就無上至尊' }
-      ];
-      
-      // 檢查當前關卡的成就
-      const currentLevelAchievement = levelAchievements[level - 1];
-      if (currentLevelAchievement && !claimedAchievements.includes(currentLevelAchievement.id)) {
-        showReadingAchievementNotification({
-          id: currentLevelAchievement.id,
-          reward: currentLevelAchievement.reward,
-          icon: currentLevelAchievement.icon,
-          name: currentLevelAchievement.name,
-          description: currentLevelAchievement.description
-        });
-      }
-      
-      // 檢查滿分成就
-      if (practiceAccuracy === 100 && quizScore === 100 && !claimedAchievements.includes('article_perfect_score')) {
-        showReadingAchievementNotification({
-          id: 'article_perfect_score',
-          reward: 100,
-          icon: '💯',
-          name: '完美閱讀者',
-          description: '在文章練習中獲得滿分，展現卓越的閱讀能力'
-        });
-      }
-    }
+
   </script>
 </body>
 </html> 
