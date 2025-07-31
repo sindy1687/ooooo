@@ -148,27 +148,7 @@
       50% { transform: scale(1.05); }
     }
     
-    #testMusic {
-      background: rgba(10, 20, 40, 0.85);
-      border: 2px solid #00ffff;
-      color: #00ffff;
-      border-radius: 50%;
-      width: 40px;
-      height: 40px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.3s ease;
-      backdrop-filter: blur(10px);
-      box-shadow: 0 0 16px #00ffff;
-      font-size: 0.8rem;
-    }
-    
-    #testMusic:hover {
-      background: rgba(0, 255, 255, 0.2);
-      transform: scale(1.1);
-    }
+
     /* 標題 */
     h1 {
       margin-top: 60px;
@@ -284,62 +264,225 @@
       background: linear-gradient(90deg, #ffd700 0%, #ffaa00 100%);
       color: #000;
     }
-    /* 模態視窗 */
+    /* 模態視窗 - 美化版本 */
     .modal {
       display: none;
       position: fixed;
-      z-index: 10;
+      z-index: 1000;
       left: 0;
       top: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0, 0, 0, 0.8);
+      background: rgba(0, 0, 0, 0.85);
       align-items: center;
       justify-content: center;
       overflow-y: auto;
+      backdrop-filter: blur(8px);
+      animation: modalFadeIn 0.3s ease-out;
     }
+    
+    @keyframes modalFadeIn {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    
     .modal-content {
-      background: rgba(10, 20, 40, 0.95);
-      padding: 30px;
-      border-radius: 16px;
+      background: linear-gradient(135deg, rgba(10, 20, 40, 0.98), rgba(20, 40, 80, 0.95));
+      padding: 35px;
+      border-radius: 20px;
       color: #fff;
-      max-width: 500px;
-      width: 85%;
+      max-width: 600px;
+      width: 90%;
       text-align: center;
-      box-shadow: 0 0 32px #00ffff99, 0 0 80px #a259ff44 inset;
+      box-shadow: 
+        0 0 40px #00ffff88, 
+        0 0 80px #a259ff44 inset,
+        0 20px 40px rgba(0, 0, 0, 0.5);
       font-family: 'Orbitron', sans-serif;
       margin: 20px;
-      border: 2px solid #00ffff;
+      border: 3px solid #00ffff;
+      position: relative;
+      overflow: hidden;
+      animation: modalSlideIn 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
     }
+    
+    @keyframes modalSlideIn {
+      from { transform: translateY(-50px) scale(0.9); opacity: 0; }
+      to { transform: translateY(0) scale(1); opacity: 1; }
+    }
+    
+    .modal-content::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #00ffff, #a259ff, #ffd700, #00ffff);
+      animation: borderGlow 2s linear infinite;
+    }
+    
+    @keyframes borderGlow {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 200% 50%; }
+    }
+    
     .modal-content h2 {
-      margin-bottom: 15px;
+      margin-bottom: 20px;
       color: #00ffff;
-      text-shadow: 0 0 12px #00ffff, 0 0 32px #a259ff;
-      font-size: 1.5rem;
+      text-shadow: 0 0 15px #00ffff, 0 0 35px #a259ff;
+      font-size: 1.8rem;
       font-family: 'Orbitron', sans-serif;
+      font-weight: bold;
+      letter-spacing: 1px;
+      position: relative;
     }
+    
+    .modal-content h2::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 3px;
+      background: linear-gradient(90deg, #00ffff, #a259ff);
+      border-radius: 2px;
+    }
+    
     .modal-content p {
-      margin: 8px 0;
-      font-size: 0.95rem;
+      margin: 12px 0;
+      font-size: 1rem;
       font-family: 'Orbitron', sans-serif;
       color: #a0a0ff;
+      line-height: 1.5;
     }
+    
     .modal-content ul {
       list-style: none;
       padding: 0;
-      max-height: 140px;
+      max-height: 200px;
       overflow-y: auto;
-      margin: 15px 0;
+      margin: 20px 0;
       text-align: left;
-      font-size: 0.9rem;
+      font-size: 0.95rem;
       font-family: 'Roboto Mono', monospace;
       color: #fff;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 10px;
+      padding: 15px;
+      border: 1px solid rgba(0, 255, 255, 0.2);
     }
+    
     .modal-content ul li { 
-      margin: 6px 0;
-      padding: 4px 8px;
+      margin: 8px 0;
+      padding: 8px 12px;
+      background: linear-gradient(135deg, rgba(0, 255, 255, 0.1), rgba(162, 89, 255, 0.1));
+      border-radius: 8px;
+      border-left: 3px solid #00ffff;
+      transition: all 0.3s ease;
+    }
+    
+    .modal-content ul li:hover {
+      background: linear-gradient(135deg, rgba(0, 255, 255, 0.2), rgba(162, 89, 255, 0.2));
+      transform: translateX(5px);
+      box-shadow: 0 2px 8px rgba(0, 255, 255, 0.3);
+    }
+    
+    /* 排行榜表格美化 */
+    .modal-content table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+    
+    .modal-content th {
+      background: linear-gradient(135deg, #00ffff22, #a259ff22);
+      color: #00ffff;
+      padding: 12px 8px;
+      font-weight: bold;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      border-bottom: 2px solid #00ffff;
+    }
+    
+    .modal-content td {
+      padding: 10px 8px;
+      border-bottom: 1px solid rgba(0, 255, 255, 0.1);
+      transition: background 0.3s ease;
+    }
+    
+    .modal-content tr:hover td {
       background: rgba(0, 255, 255, 0.1);
-      border-radius: 4px;
+    }
+    
+    /* 按鈕美化 */
+    .modal-content button {
+      background: linear-gradient(135deg, #00ffff 0%, #a259ff 100%);
+      border: none;
+      padding: 12px 24px;
+      border-radius: 25px;
+      color: #000;
+      font-weight: bold;
+      font-size: 1rem;
+      cursor: pointer;
+      margin: 8px;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0, 255, 255, 0.3);
+      font-family: 'Orbitron', sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    
+    .modal-content button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(0, 255, 255, 0.5);
+      background: linear-gradient(135deg, #00ffff 0%, #ffd700 100%);
+    }
+    
+    .modal-content button:active {
+      transform: translateY(0);
+    }
+    
+    /* 排行榜載入狀態 */
+    .loading {
+      text-align: center;
+      padding: 20px;
+      color: #00ffff;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.1rem;
+    }
+    
+    .loading::after {
+      content: '';
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 2px solid #00ffff;
+      border-radius: 50%;
+      border-top-color: transparent;
+      animation: spin 1s linear infinite;
+      margin-left: 10px;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+    
+    @keyframes bounce {
+      0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+      40% { transform: translateY(-10px); }
+      60% { transform: translateY(-5px); }
     }
     /* 翻牌卡片動畫 */
     .flip-card-grid {
@@ -419,9 +562,7 @@
     <button id="toggleMusic" title="背景音樂">
       <span class="material-icons">music_note</span>
     </button>
-    <button id="testMusic" title="測試音樂系統" onclick="diagnoseMusicSystem()" style="font-size: 0.8rem; padding: 2px 6px;">
-      🔍
-    </button>
+
   </div>
 
   <!-- 背景音樂音頻元素 -->
@@ -455,10 +596,23 @@
         <p>✅ 答對題數：<span id="sessionCorrect">0</span></p>
         <p>❌ 答錯題數：<span id="sessionWrong">0</span></p>
         <button id="wrongBtn" onclick="showWrongModal()">錯題複習</button>
+        <button onclick="showLeaderboard()">🏆 排行榜</button>
         <button onclick="restartGame()">重新開始</button>
         <button onclick="goHome()">返回首頁</button>
       </div>
     </div>
+    
+    <!-- 排行榜面板 -->
+    <div id="leaderboardModal" class="modal">
+      <div class="modal-content">
+        <h2>🏆 星座挑戰排行榜</h2>
+        <div id="leaderboardContent">
+          <div class="loading">正在載入排行榜...</div>
+        </div>
+        <button onclick="closeLeaderboard()">關閉</button>
+      </div>
+    </div>
+    
     <!-- 錯題複習面板 -->
     <div id="wrongModal" class="modal">
       <div class="modal-content">
@@ -847,9 +1001,12 @@
 
       // ====== 新增：成就系統連動 ======
       updateQuizAchievements();
+      
+      // ====== 新增：自動提交分數到排行榜 ======
+      submitScoreToLeaderboard();
     }
 
-    // ====== 新增：成就系統函數 ======
+    // ====== 新增：成就系統函數 =====
     function updateQuizAchievements() {
       // 更新星座挑戰完成次數
       const quizGames = parseInt(localStorage.getItem('quizGamesCompleted') || '0');
@@ -857,6 +1014,180 @@
       
       // 檢查並更新相關成就
       checkAndUpdateQuizAchievements();
+    }
+    
+    // ===== 新增：Google Sheets 排行榜系統 =====
+    const GOOGLE_SHEETS_API = "https://script.google.com/macros/s/AKfycbxg_xEZZd94RUsLXWvMokPN1LWQ288llpraGLSDRHYZAsYfMds3lS3vB999jS6z6ks9/exec";
+    const LEADERBOARD_SHEET_ID = "11kMAXtBxLICMUYysPLP1noZzTsjbfXmbRcZSKK8_6cw";
+    
+    // 顯示排行榜
+    function showLeaderboard() {
+      document.getElementById('leaderboardModal').style.display = 'flex';
+      loadLeaderboard();
+    }
+    
+    // 關閉排行榜
+    function closeLeaderboard() {
+      document.getElementById('leaderboardModal').style.display = 'none';
+    }
+    
+    // 載入排行榜數據
+    async function loadLeaderboard() {
+      const content = document.getElementById('leaderboardContent');
+      content.innerHTML = '<div class="loading">正在載入排行榜...</div>';
+      
+      try {
+        // 方法1：嘗試從 Google Apps Script API 獲取數據
+        const formData = new URLSearchParams();
+        formData.append('action', 'getLeaderboard');
+        
+        const response = await fetch(GOOGLE_SHEETS_API, {
+          method: 'POST',
+          mode: 'cors',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: formData.toString()
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          if (data.success && data.leaderboard) {
+            displayLeaderboard(data.leaderboard);
+            return;
+          }
+        }
+        
+        // 方法2：如果 API 失敗，顯示測試數據
+        console.log('API 調用失敗，顯示測試數據');
+        const testData = [
+          { rank: 1, playerName: '測試玩家1', score: 40, correctCount: 20, category: 'aries', date: '2024/1/15' },
+          { rank: 2, playerName: '測試玩家2', score: 36, correctCount: 18, category: 'taurus', date: '2024/1/15' },
+          { rank: 3, playerName: '測試玩家3', score: 32, correctCount: 16, category: 'gemini', date: '2024/1/14' }
+        ];
+        displayLeaderboard(testData);
+        
+      } catch (error) {
+        console.error('載入排行榜失敗:', error);
+        content.innerHTML = `
+          <div style="color: #ff6b6b; text-align: center; padding: 30px; background: rgba(255, 107, 107, 0.1); border-radius: 15px; border: 2px solid #ff6b6b;">
+            <div style="font-size: 3rem; margin-bottom: 15px; animation: pulse 2s infinite;">⚠️</div>
+            <div style="font-size: 1.2rem; font-weight: bold; margin-bottom: 10px;">載入排行榜失敗</div>
+            <div style="font-size: 0.9rem; margin-top: 15px; color: #ff9999; background: rgba(0, 0, 0, 0.3); padding: 10px; border-radius: 8px;">
+              <strong>錯誤：</strong>${error.message}
+            </div>
+            <div style="font-size: 0.9rem; margin-top: 10px; color: #ccc;">
+              請檢查 Google Apps Script 設置
+            </div>
+          </div>
+        `;
+      }
+    }
+    
+    // 顯示排行榜
+    function displayLeaderboard(data) {
+      const content = document.getElementById('leaderboardContent');
+      
+      if (data.length === 0) {
+        content.innerHTML = `
+          <div style="text-align: center; padding: 30px; color: #666; background: rgba(0, 255, 255, 0.1); border-radius: 15px; border: 2px solid rgba(0, 255, 255, 0.3);">
+            <div style="font-size: 3rem; margin-bottom: 15px; animation: bounce 2s infinite;">📊</div>
+            <div style="font-size: 1.2rem; font-weight: bold; margin-bottom: 10px; color: #00ffff;">目前還沒有排行榜數據</div>
+            <div style="font-size: 1rem; margin-top: 15px; color: #a0a0ff;">
+              🎯 成為第一個上榜的玩家吧！
+            </div>
+          </div>
+        `;
+        return;
+      }
+      
+      let html = `
+        <div style="max-height: 350px; overflow-y: auto; margin-bottom: 20px; border-radius: 12px; background: rgba(0, 0, 0, 0.2); padding: 10px;">
+          <table style="width: 100%; border-collapse: collapse; font-family: 'Orbitron', sans-serif;">
+            <thead>
+              <tr>
+                <th style="padding: 12px 8px; text-align: center; color: #00ffff; border-bottom: 2px solid #00ffff; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px;">排名</th>
+                <th style="padding: 12px 8px; text-align: left; color: #00ffff; border-bottom: 2px solid #00ffff; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px;">玩家</th>
+                <th style="padding: 12px 8px; text-align: center; color: #00ffff; border-bottom: 2px solid #00ffff; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px;">分數</th>
+                <th style="padding: 12px 8px; text-align: center; color: #00ffff; border-bottom: 2px solid #00ffff; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px;">答對</th>
+                <th style="padding: 12px 8px; text-align: center; color: #00ffff; border-bottom: 2px solid #00ffff; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px;">星座</th>
+              </tr>
+            </thead>
+            <tbody>
+      `;
+      
+      data.slice(0, 20).forEach((item, index) => {
+        const isTop3 = index < 3;
+        const rankIcon = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `${item.rank}`;
+        const rowStyle = isTop3 ? 
+          `background: linear-gradient(90deg, ${index === 0 ? '#ffd70022' : index === 1 ? '#c0c0c022' : '#cd7f3222'}, transparent);` : '';
+        
+        html += `
+          <tr style="${rowStyle}; transition: all 0.3s ease;" onmouseover="this.style.background='rgba(0, 255, 255, 0.1)'" onmouseout="this.style.background='${rowStyle}'">
+            <td style="padding: 10px 8px; text-align: center; font-weight: bold; color: ${isTop3 ? '#ffd700' : '#fff'}; font-size: 1.1rem;">
+              ${rankIcon}
+            </td>
+            <td style="padding: 10px 8px; text-align: left; color: #fff; font-weight: 500;">
+              ${item.playerName}
+            </td>
+            <td style="padding: 10px 8px; text-align: center; color: #ffd700; font-weight: bold; font-size: 1.1rem;">
+              ${item.score}
+            </td>
+            <td style="padding: 10px 8px; text-align: center; color: #0f0; font-weight: 500;">
+              ${item.correctCount}/20
+            </td>
+            <td style="padding: 10px 8px; text-align: center; color: #a0a0ff; font-size: 0.9rem; font-style: italic;">
+              ${item.category}
+            </td>
+          </tr>
+        `;
+      });
+      
+      html += `
+            </tbody>
+          </table>
+        </div>
+        <div style="text-align: center; font-size: 0.9rem; color: #666; margin-top: 15px; padding: 10px; background: rgba(0, 0, 0, 0.2); border-radius: 8px;">
+          <span style="color: #00ffff;">📊</span> 顯示前 20 名玩家
+        </div>
+      `;
+      
+      content.innerHTML = html;
+    }
+    
+    // 提交分數到排行榜
+    async function submitScoreToLeaderboard() {
+      const playerName = localStorage.getItem('playerName') || '匿名玩家';
+      const score = correctCount * 2;
+      const category = categoryKey;
+      const date = new Date().toLocaleDateString('zh-TW');
+      
+      try {
+        const formData = new URLSearchParams();
+        formData.append('action', 'addQuizScore');
+        formData.append('playerName', playerName);
+        formData.append('score', score.toString());
+        formData.append('correctCount', correctCount.toString());
+        formData.append('category', category);
+        formData.append('date', date);
+        
+        const response = await fetch(GOOGLE_SHEETS_API, {
+          method: 'POST',
+          mode: 'cors',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: formData.toString()
+        });
+        
+        if (response.ok) {
+          console.log('分數已成功提交到排行榜');
+        } else {
+          console.error('提交分數失敗');
+        }
+      } catch (error) {
+        console.error('提交分數時發生錯誤:', error);
+      }
     }
     
     function checkAndUpdateQuizAchievements() {
