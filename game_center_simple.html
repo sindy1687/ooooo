@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>遊戲中心 - 三大遊戲</title>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <style>
+    :root {
+      --glow-cyan: #00ffff;
+      --glow-magenta: #a259ff;
+      --glow-gold: #ffd700;
+      --glow-red: #ff6b6b;
+      --glow-green: #00ff88;
+      --bg-dark: rgba(10, 20, 40, 0.85);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Orbitron', 'Noto Sans TC', 'Microsoft JhengHei', Arial, sans-serif;
+      background: linear-gradient(135deg, #0a1428 0%, #1a2a4a 50%, #0a1428 100%);
+      color: #fff;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* 背景動畫效果 */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        radial-gradient(circle at 20% 80%, rgba(0, 255, 255, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(162, 89, 255, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(255, 215, 0, 0.05) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .header {
+      background: rgba(10, 20, 40, 0.95);
+      padding: 20px;
+      text-align: center;
+      border-bottom: 3px solid var(--glow-cyan);
+      box-shadow: 0 0 30px rgba(0, 255, 255, 0.3);
+      backdrop-filter: blur(10px);
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 2.5rem;
+      background: linear-gradient(45deg, var(--glow-cyan), var(--glow-magenta), var(--glow-gold));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+      animation: glow 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes glow {
+      from { filter: brightness(1); }
+      to { filter: brightness(1.2); }
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .stats-panel {
+      background: rgba(10, 20, 40, 0.9);
+      border: 2px solid var(--glow-gold);
+      border-radius: 15px;
+      padding: 20px;
+      margin-bottom: 30px;
+      box-shadow: 0 0 20px rgba(255, 215, 0, 0.2);
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+    }
+
+    .stat-item {
+      text-align: center;
+      padding: 15px;
+      background: rgba(0, 255, 255, 0.1);
+      border-radius: 8px;
+      border: 1px solid var(--glow-cyan);
+    }
+
+    .stat-value {
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: var(--glow-gold);
+    }
+
+    .stat-label {
+      color: #ccc;
+      font-size: 0.9rem;
+      margin-top: 5px;
+    }
+
+    .games-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 30px;
+      margin-top: 20px;
+    }
+
+    .game-card {
+      background: rgba(10, 20, 40, 0.8);
+      border: 3px solid var(--glow-cyan);
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 0 30px rgba(0, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      transition: all 0.3s ease;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      text-align: center;
+    }
+
+    .game-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.1), transparent);
+      transition: left 0.5s ease;
+    }
+
+    .game-card:hover::before {
+      left: 100%;
+    }
+
+    .game-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 0 40px rgba(0, 255, 255, 0.4);
+      border-color: var(--glow-magenta);
+    }
+
+    .game-icon {
+      font-size: 4rem;
+      margin-bottom: 20px;
+      display: block;
+    }
+
+    .game-title {
+      font-size: 2rem;
+      font-weight: bold;
+      color: var(--glow-cyan);
+      margin-bottom: 15px;
+    }
+
+    .game-subtitle {
+      font-size: 1.1rem;
+      color: var(--glow-gold);
+      margin-bottom: 20px;
+    }
+
+    .game-description {
+      color: #ccc;
+      line-height: 1.6;
+      margin-bottom: 25px;
+      font-size: 1rem;
+    }
+
+    .game-features {
+      text-align: left;
+      margin-bottom: 25px;
+      padding: 0 20px;
+    }
+
+    .feature-item {
+      color: #ccc;
+      margin-bottom: 8px;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+    }
+
+    .feature-item::before {
+      content: '✓';
+      color: var(--glow-green);
+      font-weight: bold;
+      margin-right: 10px;
+    }
+
+    .game-button {
+      background: linear-gradient(45deg, var(--glow-cyan), var(--glow-magenta));
+      color: #000;
+      border: none;
+      padding: 15px 30px;
+      border-radius: 10px;
+      font-weight: bold;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      width: 100%;
+    }
+
+    .game-button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 25px rgba(0, 255, 255, 0.5);
+    }
+
+    .back-button {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      background: linear-gradient(45deg, var(--glow-cyan), var(--glow-magenta));
+      color: #000;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      z-index: 1000;
+      transition: all 0.3s ease;
+    }
+
+    .back-button:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+    }
+
+    .welcome-message {
+      background: rgba(10, 20, 40, 0.9);
+      border: 2px solid var(--glow-cyan);
+      border-radius: 15px;
+      padding: 20px;
+      margin-bottom: 30px;
+      text-align: center;
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+    }
+
+    .welcome-title {
+      font-size: 1.5rem;
+      color: var(--glow-cyan);
+      margin-bottom: 10px;
+    }
+
+    .welcome-text {
+      color: #ccc;
+      line-height: 1.6;
+    }
+
+    /* 音效控制 */
+    #audioControls {
+      position: fixed;
+      bottom: 15px;
+      right: 15px;
+      display: flex;
+      gap: 8px;
+    }
+
+    #audioControls button {
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      border: 2px solid var(--glow-cyan);
+      background: rgba(10, 20, 40, 0.6);
+      color: #fff;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 0 16px var(--glow-cyan);
+      backdrop-filter: blur(1px);
+    }
+
+    #audioControls button:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 32px var(--glow-cyan);
+    }
+
+    @media (max-width: 768px) {
+      .games-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .header h1 {
+        font-size: 2rem;
+      }
+      
+      .container {
+        padding: 10px;
+      }
+
+      .game-card {
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <button class="back-button" @click="goHome">
+      <i class="material-icons">home</i> 返回首頁
+    </button>
+
+    <div class="header">
+      <h1>🎮 三大遊戲中心</h1>
+    </div>
+
+    <div class="container">
+      <!-- 歡迎訊息 -->
+      <div class="welcome-message">
+        <div class="welcome-title">歡迎來到遊戲中心！</div>
+        <div class="welcome-text">
+          這裡有我們精心設計的三個精彩遊戲，每個遊戲都有獨特的玩法和挑戰。
+          選擇你喜歡的遊戲開始冒險吧！
+        </div>
+      </div>
+
+      <!-- 統計面板 -->
+      <div class="stats-panel">
+        <div class="stats-grid">
+          <div class="stat-item">
+            <div class="stat-value">{{ totalGames }}</div>
+            <div class="stat-label">總遊戲數</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">{{ completedGames }}</div>
+            <div class="stat-label">已完成</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">{{ totalStars }}</div>
+            <div class="stat-label">總星星</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">{{ playerLevel }}</div>
+            <div class="stat-label">玩家等級</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">{{ completionRate }}%</div>
+            <div class="stat-label">完成率</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 遊戲卡片 -->
+      <div class="games-grid">
+        <!-- 拉霸機遊戲 -->
+        <div class="game-card" @click="openGame('word_spin_game.html')">
+          <div class="game-icon">🎰</div>
+          <div class="game-title">拉霸機遊戲</div>
+          <div class="game-subtitle">經典三連線遊戲</div>
+          <div class="game-description">
+            經典的拉霸機遊戲，轉動拉霸機獲得三個相同圖案即可獲勝。
+            遊戲包含華麗的視覺效果和動畫，讓您體驗真正的拉霸機樂趣。
+          </div>
+          <div class="game-features">
+            <div class="feature-item">經典拉霸機玩法</div>
+            <div class="feature-item">三連線獲勝機制</div>
+            <div class="feature-item">華麗視覺效果</div>
+            <div class="feature-item">動態動畫效果</div>
+            <div class="feature-item">分數統計系統</div>
+          </div>
+          <button class="game-button">開始拉霸機遊戲</button>
+        </div>
+
+        <!-- 動物卡牌 -->
+        <div class="game-card" @click="openGame('advanced-animal-card-game.html')">
+          <div class="game-icon">🦁</div>
+          <div class="game-title">動物卡牌相克</div>
+          <div class="game-subtitle">策略性動物對戰</div>
+          <div class="game-description">
+            基於動物相克原理的策略卡牌遊戲，每種動物都有獨特的能力和相克關係。
+            運用策略組合你的卡牌，擊敗對手獲得勝利！
+          </div>
+          <div class="game-features">
+            <div class="feature-item">多種動物卡牌</div>
+            <div class="feature-item">相克系統設計</div>
+            <div class="feature-item">策略性玩法</div>
+            <div class="feature-item">精美動物插圖</div>
+            <div class="feature-item">進階AI對手</div>
+          </div>
+          <button class="game-button">開始動物卡牌</button>
+        </div>
+
+        <!-- 卡牌對戰 -->
+        <div class="game-card" @click="openGame('battle_system.html')">
+          <div class="game-icon">⚔️</div>
+          <div class="game-title">卡牌對戰系統</div>
+          <div class="game-subtitle">史詩級卡牌戰鬥</div>
+          <div class="game-description">
+            完整的卡牌對戰系統，包含攻擊、防禦、特殊技能等多種戰鬥機制。
+            收集強大卡牌，組建你的牌組，在激烈的對戰中證明你的實力！
+          </div>
+          <div class="game-features">
+            <div class="feature-item">完整戰鬥系統</div>
+            <div class="feature-item">多種卡牌類型</div>
+            <div class="feature-item">特殊技能效果</div>
+            <div class="feature-item">動態戰鬥動畫</div>
+            <div class="feature-item">牌組管理系統</div>
+          </div>
+          <button class="game-button">開始卡牌對戰</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 音效控制 -->
+  <div id="audioControls">
+    <button id="toggleMusic" title="背景音樂">
+      <span class="material-icons">music_note</span>
+    </button>
+  </div>
+
+  <!-- 音效元素 -->
+  <audio id="typingSound" preload="auto">
+    <source src="sound/type.mp3" type="audio/mpeg">
+  </audio>
+
+  <audio id="backgroundMusic" loop>
+    <source src="sound/午後放鬆時光（純音樂）.mp3" type="audio/mpeg">
+  </audio>
+
+  <script>
+    const { createApp } = Vue;
+
+    createApp({
+      data() {
+        return {
+          totalGames: 3,
+          completedGames: 0,
+          totalStars: 0,
+          playerLevel: 1
+        }
+      },
+      computed: {
+        completionRate() {
+          return Math.round((this.completedGames / this.totalGames) * 100);
+        }
+      },
+      methods: {
+        openGame(gamePath) {
+          // 在新視窗中打開遊戲
+          window.open(gamePath, '_blank');
+        },
+        goHome() {
+          // 返回首頁
+          window.location.href = 'index.html';
+        },
+        loadPlayerData() {
+          // 從localStorage讀取玩家數據
+          const playerData = localStorage.getItem('playerData');
+          if (playerData) {
+            const data = JSON.parse(playerData);
+            this.totalStars = data.stars || 0;
+            this.playerLevel = data.level || 1;
+          }
+          
+          // 讀取遊戲完成狀態
+          const gameProgress = localStorage.getItem('gameProgress');
+          if (gameProgress) {
+            const progress = JSON.parse(gameProgress);
+            this.completedGames = progress.completedGames || 0;
+          }
+        },
+        saveGameProgress() {
+          // 保存遊戲進度
+          const progress = {
+            completedGames: this.completedGames,
+            lastPlayed: new Date().toISOString()
+          };
+          localStorage.setItem('gameProgress', JSON.stringify(progress));
+        }
+      },
+      mounted() {
+        // 從localStorage讀取玩家數據
+        this.loadPlayerData();
+        
+        // 初始化背景音樂系統
+        initBackgroundMusic();
+      }
+    }).mount('#app');
+
+    // 背景音樂控制系統
+    let backgroundMusic = null;
+    let toggleMusicBtn = null;
+    let isMusicPlaying = false;
+
+    // 播放背景音樂
+    function playBackgroundMusic() {
+      if (!backgroundMusic) return;
+      
+      // 檢查是否已經在播放
+      if (!backgroundMusic.paused) {
+        console.log('🎵 音樂已在播放中');
+        return;
+      }
+      
+      backgroundMusic.play().then(() => {
+        isMusicPlaying = true;
+        updateMusicButtonState();
+        localStorage.setItem('bgMusicState', 'playing');
+        console.log('🎵 背景音樂開始播放');
+      }).catch(err => {
+        console.error('❌ 背景音樂播放失敗:', err);
+        isMusicPlaying = false;
+        updateMusicButtonState();
+      });
+    }
+
+    // 暫停背景音樂
+    function pauseBackgroundMusic() {
+      if (!backgroundMusic) return;
+      
+      backgroundMusic.pause();
+      isMusicPlaying = false;
+      updateMusicButtonState();
+      localStorage.setItem('bgMusicState', 'paused');
+      console.log('🔇 背景音樂已暫停');
+    }
+
+    // 切換背景音樂
+    function toggleBackgroundMusic() {
+      if (isMusicPlaying) {
+        pauseBackgroundMusic();
+      } else {
+        playBackgroundMusic();
+      }
+    }
+
+    // 更新音樂按鈕狀態
+    function updateMusicButtonState() {
+      if (!toggleMusicBtn) return;
+      
+      if (isMusicPlaying) {
+        toggleMusicBtn.style.background = 'rgba(0, 255, 255, 0.2)';
+        toggleMusicBtn.innerHTML = '<span class="material-icons">🔊</span>';
+      } else {
+        toggleMusicBtn.style.background = 'rgba(10, 20, 40, 0.85)';
+        toggleMusicBtn.innerHTML = '<span class="material-icons">🔇</span>';
+      }
+    }
+
+    // 初始化背景音樂系統
+    function initBackgroundMusic() {
+      console.log('🎵 初始化遊戲中心背景音樂系統...');
+      
+      backgroundMusic = document.getElementById('backgroundMusic');
+      toggleMusicBtn = document.getElementById('toggleMusic');
+      
+      if (!backgroundMusic) {
+        console.error('❌ 找不到背景音樂元素');
+        return;
+      }
+      
+      if (!toggleMusicBtn) {
+        console.error('❌ 找不到音樂控制按鈕');
+        return;
+      }
+      
+      // 設定音樂屬性
+      backgroundMusic.volume = 0.3;
+      backgroundMusic.loop = true;
+      
+      // 預載入音樂檔案
+      backgroundMusic.load();
+      
+      // 檢查主頁面的音樂狀態
+      const musicState = localStorage.getItem('bgMusicState');
+      isMusicPlaying = musicState === 'playing';
+      console.log('🔗 主頁面音樂狀態:', isMusicPlaying);
+      
+      // 更新按鈕狀態
+      updateMusicButtonState();
+      
+      // 如果音樂應該播放，嘗試播放
+      if (isMusicPlaying) {
+        playBackgroundMusic();
+      }
+      
+      console.log('✅ 遊戲中心背景音樂系統初始化完成');
+    }
+
+    // 監聽音樂控制按鈕點擊
+    document.addEventListener('DOMContentLoaded', function() {
+      // 延遲初始化，確保所有元素都已載入
+      setTimeout(() => {
+        // 綁定按鈕事件
+        const musicBtn = document.getElementById('toggleMusic');
+        if (musicBtn) {
+          musicBtn.addEventListener('click', toggleBackgroundMusic);
+          console.log('🎵 音樂控制按鈕事件已綁定');
+        }
+        
+        // 添加用戶互動觸發音樂播放
+        let hasUserInteracted = false;
+        
+        function handleUserInteraction() {
+          if (!hasUserInteracted) {
+            hasUserInteracted = true;
+            console.log('👆 用戶首次互動，嘗試播放音樂');
+            
+            // 如果音樂應該播放但還沒開始，現在嘗試播放
+            if (isMusicPlaying && backgroundMusic && backgroundMusic.paused) {
+              playBackgroundMusic();
+            }
+            
+            // 移除事件監聽器
+            document.removeEventListener('click', handleUserInteraction);
+            document.removeEventListener('keydown', handleUserInteraction);
+            document.removeEventListener('touchstart', handleUserInteraction);
+          }
+        }
+        
+        // 監聽用戶互動事件
+        document.addEventListener('click', handleUserInteraction);
+        document.addEventListener('keydown', handleUserInteraction);
+        document.addEventListener('touchstart', handleUserInteraction);
+        
+      }, 500);
+    });
+
+    // 監聽頁面可見性變化，處理音樂暫停/恢復
+    document.addEventListener('visibilitychange', function() {
+      if (document.hidden) {
+        // 頁面隱藏時暫停音樂
+        if (isMusicPlaying && backgroundMusic) {
+          backgroundMusic.pause();
+        }
+      } else {
+        // 頁面顯示時恢復音樂
+        if (isMusicPlaying && backgroundMusic && backgroundMusic.paused) {
+          backgroundMusic.play().catch(err => {
+            console.log('頁面恢復時音樂播放失敗:', err);
+          });
+        }
+      }
+    });
+  </script>
+</body>
+</html> 
