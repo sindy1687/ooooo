@@ -1983,7 +1983,35 @@
         LinkageSystem.notifications.show(`<span style='color:#ffd700;font-weight:bold;text-shadow:0 0 6px #fff,0 0 12px #ffd700;'>抽到重複卡片</span> <span style='color:#fff;font-weight:bold;'>${result.card.zh}</span>，<span style='color:#00ffff;font-weight:bold;'>轉換為 ⭐ ${result.stars}</span>！`, 'info');
       } else if (result.type === 'new_card_unlocked') {
         LinkageSystem.notifications.show(`<span style='color:#ff2d55;font-weight:bold;text-shadow:0 0 8px #fff,0 0 16px #ff2d55;'>🎉 恭喜！解鎖新卡片：</span> <span style='color:#fff;font-weight:bold;'>${result.card.zh}</span>！`, 'success');
+        
+        // 如果是SSR卡片，通知聊天室
+        if (result.card.rarity === '超稀有') {
+          notifyChatRoomSSR(result.card);
+        }
       }
+    }
+
+    // 通知聊天室SSR抽卡結果
+    function notifyChatRoomSSR(card) {
+      const chatUser = localStorage.getItem('chatUserForGacha');
+      if (!chatUser) return;
+
+      const API_BASE_URL = 'https://script.google.com/macros/s/AKfycby6gzLGN6b1bwkdf7u2aM_nfjT8DM1JV4v_6QPD9ZWuqfCGRhfWH4NtL33W4rjV-gU8/exec';
+      
+      const message = `🎉 恭喜 ${chatUser} 抽到了超稀有卡片！\n🌟 ${card.zh} (${card.word})\n📂 類別：${card.category}\n⭐ 稀有度：${card.rarity}`;
+
+      fetch(`${API_BASE_URL}?action=sendChatMessage&user=系統&message=${encodeURIComponent(message)}`)
+        .then(response => response.json())
+        .then(data => {
+          if (data.error) {
+            console.error('發送SSR通知到聊天室失敗:', data.error);
+          } else {
+            console.log('SSR通知已發送到聊天室');
+          }
+        })
+        .catch(error => {
+          console.error('發送SSR通知到聊天室失敗:', error);
+        });
     }
 
     function drawCard() {
@@ -2179,6 +2207,21 @@
           }
           // 每張卡之間短暫暫停，讓玩家能看清（增加間隔時間）
           await new Promise(resolve => setTimeout(resolve, 1200));
+        }
+
+        // 檢查是否有SSR卡片並通知聊天室
+        const ssrCards = newCards.filter(cardName => {
+          const card = allCards.find(c => c.zh === cardName);
+          return card && card.rarity === '超稀有';
+        });
+        
+        if (ssrCards.length > 0) {
+          ssrCards.forEach(cardName => {
+            const card = allCards.find(c => c.zh === cardName);
+            if (card) {
+              notifyChatRoomSSR(card);
+            }
+          });
         }
 
         // 顯示摘要通知
