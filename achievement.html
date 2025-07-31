@@ -1378,13 +1378,24 @@
   <script src="js/cards.js"></script>
   <script src="js/userData.js"></script>
   <script>
-    // 頁面載入時自動檢查每日簽到獎勵
+    // 頁面載入時自動初始化成就頁面
     document.addEventListener('DOMContentLoaded', function() {
       // 延遲一點時間確保所有系統都已載入
       setTimeout(() => {
-        checkDailyReward();
+        // 初始化成就頁面
+        initializeAchievementPage();
       }, 1000);
     });
+
+    // 初始化成就頁面
+    function initializeAchievementPage() {
+      // 創建分類按鈕
+      renderFilterButtons();
+      // 渲染成就徽章
+      renderBadges();
+      // 更新總星星顯示
+      updateTotalStarsDisplay();
+    }
 
     // 這裡複製 cards.html 內的 achievements 陣列
     const achievements = [
@@ -1889,6 +1900,30 @@
           const cardWord = ach.id.replace('ssr_', '');
           current = ownedCards[cardWord] ? 1 : 0;
           break;
+        case 'article':
+          // 文章練習成就：計算文章練習相關進度
+          switch (ach.id) {
+            case 'article_practice_3':
+              // 檢查文章練習完成次數
+              current = parseInt(localStorage.getItem('articlePracticeCount') || '0');
+              break;
+            case 'article_perfect_score':
+              // 檢查滿分次數
+              const perfectScores = JSON.parse(localStorage.getItem('readingPerfectScores') || '[]');
+              current = perfectScores.length;
+              break;
+            default:
+              // 檢查特定關卡通關進度
+              if (ach.id.startsWith('article_level_')) {
+                const levelNumber = parseInt(ach.id.replace('article_level_', ''));
+                const completedLevels = JSON.parse(localStorage.getItem('completedReadingLevels') || '[]');
+                current = completedLevels.includes(levelNumber) ? 1 : 0;
+              } else {
+                current = 0;
+              }
+              break;
+          }
+          break;
         default:
           current = 0;
       }
@@ -1958,6 +1993,26 @@
           // SSR 特殊成就：檢查是否已解鎖該 SSR 卡片
           const cardWord = ach.id.replace('ssr_', '');
           return ownedCards[cardWord] ? 1 : 0;
+        case 'article':
+          // 文章練習成就：檢查文章練習相關成就
+          switch (ach.id) {
+            case 'article_practice_3':
+              // 檢查是否完成過文章練習
+              const articlePracticeCount = parseInt(localStorage.getItem('articlePracticeCount') || '0');
+              return articlePracticeCount >= ach.requirement;
+            case 'article_perfect_score':
+              // 檢查是否獲得過滿分
+              const perfectScores = JSON.parse(localStorage.getItem('readingPerfectScores') || '[]');
+              return perfectScores.length >= ach.requirement;
+            default:
+              // 檢查特定關卡通關成就
+              if (ach.id.startsWith('article_level_')) {
+                const levelNumber = parseInt(ach.id.replace('article_level_', ''));
+                const completedLevels = JSON.parse(localStorage.getItem('completedReadingLevels') || '[]');
+                return completedLevels.includes(levelNumber);
+              }
+              return false;
+          }
         default:
           return false;
       }
