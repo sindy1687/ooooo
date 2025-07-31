@@ -358,6 +358,8 @@
           <li>首次使用時系統會自動為您建立歡迎訊息</li>
           <li><strong>💡 新功能：</strong>點擊任何訊息即可標記為已讀</li>
           <li><strong>🔐 記憶功能：</strong>系統會自動記住您的帳號，下次進入時自動填入</li>
+          <li><strong>🎁 新玩家禮包：</strong>首次註冊將自動獲得邀請碼</li>
+          <li><strong>⚠️ 帳號限制：</strong>每台電腦只能註冊一個帳號，確保遊戲公平性</li>
         </ul>
       </div>
       
@@ -692,9 +694,23 @@
         window[addCallbackName] = function(addData) {
           if (addData.success) {
             showStatus(`✅ 玩家 ${playerName} 已成功新增到系統！`, "success");
+            
+            // 記錄註冊的帳號到 localStorage
+            const registeredAccounts = localStorage.getItem('registeredAccounts');
+            let accounts = registeredAccounts ? JSON.parse(registeredAccounts) : [];
+            if (!accounts.includes(playerName)) {
+              accounts.push(playerName);
+              localStorage.setItem('registeredAccounts', JSON.stringify(accounts));
+            }
+            
+            // 發送邀請碼訊息
+            setTimeout(() => {
+              sendInviteCode(playerName);
+            }, 1000);
+            
             setTimeout(() => {
               loadInbox();
-            }, 2000);
+            }, 3000);
           } else {
             showStatus(`❌ 新增失敗：${addData.error || '未知錯誤'}`, "error");
           }
@@ -711,7 +727,7 @@
         };
         
         // 發送歡迎訊息來新增玩家
-        addScript.src = `${API}?action=sendMessage&to=${encodeURIComponent(playerName)}&title=歡迎來到遊戲！&content=親愛的 ${playerName}，歡迎來到我們的遊戲世界！這裡是您的個人信箱，您可以在這裡收到系統通知、任務獎勵、活動訊息和卡片獎勵。祝您遊戲愉快！&cardId=WELCOME_CARD_001&callback=${addCallbackName}`;
+        addScript.src = `${API}?action=sendMessage&to=${encodeURIComponent(playerName)}&title=歡迎來到遊戲！&content=親愛的 ${playerName}，歡迎來到我們的遊戲世界！這裡是您的個人信箱，您可以在這裡收到系統通知、任務獎勵、活動訊息和卡片獎勵。作為新玩家，您還將收到一份特別的歡迎禮包！祝您遊戲愉快！&cardId=WELCOME_CARD_001&callback=${addCallbackName}`;
         document.head.appendChild(addScript);
         
         delete window[checkCallbackName];
@@ -822,6 +838,41 @@
       }
     }
 
+    // 發送邀請碼給新玩家
+    function sendInviteCode(playerName) {
+      if (isTestMode) {
+        // 測試模式：模擬發送邀請碼
+        showStatus("🎁 測試模式：邀請碼 GOLD100A 已發送到您的信箱", "success");
+        return;
+      }
+
+      // 實際模式：發送邀請碼訊息
+      const script = document.createElement('script');
+      const callbackName = 'inviteCodeCallback_' + Date.now();
+      
+      window[callbackName] = function(data) {
+        if (data.success) {
+          showStatus("🎁 邀請碼 GOLD100A 已發送到您的信箱！", "success");
+        } else {
+          showStatus("邀請碼發送失敗，請稍後再試", "error");
+        }
+        delete window[callbackName];
+        document.head.removeChild(script);
+      };
+      
+      script.onerror = function() {
+        showStatus("邀請碼發送失敗，請稍後再試", "error");
+        delete window[callbackName];
+        if (document.head.contains(script)) {
+          document.head.removeChild(script);
+        }
+      };
+      
+      // 發送邀請碼訊息
+      script.src = `${API}?action=sendMessage&to=${encodeURIComponent(playerName)}&title=🎁 歡迎禮包 - 邀請碼&content=恭喜您成為新玩家！您的專屬邀請碼是：GOLD100A。&cardId=INVITE_CODE_GOLD100A&callback=${callbackName}`;
+      document.head.appendChild(script);
+    }
+
     // 清除記憶的帳號
     function clearRememberedAccount() {
       const rememberedPlayer = localStorage.getItem('rememberedPlayer');
@@ -832,6 +883,20 @@
       } else {
         showStatus("目前沒有記憶的帳號", "info");
       }
+      
+      // 同時清除註冊帳號記錄
+      localStorage.removeItem('registeredAccounts');
+      
+      // 重新啟用輸入框和按鈕
+      document.getElementById('playerName').disabled = false;
+      document.querySelector('button[onclick="loadInbox()"]').disabled = false;
+      document.querySelector('button[onclick="generateRandomName()"]').disabled = false;
+      document.querySelector('button[onclick="addNewPlayer()"]').disabled = false;
+      
+      // 清空信箱顯示
+      document.getElementById('mailbox').innerHTML = '';
+      
+      showStatus("已清除所有帳號記錄，可以重新註冊", "success");
     }
 
     // 按 Enter 鍵載入信箱
@@ -840,6 +905,34 @@
         loadInbox();
       }
     });
+
+    // 檢查是否已有註冊的帳號
+    function checkExistingAccount() {
+      const registeredAccounts = localStorage.getItem('registeredAccounts');
+      if (registeredAccounts) {
+        const accounts = JSON.parse(registeredAccounts);
+        if (accounts.length > 0) {
+          // 如果已有帳號，禁用輸入框和按鈕
+          document.getElementById('playerName').disabled = true;
+          document.querySelector('button[onclick="loadInbox()"]').disabled = true;
+          document.querySelector('button[onclick="generateRandomName()"]').disabled = true;
+          document.querySelector('button[onclick="addNewPlayer()"]').disabled = true;
+          
+          showStatus("⚠️ 此電腦已有註冊帳號，無法新增其他帳號", "error");
+          
+          // 顯示已註冊的帳號
+          const accountList = accounts.join(', ');
+          document.getElementById('mailbox').innerHTML = `
+            <div style="background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 10px; padding: 20px; margin: 15px 0; color: #856404;">
+              <h3>⚠️ 帳號限制</h3>
+              <p>此電腦已有註冊帳號：<strong>${accountList}</strong></p>
+              <p>為確保遊戲公平性，每台電腦只能註冊一個帳號。</p>
+              <p>如需切換帳號，請先清除記憶的帳號。</p>
+            </div>
+          `;
+        }
+      }
+    }
 
     // 頁面載入時的歡迎訊息
     window.addEventListener('load', function() {
@@ -864,7 +957,8 @@
         }
       }
       
-
+      // 檢查是否已有註冊的帳號
+      checkExistingAccount();
     });
 
     // 添加音樂按鈕事件監聽器
