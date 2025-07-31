@@ -221,92 +221,7 @@
       border: 1px solid #ffeaa7;
     }
 
-    .name-generator {
-      margin-bottom: 20px;
-      padding: 20px;
-      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-      border-radius: 15px;
-      border: 2px solid #e1e5e9;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-    }
 
-    .name-generator h3 {
-      margin-bottom: 15px;
-      color: #2c3e50;
-      font-size: 1.3em;
-      display: flex;
-      align-items: center;
-    }
-
-    .name-generator h3::before {
-      content: '🎲';
-      margin-right: 10px;
-      font-size: 1.2em;
-    }
-
-    .name-buttons {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-bottom: 15px;
-    }
-
-    .name-btn {
-      padding: 8px 15px;
-      font-size: 14px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      font-weight: bold;
-      color: white;
-    }
-
-    .name-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-    }
-
-    .name-btn.chinese {
-      background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
-    }
-
-    .name-btn.english {
-      background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%);
-    }
-
-    .name-btn.gaming {
-      background: linear-gradient(135deg, #a8e6cf 0%, #7fcdcd 100%);
-    }
-
-    .name-btn.mixed {
-      background: linear-gradient(135deg, #ffd93d 0%, #ff6b6b 100%);
-    }
-
-    .generated-names {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-      gap: 10px;
-    }
-
-    .name-card {
-      background: white;
-      border: 2px solid #e1e5e9;
-      border-radius: 8px;
-      padding: 12px;
-      text-align: center;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      font-weight: bold;
-      color: #2c3e50;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-    }
-
-    .name-card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-      border-color: #667eea;
-    }
 
     @media (max-width: 600px) {
       .container {
@@ -431,6 +346,7 @@
         <button onclick="loadInbox()">📥 查看信箱</button>
         <button onclick="generateRandomName()" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%);">🎲 隨機名稱</button>
         <button onclick="addNewPlayer()" style="background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);">➕ 新增玩家</button>
+        <button onclick="clearRememberedAccount()" style="background: linear-gradient(135deg, #6c757d 0%, #495057 100%);">🗑️ 清除記憶</button>
       </div>
       
       <div style="background: #e8f4fd; border: 1px solid #bee5eb; border-radius: 10px; padding: 15px; margin-bottom: 20px; color: #0c5460;">
@@ -441,19 +357,11 @@
           <li>使用「➕ 新增玩家」可以手動新增玩家到系統</li>
           <li>首次使用時系統會自動為您建立歡迎訊息</li>
           <li><strong>💡 新功能：</strong>點擊任何訊息即可標記為已讀</li>
+          <li><strong>🔐 記憶功能：</strong>系統會自動記住您的帳號，下次進入時自動填入</li>
         </ul>
       </div>
       
-      <div class="name-generator" style="margin-bottom: 20px; padding: 15px; background: #f8f9fa; border-radius: 10px; border: 2px solid #e1e5e9;">
-        <h3 style="margin-bottom: 15px; color: #2c3e50;">🎲 快速名稱生成器</h3>
-        <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 15px;">
-          <button onclick="generateName('chinese')" style="padding: 8px 15px; font-size: 14px; background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);">🇨🇳 中文名稱</button>
-          <button onclick="generateName('english')" style="padding: 8px 15px; font-size: 14px; background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%);">🇺🇸 英文名稱</button>
-          <button onclick="generateName('gaming')" style="padding: 8px 15px; font-size: 14px; background: linear-gradient(135deg, #a8e6cf 0%, #7fcdcd 100%);">🎮 遊戲名稱</button>
-          <button onclick="generateName('mixed')" style="padding: 8px 15px; font-size: 14px; background: linear-gradient(135deg, #ffd93d 0%, #ff6b6b 100%);">🌈 混合名稱</button>
-        </div>
-        <div id="generatedNames" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px;"></div>
-      </div>
+
 
       <div id="status"></div>
       <div id="mailbox"></div>
@@ -493,6 +401,9 @@
         showStatus("請輸入玩家名稱", "error");
         return;
       }
+
+      // 記住玩家名稱到 localStorage
+      localStorage.setItem('rememberedPlayer', user);
 
       showLoading();
 
@@ -718,103 +629,15 @@
       document.head.appendChild(script);
     }
 
-    // 名稱生成器資料
-    const chineseNames = [
-      '小明', '小華', '小美', '小強', '小芳', '小偉', '小玲', '小傑', '小婷', '小豪',
-      '小雅', '小宇', '小慧', '小凱', '小潔', '小文', '小君', '小志', '小麗', '小峰',
-      '小萍', '小建', '小燕', '小輝', '小芬', '小龍', '小梅', '小軍', '小蘭', '小斌',
-      '小紅', '小剛', '小英', '小偉', '小華', '小麗', '小強', '小美', '小傑', '小芳'
-    ];
-
-    const englishNames = [
-      'Alex', 'Emma', 'John', 'Sarah', 'Mike', 'Lisa', 'David', 'Anna', 'Tom', 'Mary',
-      'Chris', 'Kate', 'Ryan', 'Emma', 'Jack', 'Sophie', 'Nick', 'Grace', 'Sam', 'Lucy',
-      'Dan', 'Mia', 'Ben', 'Eva', 'Tim', 'Zoe', 'Rob', 'Lily', 'Matt', 'Rose',
-      'Joe', 'Nina', 'Mark', 'Ella', 'Paul', 'Maya', 'Tony', 'Ruby', 'Steve', 'Diana'
-    ];
-
-    const gamingNames = [
-      'DragonSlayer', 'ShadowHunter', 'FireMage', 'IceQueen', 'ThunderLord', 'MoonWalker',
-      'StarGazer', 'NightRider', 'SunWarrior', 'StormBreaker', 'LightBringer', 'DarkKnight',
-      'CrystalMage', 'IronFist', 'SwiftWind', 'GoldenEagle', 'SilverWolf', 'BronzeTiger',
-      'EmeraldDragon', 'RubyPhoenix', 'SapphireKnight', 'DiamondQueen', 'PlatinumKing',
-      'CosmicRider', 'GalaxyHunter', 'NebulaWalker', 'VoidMaster', 'EchoStriker'
-    ];
-
-    function generatePlayerName(type) {
-      switch(type) {
-        case 'chinese':
-          return chineseNames[Math.floor(Math.random() * chineseNames.length)];
-        case 'english':
-          return englishNames[Math.floor(Math.random() * englishNames.length)];
-        case 'gaming':
-          return gamingNames[Math.floor(Math.random() * gamingNames.length)];
-        case 'mixed':
-          const isChinese = Math.random() > 0.5;
-          return isChinese ? 
-            chineseNames[Math.floor(Math.random() * chineseNames.length)] :
-            englishNames[Math.floor(Math.random() * englishNames.length)];
-        default:
-          return chineseNames[Math.floor(Math.random() * chineseNames.length)];
-      }
-    }
-
-    function generateName(type) {
-      const names = [];
-      for (let i = 0; i < 6; i++) {
-        names.push(generatePlayerName(type));
-      }
-      
-      const generatedNamesDiv = document.getElementById('generatedNames');
-      generatedNamesDiv.innerHTML = names.map(name => `
-        <div style="
-          background: white; 
-          border: 2px solid #e1e5e9; 
-          border-radius: 8px; 
-          padding: 10px; 
-          text-align: center; 
-          cursor: pointer;
-          transition: all 0.3s ease;
-          font-weight: bold;
-          color: #2c3e50;
-        " 
-        onclick="selectName('${name}')"
-        onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 5px 15px rgba(0,0,0,0.1)'"
-        onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='none'">
-          ${name}
-        </div>
-      `).join('');
-      
-      showStatus(`已生成 ${names.length} 個${getTypeDisplayName(type)}名稱`, "success");
-    }
-
-    function getTypeDisplayName(type) {
-      switch(type) {
-        case 'chinese': return '中文';
-        case 'english': return '英文';
-        case 'gaming': return '遊戲';
-        case 'mixed': return '混合';
-        default: return '隨機';
-      }
-    }
-
-    function selectName(name) {
-      document.getElementById('playerName').value = name;
-      showStatus(`已選擇名稱：${name}，正在檢查是否可用...`, "success");
-      
-      // 自動檢查並新增玩家
-      setTimeout(() => {
-        addNewPlayer();
-      }, 1000);
-    }
-
     function generateRandomName() {
-      const types = ['chinese', 'english', 'gaming', 'mixed'];
-      const randomType = types[Math.floor(Math.random() * types.length)];
-      const name = generatePlayerName(randomType);
+      const names = ['小明', '小華', '小美', '小強', '小芳', '小偉', '小玲', '小傑', '小婷', '小豪',
+                    'Alex', 'Emma', 'John', 'Sarah', 'Mike', 'Lisa', 'David', 'Anna', 'Tom', 'Mary',
+                    'DragonSlayer', 'ShadowHunter', 'FireMage', 'IceQueen', 'ThunderLord', 'MoonWalker'];
       
-      document.getElementById('playerName').value = name;
-      showStatus(`已生成隨機名稱：${name}，正在檢查是否可用...`, "success");
+      const randomName = names[Math.floor(Math.random() * names.length)];
+      
+      document.getElementById('playerName').value = randomName;
+      showStatus(`已生成隨機名稱：${randomName}，正在檢查是否可用...`, "success");
       
       // 自動檢查並新增玩家
       setTimeout(() => {
@@ -829,6 +652,9 @@
         showStatus("請先輸入玩家名稱", "error");
         return;
       }
+
+      // 記住玩家名稱到 localStorage
+      localStorage.setItem('rememberedPlayer', playerName);
 
       showStatus("正在檢查玩家是否已存在...", "info");
 
@@ -996,6 +822,18 @@
       }
     }
 
+    // 清除記憶的帳號
+    function clearRememberedAccount() {
+      const rememberedPlayer = localStorage.getItem('rememberedPlayer');
+      if (rememberedPlayer) {
+        localStorage.removeItem('rememberedPlayer');
+        document.getElementById('playerName').value = '';
+        showStatus(`已清除記憶的帳號：${rememberedPlayer}`, "success");
+      } else {
+        showStatus("目前沒有記憶的帳號", "info");
+      }
+    }
+
     // 按 Enter 鍵載入信箱
     document.getElementById('playerName').addEventListener('keypress', function(e) {
       if (e.key === 'Enter') {
@@ -1008,14 +846,25 @@
       // 初始化背景音樂
       initBackgroundMusic();
       
-      if (isTestMode) {
-        showStatus("測試模式已啟用，使用模擬資料", "demo-mode");
+      // 檢查是否有記住的玩家名稱
+      const rememberedPlayer = localStorage.getItem('rememberedPlayer');
+      if (rememberedPlayer) {
+        document.getElementById('playerName').value = rememberedPlayer;
+        showStatus(`歡迎回來，${rememberedPlayer}！已自動填入您的帳號`, "success");
+        
+        // 自動載入信箱
+        setTimeout(() => {
+          loadInbox();
+        }, 1000);
       } else {
-        showStatus("歡迎使用玩家信箱！請輸入您的玩家名稱或使用名稱生成器", "success");
+        if (isTestMode) {
+          showStatus("測試模式已啟用，使用模擬資料", "demo-mode");
+        } else {
+          showStatus("歡迎使用玩家信箱！請輸入您的玩家名稱或使用名稱生成器", "success");
+        }
       }
       
-      // 自動生成一些名稱供選擇
-      generateName('chinese');
+
     });
 
     // 添加音樂按鈕事件監聽器
