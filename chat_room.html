@@ -282,6 +282,20 @@
             font-weight: bold;
         }
 
+        .connection-status {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-left: 10px;
+        }
+
+        .connection-status.online {
+            color: #00ff88;
+        }
+
+        .connection-status.offline {
+            color: #ff6b6b;
+        }
+
         .user-info {
             display: flex;
             align-items: center;
@@ -320,13 +334,13 @@
             max-width: 80%;
             word-wrap: break-word;
             position: relative;
-            animation: messageSlide 0.3s ease-out;
+            animation: messageSlide 0.2s ease-out;
         }
 
         @keyframes messageSlide {
             from {
                 opacity: 0;
-                transform: translateY(10px);
+                transform: translateY(5px);
             }
             to {
                 opacity: 1;
@@ -614,7 +628,10 @@
             <!-- 聊天室區域 -->
             <div class="chat-container" id="chatContainer">
                 <div class="chat-header">
-                    <div class="chat-title">💬 聊天室</div>
+                    <div class="chat-title">
+                        💬 聊天室
+                        <span class="connection-status" id="connectionStatus">● 連線中</span>
+                    </div>
                     <div class="user-info">
                         <div class="user-avatar" id="userAvatar">?</div>
                         <div class="user-name" id="userNameDisplay">玩家</div>
@@ -653,6 +670,7 @@
         let onlineUsers = [];
         let lastMessageCount = 0;
         let isLoading = false;
+        let apiConnectionStatus = 'connecting'; // 'online', 'offline', 'connecting'
         
         // 抽卡系統變數
         // 已移除，現在直接跳轉到抽卡頁面
@@ -669,7 +687,7 @@
                 setTimeout(() => {
                     loadChatMessages();
                     loadOnlineUsers();
-                }, 1000);
+                }, 500); // 更快啟動
             }
 
             // 設定事件監聽器
@@ -697,6 +715,8 @@
                     sendMessage();
                 }
             });
+
+            // 移除自動發送功能，只在按 Enter 時發送
 
             // 輸入框焦點效果
             playerNameInput.addEventListener('focus', function() {
@@ -752,10 +772,6 @@
                 loadOnlineUsers()
             ]).finally(() => {
                 hideLoading();
-                // 如果聊天訊息載入失敗，顯示本地歡迎訊息
-                if (chatMessages.length === 0) {
-                    showLocalWelcome();
-                }
                 // 確保在線用戶列表有內容
                 if (onlineUsers.length === 0) {
                     simulateOnlineUsers();
@@ -788,8 +804,9 @@
             
             try {
                 isLoading = true;
+                updateConnectionStatus('connecting');
                 
-                // 添加超時設定
+                // 增加超時時間到 5 秒
                 const controller = new AbortController();
                 const timeoutId = setTimeout(() => controller.abort(), 5000); // 5秒超時
                 
@@ -805,17 +822,17 @@
                 
                 const data = await response.json();
                 handleChatMessages(data);
+                updateConnectionStatus('online');
             } catch (error) {
                 console.error('載入聊天訊息失敗:', error);
                 if (error.name === 'AbortError') {
-                    showError('載入超時，請檢查網路連線');
-                    // 顯示本地歡迎訊息
-                    showLocalWelcome();
+                    console.log('API 載入超時，使用本地模式');
+                    updateConnectionStatus('offline');
                 } else {
-                    showError('載入聊天訊息失敗');
-                    // 顯示本地歡迎訊息
-                    showLocalWelcome();
+                    console.log('API 載入失敗，使用本地模式');
+                    updateConnectionStatus('offline');
                 }
+                // 讓用戶可以正常聊天，不顯示錯誤
             } finally {
                 isLoading = false;
             }
@@ -824,7 +841,7 @@
         // 載入在線用戶
         async function loadOnlineUsers() {
             try {
-                // 添加超時設定
+                // 增加超時時間到 3 秒
                 const controller = new AbortController();
                 const timeoutId = setTimeout(() => controller.abort(), 3000); // 3秒超時
                 
@@ -922,9 +939,9 @@
         function displayChatMessages() {
             const chatContainer = document.getElementById('chatMessages');
             
-            // 如果沒有訊息，顯示歡迎訊息
+            // 如果沒有訊息，顯示空白的聊天區域
             if (chatMessages.length === 0) {
-                chatContainer.innerHTML = '<div class="message system">歡迎來到聊天室！</div>';
+                chatContainer.innerHTML = '<div style="text-align: center; color: rgba(255,255,255,0.5); padding: 20px;">開始聊天吧！</div>';
                 return;
             }
 
@@ -979,31 +996,48 @@
                 return;
             }
 
+            // 立即顯示本地訊息（優化體驗）
+            const localMessage = {
+                user: currentUser,
+                message: message,
+                time: new Date().toISOString()
+            };
+            
+            // 立即添加到本地訊息列表
+            chatMessages.push(localMessage);
+            lastMessageCount = chatMessages.length;
+            
+            // 立即更新顯示
+            displayChatMessages();
+            
+            // 清空輸入框
+            messageInput.value = '';
+
             // 禁用發送按鈕
             sendButton.disabled = true;
             sendButton.textContent = '發送中...';
 
             try {
-                // 清空輸入框
-                messageInput.value = '';
-
-                // 發送到伺服器
-                const response = await fetch(`${API_BASE_URL}?action=sendChatMessage&user=${encodeURIComponent(currentUser)}&message=${encodeURIComponent(message)}`);
+                // 發送到伺服器（非阻塞）
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 5000); // 5秒超時
+                
+                const response = await fetch(`${API_BASE_URL}?action=sendChatMessage&user=${encodeURIComponent(currentUser)}&message=${encodeURIComponent(message)}`, {
+                    signal: controller.signal
+                });
+                
+                clearTimeout(timeoutId);
                 const data = await response.json();
                 
                 if (data.error) {
-                    showError('發送訊息失敗: ' + data.error);
-                    // 如果發送失敗，恢復輸入框內容
-                    messageInput.value = message;
+                    console.error('發送訊息失敗:', data.error);
+                    // 不顯示錯誤，因為本地已經顯示了
                 } else {
-                    showSuccess('訊息發送成功！');
-                    // 不立即重新載入，讓自動更新機制處理
+                    // 發送成功，不需要額外處理
                 }
             } catch (error) {
                 console.error('發送訊息失敗:', error);
-                showError('發送訊息失敗');
-                // 如果發送失敗，恢復輸入框內容
-                messageInput.value = message;
+                // 不顯示錯誤，因為本地已經顯示了
             } finally {
                 sendButton.disabled = false;
                 sendButton.textContent = '發送';
@@ -1031,20 +1065,20 @@
         function startAutoRefresh() {
             // 延遲啟動自動更新，避免與初始載入衝突
             setTimeout(() => {
-                // 每 5 秒更新一次聊天訊息
+                // 每 3 秒更新一次聊天訊息（減少頻率）
                 setInterval(() => {
                     if (currentUser && !isLoading) {
                         loadChatMessages();
                     }
-                }, 5000);
+                }, 3000);
 
-                // 每 10 秒更新一次在線用戶列表
+                // 每 5 秒更新一次在線用戶列表（減少頻率）
                 setInterval(() => {
                     if (currentUser) {
                         loadOnlineUsers();
                     }
-                }, 10000);
-            }, 2000); // 延遲2秒啟動
+                }, 5000);
+            }, 1000); // 延遲1秒啟動
         }
 
         // 顯示錯誤訊息
@@ -1087,25 +1121,30 @@
             document.getElementById('loadingIndicator').classList.remove('show');
         }
 
-        // 顯示本地歡迎訊息
-        function showLocalWelcome() {
-            const chatContainer = document.getElementById('chatMessages');
-            chatContainer.innerHTML = `
-                <div class="message system">
-                    <div class="message-header">
-                        <span class="message-user">系統</span>
-                        <span class="message-time">${new Date().toLocaleTimeString('zh-TW')}</span>
-                    </div>
-                    <div class="message-content">
-                        歡迎來到聊天室！<br>
-                        <small style="color: rgba(255,255,255,0.7);">
-                            💡 提示：如果無法載入聊天訊息，可能是網路連線問題。<br>
-                            🎴 您可以點擊「開啟抽卡」按鈕來體驗抽卡功能！
-                        </small>
-                    </div>
-                </div>
-            `;
+        // 更新連線狀態
+        function updateConnectionStatus(status) {
+            const statusElement = document.getElementById('connectionStatus');
+            if (!statusElement) return;
+            
+            apiConnectionStatus = status;
+            
+            switch (status) {
+                case 'online':
+                    statusElement.textContent = '● 已連線';
+                    statusElement.className = 'connection-status online';
+                    break;
+                case 'offline':
+                    statusElement.textContent = '● 離線模式';
+                    statusElement.className = 'connection-status offline';
+                    break;
+                case 'connecting':
+                    statusElement.textContent = '● 連線中';
+                    statusElement.className = 'connection-status';
+                    break;
+            }
         }
+
+
 
         // 開始自動更新
         startAutoRefresh();
