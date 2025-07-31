@@ -1,2439 +1,2186 @@
 <!DOCTYPE html>
-<html lang="zh-Hant">
+<html lang="zh-TW">
 <head>
-  <meta charset="UTF-8" />
-  <title>英打小英雄 - 首頁</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/index.css">
-  <style>
-    /* 全局樣式 */
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: 'Noto Sans TC', 'Microsoft JhengHei', Arial, 'Orbitron', sans-serif;
-      background: url('https://th.bing.com/th/id/OIP.EXCeug5EiI00kMhj2ySQUwHaEo?r=0&w=1920&h=1200&rs=1&pid=ImgDetMain') center center fixed;
-      background-size: cover;
-      color: #f3f6fa;
-      min-height: 100vh;
-      display: block;
-      text-align: center;
-      overflow: visible !important;
-    }
-
-    /* 標題 */
-    h1 {
-      font-size: 2.8rem;
-      color: #e6f0ff;
-      text-shadow: 0 2px 12px #2e3a5e, 0 0 40px #a259ff, 0 0 60px #ff6b6b;
-      margin: 5px 0 8px;
-      text-align: center;
-      font-weight: 800;
-      letter-spacing: 3px;
-      background: none;
-      -webkit-background-clip: unset;
-      -webkit-text-fill-color: unset;
-      background-clip: unset;
-      animation: titleGlow 3s ease-in-out infinite alternate;
-      font-family: 'Orbitron', 'Noto Sans TC', 'Microsoft JhengHei', Arial, sans-serif;
-    }
-
-    @keyframes titleGlow {
-      0% { filter: brightness(1) saturate(1); }
-      100% { filter: brightness(1.2) saturate(1.3); }
-    }
-
-    .subtitle {
-      font-size: 1.4rem;
-      color: #a3b8ff;
-      margin-bottom: 12px;
-      text-shadow: 0 1px 8px #2e3a5e, 0 0 20px #a259ff;
-      font-weight: 600;
-      letter-spacing: 2px;
-      background: none;
-      -webkit-background-clip: unset;
-      -webkit-text-fill-color: unset;
-      background-clip: unset;
-      font-family: 'Noto Sans TC', 'Microsoft JhengHei', Arial, sans-serif;
-    }
-
-    .description {
-      font-size: 1.1rem;
-      color: #b8c7e0;
-      margin-bottom: 20px;
-      line-height: 1.8;
-      max-width: 700px;
-      margin-left: auto;
-      margin-right: auto;
-      text-shadow: 0 1px 6px #2e3a5e;
-      font-weight: 400;
-      letter-spacing: 0.5px;
-      background: none;
-      -webkit-background-clip: unset;
-      -webkit-text-fill-color: unset;
-      background-clip: unset;
-      font-family: 'Noto Sans TC', 'Microsoft JhengHei', Arial, sans-serif;
-    }
-
-    /* 主要容器 */
-    #container {
-      max-width: 800px;
-      width: 90%;
-      margin: 4px auto 20px auto;
-      padding: 12px;
-      background: rgba(10, 20, 40, 0.45);
-      border-radius: 20px;
-      box-shadow: 0 0 32px #00ffff44, 0 0 80px #a259ff22 inset;
-      border: 2px solid #00ffff;
-      backdrop-filter: blur(2px);
-      text-align: center;
-      color: #f3f6fa;
-      font-family: 'Noto Sans TC', 'Microsoft JhengHei', Arial, sans-serif;
-      overflow: visible !important;
-      position: relative;
-    }
-
-    /* 玩家名稱輸入 */
-    #playerName {
-      width: 60%;
-      padding: 8px 12px;
-      margin: 8px 0;
-      font-size: 0.95rem;
-      background: rgba(10, 20, 40, 0.6);
-      border: 2px solid #00ffff;
-      border-radius: 10px;
-      color: #fff;
-      box-shadow: 0 0 20px #00ffff80, 0 0 40px #a259ff40;
-      font-family: 'Roboto Mono', monospace;
-      text-align: center;
-      font-weight: 500;
-      letter-spacing: 1px;
-      transition: all 0.3s ease;
-      backdrop-filter: blur(2px);
-    }
-
-    #playerName:focus {
-      outline: none;
-      border-color: #ff6b6b;
-      box-shadow: 0 0 30px #00ffff, 0 0 60px #ff6b6b80;
-      transform: scale(1.02);
-    }
-
-    #playerName::placeholder {
-      color: rgba(255, 255, 255, 0.6);
-      font-style: italic;
-    }
-
-    /* 頭像選擇 */
-    .avatar-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
-      gap: 15px;
-      margin: 16px 0;
-      padding: 15px;
-      background: rgba(10, 20, 40, 0.2);
-      border-radius: 20px;
-      border: 1px solid rgba(0, 255, 255, 0.3);
-      backdrop-filter: blur(2px);
-    }
-
-    .avatar-option {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      cursor: pointer;
-      border: 3px solid #00ffff;
-      transition: all 0.2s ease-out;
-      box-shadow: 0 0 20px #00ffff44, 0 0 40px #a259ff22;
-      background-size: cover;
-      background-position: center top;
-      background-repeat: no-repeat;
-      position: relative;
-      overflow: hidden;
-      background-clip: content-box;
-    }
-
-    .avatar-option::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-      opacity: 0;
-      transition: opacity 0.3s ease;
-      border-radius: 50%;
-    }
-
-    .avatar-option:hover {
-      transform: scale(1.08);
-      box-shadow: 0 0 30px #00ffff, 0 0 60px #a259ff66;
-      border-color: #ff6b6b;
-      /* 懸停時放大背景圖片以更好地顯示臉部 */
-      background-size: 115% auto;
-    }
-
-    .avatar-option:hover::before {
-      opacity: 1;
-    }
-
-    .avatar-option.selected {
-      border-color: #ffd700;
-      box-shadow: 0 0 30px #ffd700, 0 0 60px #ffd70066;
-      transform: scale(1.1);
-      animation: selectedPulse 2s ease-in-out infinite;
-      /* 選中時也放大背景圖片 */
-      background-size: 110% auto;
-    }
-
-    /* 自訂頭像選項樣式 */
-    .custom-avatar-option {
-      background: linear-gradient(135deg, #a259ff 0%, #ff6b6b 100%) !important;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      color: #fff;
-      font-weight: 700;
-      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
-      position: relative;
-      overflow: hidden;
-    }
-
-    /* 公告數字泡泡樣式 */
-    .notification-badge {
-      position: absolute;
-      top: -12px;
-      right: -12px;
-      background: linear-gradient(135deg, #ff4757 0%, #ff3838 100%);
-      color: white;
-      border-radius: 50%;
-      width: 28px;
-      height: 28px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 13px;
-      font-weight: bold;
-      font-family: 'Orbitron', monospace;
-      box-shadow: 
-        0 0 15px rgba(255, 71, 87, 0.8),
-        0 0 30px rgba(255, 71, 87, 0.6),
-        inset 0 0 8px rgba(255, 255, 255, 0.3);
-      border: 3px solid rgba(255, 255, 255, 0.4);
-      animation: badgePulse 2s ease-in-out infinite;
-      z-index: 1000;
-      pointer-events: none;
-    }
-
-    @keyframes badgePulse {
-      0%, 100% { 
-        transform: scale(1);
-        box-shadow: 
-          0 0 15px rgba(255, 71, 87, 0.8),
-          0 0 30px rgba(255, 71, 87, 0.6),
-          inset 0 0 8px rgba(255, 255, 255, 0.3);
-      }
-      50% { 
-        transform: scale(1.15);
-        box-shadow: 
-          0 0 20px rgba(255, 71, 87, 0.9),
-          0 0 40px rgba(255, 71, 87, 0.7),
-          inset 0 0 10px rgba(255, 255, 255, 0.4);
-      }
-    }
-
-    .announcement-btn {
-      position: relative;
-      overflow: visible !important;
-      z-index: 1;
-    }
-
-    .announcement-btn:hover .notification-badge {
-      animation: badgeHover 0.3s ease-in-out;
-    }
-
-    @keyframes badgeHover {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.25); }
-      100% { transform: scale(1.15); }
-    }
-
-    .custom-avatar-option::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-      opacity: 0;
-      transition: opacity 0.3s ease;
-      border-radius: 50%;
-    }
-
-    .custom-avatar-option:hover::before {
-      opacity: 1;
-    }
-
-    .custom-avatar-icon {
-      font-size: 2rem;
-      margin-bottom: 4px;
-      animation: customIconGlow 2s ease-in-out infinite alternate;
-    }
-
-    .custom-avatar-text {
-      font-size: 0.8rem;
-      font-weight: 600;
-      letter-spacing: 1px;
-    }
-
-    @keyframes customIconGlow {
-      0% { 
-        filter: brightness(1) saturate(1);
-        transform: scale(1);
-      }
-      100% { 
-        filter: brightness(1.3) saturate(1.5);
-        transform: scale(1.1);
-      }
-    }
-
-    .custom-avatar-option.selected {
-      background: linear-gradient(135deg, #ffd700 0%, #ff6b6b 100%) !important;
-      animation: customSelectedPulse 2s ease-in-out infinite;
-    }
-
-    @keyframes customSelectedPulse {
-      0%, 100% { 
-        box-shadow: 0 0 30px #ffd700, 0 0 60px #ffd70066;
-        transform: scale(1.1);
-      }
-      50% { 
-        box-shadow: 0 0 40px #ffd700, 0 0 80px #ffd70099;
-        transform: scale(1.15);
-      }
-    }
-
-    @keyframes selectedPulse {
-      0%, 100% { box-shadow: 0 0 30px #ffd700, 0 0 60px #ffd70066; }
-      50% { box-shadow: 0 0 40px #ffd700, 0 0 80px #ffd70099; }
-    }
-
-
-
-    /* 按鈕樣式 */
-    .btn {
-      display: inline-block;
-      padding: 12px 24px;
-      margin: 8px;
-      font-size: 1.1rem;
-      color: #222b3a;
-      background: linear-gradient(135deg, #00ffff 0%, #a259ff 50%, #ff6b6b 100%);
-      border: none;
-      border-radius: 16px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      font-family: 'Orbitron', 'Noto Sans TC', 'Microsoft JhengHei', Arial, sans-serif;
-      font-weight: 700;
-      letter-spacing: 1.5px;
-      box-shadow: 0 0 20px #00ffff, 0 0 40px #a259ff99, 0 8px 16px rgba(0, 0, 0, 0.3);
-      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .btn::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-      transition: left 0.5s;
-    }
-
-    .btn:hover {
-      transform: translateY(-3px) scale(1.05);
-      box-shadow: 0 0 30px #00ffff, 0 0 60px #a259ffcc, 0 12px 24px rgba(0, 0, 0, 0.4);
-      background: linear-gradient(135deg, #00ffff 0%, #a259ff 30%, #ff6b6b 70%, #ffd700 100%);
-    }
-
-
-
-    .btn:hover::before {
-      left: 100%;
-    }
-
-    .btn:active {
-      transform: translateY(-1px) scale(1.02);
-    }
-
-    .btn:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-      transform: none;
-    }
-
-    /* 音效控制 */
-    #audioControls {
-      position: fixed;
-      bottom: 15px;
-      right: 15px;
-      display: flex;
-      gap: 8px;
-    }
-
-    #audioControls button {
-      width: 35px;
-      height: 35px;
-      border-radius: 50%;
-      border: 2px solid #00ffff;
-      background: rgba(10, 20, 40, 0.6);
-      color: #fff;
-      cursor: pointer;
-      transition: transform 0.2s, box-shadow 0.2s;
-      box-shadow: 0 0 16px #00ffff;
-      backdrop-filter: blur(1px);
-    }
-
-    #audioControls button:hover {
-      transform: scale(1.1);
-      box-shadow: 0 0 32px #00ffff;
-    }
-
-    /* 玩家名稱顯示 */
-    #playerNameDisplay {
-      position: fixed;
-      top: 15px;
-      right: 15px;
-      background: rgba(10, 20, 40, 0.6);
-      padding: 6px 12px;
-      border-radius: 10px;
-      color: #ffd700;
-      font-weight: bold;
-      box-shadow: 0 0 12px #ffd700, 0 0 32px #00ffff;
-      border: 2px solid #00ffff;
-      font-size: 1.1rem;
-      backdrop-filter: blur(1px);
-    }
-
-    /* 星星顯示 */
-    #starsDisplay {
-      position: fixed;
-      top: 15px;
-      left: 15px;
-      background: rgba(10, 20, 40, 0.6);
-      padding: 4px 8px;
-      border-radius: 10px;
-      color: #ffd700;
-      font-weight: bold;
-      box-shadow: 0 0 12px #ffd700, 0 0 32px #00ffff;
-      border: 2px solid #00ffff;
-      font-size: 1.1rem;
-      backdrop-filter: blur(1px);
-    }
-
-    /* 響應式設計 */
-    @media (max-width: 600px) {
-      h1 {
-        font-size: 1.6rem;
-        margin: 3px 0 6px;
-      }
-
-      .subtitle {
-        font-size: 1.2rem;
-        margin-bottom: 8px;
-      }
-
-      #container {
-        width: 95%;
-        padding: 12px;
-        margin: 2px auto 0 auto;
-        min-height: auto;
-        display: block;
-      }
-
-      .btn {
-        width: 100%;
-        margin: 4px 0;
-        padding: 10px 20px;
-        font-size: 1rem;
-      }
-
-      .avatar-grid {
-        grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
-        gap: 8px;
-        margin: 12px 0;
-        padding: 12px;
-      }
-
-      .avatar-option {
-        width: 60px;
-        height: 60px;
-      }
-
-      #characterPreview {
-        width: 200px;
-        height: 280px;
-        margin: 8px auto;
-        background: rgba(10, 20, 40, 0.2);
-        backdrop-filter: blur(4px);
-      }
-
-      .nav-buttons {
-        gap: 8px;
-        margin-top: 16px;
-        margin-bottom: 20px;
-      }
-
-      .nav-btn {
-        padding: 8px 14px;
-        font-size: 0.9rem;
-        overflow: visible !important; /* 確保成就按鈕在手機版也能正常顯示泡泡 */
-      }
-
-      #characterSlogan {
-        font-size: 1rem;
-        margin: 8px 0;
-        min-height: 1.2rem;
-      }
-
-      .main-buttons {
-        margin: 12px 0;
-      }
-
-      /* 增加底部間距 */
-      body {
-        padding-bottom: 20px;
-      }
-
-      /* 優化容器高度 */
-      #container {
-        margin-bottom: 20px;
-      }
-
-      /* 改善按鈕間距 */
-      .main-buttons .btn {
-        margin: 6px 0;
-      }
-
-      .nav-buttons .nav-btn {
-        margin: 4px 0;
-      }
-    }
-
-    /* 平板尺寸響應式 */
-    @media (min-width: 601px) and (max-width: 1024px) {
-      #container {
-        width: 85%;
-        padding: 20px;
-        margin: 10px auto 0 auto;
-        min-height: auto;
-      }
-
-      h1 {
-        font-size: 2.2rem;
-        margin: 8px 0 12px;
-      }
-
-      .subtitle {
-        font-size: 1.3rem;
-        margin-bottom: 15px;
-      }
-
-      .btn {
-        padding: 14px 28px;
-        font-size: 1.05rem;
-        margin: 6px;
-      }
-
-      .nav-btn {
-        padding: 12px 20px;
-        font-size: 1rem;
-      }
-
-      .avatar-grid {
-        grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
-        gap: 12px;
-        margin: 18px 0;
-        padding: 18px;
-      }
-
-      .avatar-option {
-        width: 70px;
-        height: 70px;
-      }
-
-      #characterPreview {
-        width: 250px;
-        height: 350px;
-        margin: 15px auto;
-      }
-
-      #characterSlogan {
-        font-size: 1.15rem;
-        margin: 12px 0;
-      }
-    }
-
-    /* 大螢幕優化 */
-    @media (min-width: 1025px) {
-      #container {
-        width: 80%;
-        max-width: 900px;
-        padding: 30px;
-        margin: 20px auto 0 auto;
-        min-height: auto;
-      }
-
-      h1 {
-        font-size: 3rem;
-        margin: 10px 0 15px;
-      }
-
-      .subtitle {
-        font-size: 1.5rem;
-        margin-bottom: 20px;
-      }
-
-      .btn {
-        padding: 16px 32px;
-        font-size: 1.1rem;
-        margin: 8px;
-      }
-
-      .nav-btn {
-        padding: 14px 24px;
-        font-size: 1.05rem;
-      }
-
-      .avatar-grid {
-        grid-template-columns: repeat(auto-fit, minmax(85px, 1fr));
-        gap: 15px;
-        margin: 20px 0;
-        padding: 20px;
-      }
-
-      .avatar-option {
-        width: 85px;
-        height: 85px;
-      }
-
-      #characterPreview {
-        width: 300px;
-        height: 400px;
-        margin: 20px auto;
-      }
-
-      #characterSlogan {
-        font-size: 1.3rem;
-        margin: 15px 0;
-      }
-    }
-
-    /* 超小螢幕優化 */
-    @media (max-width: 480px) {
-      #container {
-        width: 98%;
-        padding: 10px;
-        margin: 1px auto 0 auto;
-        min-height: auto;
-      }
-
-      h1 {
-        font-size: 1.4rem;
-        margin: 2px 0 4px;
-      }
-
-      .subtitle {
-        font-size: 1.1rem;
-        margin-bottom: 6px;
-      }
-
-      .btn {
-        padding: 8px 16px;
-        font-size: 0.9rem;
-        margin: 3px 0;
-      }
-
-      .nav-btn {
-        padding: 6px 12px;
-        font-size: 0.85rem;
-        margin: 2px 0;
-      }
-
-      .avatar-grid {
-        grid-template-columns: repeat(auto-fit, minmax(55px, 1fr));
-        gap: 6px;
-        margin: 10px 0;
-        padding: 10px;
-      }
-
-      .avatar-option {
-        width: 55px;
-        height: 55px;
-      }
-
-      #characterPreview {
-        width: 180px;
-        height: 250px;
-        margin: 6px auto;
-      }
-
-      #characterSlogan {
-        font-size: 0.9rem;
-        margin: 6px 0;
-      }
-
-      /* 增加更多底部間距 */
-      body {
-        padding-bottom: 30px;
-      }
-
-      #container {
-        margin-bottom: 30px;
-      }
-    }
-
-    /* 新增樣式 */
-    .input-group {
-      margin: 12px 0;
-    }
-
-    #characterPreview {
-      width: 300px;
-      height: 400px;
-      margin: 12px auto;
-      border-radius: 15px;
-      overflow: hidden;
-      background: rgba(10, 20, 40, 0.2);
-      backdrop-filter: blur(1px);
-    }
-
-    #characterImage {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      background: transparent;
-      mix-blend-mode: screen;
-    }
-
-    .nav-buttons {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      justify-content: center;
-      margin-top: 20px;
-    }
-
-    .nav-btn {
-      background: linear-gradient(135deg, #a259ff 0%, #ff6b6b 100%);
-      color: #fff;
-      border: none;
-      padding: 10px 18px;
-      border-radius: 12px;
-      cursor: pointer;
-      font-weight: 600;
-      font-size: 1rem;
-      letter-spacing: 1px;
-      transition: all 0.3s ease;
-      box-shadow: 0 0 16px #a259ff, 0 0 32px #ff6b6b99, 0 6px 12px rgba(0, 0, 0, 0.3);
-      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
-      position: relative;
-      overflow: hidden;
-      transform-origin: center;
-      will-change: transform;
-    }
-
-    .nav-btn::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-      transition: left 0.5s;
-      pointer-events: none; /* 確保不會干擾滑鼠事件 */
-    }
-
-    .nav-btn:hover {
-      transform: translateY(-2px) scale(1.03);
-      box-shadow: 0 0 24px #a259ff, 0 0 48px #ff6b6bcc, 0 8px 16px rgba(0, 0, 0, 0.4);
-      background: linear-gradient(135deg, #a259ff 0%, #ff6b6b 50%, #ffd700 100%);
-    }
-
-    .nav-btn:hover::before {
-      left: 100%;
-    }
-
-    .nav-btn.primary {
-      background: linear-gradient(135deg, #00ffff 0%, #a259ff 100%);
-      color: #000;
-      font-weight: 700;
-      box-shadow: 0 0 20px #00ffff, 0 0 40px #a259ff99, 0 8px 16px rgba(0, 0, 0, 0.3);
-    }
-
-    .nav-btn.primary:hover {
-      transform: translateY(-2px) scale(1.03);
-      box-shadow: 0 0 30px #00ffff, 0 0 60px #a259ffcc, 0 12px 24px rgba(0, 0, 0, 0.4);
-      background: linear-gradient(135deg, #00ffff 0%, #a259ff 50%, #ff6b6b 100%);
-    }
-
-    /* 主按鈕區域 */
-    .main-buttons {
-      margin: 16px 0;
-      overflow: visible !important;
-      position: relative;
-    }
-
-    /* 角色標語 */
-    #characterSlogan {
-      font-size: 1.2rem;
-      color: #ffe9a3;
-      margin: 10px 0;
-      text-shadow: 0 1px 8px #2e3a5e, 0 0 12px #ffd700;
-      font-weight: 600;
-      letter-spacing: 1px;
-      min-height: 1.5rem;
-      font-style: italic;
-      transition: all 0.2s ease-out;
-      opacity: 1;
-      transform: translateY(0);
-      font-family: 'Noto Sans TC', 'Microsoft JhengHei', Arial, sans-serif;
-    }
-
-    /* 主要內容字體 */
-    #container, #container * {
-      font-family: 'Noto Sans TC', 'Microsoft JhengHei', Arial, sans-serif;
-      color: #f3f6fa;
-    }
-
-    /* 按鈕字體顏色微調 */
-    .btn, .nav-btn {
-      color: #222b3a;
-      font-family: 'Orbitron', 'Noto Sans TC', 'Microsoft JhengHei', Arial, sans-serif;
-    }
-
-    /* 新增：成就數量泡泡樣式 */
-    .achievement-badge {
-      position: absolute;
-      top: -8px;
-      right: -8px;
-      background: linear-gradient(135deg, #ff6b6b, #ff4757);
-      color: white;
-      border-radius: 50%;
-      min-width: 20px;
-      height: 20px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.75rem;
-      font-weight: bold;
-      box-shadow: 0 0 10px rgba(255, 107, 107, 0.6);
-      border: 2px solid white;
-      animation: badgePulse 2s ease-in-out infinite;
-      z-index: 1000;
-      pointer-events: none;
-      transform-origin: center;
-      will-change: transform;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-    
-    @keyframes badgePulse {
-      0%, 100% {
-        transform: scale(1);
-        box-shadow: 0 0 10px rgba(255, 107, 107, 0.6);
-      }
-      50% {
-        transform: scale(1.1);
-        box-shadow: 0 0 15px rgba(255, 107, 107, 0.8);
-      }
-    }
-    
-    .achievement-badge.hidden {
-      display: none;
-    }
-
-    /* 成就按鈕特殊處理：避免hover時泡泡位置錯亂 */
-    .nav-btn#achievementBtn {
-      overflow: visible !important;
-      position: relative;
-      isolation: isolate; /* 創建新的層疊上下文 */
-    }
-
-    /* 成就按鈕hover時，保持泡泡的相對位置 */
-    .nav-btn#achievementBtn:hover .achievement-badge {
-      transform: scale(1.1);
-      box-shadow: 0 0 15px rgba(255, 107, 107, 0.8);
-      animation: none; /* 暫停原本的動畫 */
-    }
-
-    /* 成就按鈕hover結束後，恢復泡泡動畫 */
-    .nav-btn#achievementBtn:not(:hover) .achievement-badge {
-      animation: badgePulse 2s ease-in-out infinite;
-    }
-
-    /* 優化hover動畫，避免與泡泡衝突 */
-    .nav-btn:hover {
-      transform: translateY(-2px) scale(1.03);
-      box-shadow: 0 0 24px #a259ff, 0 0 48px #ff6b6bcc, 0 8px 16px rgba(0, 0, 0, 0.4);
-      background: linear-gradient(135deg, #a259ff 0%, #ff6b6b 50%, #ffd700 100%);
-      z-index: 10; /* 確保hover時在最上層 */
-    }
-
-    /* 確保所有按鈕動畫都使用GPU加速 */
-    .nav-btn, .btn {
-      backface-visibility: hidden;
-      -webkit-backface-visibility: hidden;
-      -moz-backface-visibility: hidden;
-    }
-
-    /* 優化動畫性能 */
-    .nav-btn:hover, .btn:hover {
-      backface-visibility: hidden;
-      -webkit-backface-visibility: hidden;
-      -moz-backface-visibility: hidden;
-    }
-
-
-
-    /* 自訂訊息樣式 */
-    .custom-message {
-      position: fixed;
-      top: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      padding: 12px 20px;
-      border-radius: 10px;
-      color: #fff;
-      font-weight: 600;
-      font-size: 0.95rem;
-      z-index: 10000;
-      animation: messageSlideIn 0.3s ease-out;
-      backdrop-filter: blur(5px);
-      border: 2px solid;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-    }
-
-    .custom-message-success {
-      background: rgba(46, 204, 113, 0.9);
-      border-color: #2ecc71;
-    }
-
-    .custom-message-warning {
-      background: rgba(241, 196, 15, 0.9);
-      border-color: #f1c40f;
-      color: #2c3e50;
-    }
-
-    .custom-message-info {
-      background: rgba(52, 152, 219, 0.9);
-      border-color: #3498db;
-    }
-
-    .custom-message-error {
-      background: rgba(231, 76, 60, 0.9);
-      border-color: #e74c3c;
-    }
-
-    @keyframes messageSlideIn {
-      from {
-        opacity: 0;
-        transform: translateX(-50%) translateY(-20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateX(-50%) translateY(0);
-      }
-    }
-
-    @media (max-width: 600px) {
-      .custom-message {
-        top: 10px;
-        left: 10px;
-        right: 10px;
-        transform: none;
-        text-align: center;
-      }
-    }
-
-    /* 彈窗樣式 */
-    .modal-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.8);
-      backdrop-filter: blur(5px);
-      display: none;
-      justify-content: center;
-      align-items: center;
-      z-index: 10000;
-      animation: modalFadeIn 0.3s ease-out;
-    }
-
-    .modal-overlay.show {
-      display: flex;
-    }
-
-    @keyframes modalFadeIn {
-      from {
-        opacity: 0;
-      }
-      to {
-        opacity: 1;
-      }
-    }
-
-    .modal-content {
-      background: linear-gradient(135deg, rgba(10, 20, 40, 0.95) 0%, rgba(20, 40, 80, 0.95) 100%);
-      border: 2px solid #00ffff;
-      border-radius: 20px;
-      padding: 0;
-      max-width: 90%;
-      width: 600px;
-      max-height: 90vh;
-      overflow-y: auto;
-      box-shadow: 0 0 50px #00ffff44, 0 0 100px #a259ff22;
-      backdrop-filter: blur(10px);
-      animation: modalSlideIn 0.3s ease-out;
-    }
-
-    @keyframes modalSlideIn {
-      from {
-        opacity: 0;
-        transform: scale(0.8) translateY(-20px);
-      }
-      to {
-        opacity: 1;
-        transform: scale(1) translateY(0);
-      }
-    }
-
-    .modal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 20px 25px;
-      border-bottom: 2px solid rgba(0, 255, 255, 0.3);
-      background: rgba(0, 255, 255, 0.1);
-    }
-
-    .modal-header h3 {
-      margin: 0;
-      color: #00ffff;
-      font-size: 1.4rem;
-      font-weight: 700;
-      text-shadow: 0 0 10px #00ffff;
-    }
-
-    .modal-close {
-      background: none;
-      border: 2px solid #ff6b6b;
-      color: #ff6b6b;
-      width: 35px;
-      height: 35px;
-      border-radius: 50%;
-      cursor: pointer;
-      font-size: 1.2rem;
-      font-weight: bold;
-      transition: all 0.3s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .modal-close:hover {
-      background: #ff6b6b;
-      color: #fff;
-      box-shadow: 0 0 20px #ff6b6b;
-      transform: scale(1.1);
-    }
-
-    .modal-body {
-      padding: 25px;
-      display: flex;
-      gap: 25px;
-      flex-wrap: wrap;
-    }
-
-    .modal-avatar-section {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 15px;
-      min-width: 200px;
-    }
-
-    .modal-avatar-preview {
-      width: 150px;
-      height: 150px;
-      border-radius: 50%;
-      border: 3px solid #00ffff;
-      overflow: hidden;
-      position: relative;
-      cursor: pointer;
-      background: rgba(10, 20, 40, 0.6);
-      box-shadow: 0 0 30px #00ffff44;
-      transition: all 0.3s ease;
-    }
-
-    .modal-avatar-preview:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 40px #00ffff66;
-    }
-
-    .modal-avatar-preview img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .modal-upload-overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0, 0, 0, 0.7);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      color: #fff;
-      font-size: 1rem;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
-
-    .modal-avatar-preview:hover .modal-upload-overlay {
-      opacity: 1;
-    }
-
-    .modal-upload-overlay span {
-      font-size: 2.5rem;
-      margin-bottom: 8px;
-    }
-
-    .modal-upload-overlay p {
-      margin: 0;
-      font-size: 0.9rem;
-    }
-
-    .modal-avatar-buttons {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-
-    .modal-upload-btn, .modal-reset-btn {
-      padding: 10px 18px;
-      border: 2px solid #00ffff;
-      background: rgba(10, 20, 40, 0.8);
-      color: #fff;
-      border-radius: 10px;
-      cursor: pointer;
-      font-size: 0.9rem;
-      transition: all 0.3s ease;
-      backdrop-filter: blur(2px);
-    }
-
-    .modal-upload-btn:hover, .modal-reset-btn:hover {
-      background: rgba(0, 255, 255, 0.2);
-      box-shadow: 0 0 20px #00ffff;
-      transform: translateY(-2px);
-    }
-
-    .modal-info-section {
-      flex: 1;
-      min-width: 250px;
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-    }
-
-    .modal-input-group {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .modal-input-group label {
-      font-size: 1rem;
-      color: #a3b8ff;
-      font-weight: 600;
-    }
-
-    .modal-input-group input,
-    .modal-input-group textarea,
-    .modal-input-group select {
-      padding: 12px 15px;
-      background: rgba(10, 20, 40, 0.6);
-      border: 2px solid #00ffff;
-      border-radius: 10px;
-      color: #fff;
-      font-size: 1rem;
-      transition: all 0.3s ease;
-      backdrop-filter: blur(2px);
-    }
-
-    .modal-input-group input:focus,
-    .modal-input-group textarea:focus,
-    .modal-input-group select:focus {
-      outline: none;
-      border-color: #ff6b6b;
-      box-shadow: 0 0 20px #00ffff;
-    }
-
-    .modal-input-group textarea {
-      resize: vertical;
-      min-height: 80px;
-    }
-
-    .modal-footer {
-      display: flex;
-      justify-content: flex-end;
-      gap: 15px;
-      padding: 20px 25px;
-      border-top: 2px solid rgba(0, 255, 255, 0.3);
-      background: rgba(0, 255, 255, 0.05);
-    }
-
-    .modal-cancel-btn, .modal-save-btn {
-      padding: 12px 24px;
-      border: none;
-      border-radius: 12px;
-      cursor: pointer;
-      font-weight: 700;
-      font-size: 1rem;
-      transition: all 0.3s ease;
-    }
-
-    .modal-cancel-btn {
-      background: linear-gradient(135deg, #ff6b6b 0%, #ff4757 100%);
-      color: #fff;
-      box-shadow: 0 0 20px #ff6b6b44;
-    }
-
-    .modal-cancel-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 0 30px #ff6b6b66;
-    }
-
-    .modal-save-btn {
-      background: linear-gradient(135deg, #00ffff 0%, #a259ff 100%);
-      color: #000;
-      box-shadow: 0 0 20px #00ffff44;
-    }
-
-    .modal-save-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 0 30px #00ffff66;
-      background: linear-gradient(135deg, #00ffff 0%, #a259ff 50%, #ff6b6b 100%);
-    }
-
-    /* 響應式設計 */
-    @media (max-width: 768px) {
-      .modal-content {
-        width: 95%;
-        max-height: 95vh;
-      }
-
-      .modal-body {
-        flex-direction: column;
-        align-items: center;
-      }
-
-      .modal-avatar-section {
-        min-width: auto;
-      }
-
-      .modal-info-section {
-        min-width: 100%;
-      }
-
-      .modal-footer {
-        flex-direction: column;
-      }
-
-      .modal-cancel-btn, .modal-save-btn {
-        width: 100%;
-      }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>單字檔案下載中心</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* 性能優化 */
+        body {
+            font-family: 'Microsoft JhengHei', 'PingFang TC', 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 25%, #16213e 50%, #0f3460 75%, #533483 100%);
+            min-height: 100vh;
+            color: #e0e0e0;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* 連動星星效果 */
+        .star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: #fff;
+            border-radius: 50%;
+            opacity: 0.8;
+            transition: all 0.3s ease;
+            pointer-events: none;
+        }
+
+        .star:nth-child(odd) {
+            background: #00ffff;
+            box-shadow: 0 0 4px #00ffff;
+        }
+
+        .star:nth-child(even) {
+            background: #ff00ff;
+            box-shadow: 0 0 4px #ff00ff;
+        }
+
+        .star:nth-child(3n) {
+            background: #ffff00;
+            box-shadow: 0 0 4px #ffff00;
+        }
+
+        .star:nth-child(4n) {
+            background: #00ff00;
+            box-shadow: 0 0 4px #00ff00;
+        }
+
+        .star:nth-child(5n) {
+            background: #ff8000;
+            box-shadow: 0 0 4px #ff8000;
+        }
+
+        /* 星星懸停效果 */
+        .star:hover {
+            transform: scale(2);
+            opacity: 1;
+        }
+
+        /* 確保星星在容器之上但不會干擾互動 */
+        .interactive-stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* 移除複雜的背景動畫 */
+        body::before,
+        body::after {
+            display: none;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+            position: relative;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #00ffff, #ff00ff, transparent);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 0 0 20px rgba(0,255,255,0.5);
+            background: linear-gradient(45deg, #00ffff, #ff00ff, #ffff00, #00ff00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            position: relative;
+        }
+
+        .header h1::after {
+            content: '🚀';
+            position: absolute;
+            right: -40px;
+            top: 0;
+            font-size: 1.5rem;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            color: #b0b0b0;
+        }
+
+        .download-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .download-card {
+            background: rgba(20, 20, 40, 0.8);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 
+                0 10px 30px rgba(0,0,0,0.3),
+                0 0 0 1px rgba(0,255,255,0.1);
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(0,255,255,0.2);
+        }
+
+        .download-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 
+                0 15px 35px rgba(0,0,0,0.4),
+                0 0 0 1px rgba(0,255,255,0.3);
+        }
+
+        .download-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #00ffff, #ff00ff, #ffff00);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .download-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .card-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 20px;
+            font-size: 24px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.2s ease;
+            background: linear-gradient(135deg, #00ffff, #ff00ff);
+            box-shadow: 0 0 20px rgba(0,255,255,0.3);
+        }
+
+        .card-icon:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 25px rgba(0,255,255,0.5);
+        }
+
+        .card-icon::after {
+            display: none;
+        }
+
+        .basic-icon {
+            background: linear-gradient(135deg, #00ffff, #0080ff);
+        }
+
+        .ielts-icon {
+            background: linear-gradient(135deg, #ff00ff, #ff0080);
+        }
+
+        .auto-icon {
+            background: linear-gradient(135deg, #ffff00, #ff8000);
+        }
+
+        .daily-icon {
+            background: linear-gradient(135deg, #00ff00, #00ff80);
+        }
+
+        .toeic-icon {
+            background: linear-gradient(135deg, #ff8000, #ff4000);
+        }
+
+        .toefl-icon {
+            background: linear-gradient(135deg, #8000ff, #4000ff);
+        }
+
+        .business-icon {
+            background: linear-gradient(135deg, #ff0080, #ff0040);
+        }
+
+        .sports-icon {
+            background: linear-gradient(135deg, #00ff80, #00ff40);
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #ffffff;
+            text-shadow: 0 0 10px rgba(0,255,255,0.3);
+        }
+
+        .card-subtitle {
+            color: #b0b0b0;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+
+        .card-stats {
+            display: flex;
+            justify-content: space-between;
+            margin: 20px 0;
+            padding: 15px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 15px;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            border: 1px solid rgba(0,255,255,0.2);
+        }
+
+        .stat-item {
+            text-align: center;
+            transition: all 0.2s ease;
+        }
+
+        .stat-item:hover {
+            transform: scale(1.02);
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #00ffff;
+            text-shadow: 0 0 10px rgba(0,255,255,0.5);
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: #b0b0b0;
+            margin-top: 5px;
+            font-weight: 500;
+        }
+
+        .card-description {
+            color: #d0d0d0;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        /* 優化按鈕動畫 */
+        .download-btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #00ffff, #ff00ff);
+            color: white;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0,255,255,0.3);
+        }
+
+        .download-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 0 25px rgba(0,255,255,0.5);
+            background: linear-gradient(135deg, #00e6e6, #e600e6);
+        }
+
+        .download-btn:active {
+            transform: translateY(0);
+        }
+
+        .download-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .preview-section {
+            background: rgba(20, 20, 40, 0.8);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-top: 40px;
+            box-shadow: 
+                0 10px 30px rgba(0,0,0,0.3),
+                0 0 0 1px rgba(0,255,255,0.2);
+            border: 1px solid rgba(0,255,255,0.2);
+        }
+
+        .preview-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .preview-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #00ffff, #ff00ff);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            color: white;
+            box-shadow: 0 0 15px rgba(0,255,255,0.4);
+        }
+
+        .preview-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #ffffff;
+            text-shadow: 0 0 10px rgba(0,255,255,0.3);
+        }
+
+        .preview-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            background: rgba(0,0,0,0.4);
+            border: 1px solid rgba(0,255,255,0.2);
+        }
+
+        .preview-table th {
+            background: linear-gradient(135deg, #00ffff, #ff00ff);
+            color: white;
+            padding: 18px 15px;
+            text-align: left;
+            font-weight: bold;
+            position: relative;
+            text-shadow: 0 0 10px rgba(0,255,255,0.5);
+        }
+
+        .preview-table th::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent);
+        }
+
+        .preview-table td {
+            padding: 15px;
+            border-bottom: 1px solid rgba(0,255,255,0.1);
+            transition: all 0.2s ease;
+            color: #e0e0e0;
+        }
+
+        .preview-table tr:nth-child(even) {
+            background: rgba(0,255,255,0.05);
+        }
+
+        .preview-table tr:hover {
+            background: rgba(0,255,255,0.1);
+        }
+
+        .preview-table tr:hover td {
+            color: #00ffff;
+            font-weight: 500;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(0,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: #00ffff;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .success-message {
+            background: linear-gradient(135deg, rgba(0,255,0,0.2), rgba(0,200,0,0.1));
+            color: #00ff00;
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 20px;
+            border: 1px solid rgba(0,255,0,0.3);
+            box-shadow: 0 5px 15px rgba(0,255,0,0.2);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .success-message::before {
+            display: none;
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .error-message {
+            background: linear-gradient(135deg, rgba(255,0,0,0.2), rgba(200,0,0,0.1));
+            color: #ff0000;
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 20px;
+            border: 1px solid rgba(255,0,0,0.3);
+            box-shadow: 0 5px 15px rgba(255,0,0,0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            color: #b0b0b0;
+            opacity: 0.8;
+        }
+        
+        /* 首頁按鈕樣式 */
+        .home-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: linear-gradient(135deg, #00ffff, #ff00ff);
+            color: #000;
+            font-weight: bold;
+            padding: 12px 20px;
+            border-radius: 25px;
+            text-decoration: none;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            font-family: 'Microsoft JhengHei', sans-serif;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.4);
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        
+        .home-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.6);
+            background: linear-gradient(135deg, #00e6e6, #e600e6);
+        }
+        
+        .home-btn:active {
+            transform: translateY(0);
+        }
+
+        /* 簡化統計數據 */
+        .card-stats {
+            display: flex;
+            justify-content: space-between;
+            margin: 20px 0;
+            padding: 15px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 15px;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            border: 1px solid rgba(0,255,255,0.2);
+        }
+
+        .stat-item {
+            text-align: center;
+            transition: all 0.2s ease;
+        }
+
+        .stat-item:hover {
+            transform: scale(1.02);
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #00ffff;
+            text-shadow: 0 0 10px rgba(0,255,255,0.5);
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: #b0b0b0;
+            margin-top: 5px;
+            font-weight: 500;
+        }
+
+        .card-description {
+            color: #d0d0d0;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        /* 添加響應式改進 */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .download-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .card-stats {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .preview-table {
+                font-size: 0.9rem;
+            }
+            
+            .preview-table th,
+            .preview-table td {
+                padding: 12px 10px;
+            }
+
+            .download-card {
+                padding: 25px;
+            }
+
+            .card-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 20px;
+            }
+
+            /* 移動設備上減少動畫 */
+            .download-card:hover {
+                transform: translateY(-2px) scale(1.005);
+            }
+
+            .card-icon:hover {
+                transform: scale(1.02);
+            }
+
+            .download-btn:hover {
+                transform: translateY(-1px);
+            }
+
+            /* 減少背景動畫 */
+            body::before {
+                animation: twinkle 8s ease-in-out infinite;
+            }
+
+            body::after {
+                animation: meteor 16s linear infinite;
+            }
+        }
+
+        /* 性能優化 - 減少動畫在低性能設備上 */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+
+            .download-card:hover {
+                transform: none;
+            }
+
+            .card-icon:hover {
+                transform: none;
+            }
+
+            .download-btn:hover {
+                transform: none;
+            }
+        }
+
+        /* 添加深色模式支持 */
+        @media (prefers-color-scheme: dark) {
+            .download-card {
+                background: rgba(30, 30, 30, 0.95);
+                color: #fff;
+            }
+
+            .preview-section {
+                background: rgba(30, 30, 30, 0.95);
+                color: #fff;
+            }
+
+            .preview-table {
+                background: rgba(40, 40, 40, 0.9);
+            }
+
+            .preview-table tr:nth-child(even) {
+                background: rgba(50, 50, 50, 0.8);
+            }
+
+            .card-stats {
+                background: rgba(40, 40, 40, 0.8);
+            }
+        }
+
+        /* 星星顯示動畫 */
+        @keyframes starGlow {
+            0% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.2); }
+            100% { box-shadow: 0 0 30px rgba(255, 215, 0, 0.4); }
+        }
+
+        /* 星星獎勵動畫 */
+        @keyframes starRewardPop {
+            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+            20% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
+            80% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 0; }
+        }
+
+        /* 星星音效動畫 */
+        @keyframes starSound {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+    </style>
 </head>
 <body>
-  <!-- 星星顯示 -->
-  <div id="starsDisplay">
-    ⭐<span id="totalStarsCount">0</span>
-  </div>
-
-  <!-- 主區域 -->
-  <div id="container">
-    <h1>🌌 星際英打冒險</h1>
-    <p class="subtitle">開始你的打字英雄之旅！</p>
-
-    <!-- 使用者名稱輸入 -->
-    <div class="input-group">
-      <input type="text" id="playerName" placeholder="請輸入您的名字" maxlength="10">
-    </div>
-
-    <!-- 角色預覽 -->
-    <div id="characterPreview">
-      <img id="characterImage" src="img/avatars/avatar_astro1.png" alt="角色預覽">
-    </div>
-
-    <!-- 角色標語 -->
-    <div id="characterSlogan" style="
-      font-size: 1.2rem;
-      color: #ffd700;
-      margin: 10px 0;
-      text-shadow: 0 0 12px #ffd700, 0 0 24px #ff6b6b;
-      font-weight: 600;
-      letter-spacing: 1px;
-      min-height: 1.5rem;
-      font-style: italic;
-      transition: all 0.2s ease-out;
-      opacity: 1;
-      transform: translateY(0);
-    ">🌟 勇敢的星際戰士，準備好迎接挑戰了嗎？</div>
-
-    <!-- 頭像選擇 -->
-    <div class="avatar-grid">
-      <div class="avatar-option selected" style="background-image: url('img/avatars/avatar_TL.png');" onclick="selectAvatar(this, 'img/avatars/avatar_TL.png', '🌟 勇敢的星際戰士，準備好迎接挑戰了嗎？', {rate: 0.9, pitch: 1.0, volume: 0.9, characterType: 'warrior'})"></div>
-      <div class="avatar-option" style="background-image: url('img/avatars/avatar_TR.png');" onclick="selectAvatar(this, 'img/avatars/avatar_TR.png', '⚡ 閃電般的速度，無人能敵！', {rate: 1.1, pitch: 1.2, volume: 0.9, characterType: 'speedster'})"></div>
-      <div class="avatar-option" style="background-image: url('img/avatars/avatar_BL.png');" onclick="selectAvatar(this, 'img/avatars/avatar_BL.png', '🛡️ 堅不可摧的防禦，守護你的夢想！', {rate: 0.8, pitch: 0.9, volume: 0.95, characterType: 'defender'})"></div>
-      <div class="avatar-option" style="background-image: url('img/avatars/avatar_BR.png');" onclick="selectAvatar(this, 'img/avatars/avatar_BR.png', '🎯 精準的瞄準，百發百中！', {rate: 0.95, pitch: 1.1, volume: 0.9, characterType: 'sharpshooter'})"></div>
-      <div class="avatar-option" style="background-image: url('img/avatars/avatar_spacekid.png');" onclick="selectAvatar(this, 'img/avatars/avatar_spacekid.png', '🌈 純真的心靈，創造奇蹟的力量！', {rate: 1.0, pitch: 1.3, volume: 0.85, characterType: 'magician'})"></div>
-      <div class="avatar-option" style="background-image: url('img/avatars/avatar_astro1.png');" onclick="selectAvatar(this, 'img/avatars/avatar_astro1.png', '🚀 探索未知的宇宙，發現無限可能！', {rate: 0.85, pitch: 1.05, volume: 0.9, characterType: 'explorer'})"></div>
-      <div class="avatar-option" style="background-image: url('img/avatars/vDS8zQP9HdvxX0g (1).png');" onclick="selectAvatar(this, 'img/avatars/vDS8zQP9HdvxX0g (1).png', '🌸 溫柔的櫻花精靈，散播美好與希望！', {rate: 0.85, pitch: 1.05, volume: 0.9, characterType: 'fairy'})"></div>
-      <div class="avatar-option custom-avatar-option" onclick="selectCustomAvatar(this)">
-        <div class="custom-avatar-icon">🎨</div>
-        <div class="custom-avatar-text">自訂</div>
-      </div>
-    </div>
-
-
-
-    <!-- 自訂設定彈窗 -->
-    <div id="customModal" class="modal-overlay">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h3>🎨 自訂角色設定</h3>
-          <button class="modal-close" onclick="closeCustomModal()">✕</button>
-        </div>
-        
-        <div class="modal-body">
-          <div class="modal-avatar-section">
-            <div class="modal-avatar-preview" id="modalAvatarPreview">
-              <img id="modalAvatarImage" src="img/avatars/avatar_TL.png" alt="彈窗頭像預覽">
-              <div class="modal-upload-overlay">
-                <span>📷</span>
-                <p>點擊上傳</p>
-              </div>
-            </div>
-            <input type="file" id="modalAvatarUpload" accept="image/*" style="display: none;">
-            <div class="modal-avatar-buttons">
-              <button class="modal-upload-btn" onclick="document.getElementById('modalAvatarUpload').click()">
-                📁 選擇圖片
-              </button>
-              <button class="modal-reset-btn" onclick="resetModalAvatar()">
-                🔄 重置
-              </button>
-            </div>
-          </div>
-          
-          <div class="modal-info-section">
-            <div class="modal-input-group">
-              <label for="modalPlayerName">角色名稱:</label>
-              <input type="text" id="modalPlayerName" placeholder="輸入你的角色名稱" maxlength="15">
-            </div>
-            
-            <div class="modal-input-group">
-              <label for="modalSlogan">角色標語:</label>
-              <textarea id="modalSlogan" placeholder="寫下你的角色標語..." maxlength="50" rows="2"></textarea>
-            </div>
-            
-            <div class="modal-input-group">
-              <label for="modalCharacterType">角色類型:</label>
-              <select id="modalCharacterType">
-                <option value="warrior">戰士</option>
-                <option value="speedster">速度者</option>
-                <option value="defender">防禦者</option>
-                <option value="sharpshooter">射手</option>
-                <option value="magician">魔法師</option>
-                <option value="explorer">探險家</option>
-                <option value="fairy">精靈</option>
-                <option value="custom">自訂</option>
-              </select>
-            </div>
-          </div>
-        </div>
-        
-        <div class="modal-footer">
-          <button class="modal-cancel-btn" onclick="closeCustomModal()">
-            ❌ 取消
-          </button>
-          <button class="modal-save-btn" onclick="saveModalCustomUser()">
-            💾 儲存設定
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- 主按鈕區域 -->
-    <div class="main-buttons">
-      <button class="btn" onclick="location.href='atlas.html'">🚀 開始冒險</button>
-      <button class="btn" onclick="location.href='book.html'">📚 單字本</button>
-      <button class="btn" onclick="location.href='grammar_tower_select.html'">🏛️ 文法塔</button>
-      <button class="btn" onclick="location.href='article_practice.html'">📝 文章練習</button>
-      <button class="btn" onclick="location.href='game_center_simple.html'">🎮 遊戲大廳</button>
-      <button class="btn" onclick="location.href='chat_room.html'">💬 聊天室</button>
-      <button class="btn" onclick="location.href='shop.html'">🛒 商城</button>
-      <button class="btn" onclick="location.href='gacha.html'">🎲 抽卡</button>
-
-      <button class="btn announcement-btn" onclick="location.href='announcements.html'" style="background: linear-gradient(135deg, #ff6b6b 0%, #ffd700 100%); position: relative;">
-        📣 最新公告
-        <span class="notification-badge" id="announcementBadge" style="display: none;">0</span>
-      </button>
-    </div>
-
-    <div class="nav-buttons">
-              <button class="nav-btn" id="cardsBtn" onclick="location.href='cards.html'">📁 卡片收藏</button>
-        <button class="nav-btn" id="achievementBtn" onclick="location.href='achievement.html'">🏆 成就勳章</button>
-            <button class="nav-btn" onclick="location.href='stars_leaderboard.html'" style="background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);">⭐ 星星排行榜</button>
-
-    </div>
-  </div>
-
-  <!-- 音效控制 -->
-  <div id="audioControls">
-    <button id="toggleMusic" title="背景音樂">
-      <span class="material-icons">music_note</span>
-    </button>
-  </div>
-
-  <!-- 音效元素 -->
-  <audio id="typingSound" preload="auto">
-    <source src="sound/type.mp3" type="audio/mpeg">
-  </audio>
-
-  <audio id="backgroundMusic" loop>
-    <source src="sound/午後放鬆時光（純音樂）.mp3" type="audio/mpeg">
-  </audio>
-
-  <script src="js/userData.js"></script>
-  <script src="js/sound.js"></script>
-  <script src="js/achievementSystem.js"></script>
-  <script src="js/characterDialogue.js"></script>
-  <script src="js/cards.js"></script>
-  <script>
-    console.log('=== JavaScript開始執行 ===');
+    <!-- 首頁按鈕 -->
+    <a href="index.html" class="home-btn">🏠 返回首頁</a>
     
-    // 成就系統數據（與achievement.html保持一致）
-    const achievements = [
-      { id: 'bronze', name: '銅牌收集者', requirement: 10, reward: 5, icon: '🥉', type: 'collection', description: '收集10張卡片，開始你的收集之旅' },
-      { id: 'silver', name: '銀牌收集者', requirement: 25, reward: 15, icon: '🥈', type: 'collection', description: '收集25張卡片，展現你的收集實力' },
-      { id: 'gold', name: '金牌收集者', requirement: 50, reward: 30, icon: '🥇', type: 'collection', description: '收集50張卡片，成為真正的收集者' },
-      { id: 'platinum', name: '白金收集者', requirement: 100, reward: 60, icon: '💎', type: 'collection', description: '收集100張卡片，達到白金等級' },
-      { id: 'diamond', name: '鑽石收集者', requirement: 200, reward: 120, icon: '💠', type: 'collection', description: '收集200張卡片，獲得鑽石榮耀' },
-      { id: 'master', name: '收集大師', requirement: 500, reward: 300, icon: '👑', type: 'collection', description: '收集500張卡片，成為收集大師' },
-      { id: 'common_master', name: '普通卡大師', requirement: 50, reward: 20, icon: '📚', type: 'rarity', rarity: '普通', description: '收集50張普通卡片，掌握基礎詞彙' },
-      { id: 'rare_master', name: '稀有卡大師', requirement: 30, reward: 40, icon: '🔮', type: 'rarity', rarity: '稀有', description: '收集30張稀有卡片，擴展詞彙範圍' },
-      { id: 'epic_master', name: '超稀有大師', requirement: 20, reward: 80, icon: '🌟', type: 'rarity', rarity: '超稀有', description: '收集20張超稀有卡片，掌握高級詞彙' },
-      { id: 'shard_collector', name: '碎片收集者', requirement: 100, reward: 25, icon: '💎', type: 'shards', description: '收集100個碎片，開始碎片收集之路' },
-      { id: 'shard_hoarder', name: '碎片囤積者', requirement: 500, reward: 100, icon: '🏦', type: 'shards', description: '收集500個碎片，成為碎片囤積者' },
-      { id: 'shard_master', name: '碎片大師', requirement: 1000, reward: 200, icon: '💍', type: 'shards', description: '收集1000個碎片，成為碎片大師' },
-      { id: 'first_card', name: '初學者', requirement: 1, reward: 1, icon: '🎯', type: 'special', description: '獲得第一張卡片，開始學習之旅' },
-      { id: 'lucky_starter', name: '幸運新手', requirement: 5, reward: 5, icon: '🍀', type: 'special', description: '獲得5張卡片，展現你的幸運' },
-      { id: 'dedicated', name: '專注學習者', requirement: 25, reward: 20, icon: '��', type: 'special', description: '獲得25張卡片，展現你的專注' },
-      { id: 'persistent', name: '堅持不懈', requirement: 75, reward: 60, icon: '💪', type: 'special', description: '獲得75張卡片，展現你的堅持' },
-      { id: 'vocabulary_king', name: '詞彙之王', requirement: 150, reward: 150, icon: '👑', type: 'special', description: '獲得150張卡片，成為詞彙之王' },
-      { id: 'language_legend', name: '語言傳奇', requirement: 300, reward: 300, icon: '🏆', type: 'special', description: '獲得300張卡片，成為語言傳奇' },
-      { id: 'daily_1', name: '每日簽到1天', requirement: 1, reward: 2, icon: '📅', type: 'daily', description: '連續簽到1天，養成好習慣' },
-      { id: 'daily_7', name: '每日簽到7天', requirement: 7, reward: 10, icon: '📆', type: 'daily', description: '連續簽到7天，堅持一週' },
-      { id: 'daily_30', name: '每日簽到30天', requirement: 30, reward: 50, icon: '🗓️', type: 'daily', description: '連續簽到30天，堅持一個月' },
-      { id: 'daily_100', name: '每日簽到100天', requirement: 100, reward: 200, icon: '📊', type: 'daily', description: '連續簽到100天，成為忠實用戶' },
-      { id: 'star_collector', name: '星星收集者', requirement: 100, reward: 10, icon: '⭐', type: 'stars', description: '收集100顆星星，開始星星收集' },
-      { id: 'star_hoarder', name: '星星囤積者', requirement: 500, reward: 50, icon: '✨', type: 'stars', description: '收集500顆星星，成為星星囤積者' },
-      { id: 'star_master', name: '星星大師', requirement: 1000, reward: 100, icon: '🌟', type: 'stars', description: '收集1000顆星星，成為星星大師' },
-      { id: 'star_legend', name: '星星傳奇', requirement: 5000, reward: 500, icon: '💫', type: 'stars', description: '收集5000顆星星，成為星星傳奇' },
-      { id: 'speed_learner', name: '快速學習者', requirement: 10, reward: 15, icon: '⚡', type: 'performance', description: '通過10個關卡，展現快速學習能力' },
-      { id: 'accuracy_master', name: '準確大師', requirement: 20, reward: 25, icon: '🎯', type: 'performance', description: '通過20個關卡，展現準確的學習能力' },
-      { id: 'combo_king', name: '連擊之王', requirement: 15, reward: 30, icon: '🔥', type: 'performance', description: '通過15個關卡，展現連擊能力' },
-      { id: 'fill_beginner', name: '填空新手', requirement: 1, reward: 5, icon: '📝', type: 'fill', description: '完成第一次填空挑戰' },
-      { id: 'fill_regular', name: '填空常客', requirement: 10, reward: 20, icon: '📋', type: 'fill', description: '完成10次填空挑戰' },
-      { id: 'fill_expert', name: '填空專家', requirement: 50, reward: 80, icon: '📊', type: 'fill', description: '完成50次填空挑戰' },
-      { id: 'fill_master', name: '填空大師', requirement: 100, reward: 150, icon: '🏆', type: 'fill', description: '完成100次填空挑戰' },
-      { id: 'fill_perfect', name: '完美填空', requirement: 1, reward: 30, icon: '💯', type: 'fill', description: '在填空挑戰中獲得滿分' },
-      { id: 'fill_speed', name: '快速填空', requirement: 5, reward: 25, icon: '⚡', type: 'fill', description: '在5次填空挑戰中平均時間少於15秒' },
-      { id: 'fill_streak', name: '連續填空', requirement: 7, reward: 40, icon: '🔥', type: 'fill', description: '連續7天完成填空挑戰' },
-      { id: 'fill_vocab', name: '詞彙填空', requirement: 100, reward: 60, icon: '📚', type: 'fill', description: '在填空挑戰中答對100個單字' },
-      { id: 'vocab_beginner', name: '單字新手', requirement: 10, reward: 15, icon: '📖', type: 'vocabulary', description: '答對10個單字本的單字，開始單字學習之旅' },
-      { id: 'vocab_regular', name: '單字常客', requirement: 50, reward: 40, icon: '📚', type: 'vocabulary', description: '答對50個單字本的單字，展現學習熱情' },
-      { id: 'vocab_expert', name: '單字專家', requirement: 100, reward: 80, icon: '🎓', type: 'vocabulary', description: '答對100個單字本的單字，成為單字專家' },
-      { id: 'vocab_master', name: '單字大師', requirement: 200, reward: 150, icon: '👑', type: 'vocabulary', description: '答對200個單字本的單字，成為單字大師' },
-      { id: 'vocab_legend', name: '單字傳奇', requirement: 500, reward: 300, icon: '🏆', type: 'vocabulary', description: '答對500個單字本的單字，成為單字傳奇' },
-      // 星座成就
-      { id: 'pass_aries', name: '通過白羊座', requirement: 1, reward: 5, icon: '♈', type: 'zodiac', description: '通過白羊座關卡', rewardRange: [5,5] },
-      { id: 'pass_taurus', name: '通過金牛座', requirement: 1, reward: 5, icon: '♉', type: 'zodiac', description: '通過金牛座關卡', rewardRange: [5,5] },
-      { id: 'pass_gemini', name: '通過雙子座', requirement: 1, reward: 5, icon: '♊', type: 'zodiac', description: '通過雙子座關卡', rewardRange: [5,5] },
-      { id: 'pass_cancer', name: '通過巨蟹座', requirement: 1, reward: 7, icon: '♋', type: 'zodiac', description: '通過巨蟹座關卡', rewardRange: [7,10] },
-      { id: 'pass_leo', name: '通過獅子座', requirement: 1, reward: 8, icon: '♌', type: 'zodiac', description: '通過獅子座關卡', rewardRange: [8,12] },
-      { id: 'pass_virgo', name: '通過處女座', requirement: 1, reward: 9, icon: '♍', type: 'zodiac', description: '通過處女座關卡', rewardRange: [9,13] },
-      { id: 'pass_libra', name: '通過天秤座', requirement: 1, reward: 10, icon: '♎', type: 'zodiac', description: '通過天秤座關卡', rewardRange: [10,14] },
-      { id: 'pass_scorpio', name: '通過天蠍座', requirement: 1, reward: 11, icon: '♏', type: 'zodiac', description: '通過天蠍座關卡', rewardRange: [11,15] },
-      { id: 'pass_sagittarius', name: '通過射手座', requirement: 1, reward: 12, icon: '♐', type: 'zodiac', description: '通過射手座關卡', rewardRange: [12,16] },
-      { id: 'pass_capricorn', name: '通過摩羯座', requirement: 1, reward: 13, icon: '♑', type: 'zodiac', description: '通過摩羯座關卡', rewardRange: [13,17] },
-      { id: 'pass_aquarius', name: '通過水瓶座', requirement: 1, reward: 14, icon: '♒', type: 'zodiac', description: '通過水瓶座關卡', rewardRange: [14,18] },
-      { id: 'pass_pisces', name: '通過雙魚座', requirement: 1, reward: 15, icon: '♓', type: 'zodiac', description: '通過雙魚座關卡', rewardRange: [15,20] },
-      { id: 'pass_andromeda', name: '通過仙女座', requirement: 1, reward: 16, icon: '👸', type: 'zodiac', description: '通過仙女座關卡', rewardRange: [16,20] },
-      { id: 'pass_cygnus', name: '通過天鵝座', requirement: 1, reward: 17, icon: '🦢', type: 'zodiac', description: '通過天鵝座關卡', rewardRange: [17,20] },
-      { id: 'pass_orion', name: '通過獵戶座', requirement: 1, reward: 17, icon: '🏹', type: 'zodiac', description: '通過獵戶座關卡', rewardRange: [17,20] },
-      { id: 'pass_pegasus', name: '通過飛馬座', requirement: 1, reward: 17, icon: '🦄', type: 'zodiac', description: '通過飛馬座關卡', rewardRange: [17,20] },
-      { id: 'pass_cassiopeia', name: '通過仙后座', requirement: 1, reward: 17, icon: '👑', type: 'zodiac', description: '通過仙后座關卡', rewardRange: [17,20] },
-      { id: 'pass_scorpius', name: '通過天蠍座', requirement: 1, reward: 17, icon: '🦂', type: 'zodiac', description: '通過天蠍座關卡', rewardRange: [17,20] },
-      { id: 'pass_phoenix', name: '通過鳳凰座', requirement: 1, reward: 17, icon: '🔥', type: 'zodiac', description: '通過鳳凰座關卡', rewardRange: [17,20] },
-      { id: 'pass_vela', name: '通過船帆座', requirement: 1, reward: 17, icon: '⛵', type: 'zodiac', description: '通過船帆座關卡', rewardRange: [17,20] },
-    ];
-
-    // 頁面載入時自動檢查每日簽到獎勵
-    document.addEventListener('DOMContentLoaded', function() {
-      console.log('📄 頁面載入完成，檢查滾動狀態...');
-      
-      // 確保滾動功能正常
-      document.body.style.overflow = 'auto';
-      document.documentElement.style.overflow = 'auto';
-      
-      // 延遲一點時間確保所有系統都已載入
-      setTimeout(() => {
-        checkDailyReward();
-        // 確保cards.js載入完成後再檢查成就
-        if (window.allCards) {
-          updateAchievementBadge();
-        } else {
-          // 如果cards.js還沒載入，再等一下
-          setTimeout(updateAchievementBadge, 2000);
-        }
-      }, 1000);
-    });
-
-    // 獲取並顯示星星總數
-    function updateStarsDisplay() {
-      LinkageSystem.stars.updateDisplay();
-    }
-
-    // 頁面載入時更新星星顯示
-    updateStarsDisplay();
-
-    // 成就系統相關函數
-    function getClaimedAchievements() {
-      return JSON.parse(localStorage.getItem('claimedAchievements') || '[]');
-    }
-
-    function checkAchievementUnlocked(ach) {
-      const ownedCards = JSON.parse(localStorage.getItem('ownedCards') || '{}');
-      const shards = JSON.parse(localStorage.getItem('cardShards') || '{}');
-      
-      switch (ach.type) {
-        case 'collection':
-        case 'special':
-          return Object.keys(ownedCards).length >= ach.requirement;
-        case 'rarity':
-          // 檢查稀有度卡片數量
-          if (window.allCards) {
-            const cardsByRarity = window.allCards.filter(card => 
-              card.rarity === ach.rarity && ownedCards[card.word]
-            );
-            return cardsByRarity.length >= ach.requirement;
-          }
-          return false; // 如果沒有allCards數據，返回false
-        case 'shards':
-          return Object.values(shards).reduce((sum, c) => sum + c, 0) >= ach.requirement;
-        case 'daily':
-          return parseInt(localStorage.getItem('loginDays') || '0') >= ach.requirement;
-        case 'stars':
-          return parseInt(localStorage.getItem('totalStars') || '0') >= ach.requirement;
-        case 'performance':
-          const fillGames = parseInt(localStorage.getItem('fillGamesCompleted') || '0');
-          const cardGames = parseInt(localStorage.getItem('cardGamesCompleted') || '0');
-          const quizGames = parseInt(localStorage.getItem('quizGamesCompleted') || '0');
-          const spellingGames = parseInt(localStorage.getItem('spellingGamesCompleted') || '0');
-          const matchingGames = parseInt(localStorage.getItem('matchingGamesCompleted') || '0');
-          const timeChallengeGames = parseInt(localStorage.getItem('timeChallengeGamesCompleted') || '0');
-          return (fillGames + cardGames + quizGames + spellingGames + matchingGames + timeChallengeGames) >= ach.requirement;
-        case 'fill':
-          switch (ach.id) {
-            case 'fill_beginner':
-            case 'fill_regular':
-            case 'fill_expert':
-            case 'fill_master':
-              return parseInt(localStorage.getItem('fillGamesCompleted') || '0') >= ach.requirement;
-            case 'fill_perfect':
-              return parseInt(localStorage.getItem('fillPerfectScores') || '0') >= ach.requirement;
-            case 'fill_speed':
-              return parseInt(localStorage.getItem('fillSpeedGames') || '0') >= ach.requirement;
-            case 'fill_streak':
-              return parseInt(localStorage.getItem('fillStreakDays') || '0') >= ach.requirement;
-            case 'fill_vocab':
-              return parseInt(localStorage.getItem('fillCorrectWords') || '0') >= ach.requirement;
-            default:
-              return false;
-          }
-        case 'vocabulary':
-          return parseInt(localStorage.getItem('vocabularyCorrectWords') || '0') >= ach.requirement;
-        case 'zodiac':
-          // 星座關卡成就：檢查該星座是否已通過
-          const zodiacKey = ach.id.replace('pass_', '');
-          const passedAtlas = JSON.parse(localStorage.getItem('passed_atlas') || '[]');
-          return passedAtlas.includes(zodiacKey);
-        default:
-          return false;
-      }
-    }
-
-    // 計算可領取成就數量
-    function getUnclaimedAchievementsCount() {
-      const claimed = getClaimedAchievements();
-      return achievements.filter(ach => 
-        checkAchievementUnlocked(ach) && !claimed.includes(ach.id)
-      ).length;
-    }
-
-    // 更新成就按鈕的泡泡
-    function updateAchievementBadge() {
-      const achievementBtn = document.getElementById('achievementBtn');
-      if (!achievementBtn) {
-        console.log('找不到成就按鈕');
-        return;
-      }
-
-      const unclaimedCount = getUnclaimedAchievementsCount();
-      console.log('可領取成就數量:', unclaimedCount);
-      
-      // 移除現有的泡泡
-      const existingBadge = achievementBtn.querySelector('.achievement-badge');
-      if (existingBadge) {
-        existingBadge.remove();
-      }
-
-      // 如果有可領取的成就，添加泡泡
-      if (unclaimedCount > 0) {
-        console.log('添加成就泡泡，數量:', unclaimedCount);
-        const badge = document.createElement('div');
-        badge.className = 'achievement-badge';
-        badge.textContent = unclaimedCount;
-        achievementBtn.appendChild(badge);
-      } else {
-        console.log('沒有可領取的成就');
-      }
-    }
-
-    // 定期檢查成就狀態（每30秒檢查一次）
-    setInterval(updateAchievementBadge, 30000);
-
-    // 頁面獲得焦點時也檢查一次
-    window.addEventListener('focus', updateAchievementBadge);
+    <!-- 連動星星容器 -->
+    <div class="interactive-stars" id="interactiveStars"></div>
     
+    <div id="app">
+        <div class="container">
+            <!-- 添加星星顯示區域 -->
+            <div class="stars-display" style="
+                background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(255, 170, 0, 0.1));
+                border: 2px solid rgba(255, 215, 0, 0.3);
+                border-radius: 15px;
+                padding: 15px 25px;
+                margin-bottom: 30px;
+                text-align: center;
+                backdrop-filter: blur(10px);
+                box-shadow: 0 0 20px rgba(255, 215, 0, 0.2);
+                animation: starGlow 2s ease-in-out infinite alternate;
+            ">
+                <div style="
+                    font-size: 1.5rem;
+                    font-weight: bold;
+                    color: #ffd700;
+                    text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 10px;
+                ">
+                    <span id="totalStarsCount">⭐ 0</span>
+                    <span style="font-size: 1rem; color: #b0b0b0;">| 使用星星解鎖檔案下載</span>
+                </div>
+            </div>
+
+            <div class="header">
+                <h1>🚀 單字檔案下載中心 🌌</h1>
+                <p>✨ 精選高品質單字檔案，助您提升英語能力 ✨</p>
+                <div style="
+                    background: rgba(0,255,255,0.1);
+                    border: 1px solid rgba(0,255,255,0.3);
+                    border-radius: 10px;
+                    padding: 10px;
+                    margin-top: 15px;
+                    font-size: 0.9rem;
+                    color: #00ffff;
+                ">
+                    💡 使用提示：點擊按鈕解鎖或下載檔案
+                </div>
+            </div>
+
+            <!-- 添加搜尋和篩選功能 -->
+            <div class="search-section" style="background: rgba(0,0,0,0.3); backdrop-filter: blur(15px); border-radius: 15px; padding: 20px; margin-bottom: 30px; border: 1px solid rgba(0,255,255,0.2); box-shadow: 0 0 20px rgba(0,255,255,0.1);">
+                <div style="display: flex; gap: 15px; flex-wrap: wrap; align-items: center;">
+                    <input 
+                        v-model="searchQuery" 
+                        type="text" 
+                        placeholder="搜尋單字檔案..." 
+                        style="flex: 1; min-width: 200px; padding: 12px 15px; border: none; border-radius: 10px; background: rgba(0,0,0,0.6); color: #ffffff; font-size: 1rem; border: 1px solid rgba(0,255,255,0.3); transition: all 0.3s ease;"
+                        @focus="$event.target.style.boxShadow='0 0 15px rgba(0,255,255,0.4)'"
+                        @blur="$event.target.style.boxShadow='none'"
+                    >
+                    <select 
+                        v-model="selectedLevel" 
+                        style="padding: 12px 15px; border: none; border-radius: 10px; background: rgba(0,0,0,0.6); color: #ffffff; font-size: 1rem; min-width: 120px; border: 1px solid rgba(0,255,255,0.3); transition: all 0.3s ease;"
+                        @focus="$event.target.style.boxShadow='0 0 15px rgba(0,255,255,0.4)'"
+                        @blur="$event.target.style.boxShadow='none'"
+                    >
+                        <option value="">所有等級</option>
+                        <option value="初級">初級</option>
+                        <option value="中級">中級</option>
+                        <option value="中高級">中高級</option>
+                        <option value="高級">高級</option>
+                    </select>
+                    <button 
+                        @click="resetFilters" 
+                        style="padding: 12px 20px; border: none; border-radius: 10px; background: linear-gradient(135deg, #00ffff, #ff00ff); color: white; font-weight: bold; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 0 15px rgba(0,255,255,0.3);"
+                        @mouseover="$event.target.style.transform='translateY(-2px)'; $event.target.style.boxShadow='0 0 25px rgba(0,255,255,0.5)'"
+                        @mouseout="$event.target.style.transform='translateY(0)'; $event.target.style.boxShadow='0 0 15px rgba(0,255,255,0.3)'"
+                    >
+                        🔄 重置篩選
+                    </button>
 
 
-    // 頭像選擇
-    function selectAvatar(element, imagePath, slogan, voiceSettings) {
-      // 移除其他頭像的選中狀態
-      document.querySelectorAll('.avatar-option').forEach(avatar => {
-        avatar.classList.remove('selected');
-      });
-      
-      // 添加選中狀態
-      element.classList.add('selected');
-      
-      // 更新頭像和角色預覽
-      LinkageSystem.player.setAvatar(imagePath);
-      
-      // 保存選擇到本地存儲
-      localStorage.setItem('selectedAvatar', imagePath);
-      localStorage.setItem('selectedSlogan', slogan);
-      localStorage.setItem('selectedVoiceSettings', JSON.stringify(voiceSettings));
-      
-      // 更新角色預覽圖片
-      document.getElementById('characterImage').src = imagePath;
-      
-      // 更新角色標語（帶動畫效果）
-      const sloganElement = document.getElementById('characterSlogan');
-      sloganElement.style.opacity = '0';
-      sloganElement.style.transform = 'translateY(20px)';
-      
-      setTimeout(() => {
-        sloganElement.textContent = slogan;
-        sloganElement.style.opacity = '1';
-        sloganElement.style.transform = 'translateY(0)';
-        
-        // 語音朗讀功能已移除
-        
-        // 觸發角色對話系統
-        if (window.CharacterDialogue) {
-          // 更新當前角色設定
-          window.CharacterDialogue.currentCharacter = voiceSettings.characterType || 'warrior';
-          // 顯示角色歡迎對話
-          setTimeout(() => {
-            window.CharacterDialogue.showWelcomeDialogue();
-          }, 1000);
-        }
-      }, 200);
-    }
+                </div>
+                <div style="margin-top: 15px; color: #00ffff; font-size: 0.9rem; text-shadow: 0 0 5px rgba(0,255,255,0.5);">
+                    ✨ 找到 {{ filteredFiles.length }} 個檔案
+                </div>
+            </div>
 
-    // 自訂頭像選擇
-    function selectCustomAvatar(element) {
-      // 移除其他頭像的選中狀態
-      document.querySelectorAll('.avatar-option').forEach(avatar => {
-        avatar.classList.remove('selected');
-      });
-      
-      // 添加選中狀態
-      element.classList.add('selected');
-      
-      // 顯示彈窗
-      showCustomModal();
-      
-      // 播放音效
-      playTypingSound();
-    }
+            <div class="download-grid">
+                <div class="download-card" v-for="file in filteredFiles" :key="file.id" @click="selectFile(file)">
+                    <div class="card-header">
+                        <div class="card-icon" :class="file.iconClass">
+                            {{ file.icon }}
+                        </div>
+                        <div>
+                            <div class="card-title">{{ file.title }}</div>
+                            <div class="card-subtitle">{{ file.subtitle }}</div>
+                        </div>
+                    </div>
 
-    // 顯示自訂設定彈窗
-    function showCustomModal() {
-      const modal = document.getElementById('customModal');
-      
-      if (!modal) {
-        console.error('❌ 找不到自訂彈窗元素');
-        showCustomMessage('❌ 彈窗載入失敗', 'error');
-        return;
-      }
-      
-      console.log('🎨 顯示自訂角色彈窗');
-      
-      // 載入現有的自訂資料到彈窗
-      loadModalData();
-      
-      // 顯示彈窗
-      modal.classList.add('show');
-      
-      // 禁止背景滾動
-      document.body.style.overflow = 'hidden';
-      
-      console.log('✅ 自訂角色彈窗已顯示');
-    }
+                    <div class="card-stats">
+                        <div class="stat-item">
+                            <div class="stat-number">{{ file.wordCount }}</div>
+                            <div class="stat-label">單字數量</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">{{ file.fileSize }}</div>
+                            <div class="stat-label">檔案大小</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number" style="color: #ffd700;">{{ file.unlockCost || 10 }}</div>
+                            <div class="stat-label">解鎖費用</div>
+                        </div>
+                    </div>
 
-    // 關閉自訂設定彈窗
-    function closeCustomModal() {
-      console.log('🔒 關閉自訂角色彈窗...');
-      
-      const modal = document.getElementById('customModal');
-      if (modal) {
-        modal.classList.remove('show');
-        console.log('✅ 彈窗已隱藏');
-      } else {
-        console.error('❌ 找不到彈窗元素');
-      }
-      
-      // 恢復背景滾動
-      document.body.style.overflow = 'auto';
-      console.log('✅ 背景滾動已恢復');
-      
-      // 強制重新啟用滾動
-      setTimeout(() => {
-        document.body.style.overflow = 'auto';
-        document.documentElement.style.overflow = 'auto';
-        console.log('🔄 強制恢復滾動完成');
-      }, 100);
-    }
+                    <div class="card-description">
+                        {{ file.description }}
+                    </div>
 
-    // 載入資料到彈窗
-    function loadModalData() {
-      console.log('📂 載入彈窗資料...');
-      
-      const customUserData = localStorage.getItem('customUserData');
-      if (customUserData) {
-        try {
-          const customData = JSON.parse(customUserData);
-          console.log('📂 找到自訂資料:', customData);
-          
-          // 更新彈窗中的資料
-          const nameInput = document.getElementById('modalPlayerName');
-          const sloganInput = document.getElementById('modalSlogan');
-          const typeSelect = document.getElementById('modalCharacterType');
-          const avatarImg = document.getElementById('modalAvatarImage');
-          
-          if (nameInput) nameInput.value = customData.name || '';
-          if (sloganInput) sloganInput.value = customData.slogan || '';
-          if (typeSelect) typeSelect.value = customData.characterType || 'warrior';
-          
-          if (customData.avatarDataUrl && avatarImg) {
-            avatarImg.src = customData.avatarDataUrl;
-          }
-          
-          console.log('✅ 彈窗資料載入完成');
-        } catch (e) {
-          console.error('❌ 載入彈窗資料失敗:', e);
-        }
-      } else {
-        console.log('📂 沒有找到自訂資料，使用預設值');
-      }
-    }
+                    <button 
+                        class="download-btn" 
+                        @click.stop="isUnlocked(file.id) ? downloadFile(file) : unlockFile(file)"
+                        :disabled="downloading === file.id || (!isUnlocked(file.id) && !canUnlock(file))"
+                        :style="getUnlockButtonStyle(file)"
+                        :title="isUnlocked(file.id) ? '點擊下載檔案' : '點擊解鎖檔案'"
+                    >
+                        <span v-if="downloading === file.id" class="loading"></span>
+                        <span v-else-if="isUnlocked(file.id)">
+                            📥 下載檔案
+                        </span>
+                        <span v-else>
+                            🔓 解鎖檔案 ({{ file.unlockCost || 10 }} ⭐)
+                        </span>
+                    </button>
+                </div>
+            </div>
 
-    // 重置彈窗頭像
-    function resetModalAvatar() {
-      document.getElementById('modalAvatarImage').src = 'img/avatars/avatar_TL.png';
-      document.getElementById('modalPlayerName').value = '';
-      document.getElementById('modalSlogan').value = '';
-      document.getElementById('modalCharacterType').value = 'warrior';
-      document.getElementById('modalAvatarUpload').value = '';
-      
-      showCustomMessage('🔄 已重置彈窗設定', 'info');
-    }
+            <div class="preview-section" v-if="selectedFile">
+                <div class="preview-header">
+                    <div class="preview-icon">👁️</div>
+                    <div class="preview-title">{{ selectedFile.title }} - 檔案預覽</div>
+                    <button 
+                        @click="selectedFile = null" 
+                        style="margin-left: auto; background: none; border: none; color: #667eea; font-size: 1.5rem; cursor: pointer; padding: 5px; border-radius: 50%; transition: all 0.3s ease;"
+                        title="關閉預覽"
+                    >
+                        ✕
+                    </button>
+                </div>
+                
+                <table class="preview-table">
+                    <thead>
+                        <tr>
+                            <th>英文單字</th>
+                            <th>中文翻譯</th>
+                            <th>英文例句</th>
+                            <th>中文例句</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="word in selectedFile.preview" :key="word.english">
+                            <td><strong>{{ word.english }}</strong></td>
+                            <td>{{ word.chinese }}</td>
+                            <td>{{ word.example_en }}</td>
+                            <td>{{ word.example_ch }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
 
-    // 儲存彈窗自訂使用者
-    function saveModalCustomUser() {
-      console.log('💾 儲存自訂角色...');
-      
-      const modalName = document.getElementById('modalPlayerName')?.value?.trim() || '';
-      const modalSlogan = document.getElementById('modalSlogan')?.value?.trim() || '';
-      const modalType = document.getElementById('modalCharacterType')?.value || 'warrior';
-      const modalAvatarSrc = document.getElementById('modalAvatarImage')?.src || '';
-      
-      console.log('📝 角色資料:', { modalName, modalSlogan, modalType, modalAvatarSrc });
-      
-      if (!modalName) {
-        showCustomMessage('⚠️ 請輸入角色名稱', 'warning');
-        return;
-      }
-      
-      if (!modalSlogan) {
-        showCustomMessage('⚠️ 請輸入角色標語', 'warning');
-        return;
-      }
-      
-      // 檢查是否為預設頭像（允許使用預設頭像，但要求至少輸入名稱和標語）
-      if (modalAvatarSrc.includes('avatar_TL.png') && !modalName && !modalSlogan) {
-        showCustomMessage('⚠️ 請至少輸入角色名稱和標語', 'warning');
-        return;
-      }
-      
-      // 儲存自訂使用者資料
-      const customUserData = {
-        name: modalName,
-        slogan: modalSlogan,
-        characterType: modalType,
-        avatarDataUrl: modalAvatarSrc,
-        createdAt: new Date().toISOString()
-      };
-      
-      localStorage.setItem('customUserData', JSON.stringify(customUserData));
-      console.log('💾 自訂角色資料已儲存:', customUserData);
-      
-      // 更新主介面的角色資訊
-      if (typeof LinkageSystem !== 'undefined' && LinkageSystem.player) {
-        LinkageSystem.player.setName(modalName);
-      }
-      
-      const characterImage = document.getElementById('characterImage');
-      const characterSlogan = document.getElementById('characterSlogan');
-      
-      if (characterImage) characterImage.src = modalAvatarSrc;
-      if (characterSlogan) characterSlogan.textContent = modalSlogan;
-      
-      // 更新角色對話系統
-      if (window.CharacterDialogue) {
-        window.CharacterDialogue.currentCharacter = modalType;
-      }
-      
-      // 關閉彈窗
-      closeCustomModal();
-      
-      // 顯示成功訊息
-      showCustomMessage('💾 自訂角色儲存成功！', 'success');
-      
-      // 播放成功音效
-      playTypingSound();
-      
-      console.log('✅ 自訂角色儲存完成');
-    }
+            <div v-if="message" :class="messageClass">
+                {{ message }}
+            </div>
 
-    // 語音朗讀標語功能已移除
+            <!-- 星星獎勵歷史區域 -->
+            <div v-if="starRewardHistory.length > 0" class="star-history-section" style="
+                background: rgba(20, 20, 40, 0.8);
+                backdrop-filter: blur(15px);
+                border-radius: 20px;
+                padding: 30px;
+                margin-top: 40px;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+                border: 1px solid rgba(255, 215, 0, 0.2);
+            ">
+                <div style="display: flex; align-items: center; margin-bottom: 20px;">
+                    <div style="
+                        width: 40px;
+                        height: 40px;
+                        border-radius: 50%;
+                        background: linear-gradient(135deg, #ffd700, #ffaa00);
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        margin-right: 15px;
+                        color: #000;
+                        font-weight: bold;
+                        box-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
+                    ">🔓</div>
+                    <div style="font-size: 1.3rem; font-weight: bold; color: #ffffff;">
+                        解鎖歷史記錄
+                    </div>
+                </div>
+                
+                <div style="max-height: 200px; overflow-y: auto;">
+                    <div v-for="(record, index) in starRewardHistory.slice(-5)" :key="index" style="
+                        background: rgba(0,0,0,0.3);
+                        border-radius: 10px;
+                        padding: 15px;
+                        margin-bottom: 10px;
+                        border: 1px solid rgba(255, 215, 0, 0.2);
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                    ">
+                        <div>
+                            <div style="color: #ffd700; font-weight: bold;">{{ record.file }}</div>
+                            <div style="color: #b0b0b0; font-size: 0.9rem;">
+                                {{ new Date(record.timestamp).toLocaleString() }}
+                            </div>
+                        </div>
+                        <div style="
+                            background: linear-gradient(135deg, #ff0000, #ff4000);
+                            color: #ffffff;
+                            padding: 8px 15px;
+                            border-radius: 20px;
+                            font-weight: bold;
+                            font-size: 1.1rem;
+                        ">
+                            -{{ record.stars }} ⭐
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-    // 音效控制
-    let isSoundEnabled = true;
-    const typingSound = document.getElementById('typingSound');
+            <div class="footer">
+                <p>🚀 © 2024 宇宙單字學習平台 - 讓英語學習更有效率 🌌</p>
+            </div>
+        </div>
+    </div>
 
-    function toggleAudio() {
-      const button = document.querySelector('#audioControls button');
-      isSoundEnabled = !isSoundEnabled;
-      if (isSoundEnabled) {
-        button.textContent = '🔊';
-      } else {
-        button.textContent = '🔇';
-      }
-    }
-
-    // 播放打字音效
-    function playTypingSound() {
-      if (isSoundEnabled) {
-        typingSound.currentTime = 0;
-        typingSound.play().catch(error => {
-          console.log('音效播放失敗:', error);
-        });
-      }
-    }
-
-    // 自訂使用者功能 - 已整合到彈窗系統中
-    // 舊的獨立函數已移除，現在統一使用彈窗系統
-
-    // 顯示自訂訊息
-    function showCustomMessage(message, type = 'info') {
-      // 移除現有的訊息
-      const existingMessage = document.querySelector('.custom-message');
-      if (existingMessage) {
-        existingMessage.remove();
-      }
-      
-      // 創建新訊息
-      const messageDiv = document.createElement('div');
-      messageDiv.className = `custom-message custom-message-${type}`;
-      messageDiv.textContent = message;
-      
-      // 添加到body
-      document.body.appendChild(messageDiv);
-      
-      // 3秒後自動移除
-      setTimeout(() => {
-        if (messageDiv.parentNode) {
-          messageDiv.remove();
-        }
-      }, 3000);
-    }
-
-    // 緊急修復滾動功能
-    function emergencyFixScroll() {
-      console.log('🚨 執行緊急滾動修復...');
-      
-      // 關閉所有彈窗
-      const modals = document.querySelectorAll('.modal-overlay');
-      modals.forEach(modal => {
-        modal.classList.remove('show');
-      });
-      
-      // 恢復所有滾動
-      document.body.style.overflow = 'auto';
-      document.documentElement.style.overflow = 'auto';
-      
-      // 移除所有可能阻止滾動的樣式
-      document.body.style.position = '';
-      document.body.style.top = '';
-      document.body.style.left = '';
-      document.body.style.right = '';
-      document.body.style.bottom = '';
-      
-      console.log('✅ 緊急修復完成');
-      showCustomMessage('🔄 滾動功能已修復', 'success');
-    }
-
-
-
-    // 點擊彈窗頭像預覽觸發檔案選擇
-    document.addEventListener('DOMContentLoaded', function() {
-      const modalAvatarPreview = document.getElementById('modalAvatarPreview');
-      if (modalAvatarPreview) {
-        modalAvatarPreview.addEventListener('click', function() {
-          console.log('🖱️ 點擊頭像預覽區域');
-          const modalAvatarUpload = document.getElementById('modalAvatarUpload');
-          if (modalAvatarUpload) {
-            modalAvatarUpload.click();
-          } else {
-            console.error('❌ 找不到頭像上傳元素');
-            showCustomMessage('❌ 上傳功能載入失敗', 'error');
-          }
-        });
-        console.log('✅ 頭像預覽點擊事件已綁定');
-      } else {
-        console.error('❌ 找不到頭像預覽元素');
-      }
-    });
-
-    // 使用者名稱處理
-    document.getElementById('playerName').addEventListener('input', function(e) {
-      const name = e.target.value.trim();
-      if (name) {
-        LinkageSystem.player.setName(name);
-        playTypingSound();
-      }
-    });
-
-    // 頁面載入時載入已儲存的資料
-    window.addEventListener('load', function() {
-      // 載入使用者名稱和頭像
-      LinkageSystem.player.updateDisplay();
-      
-      // 檢查是否有自訂使用者資料
-      const customUserData = localStorage.getItem('customUserData');
-      if (customUserData) {
-        try {
-          const customData = JSON.parse(customUserData);
-          // 如果有自訂資料，優先使用自訂資料
-          LinkageSystem.player.setName(customData.name);
-          document.getElementById('characterImage').src = customData.avatarDataUrl;
-          document.getElementById('characterSlogan').textContent = customData.slogan;
-          
-          if (window.CharacterDialogue) {
-            window.CharacterDialogue.currentCharacter = customData.characterType;
-          }
-          
-          // 選中自訂頭像選項
-          const customAvatarOption = document.querySelector('.custom-avatar-option');
-          if (customAvatarOption) {
-            document.querySelectorAll('.avatar-option').forEach(avatar => {
-              avatar.classList.remove('selected');
-            });
-            customAvatarOption.classList.add('selected');
-          }
-          
-          console.log('使用自訂使用者資料');
-          return; // 如果有自訂資料，就不載入預設頭像
-        } catch (e) {
-          console.log('自訂使用者資料載入失敗，使用預設設定:', e);
-        }
-      }
-      
-      // 載入保存的頭像選擇狀態
-      const savedAvatar = localStorage.getItem('selectedAvatar');
-      const savedSlogan = localStorage.getItem('selectedSlogan');
-      const savedVoiceSettings = localStorage.getItem('selectedVoiceSettings');
-      
-      if (savedAvatar) {
-        // 找到對應的頭像選項並選中
-        const avatarOptions = document.querySelectorAll('.avatar-option');
-        let foundAvatar = false;
-        
-        avatarOptions.forEach(option => {
-          const backgroundImage = option.style.backgroundImage;
-          // 提取背景圖片中的檔案名
-          const urlMatch = backgroundImage.match(/url\(['"]?([^'"]+)['"]?\)/);
-          if (urlMatch) {
-            const imageUrl = urlMatch[1];
-            // 比較完整的URL路徑
-            if (imageUrl === savedAvatar || imageUrl.endsWith(savedAvatar.split('/').pop())) {
-              // 移除其他頭像的選中狀態
-              document.querySelectorAll('.avatar-option').forEach(avatar => {
-                avatar.classList.remove('selected');
-              });
-              
-              // 添加選中狀態
-              option.classList.add('selected');
-              foundAvatar = true;
-              
-              // 恢復保存的標語
-              if (savedSlogan) {
-                document.getElementById('characterSlogan').textContent = savedSlogan;
-              }
-              
-              // 更新角色預覽圖片
-              document.getElementById('characterImage').src = savedAvatar;
-              
-              // 恢復保存的語音設定
-              if (savedVoiceSettings) {
-                try {
-                  const voiceSettings = JSON.parse(savedVoiceSettings);
-                  // 可以選擇是否在載入時播放語音
-                  // speakSlogan(savedSlogan, voiceSettings);
-                  
-                  // 更新角色對話系統的當前角色
-                  if (window.CharacterDialogue) {
-                    window.CharacterDialogue.currentCharacter = voiceSettings.characterType || 'warrior';
-                  }
-                } catch (e) {
-                  console.log('語音設定恢復失敗:', e);
+    <script>
+        // 連動星星效果
+        function createInteractiveStars() {
+            const starsContainer = document.getElementById('interactiveStars');
+            const starCount = 40; // 增加星星數量
+            
+            // 創建星星
+            for (let i = 0; i < starCount; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 2 + 's';
+                starsContainer.appendChild(star);
+            }
+            
+            // 滑鼠移動事件 - 優化連動效果
+            let mouseX = 0;
+            let mouseY = 0;
+            let isMouseMoving = false;
+            let animationFrame;
+            
+            document.addEventListener('mousemove', (e) => {
+                mouseX = e.clientX;
+                mouseY = e.clientY;
+                isMouseMoving = true;
+                
+                if (!animationFrame) {
+                    animationFrame = requestAnimationFrame(updateAllStars);
                 }
-              }
-            }
-          }
-        });
-        
-        // 如果沒有找到保存的頭像，使用預設頭像
-        if (!foundAvatar) {
-          console.log('未找到保存的頭像，使用預設頭像');
-          // 清除可能損壞的保存數據
-          localStorage.removeItem('selectedAvatar');
-          localStorage.removeItem('selectedSlogan');
-          localStorage.removeItem('selectedVoiceSettings');
-        }
-      }
-      
-      // 檢查是否為首次訪問，如果是則顯示角色對話
-      const hasShownWelcome = localStorage.getItem('hasShownWelcomeDialogue');
-      if (!hasShownWelcome && window.CharacterDialogue) {
-        setTimeout(() => {
-          window.CharacterDialogue.showWelcomeDialogue();
-          localStorage.setItem('hasShownWelcomeDialogue', 'true');
-        }, 2000);
-      }
-    });
-
-    // 背景音樂控制系統
-    let backgroundMusic = null;
-    let toggleMusicBtn = null;
-    let isMusicPlaying = false;
-
-    // 初始化背景音樂系統
-    function initBackgroundMusic() {
-      console.log('🎵 初始化背景音樂系統...');
-      
-      backgroundMusic = document.getElementById('backgroundMusic');
-      toggleMusicBtn = document.getElementById('toggleMusic');
-      
-      if (!backgroundMusic) {
-        console.error('❌ 找不到背景音樂元素');
-        return;
-      }
-      
-      if (!toggleMusicBtn) {
-        console.error('❌ 找不到音樂控制按鈕');
-        return;
-      }
-      
-      // 設定音樂屬性
-      backgroundMusic.volume = 0.3;
-      backgroundMusic.loop = true;
-      
-      // 預載入音樂檔案
-      backgroundMusic.load();
-      
-      // 優先使用 SoundSystem（如果可用）
-      if (typeof SoundSystem !== 'undefined' && SoundSystem.bgm) {
-        console.log('🎵 使用 SoundSystem 管理背景音樂');
-        // 初始化 SoundSystem 的背景音樂
-        SoundSystem.bgm.initGlobalAudio();
-        
-        // 從 SoundSystem 獲取狀態
-        isMusicPlaying = SoundSystem.bgm.getPlayingState();
-        console.log('🔗 SoundSystem 音樂狀態:', isMusicPlaying);
-      }
-      // 其次使用 LinkageSystem
-      else if (typeof LinkageSystem !== 'undefined' && LinkageSystem.music) {
-        isMusicPlaying = LinkageSystem.music.isPlaying();
-        console.log('🔗 LinkageSystem 音樂狀態:', isMusicPlaying);
-      } 
-      // 最後使用 localStorage
-      else {
-        const musicState = localStorage.getItem('bgMusicState');
-        isMusicPlaying = musicState === 'playing';
-        console.log('📦 localStorage 音樂狀態:', isMusicPlaying);
-      }
-      
-      // 更新按鈕狀態
-      updateMusicButtonState();
-      
-      // 如果音樂應該播放，嘗試播放
-      if (isMusicPlaying) {
-        playBackgroundMusic();
-      }
-      
-      console.log('✅ 背景音樂系統初始化完成');
-    }
-
-    // 播放背景音樂
-    function playBackgroundMusic() {
-      if (!backgroundMusic) return;
-      
-      // 優先使用 SoundSystem
-      if (typeof SoundSystem !== 'undefined' && SoundSystem.bgm) {
-        SoundSystem.bgm.play();
-        isMusicPlaying = true;
-        updateMusicButtonState();
-        console.log('🎵 透過 SoundSystem 播放背景音樂');
-        return;
-      }
-      
-      // 備用方案：直接播放本地音樂元素
-      backgroundMusic.play().then(() => {
-        isMusicPlaying = true;
-        updateMusicButtonState();
-        
-        // 同步到 LinkageSystem
-        if (typeof LinkageSystem !== 'undefined' && LinkageSystem.music) {
-          LinkageSystem.music.setPlaying(true);
-        } else {
-          localStorage.setItem('bgMusicState', 'playing');
-        }
-        
-        console.log('🎵 背景音樂開始播放');
-      }).catch(err => {
-        console.error('❌ 背景音樂播放失敗:', err);
-        isMusicPlaying = false;
-        updateMusicButtonState();
-      });
-    }
-
-    // 暫停背景音樂
-    function pauseBackgroundMusic() {
-      if (!backgroundMusic) return;
-      
-      // 優先使用 SoundSystem
-      if (typeof SoundSystem !== 'undefined' && SoundSystem.bgm) {
-        SoundSystem.bgm.pause();
-        isMusicPlaying = false;
-        updateMusicButtonState();
-        console.log('🔇 透過 SoundSystem 暫停背景音樂');
-        return;
-      }
-      
-      // 備用方案：直接暫停本地音樂元素
-      backgroundMusic.pause();
-      isMusicPlaying = false;
-      updateMusicButtonState();
-      
-      // 同步到 LinkageSystem
-      if (typeof LinkageSystem !== 'undefined' && LinkageSystem.music) {
-        LinkageSystem.music.setPlaying(false);
-      } else {
-        localStorage.setItem('bgMusicState', 'paused');
-      }
-      
-      console.log('🔇 背景音樂已暫停');
-    }
-
-    // 切換背景音樂
-    function toggleBackgroundMusic() {
-      if (isMusicPlaying) {
-        pauseBackgroundMusic();
-      } else {
-        playBackgroundMusic();
-      }
-    }
-
-    // 更新音樂按鈕狀態
-    function updateMusicButtonState() {
-      if (!toggleMusicBtn) return;
-      
-      if (isMusicPlaying) {
-        toggleMusicBtn.style.background = 'rgba(0, 255, 255, 0.2)';
-        toggleMusicBtn.innerHTML = '<span class="material-icons">🔊</span>';
-      } else {
-        toggleMusicBtn.style.background = 'rgba(10, 20, 40, 0.85)';
-        toggleMusicBtn.innerHTML = '<span class="material-icons">🔇</span>';
-      }
-    }
-
-    // 監聽音樂控制按鈕點擊
-    document.addEventListener('DOMContentLoaded', function() {
-      // 延遲初始化，確保所有元素都已載入
-      setTimeout(() => {
-        initBackgroundMusic();
-        
-        // 綁定按鈕事件
-        const musicBtn = document.getElementById('toggleMusic');
-        if (musicBtn) {
-          musicBtn.addEventListener('click', toggleBackgroundMusic);
-          console.log('🎵 音樂控制按鈕事件已綁定');
-        }
-        
-        // 添加用戶互動觸發音樂播放
-        let hasUserInteracted = false;
-        
-        function handleUserInteraction() {
-          if (!hasUserInteracted) {
-            hasUserInteracted = true;
-            console.log('👆 用戶首次互動，嘗試播放音樂');
+            });
             
-            // 如果音樂應該播放但還沒開始，現在嘗試播放
-            if (isMusicPlaying && backgroundMusic && backgroundMusic.paused) {
-              playBackgroundMusic();
+            function updateAllStars() {
+                if (!isMouseMoving) {
+                    animationFrame = null;
+                    return;
+                }
+                
+                const stars = document.querySelectorAll('.star');
+                const centerX = window.innerWidth / 2;
+                const centerY = window.innerHeight / 2;
+                
+                stars.forEach((star, index) => {
+                    const rect = star.getBoundingClientRect();
+                    const starX = rect.left + rect.width / 2;
+                    const starY = rect.top + rect.height / 2;
+                    
+                    // 計算到滑鼠的距離
+                    const distanceToMouse = Math.sqrt(
+                        Math.pow(mouseX - starX, 2) + Math.pow(mouseY - starY, 2)
+                    );
+                    
+                    // 計算到中心的距離
+                    const distanceToCenter = Math.sqrt(
+                        Math.pow(centerX - starX, 2) + Math.pow(centerY - starY, 2)
+                    );
+                    
+                    // 滑鼠影響效果
+                    let mouseEffect = 0;
+                    if (distanceToMouse < 150) {
+                        mouseEffect = 1 - (distanceToMouse / 150);
+                    }
+                    
+                    // 中心引力效果
+                    let centerEffect = 0;
+                    if (distanceToCenter < 200) {
+                        centerEffect = 1 - (distanceToCenter / 200);
+                    }
+                    
+                    // 組合效果
+                    const totalEffect = Math.max(mouseEffect, centerEffect * 0.3);
+                    
+                    // 應用變換
+                    const scale = 1 + totalEffect * 0.4;
+                    const opacity = 0.6 + totalEffect * 0.4;
+                    const glow = 4 + totalEffect * 8;
+                    
+                    star.style.transform = `scale(${scale})`;
+                    star.style.opacity = opacity;
+                    star.style.boxShadow = `0 0 ${glow}px currentColor`;
+                    
+                    // 添加輕微的移動效果
+                    if (totalEffect > 0.1) {
+                        const moveX = (mouseX - starX) * 0.01 * totalEffect;
+                        const moveY = (mouseY - starY) * 0.01 * totalEffect;
+                        star.style.transform += ` translate(${moveX}px, ${moveY}px)`;
+                    }
+                });
+                
+                isMouseMoving = false;
+                animationFrame = requestAnimationFrame(updateAllStars);
             }
             
-            // 移除事件監聽器
-            document.removeEventListener('click', handleUserInteraction);
-            document.removeEventListener('keydown', handleUserInteraction);
-            document.removeEventListener('touchstart', handleUserInteraction);
-          }
-        }
-        
-        // 監聽用戶互動事件
-        document.addEventListener('click', handleUserInteraction);
-        document.addEventListener('keydown', handleUserInteraction);
-        document.addEventListener('touchstart', handleUserInteraction);
-        
-      }, 500);
-    });
-
-    // 監聽頁面可見性變化，處理音樂暫停/恢復
-    document.addEventListener('visibilitychange', function() {
-      if (document.hidden) {
-        // 頁面隱藏時暫停音樂
-        if (isMusicPlaying && backgroundMusic) {
-          backgroundMusic.pause();
-        }
-      } else {
-        // 頁面顯示時恢復音樂
-        if (isMusicPlaying && backgroundMusic && backgroundMusic.paused) {
-          backgroundMusic.play().catch(err => {
-            console.log('頁面恢復時音樂播放失敗:', err);
-          });
-        }
-      }
-    });
-
-
-
-    // 處理彈窗頭像上傳
-    document.addEventListener('DOMContentLoaded', function() {
-      const modalAvatarUpload = document.getElementById('modalAvatarUpload');
-      if (modalAvatarUpload) {
-        modalAvatarUpload.addEventListener('change', function(e) {
-          console.log('📁 處理頭像上傳...');
-          const file = e.target.files[0];
-          if (file) {
-            console.log('📁 選擇的檔案:', file.name, file.size, 'bytes');
-            const reader = new FileReader();
-            reader.onload = function(event) {
-              const modalAvatarImage = document.getElementById('modalAvatarImage');
-              if (modalAvatarImage) {
-                modalAvatarImage.src = event.target.result;
-                console.log('✅ 頭像上傳成功');
-                showCustomMessage('✅ 頭像上傳成功！', 'success');
-              } else {
-                console.error('❌ 找不到頭像預覽元素');
-                showCustomMessage('❌ 頭像預覽載入失敗', 'error');
-              }
-            };
-            reader.onerror = function() {
-              console.error('❌ 檔案讀取失敗');
-              showCustomMessage('❌ 檔案讀取失敗', 'error');
-            };
-            reader.readAsDataURL(file);
-          } else {
-            console.log('📁 沒有選擇檔案');
-          }
-        });
-        console.log('✅ 頭像上傳事件監聽器已綁定');
-      } else {
-        console.error('❌ 找不到頭像上傳元素');
-      }
-    });
-
-    // 公告檢查和數字泡泡功能
-    const GOOGLE_SHEETS_API = "https://script.google.com/macros/s/AKfycbyfM8pLiWIjRsvg7u3rJ5Zh4XdKLFuScaQ5t_0yQviBp11IwOZSyrgZ-KFHkrJT43UBPg/exec";
-    
-    // 檢查新公告並更新數字泡泡
-    function checkNewAnnouncements() {
-      const badge = document.getElementById('announcementBadge');
-      if (!badge) return;
-
-      // 從 localStorage 獲取上次檢查的時間
-      const lastCheckTime = localStorage.getItem('lastAnnouncementCheck') || '0';
-      const currentTime = Date.now();
-
-      // 先嘗試從 Google Sheets 獲取數據
-      fetch(GOOGLE_SHEETS_API)
-        .then(response => {
-          if (!response.ok) {
-            throw new Error('Network response was not ok');
-          }
-          return response.json();
-        })
-        .then(data => {
-          if (data && data.length > 0) {
-            updateBadgeWithData(data, lastCheckTime, badge);
-          } else {
-            throw new Error('No data received');
-          }
-        })
-        .catch(error => {
-          console.log('Google Sheets 載入失敗，使用本地數據:', error);
-          // 使用本地公告數據進行測試
-          const localAnnouncements = [
-            {
-              type: "🔴",
-              content: "系統維護中，部分功能可能暫時無法使用",
-              time: "2024-01-15 10:00"
-            },
-            {
-              type: "🟢",
-              content: "歡迎使用英打小英雄！新功能陸續推出中",
-              time: "2024-01-10 09:30"
-            },
-            {
-              type: "🔵",
-              content: "如有問題請聯繫客服或使用玩家信箱功能",
-              time: "2024-01-05 14:20"
-            },
-            {
-              type: "🟡",
-              content: "新增宇宙科技風格公告頁面！",
-              time: new Date().toISOString().slice(0, 19).replace('T', ' ')
+            // 波浪式連動效果
+            let waveTime = 0;
+            function createWaveEffect() {
+                waveTime += 0.02;
+                const stars = document.querySelectorAll('.star');
+                
+                stars.forEach((star, index) => {
+                    const waveOffset = index * 0.3;
+                    const wave = Math.sin(waveTime + waveOffset) * 0.1;
+                    const currentTransform = star.style.transform || '';
+                    
+                    // 保持原有的變換，添加波浪效果
+                    if (currentTransform.includes('scale')) {
+                        const scaleMatch = currentTransform.match(/scale\(([^)]+)\)/);
+                        if (scaleMatch) {
+                            const currentScale = parseFloat(scaleMatch[1]);
+                            const newScale = currentScale + wave;
+                            star.style.transform = currentTransform.replace(
+                                /scale\([^)]+\)/,
+                                `scale(${Math.max(0.8, newScale)})`
+                            );
+                        }
+                    }
+                });
+                
+                requestAnimationFrame(createWaveEffect);
             }
-          ];
-          
-          updateBadgeWithData(localAnnouncements, lastCheckTime, badge);
-        });
-    }
-
-    // 更新數字泡泡的輔助函數
-    function updateBadgeWithData(announcements, lastCheckTime, badge) {
-      let newAnnouncementCount = 0;
-      
-      // 檢查每個公告的時間
-      announcements.forEach(announcement => {
-        if (announcement.time) {
-          const announcementTime = new Date(announcement.time).getTime();
-          if (announcementTime > parseInt(lastCheckTime)) {
-            newAnnouncementCount++;
-          }
+            
+            // 啟動波浪效果
+            createWaveEffect();
+            
+            // 隨機閃爍效果
+            setInterval(() => {
+                const stars = document.querySelectorAll('.star');
+                const randomStar = stars[Math.floor(Math.random() * stars.length)];
+                const originalOpacity = randomStar.style.opacity;
+                const originalTransform = randomStar.style.transform;
+                
+                randomStar.style.opacity = '1';
+                randomStar.style.transform = originalTransform.replace(/scale\([^)]+\)/, 'scale(1.5)');
+                
+                setTimeout(() => {
+                    randomStar.style.opacity = originalOpacity;
+                    randomStar.style.transform = originalTransform;
+                }, 400);
+            }, 1500);
         }
-      });
-
-      // 更新數字泡泡
-      if (newAnnouncementCount > 0) {
-        badge.textContent = newAnnouncementCount > 99 ? '99+' : newAnnouncementCount.toString();
-        badge.style.display = 'flex';
         
-        // 添加閃爍動畫
-        badge.style.animation = 'badgePulse 1s ease-in-out infinite';
-        
-        console.log(`📣 發現 ${newAnnouncementCount} 個新公告`);
-      } else {
-        badge.style.display = 'none';
-        console.log('📣 沒有新公告');
-      }
-    }
+        // 頁面載入完成後初始化星星
+        document.addEventListener('DOMContentLoaded', createInteractiveStars);
 
-    // 點擊公告按鈕時更新檢查時間
-    function updateAnnouncementCheckTime() {
-      localStorage.setItem('lastAnnouncementCheck', Date.now().toString());
-      const badge = document.getElementById('announcementBadge');
-      if (badge) {
-        badge.style.display = 'none';
-      }
-    }
+        const { createApp } = Vue;
 
-    // 頁面載入時檢查公告
-    document.addEventListener('DOMContentLoaded', function() {
-      // 延遲檢查，避免影響頁面載入速度
-      setTimeout(() => {
-        checkNewAnnouncements();
-      }, 2000);
+        createApp({
+            data() {
+                return {
+                    downloading: null,
+                    message: '',
+                    messageClass: '',
+                    selectedFile: null,
+                    searchQuery: '',
+                    selectedLevel: '',
+                    // 添加星星系統數據
+                    totalStars: 0,
+                    starRewardHistory: [],
+                    vocabularyFiles: [
+                        {
+                            id: 'basic400',
+                            title: '🌟 宇宙入門單字集',
+                            subtitle: '400個基礎英文單字 - 探索英語的起點',
+                            icon: '⭐',
+                            iconClass: 'basic-icon',
+                            wordCount: '400',
+                            fileSize: '26KB',
+                            level: '初級',
+                            unlockCost: 5,
+                            description: '精選最基礎的400個英文單字，適合英語初學者，包含日常生活最常用的詞彙和簡單例句。',
+                            filename: '400單.csv',
+                            preview: [
+                                {
+                                    english: 'I',
+                                    chinese: '我',
+                                    example_en: 'I am a student.',
+                                    example_ch: '我是一名學生。'
+                                },
+                                {
+                                    english: 'you',
+                                    chinese: '你；你們',
+                                    example_en: 'You are my friend.',
+                                    example_ch: '你是我的朋友。'
+                                },
+                                {
+                                    english: 'he',
+                                    chinese: '他',
+                                    example_en: 'He has a dog.',
+                                    example_ch: '他有一隻狗。'
+                                },
+                                {
+                                    english: 'she',
+                                    chinese: '她',
+                                    example_en: 'She is my sister.',
+                                    example_ch: '她是我姐姐。'
+                                },
+                                {
+                                    english: 'it',
+                                    chinese: '牠；它',
+                                    example_en: 'It is a cat.',
+                                    example_ch: '牠是一隻貓。'
+                                }
+                            ]
+                        },
+                        {
+                            id: 'ielts',
+                            title: '🌠 星際考試單字集',
+                            subtitle: '1000個IELTS必備單字 - 征服英語考試',
+                            icon: '🌠',
+                            iconClass: 'ielts-icon',
+                            wordCount: '1000+',
+                            fileSize: '75KB',
+                            level: '中級',
+                            unlockCost: 15,
+                            description: '精選 IELTS 考試中最常出現的 1000 個單字，包含詳細的中英文翻譯和實用例句，幫助您快速提升詞彙量。',
+                            filename: '1000英檢單字.csv',
+                            preview: [
+                                {
+                                    english: 'abandon',
+                                    chinese: '拋棄',
+                                    example_en: 'He decided to abandon the car on the roadside.',
+                                    example_ch: '他決定把車子拋棄在路邊。'
+                                },
+                                {
+                                    english: 'ability',
+                                    chinese: '能力',
+                                    example_en: 'She has the ability to solve complex problems.',
+                                    example_ch: '她有能力解決複雜的問題。'
+                                },
+                                {
+                                    english: 'accept',
+                                    chinese: '接受',
+                                    example_en: 'He accepted the job offer.',
+                                    example_ch: '他接受了那份工作機會。'
+                                },
+                                {
+                                    english: 'active',
+                                    chinese: '活躍的',
+                                    example_en: 'He is very active in school activities.',
+                                    example_ch: '他在學校活動中非常活躍。'
+                                },
+                                {
+                                    english: 'advice',
+                                    chinese: '建議',
+                                    example_en: 'She gave me good advice.',
+                                    example_ch: '她給了我好的建議。'
+                                }
+                            ]
+                        },
+                        {
+                            id: 'daily',
+                            title: '🏠 地球生活單字集',
+                            subtitle: '150個日常生活單字 - 地球人的日常',
+                            icon: '🏠',
+                            iconClass: 'daily-icon',
+                            wordCount: '150+',
+                            fileSize: '15KB',
+                            level: '初級',
+                            unlockCost: 8,
+                            description: '精選日常生活中最常用的英文單字，包含食物、家庭、工作、天氣等實用詞彙，適合日常交流使用。',
+                            filename: '基礎生活單字.csv',
+                            preview: [
+                                {
+                                    english: 'breakfast',
+                                    chinese: '早餐',
+                                    example_en: 'I eat breakfast at 7 AM every morning.',
+                                    example_ch: '我每天早上7點吃早餐。'
+                                },
+                                {
+                                    english: 'lunch',
+                                    chinese: '午餐',
+                                    example_en: 'Let\'s have lunch together today.',
+                                    example_ch: '今天我們一起吃午餐吧。'
+                                },
+                                {
+                                    english: 'dinner',
+                                    chinese: '晚餐',
+                                    example_en: 'We usually have dinner at 6 PM.',
+                                    example_ch: '我們通常晚上6點吃晚餐。'
+                                },
+                                {
+                                    english: 'coffee',
+                                    chinese: '咖啡',
+                                    example_en: 'I drink coffee every morning.',
+                                    example_ch: '我每天早上都喝咖啡。'
+                                },
+                                {
+                                    english: 'water',
+                                    chinese: '水',
+                                    example_en: 'Please drink more water.',
+                                    example_ch: '請多喝水。'
+                                }
+                            ]
+                        },
+                        {
+                            id: 'toeic',
+                            title: '🛰️ 太空職場單字集',
+                            subtitle: '100個TOEIC核心單字 - 征服職場英語',
+                            icon: '🛰️',
+                            iconClass: 'toeic-icon',
+                            wordCount: '100',
+                            fileSize: '10KB',
+                            level: '中級',
+                            unlockCost: 12,
+                            description: '專為 TOEIC 考試設計的100個核心單字，包含商業和職場常用詞彙，適合準備職場英語考試。',
+                            filename: 'TOEIC___100.csv',
+                            preview: [
+                                {
+                                    english: 'accommodate',
+                                    chinese: '容納；提供膳宿',
+                                    example_en: 'The hotel can accommodate up to 200 guests.',
+                                    example_ch: '這家飯店最多可容納200位客人。'
+                                },
+                                {
+                                    english: 'accomplish',
+                                    chinese: '完成；達成',
+                                    example_en: 'She accomplished all her tasks before the deadline.',
+                                    example_ch: '她在截止日期前完成了所有任務。'
+                                },
+                                {
+                                    english: 'agenda',
+                                    chinese: '議程',
+                                    example_en: 'The meeting agenda includes budget review and planning.',
+                                    example_ch: '會議議程包括預算審查與規劃。'
+                                },
+                                {
+                                    english: 'allocate',
+                                    chinese: '分配；撥給',
+                                    example_en: 'They allocated funds for the new project.',
+                                    example_ch: '他們為新專案撥款。'
+                                },
+                                {
+                                    english: 'annual',
+                                    chinese: '年度的',
+                                    example_en: 'The annual report was published in March.',
+                                    example_ch: '年度報告在三月發佈。'
+                                }
+                            ]
+                        },
+                        {
+                            id: 'toefl',
+                            title: '🔬 學術研究單字集',
+                            subtitle: '600個TOEFL高級單字 - 學術英語大師',
+                            icon: '🔬',
+                            iconClass: 'toefl-icon',
+                            wordCount: '600+',
+                            fileSize: '78KB',
+                            level: '高級',
+                            unlockCost: 25,
+                            description: '專為 TOEFL 考試設計的高級單字集，包含學術性詞彙和複雜表達，適合準備留學考試的學習者。',
+                            filename: '托福單字.csv',
+                            preview: [
+                                {
+                                    english: 'equivocal',
+                                    chinese: '模稜兩可的',
+                                    example_en: 'Her answer was equivocal, leaving us more confused.',
+                                    example_ch: '她的回答模稜兩可，反而讓我們更困惑。'
+                                },
+                                {
+                                    english: 'eradicate',
+                                    chinese: '根除，消滅',
+                                    example_en: 'The goal is to eradicate poverty within a generation.',
+                                    example_ch: '目標是在一代人之內根除貧困。'
+                                },
+                                {
+                                    english: 'eschew',
+                                    chinese: '避開，戒絕',
+                                    example_en: 'He decided to eschew all forms of processed sugar.',
+                                    example_ch: '他決定戒絕所有加工糖。'
+                                },
+                                {
+                                    english: 'euphemism',
+                                    chinese: '委婉說法',
+                                    example_en: '"Passed away" is a common euphemism for "died."',
+                                    example_ch: '"過世"是"死亡"的常見委婉說法。'
+                                },
+                                {
+                                    english: 'exacerbate',
+                                    chinese: '加劇，使惡化',
+                                    example_en: 'His comments only served to exacerbate the tension.',
+                                    example_ch: '他的言論只會加劇緊張氣氛。'
+                                }
+                            ]
+                        },
+                        {
+                            id: 'business',
+                            title: '👨‍🚀 太空商務單字集',
+                            subtitle: '200個商務英語單字 - 星際商業精英',
+                            icon: '👨‍🚀',
+                            iconClass: 'business-icon',
+                            wordCount: '200+',
+                            fileSize: '25KB',
+                            level: '中高級',
+                            unlockCost: 18,
+                            description: '精選商業和職場最常用的英文單字，包含會議、談判、管理、財務等專業詞彙，適合職場英語學習。',
+                            filename: '商務英語單字.csv',
+                            preview: [
+                                {
+                                    english: 'meeting',
+                                    chinese: '會議',
+                                    example_en: 'We have a meeting at 2 PM today.',
+                                    example_ch: '我們今天下午2點有會議。'
+                                },
+                                {
+                                    english: 'presentation',
+                                    chinese: '簡報',
+                                    example_en: 'She gave an excellent presentation.',
+                                    example_ch: '她做了一個出色的簡報。'
+                                },
+                                {
+                                    english: 'deadline',
+                                    chinese: '截止日期',
+                                    example_en: 'The project deadline is next Friday.',
+                                    example_ch: '專案截止日期是下週五。'
+                                },
+                                {
+                                    english: 'budget',
+                                    chinese: '預算',
+                                    example_en: 'We need to stay within the budget.',
+                                    example_ch: '我們需要保持在預算內。'
+                                },
+                                {
+                                    english: 'negotiation',
+                                    chinese: '談判',
+                                    example_en: 'The negotiation lasted for three hours.',
+                                    example_ch: '談判持續了三個小時。'
+                                }
+                            ]
+                        },
+                        {
+                            id: 'sports',
+                            title: '⚽ 運動星球單字集',
+                            subtitle: '22個運動生活單字 - 活力四射的運動員',
+                            icon: '⚽',
+                            iconClass: 'sports-icon',
+                            wordCount: '22',
+                            fileSize: '2KB',
+                            level: '初級',
+                            unlockCost: 3,
+                            description: '精選運動和日常生活相關的英文單字，包含各種運動項目、時間概念和日常用語，適合初學者學習。',
+                            filename: '運動生活單字.csv',
+                            preview: [
+                                {
+                                    english: 'something',
+                                    chinese: '某事；某物',
+                                    example_en: 'I have something to tell you.',
+                                    example_ch: '我有事要告訴你。'
+                                },
+                                {
+                                    english: 'everything',
+                                    chinese: '每件事',
+                                    example_en: 'Everything is ready for the trip.',
+                                    example_ch: '旅行的一切已經準備好了。'
+                                },
+                                {
+                                    english: 'tennis',
+                                    chinese: '網球',
+                                    example_en: 'She plays tennis every Saturday.',
+                                    example_ch: '她每星期六打網球。'
+                                },
+                                {
+                                    english: 'badminton',
+                                    chinese: '羽球',
+                                    example_en: 'They play badminton after school.',
+                                    example_ch: '他們放學後打羽球。'
+                                },
+                                {
+                                    english: 'sport',
+                                    chinese: '運動',
+                                    example_en: 'Soccer is a popular sport.',
+                                    example_ch: '足球是一項受歡迎的運動。'
+                                }
+                            ]
+                        },
+                        {
+                            id: '800words',
+                            title: '🌌 銀河基礎單字集',
+                            subtitle: '800個基礎英文單字 - 銀河系必備詞彙',
+                            icon: '🌌',
+                            iconClass: 'basic-icon',
+                            wordCount: '800',
+                            fileSize: '45KB',
+                            level: '初級',
+                            unlockCost: 10,
+                            description: '精選800個基礎英文單字，包含日常生活、運動、時間等常用詞彙，適合英語初學者學習。',
+                            filename: '800單字.csv',
+                            preview: [
+                                {
+                                    english: 'something',
+                                    chinese: '某事；某物',
+                                    example_en: 'I have something to tell you.',
+                                    example_ch: '我有事要告訴你。'
+                                },
+                                {
+                                    english: 'everything',
+                                    chinese: '每件事',
+                                    example_en: 'Everything is ready for the trip.',
+                                    example_ch: '旅行的一切已經準備好了。'
+                                },
+                                {
+                                    english: 'tennis',
+                                    chinese: '網球',
+                                    example_en: 'She plays tennis every Saturday.',
+                                    example_ch: '她每星期六打網球。'
+                                },
+                                {
+                                    english: 'badminton',
+                                    chinese: '羽球',
+                                    example_en: 'They play badminton after school.',
+                                    example_ch: '他們放學後打羽球。'
+                                },
+                                {
+                                    english: 'sport',
+                                    chinese: '運動',
+                                    example_en: 'Soccer is a popular sport.',
+                                    example_ch: '足球是一項受歡迎的運動。'
+                                }
+                            ]
+                        },
+                        {
+                            id: 'newvocab1',
+                            title: '🌟 新星探索單字集',
+                            subtitle: '50個精選實用單字 - 探索新的語言星球',
+                            icon: '🌟',
+                            iconClass: 'basic-icon',
+                            wordCount: '50',
+                            fileSize: '8KB',
+                            level: '初級',
+                            unlockCost: 6,
+                            description: '精選50個實用英文單字，包含日常生活、情感表達、自然環境等詞彙，適合英語學習者使用。',
+                            filename: '新增單字集1.csv',
+                            preview: [
+                                {
+                                    english: 'difficult',
+                                    chinese: '困難的',
+                                    example_en: 'This math problem is difficult.',
+                                    example_ch: '這道數學題很困難。'
+                                },
+                                {
+                                    english: 'as',
+                                    chinese: '作為；依照',
+                                    example_en: 'She works as a volunteer on weekends.',
+                                    example_ch: '她週末作為志工工作。'
+                                },
+                                {
+                                    english: 'own',
+                                    chinese: '自己的',
+                                    example_en: 'I have my own desk at home.',
+                                    example_ch: '我在家裡有自己的書桌。'
+                                },
+                                {
+                                    english: 'true',
+                                    chinese: '真實的',
+                                    example_en: 'Is this story true?',
+                                    example_ch: '這個故事是真的嗎？'
+                                },
+                                {
+                                    english: 'sea',
+                                    chinese: '海',
+                                    example_en: 'We swim in the sea during summer vacation.',
+                                    example_ch: '暑假我們在海裡游泳。'
+                                }
+                            ]
+                        },
+                        {
+                            id: 'newvocab2',
+                            title: '🌠 流星進階單字集',
+                            subtitle: '50個進階實用單字 - 流星的智慧光芒',
+                            icon: '🌠',
+                            iconClass: 'ielts-icon',
+                            wordCount: '50',
+                            fileSize: '8KB',
+                            level: '中級',
+                            unlockCost: 8,
+                            description: '精選50個進階英文單字，包含抽象概念、情感表達、社會互動等詞彙，適合提升英語表達能力。',
+                            filename: '新增單字集2.csv',
+                            preview: [
+                                {
+                                    english: 'basket',
+                                    chinese: '籃子',
+                                    example_en: 'I carry apples in a basket to the picnic.',
+                                    example_ch: '我用籃子把蘋果帶到野餐。'
+                                },
+                                {
+                                    english: 'church',
+                                    chinese: '教堂',
+                                    example_en: 'We go to church on Sunday morning.',
+                                    example_ch: '我們星期天早上去教堂。'
+                                },
+                                {
+                                    english: 'hunt',
+                                    chinese: '打獵',
+                                    example_en: 'My grandfather used to hunt in the forest.',
+                                    example_ch: '我爺爺以前在森林裡打獵。'
+                                },
+                                {
+                                    english: 'roll',
+                                    chinese: '滾動；晃動',
+                                    example_en: 'The ball will roll down the hill.',
+                                    example_ch: '球會從小山滾下來。'
+                                },
+                                {
+                                    english: 'hang',
+                                    chinese: '掛；懸吊',
+                                    example_en: 'Please hang your coat on that hook.',
+                                    example_ch: '請把外套掛在那個掛勾上。'
+                                }
+                            ]
+                        },
+                        {
+                            id: 'newvocab3',
+                            title: '🌍 地球環境單字集',
+                            subtitle: '50個自然環境單字 - 探索地球的美麗',
+                            icon: '🌍',
+                            iconClass: 'daily-icon',
+                            wordCount: '50',
+                            fileSize: '8KB',
+                            level: '初級',
+                            unlockCost: 7,
+                            description: '精選50個自然環境相關英文單字，包含自然現象、地理環境、天氣變化等詞彙，適合學習自然科學英語。',
+                            filename: '新增單字集3.csv',
+                            preview: [
+                                {
+                                    english: 'cut',
+                                    chinese: '切；傷口',
+                                    example_en: 'Be careful not to cut your finger when you slice the bread.',
+                                    example_ch: '當你切麵包時，小心別割到手指。'
+                                },
+                                {
+                                    english: 'fill',
+                                    chinese: '裝滿',
+                                    example_en: 'Please fill the water bottle before the hike.',
+                                    example_ch: '請在健行前把水瓶裝滿。'
+                                },
+                                {
+                                    english: 'pack',
+                                    chinese: '包；裝箱',
+                                    example_en: 'I need to pack my clothes for the weekend trip.',
+                                    example_ch: '我需要為週末旅行把衣服打包。'
+                                },
+                                {
+                                    english: 'package',
+                                    chinese: '包裹；包裝',
+                                    example_en: 'The delivery man dropped off a package at our door.',
+                                    example_ch: '送貨員把一個包裹放在我們家門口。'
+                                },
+                                {
+                                    english: 'air',
+                                    chinese: '空氣',
+                                    example_en: 'Open the window to let fresh air into the room.',
+                                    example_ch: '打開窗戶讓新鮮空氣進入房間。'
+                                }
+                            ]
+                        },
+                        {
+                            id: 'newvocab4',
+                            title: '🛸 情感飛船單字集',
+                            subtitle: '50個安全與情感單字 - 情感的宇宙航行',
+                            icon: '🛸',
+                            iconClass: 'business-icon',
+                            wordCount: '50',
+                            fileSize: '8KB',
+                            level: '中級',
+                            unlockCost: 9,
+                            description: '精選50個安全與情感相關英文單字，包含安全概念、情感表達、人際關係等詞彙，適合學習情感表達英語。',
+                            filename: '新增單字集4.csv',
+                            preview: [
+                                {
+                                    english: 'safe',
+                                    chinese: '安全的',
+                                    example_en: 'Always wear a helmet to stay safe when you ride a bike.',
+                                    example_ch: '騎腳踏車時一定要戴安全帽才能保持安全。'
+                                },
+                                {
+                                    english: 'sharp',
+                                    chinese: '鋒利的；劇烈的',
+                                    example_en: 'Be careful with that knife; it is very sharp.',
+                                    example_ch: '要小心那把刀，它非常鋒利。'
+                                },
+                                {
+                                    english: 'lazy',
+                                    chinese: '懶散的',
+                                    example_en: 'The lazy cat sleeps on the sofa all day.',
+                                    example_ch: '那隻懶散的貓整天躺在沙發上睡覺。'
+                                },
+                                {
+                                    english: 'glad',
+                                    chinese: '高興的',
+                                    example_en: 'I am glad we won the game today.',
+                                    example_ch: '我很高興我們今天贏得了比賽。'
+                                },
+                                {
+                                    english: 'excellent',
+                                    chinese: '優秀的',
+                                    example_en: 'She did an excellent job on her science project.',
+                                    example_ch: '她在科學專題上做得很優秀。'
+                                }
+                            ]
+                        },
+                        {
+                            id: 'newvocab5',
+                            title: '🌙 文化月球單字集',
+                            subtitle: '50個節日與文化單字 - 月球的傳統文化',
+                            icon: '🌙',
+                            iconClass: 'sports-icon',
+                            wordCount: '50',
+                            fileSize: '8KB',
+                            level: '初級',
+                            unlockCost: 6,
+                            description: '精選50個節日與文化相關英文單字，包含節日慶祝、文化活動、傳統習俗等詞彙，適合學習文化英語。',
+                            filename: '新增單字集5.csv',
+                            preview: [
+                                {
+                                    english: 'row',
+                                    chinese: '排；列',
+                                    example_en: 'Please sit in a row during assembly.',
+                                    example_ch: '請在集合時排成一列。'
+                                },
+                                {
+                                    english: 'million',
+                                    chinese: '百萬',
+                                    example_en: 'The population of the city is over one million.',
+                                    example_ch: '這個城市的人口超過一百萬。'
+                                },
+                                {
+                                    english: 'goose',
+                                    chinese: '鵝',
+                                    example_en: 'A goose swam across the pond.',
+                                    example_ch: '一隻鵝游過池塘。'
+                                },
+                                {
+                                    english: 'bug',
+                                    chinese: '蟲子',
+                                    example_en: 'I found a bug crawling on the window.',
+                                    example_ch: '我發現一隻蟲子在窗戶上爬行。'
+                                },
+                                {
+                                    english: 'hen',
+                                    chinese: '母雞',
+                                    example_en: 'The hen laid five eggs this morning.',
+                                    example_ch: '這隻母雞今天早上下了五顆蛋。'
+                                }
+                            ]
+                        },
+                        {
+                            id: 'newvocab6',
+                            title: '🏛️ 建築神殿單字集',
+                            subtitle: '50個建築與空間單字 - 宇宙建築的藝術',
+                            icon: '🏛️',
+                            iconClass: 'toeic-icon',
+                            wordCount: '50',
+                            fileSize: '8KB',
+                            level: '中級',
+                            unlockCost: 8,
+                            description: '精選50個建築與空間相關英文單字，包含建築結構、空間概念、室內設計等詞彙，適合學習建築英語。',
+                            filename: '新增單字集6.csv',
+                            preview: [
+                                {
+                                    english: 'paint',
+                                    chinese: '動畫圖；油漆',
+                                    example_en: 'Please paint the wall blue.',
+                                    example_ch: '請把牆壁漆成藍色。'
+                                },
+                                {
+                                    english: 'bridge',
+                                    chinese: '橋樑',
+                                    example_en: 'We walked across the bridge to get to the park.',
+                                    example_ch: '我們走過橋樑到達公園。'
+                                },
+                                {
+                                    english: 'airport',
+                                    chinese: '機場',
+                                    example_en: 'They arrived at the airport early in the morning.',
+                                    example_ch: '他們一大早就到達機場。'
+                                },
+                                {
+                                    english: 'postcard',
+                                    chinese: '明信片',
+                                    example_en: 'She sent a postcard from her vacation in Japan.',
+                                    example_ch: '她從日本度假時寄了一張明信片。'
+                                },
+                                {
+                                    english: 'stair',
+                                    chinese: '樓梯',
+                                    example_en: 'He climbed the stair to reach his room.',
+                                    example_ch: '他爬樓梯到他的房間。'
+                                }
+                            ]
+                        },
+                        {
+                            id: 'newvocab7',
+                            title: '👨‍🚀 職業太空單字集',
+                            subtitle: '50個職業與工作單字 - 太空人的職業生涯',
+                            icon: '💼',
+                            iconClass: 'business-icon',
+                            wordCount: '50',
+                            fileSize: '8KB',
+                            level: '中級',
+                            unlockCost: 9,
+                            description: '精選50個職業與工作相關英文單字，包含職業類型、工作環境、職場技能等詞彙，適合學習職場英語。',
+                            filename: '新增單字集7.csv',
+                            preview: [
+                                {
+                                    english: 'set',
+                                    chinese: '創立；擺設',
+                                    example_en: 'Please set the table before dinner.',
+                                    example_ch: '請在晚餐前擺好桌子。'
+                                },
+                                {
+                                    english: 'bite',
+                                    chinese: '咬',
+                                    example_en: 'Be careful, the dog might bite.',
+                                    example_ch: '小心，那隻狗可能會咬人。'
+                                },
+                                {
+                                    english: 'die',
+                                    chinese: '死亡',
+                                    example_en: 'The flowers will die without water.',
+                                    example_ch: '花若沒水就會枯死。'
+                                },
+                                {
+                                    english: 'somewhere',
+                                    chinese: '某處',
+                                    example_en: 'I left my book somewhere in the classroom.',
+                                    example_ch: '我把書放在教室的某處。'
+                                },
+                                {
+                                    english: 'abroad',
+                                    chinese: '到國外；在國外',
+                                    example_en: 'She studies abroad next year.',
+                                    example_ch: '她明年到國外念書。'
+                                }
+                            ]
+                        },
+                        {
+                            id: 'newvocab8',
+                            title: '🛰️ 科技衛星單字集',
+                            subtitle: '50個科技與現代生活單字 - 未來科技的語言',
+                            icon: '🛰️',
+                            iconClass: 'toefl-icon',
+                            wordCount: '50',
+                            fileSize: '8KB',
+                            level: '中級',
+                            unlockCost: 10,
+                            description: '精選50個科技與現代生活相關英文單字，包含科技產品、網路概念、現代生活方式等詞彙，適合學習科技英語。',
+                            filename: '新增單字集8.csv',
+                            preview: [
+                                {
+                                    english: 'screen',
+                                    chinese: '螢幕',
+                                    example_en: 'The teacher shows the video on the screen.',
+                                    example_ch: '老師在螢幕上播放影片。'
+                                },
+                                {
+                                    english: 'puppy',
+                                    chinese: '幼犬',
+                                    example_en: 'The puppy plays with a ball in the yard.',
+                                    example_ch: '幼犬在院子裡玩球。'
+                                },
+                                {
+                                    english: 'lid',
+                                    chinese: '蓋子',
+                                    example_en: 'Put the lid on the jar after you finish.',
+                                    example_ch: '用完後把蓋子蓋上罐子。'
+                                },
+                                {
+                                    english: 'cage',
+                                    chinese: '籠子',
+                                    example_en: 'The bird sings in its cage every morning.',
+                                    example_ch: '那隻鳥每天早上在籠子裡唱歌。'
+                                },
+                                {
+                                    english: 'sight',
+                                    chinese: '視力；景象',
+                                    example_en: 'The mountain view is a beautiful sight.',
+                                    example_ch: '那座山的景象非常美麗。'
+                                }
+                            ]
+                        }
+                    ]
+                }
+            },
+            methods: {
+                // 星星系統方法
+                getStars() {
+                    return parseInt(localStorage.getItem('totalStars') || '0');
+                },
+                
+                addStars(amount) {
+                    const currentStars = this.getStars();
+                    const newStars = currentStars + amount;
+                    localStorage.setItem('totalStars', newStars);
+                    this.totalStars = newStars;
+                    this.updateStarsDisplay();
+                    this.playStarSound();
+                    this.showStarReward(amount);
+                    return newStars;
+                },
+                
+                updateStarsDisplay() {
+                    const starsCount = document.getElementById('totalStarsCount');
+                    if (starsCount) {
+                        starsCount.textContent = `⭐ ${this.totalStars}`;
+                    }
+                },
+                
+                playStarSound() {
+                    try {
+                        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                        const oscillator = audioContext.createOscillator();
+                        const gainNode = audioContext.createGain();
+                        
+                        oscillator.connect(gainNode);
+                        gainNode.connect(audioContext.destination);
+                        
+                        oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+                        oscillator.frequency.setValueAtTime(1000, audioContext.currentTime + 0.1);
+                        oscillator.frequency.setValueAtTime(1200, audioContext.currentTime + 0.2);
+                        
+                        gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+                        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+                        
+                        oscillator.start(audioContext.currentTime);
+                        oscillator.stop(audioContext.currentTime + 0.3);
+                    } catch (e) {
+                        // 如果音效API不可用，靜默處理
+                    }
+                },
+                
+                showStarReward(amount) {
+                    const rewardDiv = document.createElement('div');
+                    rewardDiv.style.cssText = `
+                        position: fixed;
+                        top: 50%;
+                        left: 50%;
+                        transform: translate(-50%, -50%);
+                        background: linear-gradient(135deg, rgba(255, 215, 0, 0.9), rgba(255, 170, 0, 0.9));
+                        color: #000;
+                        padding: 20px 30px;
+                        border-radius: 15px;
+                        font-size: 1.5rem;
+                        font-weight: bold;
+                        z-index: 1000;
+                        box-shadow: 0 0 30px #ffd700;
+                        animation: starRewardPop 3s cubic-bezier(.4,2,.6,1) forwards;
+                        font-family: 'Orbitron', sans-serif;
+                    `;
+                    rewardDiv.innerHTML = `⭐ +${amount} 星星 ⭐`;
+                    
+                    document.body.appendChild(rewardDiv);
+                    
+                    setTimeout(() => {
+                        if (document.body.contains(rewardDiv)) {
+                            document.body.removeChild(rewardDiv);
+                        }
+                    }, 3000);
+                },
+                
+                calculateStarReward(file) {
+                    let baseReward = 5; // 基礎下載獎勵
+                    
+                    // 根據檔案大小給予獎勵
+                    const fileSize = parseInt(file.fileSize.replace('KB', ''));
+                    if (fileSize >= 50) {
+                        baseReward += 3; // 大檔案額外獎勵
+                    } else if (fileSize >= 20) {
+                        baseReward += 2; // 中等檔案獎勵
+                    } else {
+                        baseReward += 1; // 小檔案獎勵
+                    }
+                    
+                    // 根據單字數量給予獎勵
+                    const wordCount = parseInt(file.wordCount.replace('+', ''));
+                    if (wordCount >= 1000) {
+                        baseReward += 5; // 1000+單字額外獎勵
+                    } else if (wordCount >= 500) {
+                        baseReward += 3; // 500+單字獎勵
+                    } else if (wordCount >= 100) {
+                        baseReward += 2; // 100+單字獎勵
+                    } else {
+                        baseReward += 1; // 其他獎勵
+                    }
+                    
+                    // 根據難度等級給予獎勵
+                    if (file.level === '高級') {
+                        baseReward += 3;
+                    } else if (file.level === '中高級') {
+                        baseReward += 2;
+                    } else if (file.level === '中級') {
+                        baseReward += 1;
+                    }
+                    
+                    return baseReward;
+                },
 
-      // 綁定公告按鈕點擊事件
-      const announcementBtn = document.querySelector('.announcement-btn');
-      if (announcementBtn) {
-        announcementBtn.addEventListener('click', updateAnnouncementCheckTime);
-      }
+                unlockFile(file) {
+                    // 檢查是否已經解鎖
+                    if (this.isUnlocked(file.id)) {
+                        this.message = `✅ ${file.title} 已經解鎖，可以直接下載！`;
+                        return;
+                    }
+                    
+                    const unlockCost = file.unlockCost || 10;
+                    const currentStars = this.getStars();
+                    
+                    if (currentStars < unlockCost) {
+                        this.message = `❌ 星星不足！需要 ${unlockCost} 顆星星，當前只有 ${currentStars} 顆星星`;
+                        this.messageClass = 'error-message';
+                        setTimeout(() => {
+                            this.message = '';
+                        }, 3000);
+                        return;
+                    }
+                    
+                    // 扣除星星
+                    const newStars = currentStars - unlockCost;
+                    localStorage.setItem('totalStars', newStars);
+                    this.totalStars = newStars;
+                    this.updateStarsDisplay();
+                    
+                    // 記錄已解鎖的檔案
+                    let unlockedFiles = JSON.parse(localStorage.getItem('unlockedFiles') || '[]');
+                    if (!unlockedFiles.includes(file.id)) {
+                        unlockedFiles.push(file.id);
+                        localStorage.setItem('unlockedFiles', JSON.stringify(unlockedFiles));
+                    }
+                    
+                    // 記錄解鎖歷史
+                    this.starRewardHistory.push({
+                        file: file.title,
+                        stars: unlockCost,
+                        timestamp: new Date().toISOString()
+                    });
+                    
+                    // 播放解鎖音效
+                    this.playUnlockSound();
+                    
+                    // 顯示解鎖成功訊息
+                    this.message = `🔓 ${file.title} 解鎖成功！扣除 ${unlockCost} 顆星星`;
+                    this.messageClass = 'success-message';
+                    
+                    // 3秒後清除訊息
+                    setTimeout(() => {
+                        this.message = '';
+                    }, 3000);
+                    
+                    console.log(`🔓 檔案解鎖成功: ${file.title}, 扣除 ${unlockCost} 顆星星`);
+                },
+                
+                downloadFile(file) {
+                    if (!this.isUnlocked(file.id)) {
+                        this.message = `❌ 請先解鎖檔案才能下載！`;
+                        this.messageClass = 'error-message';
+                        setTimeout(() => {
+                            this.message = '';
+                        }, 3000);
+                        return;
+                    }
+                    
+                    this.downloading = file.id;
+                    this.message = '';
+                    
+                    // 檢查是否通過HTTP服務器訪問
+                    if (window.location.protocol === 'file:') {
+                        this.message = `❌ 請通過HTTP服務器訪問此頁面才能下載檔案！\n請運行: python -m http.server 8000\n然後訪問: http://localhost:8000/vocabulary_download.html`;
+                        this.messageClass = 'error-message';
+                        this.downloading = null;
+                        setTimeout(() => {
+                            this.message = '';
+                        }, 5000);
+                        return;
+                    }
+                    
+                    // 使用 encodeURIComponent 處理中文路徑
+                    const fileUrl = `單字下載區/${encodeURIComponent(file.filename)}`;
+                    
+                    // 先檢查檔案是否存在
+                    fetch(fileUrl, {
+                        method: 'GET',
+                        headers: {
+                            'Accept': 'text/csv,application/octet-stream,*/*'
+                        }
+                    })
+                        .then(response => {
+                            if (response.ok) {
+                                return response.blob();
+                            } else {
+                                throw new Error(`檔案不存在 (HTTP ${response.status})`);
+                            }
+                        })
+                        .then(blob => {
+                            // 創建下載連結
+                            const url = window.URL.createObjectURL(blob);
+                            const link = document.createElement('a');
+                            link.href = url;
+                            link.download = file.filename;
+                            link.style.display = 'none';
+                            
+                            document.body.appendChild(link);
+                            link.click();
+                            
+                            // 清理
+                            setTimeout(() => {
+                                if (document.body.contains(link)) {
+                                    document.body.removeChild(link);
+                                }
+                                window.URL.revokeObjectURL(url);
+                            }, 1000);
+                            
+                            this.message = `✅ ${file.title} 下載成功！`;
+                            this.messageClass = 'success-message';
+                            this.selectedFile = file;
+                            this.downloading = null;
+                            
+                            setTimeout(() => {
+                                this.message = '';
+                            }, 3000);
+                        })
+                        .catch(error => {
+                            console.error('下載錯誤:', error);
+                            
+                            let errorMessage = '下載失敗';
+                            if (error.message.includes('Failed to fetch')) {
+                                errorMessage = `❌ 網路錯誤：無法連接到檔案\n\n可能的原因：\n1. 服務器未啟動\n2. 檔案路徑錯誤\n3. 網路連接問題\n\n請檢查：\n- 服務器是否運行在 http://localhost:8000\n- 檔案是否存在於 單字下載區/${file.filename}`;
+                            } else if (error.message.includes('檔案不存在')) {
+                                errorMessage = `❌ 檔案不存在：${file.filename}\n\n請檢查檔案路徑：單字下載區/${file.filename}`;
+                            } else {
+                                errorMessage = `❌ 下載失敗：${error.message}`;
+                            }
+                            
+                            this.message = errorMessage;
+                            this.messageClass = 'error-message';
+                            this.downloading = null;
+                            
+                            setTimeout(() => {
+                                this.message = '';
+                            }, 5000);
+                        });
+                },
+                
+                canUnlock(file) {
+                    const unlockCost = file.unlockCost || 10;
+                    return this.getStars() >= unlockCost;
+                },
+                
+                isUnlocked(fileId) {
+                    const unlockedFiles = JSON.parse(localStorage.getItem('unlockedFiles') || '[]');
+                    return unlockedFiles.includes(fileId);
+                },
+                
+                playUnlockSound() {
+                    try {
+                        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                        const oscillator = audioContext.createOscillator();
+                        const gainNode = audioContext.createGain();
+                        
+                        oscillator.connect(gainNode);
+                        gainNode.connect(audioContext.destination);
+                        
+                        // 解鎖音效：上升音調
+                        oscillator.frequency.setValueAtTime(400, audioContext.currentTime);
+                        oscillator.frequency.setValueAtTime(600, audioContext.currentTime + 0.1);
+                        oscillator.frequency.setValueAtTime(800, audioContext.currentTime + 0.2);
+                        oscillator.frequency.setValueAtTime(1000, audioContext.currentTime + 0.3);
+                        
+                        gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+                        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.4);
+                        
+                        oscillator.start(audioContext.currentTime);
+                        oscillator.stop(audioContext.currentTime + 0.4);
+                    } catch (e) {
+                        // 如果音效API不可用，靜默處理
+                    }
+                },
+                
 
-      // 每5分鐘檢查一次新公告
-      setInterval(checkNewAnnouncements, 5 * 60 * 1000);
-    });
-  </script>
+                
+
+                
+                selectFile(file) {
+                    this.selectedFile = file;
+                },
+                resetFilters() {
+                    this.searchQuery = '';
+                    this.selectedLevel = '';
+                    this.selectedFile = null; // 關閉預覽
+                },
+
+                getUnlockButtonStyle(file) {
+                    if (this.isUnlocked(file.id)) {
+                        return {
+                            background: 'linear-gradient(135deg, #00ffff, #ff00ff)',
+                            color: '#ffffff',
+                            boxShadow: '0 0 20px rgba(0,255,255,0.3)'
+                        };
+                    } else if (this.canUnlock(file)) {
+                        return {
+                            background: 'linear-gradient(135deg, #ffd700, #ffaa00)',
+                            color: '#000000',
+                            boxShadow: '0 0 20px rgba(255,215,0,0.3)'
+                        };
+                    } else {
+                        return {
+                            background: 'linear-gradient(135deg, #666666, #444444)',
+                            color: '#cccccc',
+                            boxShadow: 'none',
+                            cursor: 'not-allowed'
+                        };
+                    }
+                },
+
+            },
+            computed: {
+                filteredFiles() {
+                    let files = this.vocabularyFiles;
+
+                    if (this.searchQuery) {
+                        const query = this.searchQuery.toLowerCase();
+                        files = files.filter(file => 
+                            file.title.toLowerCase().includes(query) ||
+                            file.subtitle.toLowerCase().includes(query) ||
+                            file.description.toLowerCase().includes(query)
+                        );
+                    }
+
+                    if (this.selectedLevel) {
+                        files = files.filter(file => file.level === this.selectedLevel);
+                    }
+
+                    return files;
+                }
+            },
+            mounted() {
+                // 初始化星星系統
+                this.totalStars = this.getStars();
+                this.updateStarsDisplay();
+                
+                // 檢查是否通過HTTP服務器訪問
+                if (window.location.protocol === 'file:') {
+                    this.message = `⚠️ 檢測到您直接打開了HTML檔案！\n\n為了正常下載檔案，請：\n1. 在終端機運行：python -m http.server 8000\n2. 訪問：http://localhost:8000/vocabulary_download.html\n\n這樣可以避免CORS錯誤。`;
+                    this.messageClass = 'error-message';
+                    setTimeout(() => {
+                        this.message = '';
+                    }, 8000);
+                }
+                
+                // 預設顯示第一個檔案的預覽
+                this.selectedFile = this.vocabularyFiles[0];
+                
+                console.log('🌟 單字下載中心星星系統已初始化，當前星星:', this.totalStars);
+            }
+        }).mount('#app');
+    </script>
 </body>
-</html>
+</html> 
