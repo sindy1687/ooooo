@@ -523,36 +523,7 @@
         color: #666;
       }
 
-      /* 抽卡按鈕樣式 */
-      .gacha-link {
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        background: linear-gradient(45deg, #ff6b6b, #ffd700);
-        color: white;
-        border: none;
-        padding: 15px 20px;
-        border-radius: 25px;
-        font-size: 16px;
-        cursor: pointer;
-        box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
-        transition: transform 0.3s ease;
-        z-index: 1000;
-        font-weight: bold;
-        animation: gachaPulse 2s ease-in-out infinite;
-        display: none;
-      }
 
-      @keyframes gachaPulse {
-        0% { transform: scale(1); }
-        50% { transform: scale(1.05); }
-        100% { transform: scale(1); }
-      }
-
-      .gacha-link:hover {
-        transform: scale(1.1);
-        box-shadow: 0 6px 20px rgba(255, 107, 107, 0.5);
-      }
 
       
 
@@ -643,10 +614,7 @@
 
            <div class="connection-status" id="connectionStatus"></div>
 
-    <!-- 抽卡連結按鈕 -->
-    <button class="gacha-link" onclick="openGachaPage()">
-      🎰 抽卡
-    </button>
+
 
       
 
@@ -1039,12 +1007,6 @@
                      showChatLayout() {
           document.getElementById('loginScreen').style.display = 'none';
           document.getElementById('chatLayout').style.display = 'flex';
-          
-          // 顯示抽卡按鈕
-          const gachaLink = document.querySelector('.gacha-link');
-          if (gachaLink) {
-            gachaLink.style.display = 'block';
-          }
         }
 
       setUserName(name) {
@@ -1073,6 +1035,8 @@
 
       // 發送系統訊息到聊天室
       async sendSystemMessage(message) {
+        if (!this.currentUser) return;
+
         try {
           const messageData = {
             text: message,
@@ -1087,7 +1051,6 @@
           console.log('✅ 系統訊息已發送');
         } catch (error) {
           console.error('❌ 發送系統訊息失敗:', error);
-          throw error; // 重新拋出錯誤，讓調用者知道發送失敗
         }
       }
     }
@@ -1136,19 +1099,7 @@
       chat.showNotification(`歡迎 ${userName} 加入聊天室！`, 'success');
     };
 
-    // 開啟抽卡頁面函數
-    window.openGachaPage = () => {
-      let userName = '神秘玩家';
-      
-      // 嘗試從聊天室獲取用戶名稱
-      if (chat && chat.currentUser) {
-        userName = chat.currentUser.name;
-      }
-      
-      // 將用戶名稱傳遞到抽卡頁面
-      const gachaUrl = `gacha.html?user=${encodeURIComponent(userName)}`;
-      window.open(gachaUrl, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
-    };
+
 
     // 事件監聽器
     document.addEventListener('DOMContentLoaded', () => {
