@@ -1,0 +1,1181 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Firebase 即時聊天室 - 增強版</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Microsoft JhengHei', Arial, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      color: #333;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 20px;
+      color: white;
+    }
+
+    .header h1 {
+      font-size: 2.5em;
+      margin-bottom: 10px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .login-screen {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 15px;
+      padding: 40px;
+      text-align: center;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+      max-width: 500px;
+      margin: 50px auto;
+    }
+
+    .login-screen h2 {
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    .name-input {
+      width: 100%;
+      padding: 15px;
+      border: 2px solid #ddd;
+      border-radius: 10px;
+      font-size: 16px;
+      margin-bottom: 20px;
+      outline: none;
+    }
+
+    .name-input:focus {
+      border-color: #667eea;
+    }
+
+    .enter-button {
+      background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      border-radius: 25px;
+      font-size: 18px;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+
+    .enter-button:hover {
+      transform: translateY(-2px);
+    }
+
+    .chat-layout {
+      display: flex;
+      height: calc(100vh - 120px);
+      gap: 20px;
+      display: none;
+    }
+
+    .players-panel {
+      width: 300px;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 15px;
+      padding: 20px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .players-header {
+      background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%);
+      color: white;
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .players-list {
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    .player-item {
+      display: flex;
+      align-items: center;
+      padding: 10px;
+      margin-bottom: 8px;
+      background: #f8f9fa;
+      border-radius: 8px;
+      border-left: 4px solid #4ecdc4;
+    }
+
+    .player-avatar {
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      margin-right: 10px;
+    }
+
+    .player-info {
+      flex: 1;
+    }
+
+    .player-name {
+      font-weight: bold;
+      color: #333;
+    }
+
+    .player-status {
+      font-size: 12px;
+      color: #666;
+    }
+
+    .online-indicator {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #4CAF50;
+      margin-left: 10px;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 1; }
+      50% { opacity: 0.5; }
+      100% { opacity: 1; }
+    }
+
+    .chat-panel {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 15px;
+      padding: 20px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .chat-header {
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      color: white;
+      padding: 15px 20px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .user-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+    }
+
+    .online-status {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 14px;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #4CAF50;
+      animation: pulse 2s infinite;
+    }
+
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 10px;
+      background: #f8f9fa;
+      border-radius: 10px;
+      margin-bottom: 20px;
+    }
+
+    .message {
+      margin-bottom: 15px;
+      animation: messageSlide 0.3s ease-out;
+    }
+
+    @keyframes messageSlide {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .message-content {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .message-avatar {
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+
+    .message-bubble {
+      background: white;
+      padding: 12px 16px;
+      border-radius: 18px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      max-width: 70%;
+      word-wrap: break-word;
+    }
+
+    .message-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 5px;
+    }
+
+    .message-user {
+      font-weight: bold;
+      color: #333;
+      font-size: 14px;
+    }
+
+    .message-time {
+      font-size: 12px;
+      color: #666;
+    }
+
+    .message-text {
+      color: #333;
+      line-height: 1.4;
+    }
+
+    .message.own {
+      flex-direction: row-reverse;
+    }
+
+    .message.own .message-content {
+      flex-direction: row-reverse;
+    }
+
+    .message.own .message-bubble {
+      background: linear-gradient(45deg, #667eea, #764ba2);
+      color: white;
+    }
+
+    .message.own .message-user {
+      color: white;
+    }
+
+         .message.own .message-time {
+       color: rgba(255,255,255,0.8);
+     }
+
+     .message.system {
+       margin-bottom: 20px;
+     }
+
+     .message.system .message-content {
+       justify-content: center;
+     }
+
+     .message.system .message-bubble {
+       background: linear-gradient(45deg, #ff6b6b, #ffd700);
+       color: white;
+       border: 2px solid #ffd700;
+       box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+       animation: systemMessageGlow 2s ease-in-out infinite alternate;
+     }
+
+     @keyframes systemMessageGlow {
+       0% { box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3); }
+       100% { box-shadow: 0 4px 20px rgba(255, 215, 0, 0.6); }
+     }
+
+     .message.system .message-user {
+       color: white;
+       font-weight: bold;
+     }
+
+     .message.system .message-time {
+       color: rgba(255,255,255,0.8);
+     }
+
+     .message.system .message-text {
+       color: white;
+       font-weight: 500;
+     }
+
+    .chat-input-container {
+      display: flex;
+      gap: 10px;
+      align-items: flex-end;
+    }
+
+    .input-group {
+      flex: 1;
+      position: relative;
+    }
+
+    .message-input {
+      width: 100%;
+      padding: 15px 20px;
+      border: 2px solid #ddd;
+      border-radius: 25px;
+      font-size: 16px;
+      resize: none;
+      outline: none;
+      transition: border-color 0.3s ease;
+      font-family: inherit;
+    }
+
+    .message-input:focus {
+      border-color: #667eea;
+    }
+
+    .char-count {
+      position: absolute;
+      bottom: 5px;
+      right: 15px;
+      font-size: 12px;
+      color: #666;
+    }
+
+    .send-button {
+      background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+      color: white;
+      border: none;
+      padding: 15px 25px;
+      border-radius: 25px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+      white-space: nowrap;
+    }
+
+    .send-button:hover:not(:disabled) {
+      transform: translateY(-2px);
+    }
+
+    .send-button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .typing-indicator {
+      padding: 10px;
+      color: #666;
+      font-style: italic;
+      font-size: 14px;
+    }
+
+    .connection-status {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 10px 15px;
+      border-radius: 20px;
+      color: white;
+      font-size: 14px;
+      z-index: 1000;
+      transition: all 0.3s ease;
+    }
+
+    .status-connected {
+      background: #4CAF50;
+    }
+
+    .status-connecting {
+      background: #FF9800;
+    }
+
+    .status-disconnected {
+      background: #f44336;
+    }
+
+    .notification {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 15px 25px;
+      border-radius: 25px;
+      color: white;
+      font-weight: bold;
+      z-index: 1000;
+      animation: slideDown 0.3s ease;
+    }
+
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+      }
+    }
+
+    .notification.success {
+      background: #4CAF50;
+    }
+
+    .notification.error {
+      background: #f44336;
+    }
+
+    .notification.info {
+      background: #2196F3;
+    }
+
+    .back-button {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background: rgba(255,255,255,0.2);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 25px;
+      cursor: pointer;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.3s ease;
+    }
+
+    .back-button:hover {
+      background: rgba(255,255,255,0.3);
+    }
+
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: #666;
+    }
+
+    .spinner {
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid #667eea;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 20px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+               .empty-state {
+        text-align: center;
+        padding: 40px;
+        color: #666;
+      }
+
+      /* 抽卡按鈕樣式 */
+      .gacha-link {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: linear-gradient(45deg, #ff6b6b, #ffd700);
+        color: white;
+        border: none;
+        padding: 15px 20px;
+        border-radius: 25px;
+        font-size: 16px;
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+        transition: transform 0.3s ease;
+        z-index: 1000;
+        font-weight: bold;
+        animation: gachaPulse 2s ease-in-out infinite;
+        display: none;
+      }
+
+      @keyframes gachaPulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+        100% { transform: scale(1); }
+      }
+
+      .gacha-link:hover {
+        transform: scale(1.1);
+        box-shadow: 0 6px 20px rgba(255, 107, 107, 0.5);
+      }
+
+      
+
+           
+  </style>
+</head>
+<body>
+  <a href="index.html" class="back-button">
+    <span>←</span>
+    返回首頁
+  </a>
+
+  <div class="container">
+    <div class="header">
+      <h1>💬 Firebase 即時聊天室</h1>
+      <p>真正的即時通訊，無需等待回傳！</p>
+    </div>
+
+    <!-- 登入畫面 -->
+    <div class="login-screen" id="loginScreen">
+      <h2>🎯 進入聊天室</h2>
+      <input 
+        type="text" 
+        id="userNameInput" 
+        class="name-input" 
+        placeholder="請輸入您的暱稱..."
+        maxlength="20"
+      >
+      <button id="enterButton" class="enter-button" onclick="enterChat()">
+        🚀 進入聊天室
+      </button>
+    </div>
+
+    <!-- 聊天室佈局 -->
+    <div class="chat-layout" id="chatLayout">
+      <!-- 左側玩家列表 -->
+      <div class="players-panel">
+        <div class="players-header">
+          <h3>👥 線上玩家</h3>
+          <div id="playerCount">0 人在線</div>
+        </div>
+        <div class="players-list" id="playersList">
+          <div class="empty-state">載入中...</div>
+        </div>
+      </div>
+
+      <!-- 右側聊天區域 -->
+      <div class="chat-panel">
+        <div class="chat-header">
+          <div class="user-info">
+            <div class="user-avatar" id="userAvatar">?</div>
+            <div>
+              <div id="userName">載入中...</div>
+              <div class="online-status">
+                <div class="status-dot"></div>
+                <span id="onlineStatus">連線中...</span>
+              </div>
+            </div>
+          </div>
+          <div id="onlineCount">線上: 0</div>
+        </div>
+
+        <div class="chat-messages" id="chatMessages">
+          <div class="loading">
+            <div class="spinner"></div>
+            <div>正在連線到 Firebase...</div>
+          </div>
+        </div>
+
+        <div class="chat-input-container">
+          <div class="input-group">
+            <textarea 
+              id="messageInput" 
+              class="message-input" 
+              placeholder="輸入訊息... (Ctrl+Enter 發送，Esc 清除)"
+              rows="1"
+              maxlength="200"
+            ></textarea>
+            <div class="char-count" id="charCount">200</div>
+          </div>
+          <button id="sendButton" class="send-button" disabled>
+            發送
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+           <div class="connection-status" id="connectionStatus"></div>
+
+    <!-- 抽卡連結按鈕 -->
+    <button class="gacha-link" onclick="openGachaPage()">
+      🎰 抽卡
+    </button>
+
+      
+
+   <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getDatabase, ref, set, onValue, push, serverTimestamp, onDisconnect } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+    import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+    // Firebase 配置
+    const firebaseConfig = {
+      apiKey: "AIzaSyBcUJ1v9I67qSofbCpiLr3UfKkE8TT-YOY",
+      authDomain: "quiz-star-arena.firebaseapp.com",
+      databaseURL: "https://quiz-star-arena-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "quiz-star-arena",
+      storageBucket: "quiz-star-arena.appspot.com",
+      messagingSenderId: "631540520004",
+      appId: "1:631540520004:web:f209cc7a3d9fdcf6805811"
+    };
+
+    // 初始化 Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const auth = getAuth(app);
+
+    // 聊天系統
+    class EnhancedFirebaseChat {
+      constructor() {
+        this.currentUser = null;
+        this.messagesRef = ref(db, 'enhanced_chat/messages');
+        this.usersRef = ref(db, 'enhanced_chat/users');
+        this.typingRef = ref(db, 'enhanced_chat/typing');
+        this.isConnected = false;
+        this.lastMessageCount = 0;
+        this.typingTimeout = null;
+        this.userName = '';
+        
+        this.init();
+      }
+
+      async init() {
+        try {
+          // 匿名登入
+          await signInAnonymously(auth);
+          
+          // 監聽認證狀態
+          onAuthStateChanged(auth, (user) => {
+            if (user) {
+              this.currentUser = {
+                uid: user.uid,
+                name: this.userName || `用戶${user.uid.slice(-4)}`,
+                avatar: this.generateAvatar(user.uid)
+              };
+              
+              console.log('✅ Firebase 認證成功，用戶:', this.currentUser);
+              
+              // 如果已經設定了用戶名稱，立即初始化聊天室
+              if (this.userName) {
+                console.log('✅ 用戶名稱已設定，初始化聊天室');
+                this.setupUser();
+                this.loadMessages();
+                this.loadPlayers();
+                this.setupTypingListener();
+                this.updateConnectionStatus('connected');
+                this.showChatLayout();
+              } else {
+                console.log('⏳ 等待用戶輸入名稱...');
+              }
+            }
+          });
+
+        } catch (error) {
+          console.error('❌ 初始化失敗:', error);
+          this.showNotification('連線失敗，請重新整理頁面', 'error');
+        }
+      }
+
+      generateAvatar(uid) {
+        const colors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#feca57', '#ff9ff3'];
+        const color = colors[uid.charCodeAt(0) % colors.length];
+        return color;
+      }
+
+      async setupUser() {
+        if (!this.currentUser) return;
+
+        // 更新用戶資訊
+        const userRef = ref(db, `enhanced_chat/users/${this.currentUser.uid}`);
+        await set(userRef, {
+          name: this.currentUser.name,
+          avatar: this.currentUser.avatar,
+          lastSeen: serverTimestamp(),
+          online: true
+        });
+
+        // 設定離線時自動移除
+        await onDisconnect(userRef).update({
+          online: false,
+          lastSeen: serverTimestamp()
+        });
+
+        // 更新 UI
+        document.getElementById('userName').textContent = this.currentUser.name;
+        document.getElementById('userAvatar').textContent = this.currentUser.name.charAt(0);
+        document.getElementById('userAvatar').style.background = this.currentUser.avatar;
+      }
+
+      loadMessages() {
+        // 監聽訊息變化
+        onValue(this.messagesRef, (snapshot) => {
+          const messages = [];
+          snapshot.forEach((childSnapshot) => {
+            const message = childSnapshot.val();
+            if (message) {
+              messages.push({
+                id: childSnapshot.key,
+                ...message
+              });
+            }
+          });
+
+          // 按時間排序
+          messages.sort((a, b) => a.timestamp - b.timestamp);
+
+          this.displayMessages(messages);
+
+          // 檢查新訊息
+          if (messages.length > this.lastMessageCount) {
+            this.playMessageSound();
+            this.lastMessageCount = messages.length;
+          }
+        });
+      }
+
+      loadPlayers() {
+        // 監聽玩家列表變化
+        onValue(this.usersRef, (snapshot) => {
+          const players = [];
+          snapshot.forEach((childSnapshot) => {
+            const player = childSnapshot.val();
+            if (player && player.online) {
+              players.push({
+                uid: childSnapshot.key,
+                ...player
+              });
+            }
+          });
+
+          this.displayPlayers(players);
+        });
+      }
+
+      displayPlayers(players) {
+        const playersList = document.getElementById('playersList');
+        const playerCount = document.getElementById('playerCount');
+        
+        playerCount.textContent = `${players.length} 人在線`;
+
+        if (players.length === 0) {
+          playersList.innerHTML = '<div class="empty-state">目前沒有其他玩家在線</div>';
+          return;
+        }
+
+        playersList.innerHTML = players.map(player => {
+          const isOwn = player.uid === this.currentUser?.uid;
+          return `
+            <div class="player-item ${isOwn ? 'own' : ''}">
+              <div class="player-avatar" style="background: ${player.avatar}">
+                ${player.name.charAt(0)}
+              </div>
+              <div class="player-info">
+                <div class="player-name">${player.name} ${isOwn ? '(您)' : ''}</div>
+                <div class="player-status">在線</div>
+              </div>
+              <div class="online-indicator"></div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      displayMessages(messages) {
+        const chatMessages = document.getElementById('chatMessages');
+        
+        if (messages.length === 0) {
+          chatMessages.innerHTML = `
+            <div class="loading">
+              <div>還沒有訊息，開始聊天吧！</div>
+            </div>
+          `;
+          return;
+        }
+
+        chatMessages.innerHTML = messages.map(message => {
+          const isOwn = message.userId === this.currentUser?.uid;
+          const isSystem = message.isSystem || message.userId === 'system';
+          const time = new Date(message.timestamp).toLocaleTimeString('zh-TW', {
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit'
+          });
+
+          if (isSystem) {
+            return `
+              <div class="message system">
+                <div class="message-content">
+                  <div class="message-avatar" style="background: ${message.avatar}">
+                    🎉
+                  </div>
+                  <div class="message-bubble system-bubble">
+                    <div class="message-info">
+                      <span class="message-user">${message.userName}</span>
+                      <span class="message-time">${time}</span>
+                    </div>
+                    <div class="message-text">${this.escapeHtml(message.text)}</div>
+                  </div>
+                </div>
+              </div>
+            `;
+          }
+
+          return `
+            <div class="message ${isOwn ? 'own' : ''}">
+              <div class="message-content">
+                <div class="message-avatar" style="background: ${message.avatar}">
+                  ${message.userName.charAt(0)}
+                </div>
+                <div class="message-bubble">
+                  <div class="message-info">
+                    <span class="message-user">${message.userName}</span>
+                    <span class="message-time">${time}</span>
+                  </div>
+                  <div class="message-text">${this.escapeHtml(message.text)}</div>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        // 滾動到底部
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+      }
+
+      escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+      }
+
+      async sendMessage(text) {
+        if (!this.currentUser || !text.trim()) return;
+
+        try {
+          const messageData = {
+            text: text.trim(),
+            userId: this.currentUser.uid,
+            userName: this.currentUser.name,
+            avatar: this.currentUser.avatar,
+            timestamp: Date.now()
+          };
+
+          await push(this.messagesRef, messageData);
+          
+          // 清除輸入框
+          document.getElementById('messageInput').value = '';
+          this.updateCharCount();
+          this.updateSendButton();
+
+        } catch (error) {
+          console.error('❌ 發送訊息失敗:', error);
+          this.showNotification('發送失敗，請重試', 'error');
+        }
+      }
+
+      setupTypingListener() {
+        const messageInput = document.getElementById('messageInput');
+        
+        // 設定輸入框事件監聽器
+        messageInput.addEventListener('input', () => {
+          this.updateCharCount();
+          this.updateSendButton();
+          this.updateTypingStatus(true);
+        });
+
+        messageInput.addEventListener('keydown', (e) => {
+          if (e.ctrlKey && e.key === 'Enter') {
+            e.preventDefault();
+            this.sendMessage(messageInput.value);
+          }
+          if (e.key === 'Escape') {
+            messageInput.value = '';
+            messageInput.blur();
+            this.updateCharCount();
+            this.updateSendButton();
+          }
+        });
+      }
+
+      updateCharCount() {
+        const input = document.getElementById('messageInput');
+        const charCount = document.getElementById('charCount');
+        const remaining = 200 - input.value.length;
+        
+        charCount.textContent = remaining;
+        charCount.style.color = remaining < 20 ? '#f44336' : '#666';
+        
+        if (remaining < 0) {
+          input.value = input.value.substring(0, 200);
+          this.showNotification('訊息長度已達上限', 'error');
+        }
+      }
+
+      updateSendButton() {
+        const input = document.getElementById('messageInput');
+        const sendButton = document.getElementById('sendButton');
+        sendButton.disabled = input.value.trim().length === 0;
+      }
+
+      updateTypingStatus(isTyping) {
+        if (!this.currentUser) return;
+
+        const typingRef = ref(db, `enhanced_chat/typing/${this.currentUser.uid}`);
+        
+        if (isTyping) {
+          set(typingRef, {
+            userName: this.currentUser.name,
+            userId: this.currentUser.uid,
+            timestamp: Date.now()
+          });
+
+          // 清除之前的超時
+          if (this.typingTimeout) {
+            clearTimeout(this.typingTimeout);
+          }
+
+          // 5秒後自動停止打字狀態
+          this.typingTimeout = setTimeout(() => {
+            this.updateTypingStatus(false);
+          }, 5000);
+        } else {
+          set(typingRef, null);
+        }
+      }
+
+      playMessageSound() {
+        try {
+          const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+          const oscillator = audioContext.createOscillator();
+          const gainNode = audioContext.createGain();
+          
+          oscillator.connect(gainNode);
+          gainNode.connect(audioContext.destination);
+          
+          oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+          oscillator.frequency.setValueAtTime(600, audioContext.currentTime + 0.1);
+          
+          gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+          gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+          
+          oscillator.start(audioContext.currentTime);
+          oscillator.stop(audioContext.currentTime + 0.2);
+        } catch (error) {
+          console.log('無法播放提示音:', error);
+        }
+      }
+
+      updateConnectionStatus(status) {
+        const statusElement = document.getElementById('connectionStatus');
+        const statusText = document.getElementById('onlineStatus');
+        
+        statusElement.className = `connection-status status-${status}`;
+        
+        switch (status) {
+          case 'connected':
+            statusElement.textContent = '✅ 已連線';
+            statusText.textContent = '線上';
+            this.isConnected = true;
+            break;
+          case 'connecting':
+            statusElement.textContent = '🔄 連線中...';
+            statusText.textContent = '連線中...';
+            this.isConnected = false;
+            break;
+          case 'disconnected':
+            statusElement.textContent = '❌ 連線中斷';
+            statusText.textContent = '離線';
+            this.isConnected = false;
+            break;
+        }
+      }
+
+                     showChatLayout() {
+          document.getElementById('loginScreen').style.display = 'none';
+          document.getElementById('chatLayout').style.display = 'flex';
+          
+          // 顯示抽卡按鈕
+          const gachaLink = document.querySelector('.gacha-link');
+          if (gachaLink) {
+            gachaLink.style.display = 'block';
+          }
+        }
+
+      setUserName(name) {
+        console.log('設定用戶名稱:', name);
+        this.userName = name;
+        if (this.currentUser) {
+          this.currentUser.name = name;
+          console.log('✅ 用戶已登入，更新用戶資訊');
+          this.setupUser();
+        } else {
+          console.log('⏳ 用戶尚未登入，等待認證完成');
+        }
+      }
+
+      showNotification(message, type = 'info') {
+        const notification = document.createElement('div');
+        notification.className = `notification ${type}`;
+        notification.textContent = message;
+        
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+          notification.remove();
+        }, 3000);
+      }
+
+      // 發送系統訊息到聊天室
+      async sendSystemMessage(message) {
+        try {
+          const messageData = {
+            text: message,
+            userId: 'system',
+            userName: '🎉 系統通知',
+            avatar: '#ff6b6b',
+            timestamp: Date.now(),
+            isSystem: true
+          };
+
+          await push(this.messagesRef, messageData);
+          console.log('✅ 系統訊息已發送');
+        } catch (error) {
+          console.error('❌ 發送系統訊息失敗:', error);
+          throw error; // 重新拋出錯誤，讓調用者知道發送失敗
+        }
+      }
+    }
+
+    // 初始化聊天系統
+    const chat = new EnhancedFirebaseChat();
+    
+           // 暴露到全域，供其他頁面使用
+       window.firebaseChat = chat;
+
+
+       
+
+    // 全域函數
+    window.sendMessage = () => {
+      const input = document.getElementById('messageInput');
+      chat.sendMessage(input.value);
+    };
+
+    window.enterChat = () => {
+      const nameInput = document.getElementById('userNameInput');
+      const userName = nameInput.value.trim();
+      
+      if (!userName) {
+        alert('請輸入您的暱稱！');
+        return;
+      }
+      
+      if (userName.length > 20) {
+        alert('暱稱不能超過20個字元！');
+        return;
+      }
+      
+      chat.setUserName(userName);
+      
+      // 如果用戶已經登入，立即初始化聊天室
+      if (chat.currentUser) {
+        chat.setupUser();
+        chat.loadMessages();
+        chat.loadPlayers();
+        chat.setupTypingListener();
+        chat.updateConnectionStatus('connected');
+        chat.showChatLayout();
+      }
+      
+      chat.showNotification(`歡迎 ${userName} 加入聊天室！`, 'success');
+    };
+
+    // 開啟抽卡頁面函數
+    window.openGachaPage = () => {
+      let userName = '神秘玩家';
+      
+      // 嘗試從聊天室獲取用戶名稱
+      if (chat && chat.currentUser) {
+        userName = chat.currentUser.name;
+      }
+      
+      // 將用戶名稱傳遞到抽卡頁面
+      const gachaUrl = `gacha.html?user=${encodeURIComponent(userName)}`;
+      window.open(gachaUrl, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+    };
+
+    // 事件監聽器
+    document.addEventListener('DOMContentLoaded', () => {
+      const sendButton = document.getElementById('sendButton');
+      const nameInput = document.getElementById('userNameInput');
+      const enterButton = document.getElementById('enterButton');
+
+      // 發送按鈕事件
+      if (sendButton) {
+        sendButton.addEventListener('click', window.sendMessage);
+      }
+
+      // 名稱輸入框事件
+      if (nameInput) {
+        nameInput.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            window.enterChat();
+          }
+        });
+      }
+
+      // 進入按鈕事件
+      if (enterButton) {
+        enterButton.addEventListener('click', window.enterChat);
+      }
+    });
+  </script>
+</body>
+</html> 
