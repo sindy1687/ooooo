@@ -594,6 +594,100 @@
         .hidden {
             display: none !important;
         }
+
+        /* 音效控制按鈕樣式 */
+        .youtube-button, .sound-button {
+            background: linear-gradient(45deg, #00ffff, #a259ff);
+            color: #000;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 0 5px;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+        }
+
+        .youtube-button:hover, .sound-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+        }
+
+        .youtube-button.active, .sound-button.active {
+            background: linear-gradient(45deg, #ffd700, #ff6b6b);
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+        }
+
+        .youtube-button.disabled, .sound-button.disabled {
+            background: linear-gradient(45deg, #666, #999);
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* YouTube 播放器容器 */
+        .youtube-container {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.9);
+            border: 2px solid #00ffff;
+            border-radius: 15px;
+            padding: 20px;
+            z-index: 10000;
+            display: none;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
+            backdrop-filter: blur(10px);
+        }
+
+        .youtube-controls {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .youtube-control-btn {
+            background: linear-gradient(45deg, #00ffff, #a259ff);
+            color: #000;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .youtube-control-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+        }
+
+        .youtube-container.show {
+            display: block;
+        }
+
+        .youtube-close {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .youtube-close:hover {
+            background: #ff4757;
+        }
     </style>
 </head>
 <body>
@@ -612,6 +706,14 @@
     <div class="container">
         <div class="header">
             <h1>🎮 遊戲聊天室</h1>
+            <div style="margin-top: 10px;">
+                <button id="youtubeToggle" class="youtube-button" onclick="toggleYouTube()" title="YouTube 音樂">
+                    🎵 YouTube
+                </button>
+                <button id="soundToggle" class="sound-button" onclick="toggleSound()" title="音效">
+                    🔊 音效
+                </button>
+            </div>
         </div>
 
         <!-- 登入區域 -->
@@ -659,6 +761,11 @@
         </div>
     </div>
 
+    <!-- YouTube 播放器容器（隱藏作為背景音樂） -->
+    <div class="youtube-container" id="youtubeContainer" style="display: none;">
+        <div id="youtubePlayer"></div>
+    </div>
+
     <script>
         // 配置
         const API_BASE_URL = 'https://script.google.com/macros/s/AKfycby6gzLGN6b1bwkdf7u2aM_nfjT8DM1JV4v_6QPD9ZWuqfCGRhfWH4NtL33W4rjV-gU8/exec';
@@ -671,6 +778,11 @@
         let lastMessageCount = 0;
         let isLoading = false;
         let apiConnectionStatus = 'connecting'; // 'online', 'offline', 'connecting'
+        
+        // 音效系統變數
+        let messageSound = null;
+        let soundVolume = 0.5;
+        let youtubePlayer = null;
         
         // 抽卡系統變數
         // 已移除，現在直接跳轉到抽卡頁面
@@ -695,6 +807,14 @@
             
             // 載入抽卡系統
             loadGachaSystem();
+            
+            // 初始化音效系統
+            initSoundSystem();
+            
+            // 恢復音效設定
+            setTimeout(() => {
+                restoreSoundSettings();
+            }, 1000);
         });
 
         // 設定事件監聽器
@@ -1010,6 +1130,9 @@
             // 立即更新顯示
             displayChatMessages();
             
+            // 播放發送音效
+            playMessageSound();
+            
             // 清空輸入框
             messageInput.value = '';
 
@@ -1148,6 +1271,191 @@
 
         // 開始自動更新
         startAutoRefresh();
+
+        // ==================== 音效系統 ====================
+        
+        // 初始化音效系統
+        function initSoundSystem() {
+            try {
+                // 創建訊息音效
+                messageSound = new Audio('sound/correct.mp3');
+                messageSound.volume = soundVolume;
+                
+                // 載入 YouTube API
+                loadYouTubeAPI();
+                
+                console.log('✅ 音效系統初始化完成');
+            } catch (error) {
+                console.error('❌ 音效系統初始化失敗:', error);
+                disableSoundButtons();
+            }
+        }
+
+        // 載入 YouTube API
+        function loadYouTubeAPI() {
+            const tag = document.createElement('script');
+            tag.src = 'https://www.youtube.com/iframe_api';
+            const firstScriptTag = document.getElementsByTagName('script')[0];
+            firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+        }
+
+        // YouTube API 準備就緒
+        window.onYouTubeIframeAPIReady = function() {
+            console.log('✅ YouTube API 載入完成');
+            initYouTubePlayer();
+        };
+
+        // 初始化 YouTube 播放器（隱藏作為背景音樂）
+        function initYouTubePlayer() {
+            youtubePlayer = new YT.Player('youtubePlayer', {
+                height: '1',
+                width: '1',
+                videoId: 'IbZLlSaOicg', // 您提供的 YouTube 影片 ID
+                playerVars: {
+                    'autoplay': 0,
+                    'controls': 0,
+                    'rel': 0,
+                    'showinfo': 0,
+                    'modestbranding': 1,
+                    'loop': 1,
+                    'playlist': 'IbZLlSaOicg',
+                    'disablekb': 1,
+                    'fs': 0
+                },
+                events: {
+                    'onReady': onPlayerReady,
+                    'onStateChange': onPlayerStateChange
+                }
+            });
+        }
+
+        // 播放器準備就緒
+        function onPlayerReady(event) {
+            console.log('✅ YouTube 播放器準備就緒');
+            const youtubeButton = document.getElementById('youtubeToggle');
+            if (youtubeButton) {
+                youtubeButton.disabled = false;
+                youtubeButton.classList.remove('disabled');
+            }
+        }
+
+        // 播放器狀態改變
+        function onPlayerStateChange(event) {
+            const youtubeButton = document.getElementById('youtubeToggle');
+            
+            switch (event.data) {
+                case YT.PlayerState.PLAYING:
+                    youtubeButton.textContent = '🎵 YouTube ON';
+                    youtubeButton.classList.add('active');
+                    localStorage.setItem('youtubeEnabled', 'true');
+                    break;
+                case YT.PlayerState.PAUSED:
+                case YT.PlayerState.ENDED:
+                    youtubeButton.textContent = '🎵 YouTube';
+                    youtubeButton.classList.remove('active');
+                    localStorage.setItem('youtubeEnabled', 'false');
+                    break;
+                case YT.PlayerState.BUFFERING:
+                    // 緩衝中，不改變按鈕狀態
+                    break;
+            }
+        }
+
+        // 切換 YouTube 背景音樂
+        function toggleYouTube() {
+            const youtubeButton = document.getElementById('youtubeToggle');
+            
+            if (!youtubePlayer) {
+                showError('YouTube 播放器未初始化');
+                return;
+            }
+            
+            const isPlaying = youtubeButton.classList.contains('active');
+            
+            if (isPlaying) {
+                // 暫停背景音樂
+                youtubePlayer.pauseVideo();
+                youtubeButton.textContent = '🎵 YouTube';
+                youtubeButton.classList.remove('active');
+                localStorage.setItem('youtubeEnabled', 'false');
+            } else {
+                // 播放背景音樂（不顯示播放器）
+                youtubePlayer.playVideo();
+                youtubeButton.textContent = '🎵 YouTube ON';
+                youtubeButton.classList.add('active');
+                localStorage.setItem('youtubeEnabled', 'true');
+            }
+        }
+
+
+
+        // 切換音效
+        function toggleSound() {
+            const soundButton = document.getElementById('soundToggle');
+            const soundEnabled = localStorage.getItem('soundEnabled') !== 'false';
+            
+            if (soundEnabled) {
+                // 關閉音效
+                localStorage.setItem('soundEnabled', 'false');
+                soundButton.textContent = '🔇 音效';
+                soundButton.classList.remove('active');
+            } else {
+                // 開啟音效
+                localStorage.setItem('soundEnabled', 'true');
+                soundButton.textContent = '🔊 音效 ON';
+                soundButton.classList.add('active');
+            }
+        }
+
+        // 播放訊息音效
+        function playMessageSound() {
+            const soundEnabled = localStorage.getItem('soundEnabled') !== 'false';
+            if (!soundEnabled || !messageSound) return;
+            
+            try {
+                messageSound.currentTime = 0;
+                messageSound.play().catch(error => {
+                    console.log('播放訊息音效失敗:', error);
+                });
+            } catch (error) {
+                console.log('播放訊息音效失敗:', error);
+            }
+        }
+
+        // 禁用音效按鈕
+        function disableSoundButtons() {
+            const youtubeButton = document.getElementById('youtubeToggle');
+            const soundButton = document.getElementById('soundToggle');
+            
+            if (youtubeButton) {
+                youtubeButton.classList.add('disabled');
+                youtubeButton.disabled = true;
+            }
+            
+            if (soundButton) {
+                soundButton.classList.add('disabled');
+                soundButton.disabled = true;
+            }
+        }
+
+        // 恢復音效設定
+        function restoreSoundSettings() {
+            const youtubeEnabled = localStorage.getItem('youtubeEnabled') === 'true';
+            const soundEnabled = localStorage.getItem('soundEnabled') !== 'false';
+            
+            const youtubeButton = document.getElementById('youtubeToggle');
+            const soundButton = document.getElementById('soundToggle');
+            
+            if (youtubeEnabled && youtubeButton) {
+                youtubeButton.textContent = '🎵 YouTube ON';
+                youtubeButton.classList.add('active');
+            }
+            
+            if (soundEnabled && soundButton) {
+                soundButton.textContent = '🔊 音效 ON';
+                soundButton.classList.add('active');
+            }
+        }
 
         // ==================== 抽卡系統 ====================
         
