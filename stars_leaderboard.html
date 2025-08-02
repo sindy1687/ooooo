@@ -406,6 +406,11 @@
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
             backdrop-filter: blur(10px);
             border: 2px solid rgba(255, 215, 0, 0.3);
+            position: relative;
+            z-index: 1;
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
         }
 
         .sync-cards {
@@ -423,6 +428,11 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             border: 2px solid rgba(255, 215, 0, 0.2);
             transition: all 0.3s ease;
+            position: relative;
+            z-index: 5;
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
         }
 
         .sync-card:hover {
@@ -473,6 +483,9 @@
             transition: all 0.3s ease;
             background: linear-gradient(45deg, #FFD700, #FFA500);
             color: #333;
+            position: relative;
+            overflow: hidden;
+            z-index: 10;
         }
 
         .sync-btn:hover {
@@ -776,6 +789,8 @@
                 <button class="sync-btn" onclick="manualAutoUpload()">📤 手動自動上傳</button>
                 <button class="sync-btn" id="autoUploadToggle" onclick="toggleAutoUpload()">⏸️ 停用自動上傳</button>
                 <button class="sync-btn" onclick="refreshUserDisplay()">👤 刷新用戶</button>
+                <button class="sync-btn" onclick="showSetUserModal()" style="background: linear-gradient(45deg, #9C27B0, #673AB7);">👤 設定用戶</button>
+                <button class="sync-btn" onclick="emergencyFixStarsSync()" style="background: linear-gradient(45deg, #ff4757, #ff3838);">🚨 緊急修復</button>
             </div>
         </div>
 
@@ -833,10 +848,50 @@
         </div>
     </div>
 
+    <!-- 設定用戶的彈窗 -->
+    <div id="setUserModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">👤 設定當前用戶</div>
+                <p>設定您的用戶名稱，用於星星排行榜顯示</p>
+            </div>
+            
+            <form id="setUserForm">
+                <div class="form-group">
+                    <label class="form-label" for="setUserName">用戶名稱</label>
+                    <input type="text" id="setUserName" class="form-input" placeholder="輸入您的用戶名稱" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">當前狀態</label>
+                    <div style="background: #f8f9fa; padding: 15px; border-radius: 10px; margin-top: 10px;">
+                        <div style="color: #666; font-size: 0.9rem;">
+                            <div>👤 當前用戶: <span id="currentUserStatus" style="color: #FFD700; font-weight: bold;">未設定</span></div>
+                            <div>🎮 首頁用戶: <span id="homePageUser" style="color: #4CAF50; font-weight: bold;">檢查中...</span></div>
+                            <div>💾 儲存位置: <span id="storageLocation" style="color: #2196F3; font-weight: bold;">檢查中...</span></div>
+                        </div>
+                        <div style="margin-top: 10px; padding: 10px; background: #fff3cd; border-radius: 8px; border-left: 4px solid #ffc107;">
+                            <div style="color: #856404; font-size: 0.9rem;">
+                                <strong>💡 提示：</strong>設定後會自動同步到首頁和其他頁面
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-buttons">
+                    <button type="submit" class="btn btn-primary">✅ 設定用戶</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeSetUserModal()">❌ 取消</button>
+                </div>
+            </form>
+            
+            <div id="setUserMessage"></div>
+        </div>
+    </div>
+
     <script>
         // 配置
         const API_BASE_URL = 'https://script.google.com/macros/s/AKfycbxoktND9L-KKwSaih5SNzdJWLhRP9dQdI5oHbUNIE3HJhdLjhLIwnL8xFnNtFfGE-rH9A/exec';
-        const CURRENT_USER = localStorage.getItem('currentUser') || '玩家' + Math.floor(Math.random() * 1000);
+        const CURRENT_USER = localStorage.getItem('currentUser') || localStorage.getItem('playerName') || '玩家' + Math.floor(Math.random() * 1000);
         let leaderboardData = [];
 
         // 初始化
@@ -1216,7 +1271,7 @@
 
         // 更新當前用戶顯示
         function updateCurrentUserDisplay() {
-            const currentUser = localStorage.getItem('currentUser');
+            const currentUser = localStorage.getItem('currentUser') || localStorage.getItem('playerName');
             const userNameElement = document.getElementById('currentUserName');
             
             if (currentUser && currentUser.trim()) {
@@ -1228,6 +1283,91 @@
                 userNameElement.style.color = '#FF9800';
                 console.log('⚠️ 沒有找到首頁用戶名稱');
             }
+        }
+
+        // 顯示設定用戶彈窗
+        function showSetUserModal() {
+            document.getElementById('setUserModal').style.display = 'block';
+            document.getElementById('setUserName').focus();
+            
+            // 更新當前狀態顯示
+            updateSetUserStatus();
+        }
+
+        // 更新設定用戶狀態顯示
+        function updateSetUserStatus() {
+            const currentUser = localStorage.getItem('currentUser');
+            const playerName = localStorage.getItem('playerName');
+            
+            document.getElementById('currentUserStatus').textContent = currentUser || '未設定';
+            document.getElementById('homePageUser').textContent = playerName || '未設定';
+            
+            // 檢查儲存位置
+            let storageLocation = '未找到';
+            if (currentUser) {
+                storageLocation = 'currentUser (排行榜專用)';
+            } else if (playerName) {
+                storageLocation = 'playerName (首頁專用)';
+            }
+            document.getElementById('storageLocation').textContent = storageLocation;
+            
+            // 預設填入現有用戶名稱
+            const setUserNameInput = document.getElementById('setUserName');
+            if (currentUser) {
+                setUserNameInput.value = currentUser;
+            } else if (playerName) {
+                setUserNameInput.value = playerName;
+            } else {
+                setUserNameInput.value = '';
+            }
+        }
+
+        // 關閉設定用戶彈窗
+        function closeSetUserModal() {
+            document.getElementById('setUserModal').style.display = 'none';
+            document.getElementById('setUserForm').reset();
+            document.getElementById('setUserMessage').innerHTML = '';
+        }
+
+        // 處理設定用戶表單提交
+        document.addEventListener('DOMContentLoaded', function() {
+            const setUserForm = document.getElementById('setUserForm');
+            if (setUserForm) {
+                setUserForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    const userName = document.getElementById('setUserName').value.trim();
+                    
+                    if (!userName) {
+                        showSetUserMessage('請輸入用戶名稱', 'error');
+                        return;
+                    }
+                    
+                    // 同時儲存到兩個位置以確保兼容性
+                    localStorage.setItem('currentUser', userName);
+                    localStorage.setItem('playerName', userName);
+                    
+                    // 更新顯示
+                    updateCurrentUserDisplay();
+                    
+                    // 顯示成功訊息
+                    showSetUserMessage(`✅ 用戶設定成功！\n用戶名稱: ${userName}\n已同步到所有頁面`, 'success');
+                    
+                    // 3秒後關閉彈窗
+                    setTimeout(() => {
+                        closeSetUserModal();
+                    }, 3000);
+                    
+                    console.log(`👤 用戶設定完成: ${userName}`);
+                });
+            }
+        });
+
+        // 顯示設定用戶訊息
+        function showSetUserMessage(message, type) {
+            const messageDiv = document.getElementById('setUserMessage');
+            const className = type === 'success' ? 'success-message' : 'error-message';
+            messageDiv.innerHTML = `<div class="${className}">${message}</div>`;
         }
 
         // 刷新用戶顯示
@@ -1316,7 +1456,7 @@
             
             try {
                 // 獲取首頁用戶名稱
-                const currentUser = localStorage.getItem('currentUser');
+                const currentUser = localStorage.getItem('currentUser') || localStorage.getItem('playerName');
                 let userName;
                 
                 if (currentUser && currentUser.trim()) {
@@ -1373,7 +1513,7 @@
             console.log('📤 手動觸發自動上傳...');
             
             // 檢查用戶名稱
-            const currentUser = localStorage.getItem('currentUser');
+            const currentUser = localStorage.getItem('currentUser') || localStorage.getItem('playerName');
             if (currentUser && currentUser.trim()) {
                 console.log(`👤 當前用戶: ${currentUser.trim()}`);
             } else {
@@ -1548,6 +1688,81 @@
             }, 3000);
         }
 
+        // 緊急修復星星連動系統
+        function emergencyFixStarsSync() {
+            console.log('🚨 執行緊急星星連動系統修復...');
+            
+            // 強制顯示星星連動系統
+            const starsSyncSection = document.querySelector('.stars-sync-section');
+            if (starsSyncSection) {
+                starsSyncSection.style.cssText = `
+                    display: block !important;
+                    visibility: visible !important;
+                    opacity: 1 !important;
+                    position: relative !important;
+                    z-index: 1000 !important;
+                    background: rgba(255, 255, 255, 0.95) !important;
+                    border-radius: 20px !important;
+                    padding: 30px !important;
+                    margin-bottom: 30px !important;
+                    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1) !important;
+                    backdrop-filter: blur(10px) !important;
+                    border: 2px solid rgba(255, 215, 0, 0.3) !important;
+                `;
+                console.log('✅ 星星連動系統已強制顯示');
+            }
+            
+            // 強制顯示星星連動卡片
+            const syncCards = document.querySelectorAll('.sync-card');
+            syncCards.forEach(card => {
+                card.style.cssText = `
+                    display: block !important;
+                    visibility: visible !important;
+                    opacity: 1 !important;
+                    position: relative !important;
+                    z-index: 1005 !important;
+                    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%) !important;
+                    border-radius: 15px !important;
+                    padding: 20px !important;
+                    text-align: center !important;
+                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+                    border: 2px solid rgba(255, 215, 0, 0.2) !important;
+                    transition: all 0.3s ease !important;
+                `;
+            });
+            console.log('✅ 星星連動卡片已強制顯示');
+            
+            // 強制顯示星星連動按鈕
+            const syncBtns = document.querySelectorAll('.sync-btn');
+            syncBtns.forEach(btn => {
+                btn.style.cssText = `
+                    display: inline-block !important;
+                    visibility: visible !important;
+                    opacity: 1 !important;
+                    position: relative !important;
+                    z-index: 1010 !important;
+                    padding: 12px 20px !important;
+                    border: none !important;
+                    border-radius: 25px !important;
+                    cursor: pointer !important;
+                    font-size: 1rem !important;
+                    font-weight: bold !important;
+                    transition: all 0.3s ease !important;
+                    background: linear-gradient(45deg, #FFD700, #FFA500) !important;
+                    color: #333 !important;
+                    overflow: hidden !important;
+                `;
+            });
+            console.log('✅ 星星連動按鈕已強制顯示');
+            
+            // 重新初始化星星連動系統
+            initStarsSync();
+            updateSyncDisplay();
+            
+            console.log('✅ 緊急星星連動系統修復完成');
+            showCustomMessage('✅ 星星連動系統已修復', 'success');
+        }
+
         // 添加動畫樣式
         const style = document.createElement('style');
         style.textContent = `
@@ -1568,6 +1783,46 @@
             
             // 初始化背景音樂
             initBackgroundMusic();
+            
+            // 確保星星連動系統可見
+            const starsSyncSection = document.querySelector('.stars-sync-section');
+            if (starsSyncSection) {
+                starsSyncSection.style.cssText = `
+                    display: block !important;
+                    visibility: visible !important;
+                    opacity: 1 !important;
+                    position: relative !important;
+                    z-index: 1 !important;
+                    background: rgba(255, 255, 255, 0.95) !important;
+                    border-radius: 20px !important;
+                    padding: 30px !important;
+                    margin-bottom: 30px !important;
+                    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1) !important;
+                    backdrop-filter: blur(10px) !important;
+                    border: 2px solid rgba(255, 215, 0, 0.3) !important;
+                `;
+                console.log('✅ 星星連動系統已強制顯示');
+            }
+            
+            // 確保星星連動卡片可見
+            const syncCards = document.querySelectorAll('.sync-card');
+            syncCards.forEach(card => {
+                card.style.cssText = `
+                    display: block !important;
+                    visibility: visible !important;
+                    opacity: 1 !important;
+                    position: relative !important;
+                    z-index: 5 !important;
+                    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%) !important;
+                    border-radius: 15px !important;
+                    padding: 20px !important;
+                    text-align: center !important;
+                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+                    border: 2px solid rgba(255, 215, 0, 0.2) !important;
+                    transition: all 0.3s ease !important;
+                `;
+            });
+            console.log('✅ 星星連動卡片已強制顯示');
             
             // 立即初始化
             initStarsSync();
@@ -1730,9 +1985,15 @@
 
         // 點擊彈窗外部關閉
         window.onclick = function(event) {
-            const modal = document.getElementById('addStarsModal');
-            if (event.target === modal) {
+            const addStarsModal = document.getElementById('addStarsModal');
+            const setUserModal = document.getElementById('setUserModal');
+            
+            if (event.target === addStarsModal) {
                 closeAddStarsForm();
+            }
+            
+            if (event.target === setUserModal) {
+                closeSetUserModal();
             }
         }
     </script>
