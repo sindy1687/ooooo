@@ -551,6 +551,96 @@
       animation: none;
     }
 
+    /* YouTube 播放器樣式 */
+    .youtube-player-container {
+      position: fixed;
+      top: 140px;
+      right: 20px;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 15px;
+      padding: 15px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+      z-index: 1000;
+      max-width: 330px;
+      backdrop-filter: blur(10px);
+      border: 2px solid rgba(255, 107, 107, 0.3);
+      cursor: move;
+      user-select: none;
+      transition: box-shadow 0.3s ease;
+    }
+
+    .youtube-player-container:hover {
+      box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+    }
+
+    .youtube-player-container.dragging {
+      cursor: grabbing;
+      box-shadow: 0 15px 50px rgba(0,0,0,0.2);
+      transform: scale(1.02);
+    }
+
+    .youtube-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .youtube-header h3 {
+      margin: 0;
+      color: #333;
+      font-size: 16px;
+      font-weight: bold;
+    }
+
+    .toggle-youtube-btn {
+      background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+      color: white;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: bold;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+    }
+
+    .toggle-youtube-btn:hover {
+      background: linear-gradient(135deg, #ff5252 0%, #d84315 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(255, 107, 107, 0.5);
+    }
+
+    .youtube-player {
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+
+    .youtube-player iframe {
+      border-radius: 10px;
+      width: 100%;
+      height: auto;
+      aspect-ratio: 16/9;
+    }
+
+    /* YouTube 播放器動畫 */
+    .youtube-player {
+      animation: youtubeSlideIn 0.3s ease-out;
+    }
+
+    @keyframes youtubeSlideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
     /* 響應式設計 */
     @media (max-width: 768px) {
       .gacha-button {
@@ -561,7 +651,23 @@
         min-width: 100px;
       }
       
+      .youtube-player-container {
+        top: 120px;
+        right: 10px;
+        max-width: 280px;
+        padding: 12px;
+        /* 確保在手機上也能正常拖拽 */
+        touch-action: none;
+      }
 
+      .youtube-header h3 {
+        font-size: 14px;
+      }
+
+      .toggle-youtube-btn {
+        padding: 6px 12px;
+        font-size: 12px;
+      }
     }
 
     @media (max-width: 480px) {
@@ -573,7 +679,27 @@
         min-width: 90px;
       }
       
+      .youtube-player-container {
+        top: 100px;
+        right: 5px;
+        max-width: 250px;
+        padding: 10px;
+      }
 
+      .youtube-header {
+        flex-direction: column;
+        gap: 8px;
+        text-align: center;
+      }
+
+      .youtube-header h3 {
+        font-size: 13px;
+      }
+
+      .toggle-youtube-btn {
+        padding: 5px 10px;
+        font-size: 11px;
+      }
     }
 
     .loading {
@@ -620,6 +746,27 @@
   <button class="gacha-button" onclick="openGachaWindow()" title="點擊開啟抽卡系統">
     🎲 抽卡
   </button>
+
+  <!-- YouTube 音樂播放器 -->
+  <div class="youtube-player-container" id="youtubePlayerContainer">
+    <div class="youtube-header">
+      <h3>🎵 背景音樂</h3>
+      <button class="toggle-youtube-btn" onclick="toggleYouTubePlayer()" id="toggleYouTubeBtn">
+        🎵 播放音樂
+      </button>
+    </div>
+    <div class="youtube-player" id="youtubePlayer" style="display: none;">
+      <iframe 
+        id="youtubeIframe"
+        width="300" 
+        height="169" 
+        src="https://www.youtube.com/embed/0-fxvJEdxf0?si=ieAeI9xlOQY5kIcF&autoplay=0&controls=1&rel=0&modestbranding=1" 
+        frameborder="0" 
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+        allowfullscreen>
+      </iframe>
+    </div>
+  </div>
 
   <div class="container">
     <div class="header">
@@ -1186,6 +1333,232 @@
       }
     };
 
+    // YouTube 播放器控制函數
+    let isYouTubeVisible = false;
+    let youtubePlayer = null;
+
+    window.toggleYouTubePlayer = () => {
+      const playerContainer = document.getElementById('youtubePlayer');
+      const toggleBtn = document.getElementById('toggleYouTubeBtn');
+      
+      if (isYouTubeVisible) {
+        // 隱藏播放器
+        playerContainer.style.display = 'none';
+        toggleBtn.textContent = '🎵 播放音樂';
+        toggleBtn.style.background = 'linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%)';
+        isYouTubeVisible = false;
+        
+        // 暫停 YouTube 播放
+        const iframe = document.getElementById('youtubeIframe');
+        if (iframe) {
+          const currentSrc = iframe.src;
+          iframe.src = currentSrc.replace('&autoplay=1', '&autoplay=0');
+        }
+        
+        console.log('🎵 YouTube 播放器已隱藏');
+        if (chat && chat.showNotification) {
+          chat.showNotification('🎵 音樂播放器已隱藏', 'info');
+        }
+      } else {
+        // 顯示播放器
+        playerContainer.style.display = 'block';
+        toggleBtn.textContent = '🔇 隱藏音樂';
+        toggleBtn.style.background = 'linear-gradient(135deg, #4CAF50 0%, #45a049 100%)';
+        isYouTubeVisible = true;
+        
+        // 自動播放 YouTube
+        const iframe = document.getElementById('youtubeIframe');
+        if (iframe) {
+          const currentSrc = iframe.src;
+          iframe.src = currentSrc.replace('&autoplay=0', '&autoplay=1');
+        }
+        
+        console.log('🎵 YouTube 播放器已顯示');
+        if (chat && chat.showNotification) {
+          chat.showNotification('🎵 背景音樂已開啟！', 'success');
+        }
+      }
+    };
+
+    // 初始化 YouTube 播放器
+    window.initializeYouTubePlayer = () => {
+      console.log('🎵 初始化 YouTube 播放器');
+      
+      // 檢查用戶是否已經設定過播放器狀態
+      const savedState = localStorage.getItem('youtubePlayerState');
+      if (savedState === 'visible') {
+        // 延遲顯示，確保頁面完全載入
+        setTimeout(() => {
+          window.toggleYouTubePlayer();
+        }, 1000);
+      }
+
+      // 初始化拖拽功能
+      window.initializeDragAndDrop();
+    };
+
+    // 拖拽功能變數
+    let isDragging = false;
+    let dragStartX = 0;
+    let dragStartY = 0;
+    let initialX = 0;
+    let initialY = 0;
+
+    // 初始化拖拽功能
+    window.initializeDragAndDrop = () => {
+      const playerContainer = document.getElementById('youtubePlayerContainer');
+      
+      if (!playerContainer) {
+        console.error('❌ 找不到 YouTube 播放器容器');
+        return;
+      }
+
+      // 載入保存的位置
+      const savedPosition = localStorage.getItem('youtubePlayerPosition');
+      if (savedPosition) {
+        try {
+          const position = JSON.parse(savedPosition);
+          playerContainer.style.left = position.x + 'px';
+          playerContainer.style.top = position.y + 'px';
+          playerContainer.style.right = 'auto';
+        } catch (e) {
+          console.log('載入位置失敗，使用預設位置');
+        }
+      }
+
+      // 滑鼠按下事件
+      playerContainer.addEventListener('mousedown', (e) => {
+        // 如果點擊的是按鈕，不啟動拖拽
+        if (e.target.classList.contains('toggle-youtube-btn') || 
+            e.target.closest('.toggle-youtube-btn')) {
+          return;
+        }
+
+        isDragging = true;
+        dragStartX = e.clientX;
+        dragStartY = e.clientY;
+        
+        const rect = playerContainer.getBoundingClientRect();
+        initialX = rect.left;
+        initialY = rect.top;
+        
+        playerContainer.classList.add('dragging');
+        
+        // 防止文字選擇
+        e.preventDefault();
+        
+        console.log('🎵 開始拖拽 YouTube 播放器');
+      });
+
+      // 滑鼠移動事件
+      document.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        
+        const deltaX = e.clientX - dragStartX;
+        const deltaY = e.clientY - dragStartY;
+        
+        const newX = initialX + deltaX;
+        const newY = initialY + deltaY;
+        
+        // 確保播放器不會被拖出視窗
+        const maxX = window.innerWidth - playerContainer.offsetWidth;
+        const maxY = window.innerHeight - playerContainer.offsetHeight;
+        
+        const clampedX = Math.max(0, Math.min(newX, maxX));
+        const clampedY = Math.max(0, Math.min(newY, maxY));
+        
+        playerContainer.style.left = clampedX + 'px';
+        playerContainer.style.top = clampedY + 'px';
+        playerContainer.style.right = 'auto';
+        
+        e.preventDefault();
+      });
+
+      // 滑鼠釋放事件
+      document.addEventListener('mouseup', () => {
+        if (!isDragging) return;
+        
+        isDragging = false;
+        playerContainer.classList.remove('dragging');
+        
+        // 保存新位置
+        const rect = playerContainer.getBoundingClientRect();
+        const position = {
+          x: rect.left,
+          y: rect.top
+        };
+        localStorage.setItem('youtubePlayerPosition', JSON.stringify(position));
+        
+        console.log('🎵 YouTube 播放器拖拽完成，新位置已保存');
+        
+        if (chat && chat.showNotification) {
+          chat.showNotification('🎵 播放器位置已更新', 'success');
+        }
+      });
+
+      // 觸控設備支援
+      playerContainer.addEventListener('touchstart', (e) => {
+        if (e.target.classList.contains('toggle-youtube-btn') || 
+            e.target.closest('.toggle-youtube-btn')) {
+          return;
+        }
+
+        isDragging = true;
+        const touch = e.touches[0];
+        dragStartX = touch.clientX;
+        dragStartY = touch.clientY;
+        
+        const rect = playerContainer.getBoundingClientRect();
+        initialX = rect.left;
+        initialY = rect.top;
+        
+        playerContainer.classList.add('dragging');
+        
+        e.preventDefault();
+      });
+
+      document.addEventListener('touchmove', (e) => {
+        if (!isDragging) return;
+        
+        const touch = e.touches[0];
+        const deltaX = touch.clientX - dragStartX;
+        const deltaY = touch.clientY - dragStartY;
+        
+        const newX = initialX + deltaX;
+        const newY = initialY + deltaY;
+        
+        const maxX = window.innerWidth - playerContainer.offsetWidth;
+        const maxY = window.innerHeight - playerContainer.offsetHeight;
+        
+        const clampedX = Math.max(0, Math.min(newX, maxX));
+        const clampedY = Math.max(0, Math.min(newY, maxY));
+        
+        playerContainer.style.left = clampedX + 'px';
+        playerContainer.style.top = clampedY + 'px';
+        playerContainer.style.right = 'auto';
+        
+        e.preventDefault();
+      });
+
+      document.addEventListener('touchend', () => {
+        if (!isDragging) return;
+        
+        isDragging = false;
+        playerContainer.classList.remove('dragging');
+        
+        const rect = playerContainer.getBoundingClientRect();
+        const position = {
+          x: rect.left,
+          y: rect.top
+        };
+        localStorage.setItem('youtubePlayerPosition', JSON.stringify(position));
+        
+        console.log('🎵 YouTube 播放器觸控拖拽完成');
+      });
+
+      console.log('✅ YouTube 播放器拖拽功能已初始化');
+    };
+
 
 
     window.enterChat = () => {
@@ -1244,6 +1617,9 @@
       if (enterButton) {
         enterButton.addEventListener('click', window.enterChat);
       }
+
+      // 初始化 YouTube 播放器
+      window.initializeYouTubePlayer();
     });
   </script>
 </body>
