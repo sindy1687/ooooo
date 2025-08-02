@@ -564,9 +564,24 @@
       max-width: 330px;
       backdrop-filter: blur(10px);
       border: 2px solid rgba(255, 107, 107, 0.3);
-      cursor: move;
+      cursor: grab;
       user-select: none;
       transition: box-shadow 0.3s ease;
+      /* 確保可以拖拽 */
+      touch-action: none;
+      /* 防止選中文字 */
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+    }
+    
+    .youtube-player-container:hover {
+      box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+      cursor: grab;
+    }
+    
+    .youtube-player-container:active {
+      cursor: grabbing;
     }
 
     .youtube-player-container:hover {
@@ -577,6 +592,13 @@
       cursor: grabbing;
       box-shadow: 0 15px 50px rgba(0,0,0,0.2);
       transform: scale(1.02);
+      /* 拖拽時禁用所有觸控事件 */
+      touch-action: none;
+      pointer-events: none;
+    }
+    
+    .youtube-player-container.dragging * {
+      pointer-events: none;
     }
 
     .youtube-header {
@@ -748,7 +770,7 @@
   </button>
 
   <!-- YouTube 音樂播放器 -->
-  <div class="youtube-player-container" id="youtubePlayerContainer">
+  <div class="youtube-player-container" id="youtubePlayerContainer" title="拖拽移動播放器位置">
     <div class="youtube-header">
       <h3>🎵 背景音樂</h3>
       <button class="toggle-youtube-btn" onclick="toggleYouTubePlayer()" id="toggleYouTubeBtn">
@@ -778,6 +800,9 @@
       <p style="font-size: 0.9em; opacity: 0.8; margin-top: 5px;">
         🎲 點擊右上角的抽卡按鈕可以直接開啟抽卡系統！
       </p>
+      <p style="font-size: 0.9em; opacity: 0.8; margin-top: 5px;">
+        🔒 用戶名稱已記憶，防止隨意改變。如需重新設定，請點擊下方按鈕。
+      </p>
     </div>
 
     <!-- 登入畫面 -->
@@ -792,6 +817,12 @@
       >
       <button id="enterButton" class="enter-button" onclick="enterChat()">
         🚀 進入聊天室
+      </button>
+      <button id="resetButton" class="enter-button" onclick="resetUserName()" style="margin-top: 10px; background: linear-gradient(45deg, #ff9800, #f57c00);">
+        🔄 重新設定用戶名稱
+      </button>
+      <button onclick="testDrag()" style="margin-top: 10px; background: linear-gradient(45deg, #2196F3, #1976D2); color: white; border: none; padding: 15px 30px; border-radius: 25px; font-size: 18px; cursor: pointer;">
+        🧪 測試拖拽功能
       </button>
     </div>
 
@@ -1253,6 +1284,8 @@
         
         // 儲存用戶名稱到 localStorage，供抽卡系統使用
         localStorage.setItem('chatUserForGacha', name);
+        // 記憶用戶名稱，防止隨意改變
+        localStorage.setItem('chatUserName', name);
         
         if (this.currentUser) {
           this.currentUser.name = name;
@@ -1310,6 +1343,73 @@
     window.sendMessage = () => {
       const input = document.getElementById('messageInput');
       chat.sendMessage(input.value);
+    };
+
+    // 檢查是否有記憶的用戶名稱
+    function checkSavedUserName() {
+      const savedUserName = localStorage.getItem('chatUserName');
+      if (savedUserName) {
+        // 如果有記憶的用戶名稱，直接進入聊天室
+        document.getElementById('userNameInput').value = savedUserName;
+        chat.setUserName(savedUserName);
+        
+        // 如果用戶已經登入，立即初始化聊天室
+        if (chat.currentUser) {
+          chat.setupUser();
+          chat.loadMessages();
+          chat.loadPlayers();
+          chat.setupTypingListener();
+          chat.updateConnectionStatus('connected');
+          chat.showChatLayout();
+        }
+        
+        chat.showNotification(`歡迎回來，${savedUserName}！`, 'success');
+        return true;
+      }
+      return false;
+    }
+
+    // 重新設定用戶名稱
+    window.resetUserName = () => {
+      const confirmReset = confirm('確定要清除記憶的用戶名稱嗎？\n\n清除後將需要重新輸入用戶名稱。');
+      if (confirmReset) {
+        localStorage.removeItem('chatUserName');
+        localStorage.removeItem('chatUserForGacha');
+        document.getElementById('userNameInput').value = '';
+        chat.showNotification('用戶名稱已清除，請重新輸入', 'info');
+      }
+    };
+
+    // 測試拖拽功能
+    window.testDrag = () => {
+      const playerContainer = document.getElementById('youtubePlayerContainer');
+      if (playerContainer) {
+        console.log('🧪 測試拖拽功能');
+        console.log('播放器容器:', playerContainer);
+        console.log('播放器位置:', {
+          left: playerContainer.style.left,
+          top: playerContainer.style.top,
+          right: playerContainer.style.right
+        });
+        console.log('播放器尺寸:', {
+          offsetWidth: playerContainer.offsetWidth,
+          offsetHeight: playerContainer.offsetHeight
+        });
+        console.log('視窗尺寸:', {
+          innerWidth: window.innerWidth,
+          innerHeight: window.innerHeight
+        });
+        
+        // 測試移動播放器
+        playerContainer.style.left = '100px';
+        playerContainer.style.top = '100px';
+        playerContainer.style.right = 'auto';
+        
+        chat.showNotification('🧪 拖拽測試：播放器已移動到 (100, 100)', 'info');
+      } else {
+        console.error('❌ 找不到播放器容器');
+        chat.showNotification('❌ 找不到播放器容器', 'error');
+      }
     };
 
     // 開啟抽卡視窗函數
@@ -1413,6 +1513,8 @@
         return;
       }
 
+      console.log('🎵 開始初始化拖拽功能...');
+
       // 載入保存的位置
       const savedPosition = localStorage.getItem('youtubePlayerPosition');
       if (savedPosition) {
@@ -1421,142 +1523,140 @@
           playerContainer.style.left = position.x + 'px';
           playerContainer.style.top = position.y + 'px';
           playerContainer.style.right = 'auto';
+          console.log('🎵 載入保存的播放器位置:', position);
         } catch (e) {
           console.log('載入位置失敗，使用預設位置');
         }
       }
 
-      // 滑鼠按下事件
-      playerContainer.addEventListener('mousedown', (e) => {
-        // 如果點擊的是按鈕，不啟動拖拽
-        if (e.target.classList.contains('toggle-youtube-btn') || 
-            e.target.closest('.toggle-youtube-btn')) {
+      // 簡化的拖拽功能
+      let isDragging = false;
+      let startX, startY, startLeft, startTop;
+
+      // 滑鼠事件
+      playerContainer.onmousedown = function(e) {
+        // 檢查是否點擊了按鈕
+        if (e.target.tagName === 'BUTTON' || e.target.closest('button')) {
+          console.log('🎵 點擊了按鈕，不啟動拖拽');
           return;
         }
 
+        console.log('🎵 開始拖拽');
         isDragging = true;
-        dragStartX = e.clientX;
-        dragStartY = e.clientY;
-        
-        const rect = playerContainer.getBoundingClientRect();
-        initialX = rect.left;
-        initialY = rect.top;
+        startX = e.clientX;
+        startY = e.clientY;
+        startLeft = parseInt(playerContainer.style.left) || 0;
+        startTop = parseInt(playerContainer.style.top) || 0;
         
         playerContainer.classList.add('dragging');
-        
-        // 防止文字選擇
         e.preventDefault();
-        
-        console.log('🎵 開始拖拽 YouTube 播放器');
-      });
+      };
 
-      // 滑鼠移動事件
-      document.addEventListener('mousemove', (e) => {
+      document.onmousemove = function(e) {
         if (!isDragging) return;
         
-        const deltaX = e.clientX - dragStartX;
-        const deltaY = e.clientY - dragStartY;
+        const deltaX = e.clientX - startX;
+        const deltaY = e.clientY - startY;
         
-        const newX = initialX + deltaX;
-        const newY = initialY + deltaY;
+        let newLeft = startLeft + deltaX;
+        let newTop = startTop + deltaY;
         
-        // 確保播放器不會被拖出視窗
+        // 邊界檢查
         const maxX = window.innerWidth - playerContainer.offsetWidth;
         const maxY = window.innerHeight - playerContainer.offsetHeight;
         
-        const clampedX = Math.max(0, Math.min(newX, maxX));
-        const clampedY = Math.max(0, Math.min(newY, maxY));
+        newLeft = Math.max(0, Math.min(newLeft, maxX));
+        newTop = Math.max(0, Math.min(newTop, maxY));
         
-        playerContainer.style.left = clampedX + 'px';
-        playerContainer.style.top = clampedY + 'px';
+        playerContainer.style.left = newLeft + 'px';
+        playerContainer.style.top = newTop + 'px';
         playerContainer.style.right = 'auto';
         
         e.preventDefault();
-      });
+      };
 
-      // 滑鼠釋放事件
-      document.addEventListener('mouseup', () => {
+      document.onmouseup = function() {
         if (!isDragging) return;
         
+        console.log('🎵 拖拽結束');
         isDragging = false;
         playerContainer.classList.remove('dragging');
         
-        // 保存新位置
-        const rect = playerContainer.getBoundingClientRect();
+        // 保存位置
         const position = {
-          x: rect.left,
-          y: rect.top
+          x: parseInt(playerContainer.style.left) || 0,
+          y: parseInt(playerContainer.style.top) || 0
         };
         localStorage.setItem('youtubePlayerPosition', JSON.stringify(position));
-        
-        console.log('🎵 YouTube 播放器拖拽完成，新位置已保存');
         
         if (chat && chat.showNotification) {
           chat.showNotification('🎵 播放器位置已更新', 'success');
         }
-      });
+      };
 
-      // 觸控設備支援
-      playerContainer.addEventListener('touchstart', (e) => {
-        if (e.target.classList.contains('toggle-youtube-btn') || 
-            e.target.closest('.toggle-youtube-btn')) {
+      // 觸控事件
+      playerContainer.ontouchstart = function(e) {
+        if (e.target.tagName === 'BUTTON' || e.target.closest('button')) {
           return;
         }
 
+        console.log('🎵 開始觸控拖拽');
         isDragging = true;
         const touch = e.touches[0];
-        dragStartX = touch.clientX;
-        dragStartY = touch.clientY;
-        
-        const rect = playerContainer.getBoundingClientRect();
-        initialX = rect.left;
-        initialY = rect.top;
+        startX = touch.clientX;
+        startY = touch.clientY;
+        startLeft = parseInt(playerContainer.style.left) || 0;
+        startTop = parseInt(playerContainer.style.top) || 0;
         
         playerContainer.classList.add('dragging');
-        
         e.preventDefault();
-      });
+      };
 
-      document.addEventListener('touchmove', (e) => {
+      document.ontouchmove = function(e) {
         if (!isDragging) return;
         
         const touch = e.touches[0];
-        const deltaX = touch.clientX - dragStartX;
-        const deltaY = touch.clientY - dragStartY;
+        const deltaX = touch.clientX - startX;
+        const deltaY = touch.clientY - startY;
         
-        const newX = initialX + deltaX;
-        const newY = initialY + deltaY;
+        let newLeft = startLeft + deltaX;
+        let newTop = startTop + deltaY;
         
         const maxX = window.innerWidth - playerContainer.offsetWidth;
         const maxY = window.innerHeight - playerContainer.offsetHeight;
         
-        const clampedX = Math.max(0, Math.min(newX, maxX));
-        const clampedY = Math.max(0, Math.min(newY, maxY));
+        newLeft = Math.max(0, Math.min(newLeft, maxX));
+        newTop = Math.max(0, Math.min(newTop, maxY));
         
-        playerContainer.style.left = clampedX + 'px';
-        playerContainer.style.top = clampedY + 'px';
+        playerContainer.style.left = newLeft + 'px';
+        playerContainer.style.top = newTop + 'px';
         playerContainer.style.right = 'auto';
         
         e.preventDefault();
-      });
+      };
 
-      document.addEventListener('touchend', () => {
+      document.ontouchend = function() {
         if (!isDragging) return;
         
+        console.log('🎵 觸控拖拽結束');
         isDragging = false;
         playerContainer.classList.remove('dragging');
         
-        const rect = playerContainer.getBoundingClientRect();
         const position = {
-          x: rect.left,
-          y: rect.top
+          x: parseInt(playerContainer.style.left) || 0,
+          y: parseInt(playerContainer.style.top) || 0
         };
         localStorage.setItem('youtubePlayerPosition', JSON.stringify(position));
-        
-        console.log('🎵 YouTube 播放器觸控拖拽完成');
-      });
+      };
 
       console.log('✅ YouTube 播放器拖拽功能已初始化');
+      console.log('🎵 播放器容器:', playerContainer);
+      console.log('🎵 播放器樣式:', {
+        position: playerContainer.style.position,
+        left: playerContainer.style.left,
+        top: playerContainer.style.top,
+        zIndex: playerContainer.style.zIndex
+      });
     };
 
 
@@ -1573,6 +1673,16 @@
       if (userName.length > 20) {
         alert('暱稱不能超過20個字元！');
         return;
+      }
+      
+      // 檢查是否與記憶的用戶名稱不同
+      const savedUserName = localStorage.getItem('chatUserName');
+      if (savedUserName && savedUserName !== userName) {
+        const confirmChange = confirm(`您之前使用的暱稱是「${savedUserName}」，確定要改為「${userName}」嗎？\n\n注意：更改暱稱後將無法再改回原來的暱稱！`);
+        if (!confirmChange) {
+          nameInput.value = savedUserName;
+          return;
+        }
       }
       
       chat.setUserName(userName);
@@ -1597,6 +1707,18 @@
       const sendButton = document.getElementById('sendButton');
       const nameInput = document.getElementById('userNameInput');
       const enterButton = document.getElementById('enterButton');
+
+      // 立即初始化拖拽功能
+      console.log('🚀 頁面載入完成，初始化拖拽功能...');
+      setTimeout(() => {
+        window.initializeDragAndDrop();
+      }, 100);
+
+      // 檢查是否有記憶的用戶名稱，如果有則自動進入聊天室
+      if (checkSavedUserName()) {
+        // 自動進入聊天室，不需要用戶手動點擊
+        return;
+      }
 
       // 發送按鈕事件
       if (sendButton) {
