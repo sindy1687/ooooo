@@ -301,6 +301,513 @@
       }
     }
 
+    /* 首頁公告區域樣式 - 美化版 */
+    .home-announcements {
+      margin: 25px 0;
+      background: linear-gradient(135deg, rgba(10, 20, 40, 0.95), rgba(20, 30, 50, 0.9));
+      border-radius: 20px;
+      border: 2px solid rgba(0, 255, 255, 0.6);
+      backdrop-filter: blur(15px);
+      overflow: hidden;
+      box-shadow: 
+        0 0 25px rgba(0, 255, 255, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      z-index: 10;
+      display: block !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+    }
+
+    .home-announcements::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.8), transparent);
+    }
+
+    .home-announcements:hover {
+      box-shadow: 
+        0 0 35px rgba(0, 255, 255, 0.5),
+        0 8px 25px rgba(0, 0, 0, 0.3);
+      transform: translateY(-3px);
+      border-color: rgba(0, 255, 255, 0.8);
+    }
+
+    .announcements-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 25px;
+      background: linear-gradient(135deg, 
+        rgba(0, 255, 255, 0.15), 
+        rgba(255, 107, 107, 0.15),
+        rgba(255, 215, 0, 0.1));
+      border-bottom: 1px solid rgba(0, 255, 255, 0.3);
+      position: relative;
+    }
+
+    .announcements-header::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.5), transparent);
+    }
+
+    .announcements-header h3 {
+      color: #00ffff;
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin: 0;
+      text-shadow: 
+        0 0 15px rgba(0, 255, 255, 0.6),
+        0 2px 4px rgba(0, 0, 0, 0.3);
+      letter-spacing: 0.5px;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .view-all-btn {
+      background: linear-gradient(135deg, #ff6b6b, #ffd700, #00ffff);
+      background-size: 200% 200%;
+      color: white;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 25px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.4s ease;
+      box-shadow: 
+        0 0 20px rgba(255, 107, 107, 0.4),
+        0 4px 15px rgba(0, 0, 0, 0.2);
+      position: relative;
+      overflow: hidden;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .view-all-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.6s ease;
+    }
+
+    .view-all-btn:hover::before {
+      left: 100%;
+    }
+
+    .view-all-btn:hover {
+      transform: translateY(-3px) scale(1.05);
+      box-shadow: 
+        0 0 30px rgba(255, 107, 107, 0.6),
+        0 8px 25px rgba(0, 0, 0, 0.3);
+      background-position: 100% 100%;
+    }
+
+    .announcements-content {
+      padding: 20px 25px;
+      max-height: 250px;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(0, 255, 255, 0.5) transparent;
+    }
+
+    .announcements-content::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .announcements-content::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.1);
+      border-radius: 3px;
+    }
+
+    .announcements-content::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, rgba(0, 255, 255, 0.6), rgba(255, 107, 107, 0.6));
+      border-radius: 3px;
+    }
+
+    .announcement-item {
+      background: linear-gradient(135deg, 
+        rgba(0, 0, 0, 0.4), 
+        rgba(20, 30, 50, 0.3));
+      border-left: 5px solid #00ffff;
+      padding: 18px 22px;
+      margin-bottom: 18px;
+      border-radius: 15px;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(5px);
+      box-shadow: 
+        0 2px 10px rgba(0, 0, 0, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .announcement-item-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 5px;
+    }
+
+    .announcement-item-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .announcement-item::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.15), transparent);
+      transition: left 0.8s ease;
+    }
+
+    .announcement-item:hover::before {
+      left: 100%;
+    }
+
+    .announcement-item:hover {
+      transform: translateX(8px) scale(1.02);
+      box-shadow: 
+        0 0 25px rgba(0, 255, 255, 0.4),
+        0 8px 25px rgba(0, 0, 0, 0.3);
+      border-left-width: 6px;
+    }
+
+    .announcement-item.urgent {
+      border-left-color: #ff4757;
+      background: linear-gradient(135deg, 
+        rgba(255, 71, 87, 0.15), 
+        rgba(255, 20, 40, 0.1));
+      box-shadow: 
+        0 2px 10px rgba(255, 71, 87, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    }
+
+    .announcement-item.urgent:hover {
+      box-shadow: 
+        0 0 25px rgba(255, 71, 87, 0.5),
+        0 8px 25px rgba(0, 0, 0, 0.3);
+    }
+
+    .announcement-item.info {
+      border-left-color: #2ed573;
+      background: linear-gradient(135deg, 
+        rgba(46, 213, 115, 0.15), 
+        rgba(20, 200, 80, 0.1));
+      box-shadow: 
+        0 2px 10px rgba(46, 213, 115, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    }
+
+    .announcement-item.info:hover {
+      box-shadow: 
+        0 0 25px rgba(46, 213, 115, 0.5),
+        0 8px 25px rgba(0, 0, 0, 0.3);
+    }
+
+    .announcement-item.update {
+      border-left-color: #3742fa;
+      background: linear-gradient(135deg, 
+        rgba(55, 66, 250, 0.15), 
+        rgba(40, 50, 200, 0.1));
+      box-shadow: 
+        0 2px 10px rgba(55, 66, 250, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    }
+
+    .announcement-item.update:hover {
+      box-shadow: 
+        0 0 25px rgba(55, 66, 250, 0.5),
+        0 8px 25px rgba(0, 0, 0, 0.3);
+    }
+
+    .announcement-content {
+      color: #ffffff;
+      font-size: 1.05rem;
+      line-height: 1.7;
+      margin-bottom: 10px;
+      font-weight: 500;
+      text-shadow: 
+        0 1px 3px rgba(0, 0, 0, 0.4),
+        0 2px 6px rgba(0, 0, 0, 0.2);
+      font-family: 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', 'Hiragino Sans GB', Tahoma, Geneva, Verdana, sans-serif;
+      letter-spacing: 0.4px;
+      word-spacing: 1px;
+      text-align: justify;
+      hyphens: auto;
+      -webkit-hyphens: auto;
+      -ms-hyphens: auto;
+      position: relative;
+      padding-left: 5px;
+    }
+
+    .announcement-content::before {
+      content: '';
+      position: absolute;
+      left: -2px;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: linear-gradient(180deg, rgba(0, 255, 255, 0.6), transparent);
+      border-radius: 1px;
+    }
+
+    .announcement-time {
+      color: #c0c0c0;
+      font-size: 0.9rem;
+      font-style: italic;
+      font-weight: 400;
+      opacity: 0.9;
+      font-family: 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', 'Hiragino Sans GB', Tahoma, Geneva, Verdana, sans-serif;
+      letter-spacing: 0.2px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin-top: 8px;
+    }
+
+    .announcement-time::before {
+      content: '🕐';
+      font-size: 0.8rem;
+      opacity: 0.7;
+    }
+
+    .announcement-type {
+      display: inline-block;
+      margin-right: 12px;
+      font-size: 1.3rem;
+      filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.4));
+      vertical-align: middle;
+      position: relative;
+      top: -1px;
+    }
+
+    /* 公告內容特殊樣式 */
+    .announcement-item.urgent .announcement-content {
+      color: #ffebee;
+      text-shadow: 
+        0 1px 3px rgba(255, 71, 87, 0.3),
+        0 2px 6px rgba(0, 0, 0, 0.2);
+    }
+
+    .announcement-item.urgent .announcement-content::before {
+      background: linear-gradient(180deg, rgba(255, 71, 87, 0.8), transparent);
+    }
+
+    .announcement-item.info .announcement-content {
+      color: #e8f5e8;
+      text-shadow: 
+        0 1px 3px rgba(46, 213, 115, 0.3),
+        0 2px 6px rgba(0, 0, 0, 0.2);
+    }
+
+    .announcement-item.info .announcement-content::before {
+      background: linear-gradient(180deg, rgba(46, 213, 115, 0.8), transparent);
+    }
+
+    .announcement-item.update .announcement-content {
+      color: #e3f2fd;
+      text-shadow: 
+        0 1px 3px rgba(55, 66, 250, 0.3),
+        0 2px 6px rgba(0, 0, 0, 0.2);
+    }
+
+    .announcement-item.update .announcement-content::before {
+      background: linear-gradient(180deg, rgba(55, 66, 250, 0.8), transparent);
+    }
+
+    /* 文字選擇效果 */
+    .announcement-content::selection {
+      background: rgba(0, 255, 255, 0.3);
+      color: #ffffff;
+    }
+
+    .announcement-content::-moz-selection {
+      background: rgba(0, 255, 255, 0.3);
+      color: #ffffff;
+    }
+
+    /* 公告項目動畫效果 */
+    @keyframes announcementSlideIn {
+      from {
+        opacity: 0;
+        transform: translateX(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    .announcement-item {
+      animation: announcementSlideIn 0.5s ease-out;
+    }
+
+    /* 公告內容強調效果 */
+    .announcement-content strong {
+      color: #00ffff;
+      font-weight: 600;
+      text-shadow: 0 0 8px rgba(0, 255, 255, 0.5);
+    }
+
+    .announcement-content em {
+      color: #ffd700;
+      font-style: italic;
+      font-weight: 500;
+    }
+
+    /* 公告時間懸停效果 */
+    .announcement-time:hover {
+      color: #ffffff;
+      opacity: 1;
+      transform: scale(1.05);
+      transition: all 0.3s ease;
+    }
+
+    .loading-announcement {
+      text-align: center;
+      color: #00ffff;
+      font-style: italic;
+      padding: 30px;
+      font-size: 1.1rem;
+      font-weight: 500;
+      text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .no-announcements {
+      text-align: center;
+      color: #b0b0b0;
+      font-style: italic;
+      padding: 30px;
+      font-size: 1.1rem;
+      font-weight: 500;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    /* 響應式設計 - 美化版 */
+    @media (max-width: 768px) {
+      .home-announcements {
+        margin: 15px 0;
+        border-radius: 15px;
+      }
+      
+      .announcements-header {
+        flex-direction: column;
+        gap: 12px;
+        text-align: center;
+        padding: 15px 20px;
+      }
+      
+      .announcements-header h3 {
+        font-size: 1.2rem;
+      }
+      
+      .view-all-btn {
+        padding: 8px 15px;
+        font-size: 0.9rem;
+      }
+      
+      .announcements-content {
+        max-height: 180px;
+        padding: 15px 20px;
+      }
+      
+      .announcement-item {
+        padding: 14px 18px;
+        margin-bottom: 14px;
+        border-radius: 12px;
+        gap: 6px;
+      }
+      
+      .announcement-content {
+        font-size: 0.95rem;
+        line-height: 1.6;
+        letter-spacing: 0.3px;
+      }
+      
+      .announcement-time {
+        font-size: 0.8rem;
+        margin-top: 6px;
+      }
+      
+      .announcement-type {
+        font-size: 1.1rem;
+        margin-right: 8px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .home-announcements {
+        margin: 10px 0;
+        border-radius: 12px;
+      }
+      
+      .announcements-header {
+        padding: 12px 15px;
+        gap: 10px;
+      }
+      
+      .announcements-header h3 {
+        font-size: 1.1rem;
+      }
+      
+      .view-all-btn {
+        padding: 6px 12px;
+        font-size: 0.85rem;
+        border-radius: 20px;
+      }
+      
+      .announcements-content {
+        max-height: 150px;
+        padding: 12px 15px;
+      }
+      
+      .announcement-item {
+        padding: 12px 15px;
+        margin-bottom: 12px;
+        border-radius: 10px;
+        gap: 5px;
+      }
+      
+      .announcement-content {
+        font-size: 0.9rem;
+        line-height: 1.5;
+        letter-spacing: 0.2px;
+      }
+      
+      .announcement-time {
+        font-size: 0.75rem;
+        margin-top: 5px;
+      }
+      
+      .announcement-type {
+        font-size: 1rem;
+        margin-right: 6px;
+      }
+    }
+
     .custom-avatar-option.selected {
       background: linear-gradient(135deg, #ffd700 0%, #ff6b6b 100%) !important;
       animation: customSelectedPulse 2s ease-in-out infinite;
@@ -426,15 +933,33 @@
       position: fixed;
       top: 15px;
       left: 15px;
-      background: rgba(10, 20, 40, 0.6);
+      background: rgba(10, 20, 40, 0.8);
       padding: 4px 8px;
-      border-radius: 10px;
+      border-radius: 8px;
       color: #ffd700;
       font-weight: bold;
-      box-shadow: 0 0 12px #ffd700, 0 0 32px #00ffff;
-      border: 2px solid #00ffff;
-      font-size: 1.1rem;
-      backdrop-filter: blur(1px);
+      box-shadow: 0 0 8px #ffd700, 0 0 16px #00ffff;
+      border: 1px solid #00ffff;
+      font-size: 1rem;
+      backdrop-filter: blur(5px);
+      z-index: 1000;
+      display: flex !important;
+      align-items: center !important;
+      gap: 3px !important;
+      width: fit-content !important;
+      text-align: center !important;
+      transition: all 0.3s ease !important;
+    }
+
+    #starsDisplay:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 12px #ffd700, 0 0 24px #00ffff;
+    }
+
+    #starsDisplay #totalStarsCount {
+      font-weight: bold;
+      color: #ffd700;
+      text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
     }
 
     /* 單字下載中心樣式 */
@@ -1780,6 +2305,19 @@
       </div>
     </div>
 
+    <!-- 公告顯示區域 -->
+    <div id="homeAnnouncements" class="home-announcements">
+      <div class="announcements-header">
+        <h3>📣 最新公告</h3>
+                  <div style="display: flex; gap: 10px; align-items: center;">
+            <button class="view-all-btn" onclick="location.href='announcements.html'">查看全部</button>
+          </div>
+      </div>
+      <div id="announcementsContent" class="announcements-content">
+        <div class="loading-announcement">載入中...</div>
+      </div>
+    </div>
+
 
 
     <!-- 自訂設定彈窗 -->
@@ -1980,27 +2518,6 @@
       { id: 'pass_phoenix', name: '通過鳳凰座', requirement: 1, reward: 17, icon: '🔥', type: 'zodiac', description: '通過鳳凰座關卡', rewardRange: [17,20] },
       { id: 'pass_vela', name: '通過船帆座', requirement: 1, reward: 17, icon: '⛵', type: 'zodiac', description: '通過船帆座關卡', rewardRange: [17,20] },
     ];
-
-    // 頁面載入時自動檢查每日簽到獎勵
-    document.addEventListener('DOMContentLoaded', function() {
-      console.log('📄 頁面載入完成，檢查滾動狀態...');
-      
-      // 確保滾動功能正常
-      document.body.style.overflow = 'auto';
-      document.documentElement.style.overflow = 'auto';
-      
-      // 延遲一點時間確保所有系統都已載入
-      setTimeout(() => {
-        checkDailyReward();
-        // 確保cards.js載入完成後再檢查成就
-        if (window.allCards) {
-          updateAchievementBadge();
-        } else {
-          // 如果cards.js還沒載入，再等一下
-          setTimeout(updateAchievementBadge, 2000);
-        }
-      }, 1000);
-    });
 
     // 獲取並顯示星星總數
     function updateStarsDisplay() {
@@ -2418,6 +2935,61 @@
       
       console.log('✅ 緊急修復完成');
       showCustomMessage('🔄 滾動功能已修復', 'success');
+    }
+
+
+
+    // 緊急修復星星顯示
+    function emergencyFixStarsDisplay() {
+      console.log('🚨 執行緊急星星顯示修復...');
+      
+      const starsDisplay = document.getElementById('starsDisplay');
+      const totalStarsCount = document.getElementById('totalStarsCount');
+      
+      if (starsDisplay) {
+        // 強制顯示星星顯示
+        starsDisplay.style.cssText = `
+          position: fixed !important;
+          top: 15px !important;
+          left: 15px !important;
+          background: rgba(10, 20, 40, 0.9) !important;
+          padding: 4px 8px !important;
+          border-radius: 8px !important;
+          color: #ffd700 !important;
+          font-weight: bold !important;
+          box-shadow: 0 0 8px #ffd700, 0 0 16px #00ffff !important;
+          border: 1px solid #00ffff !important;
+          font-size: 1rem !important;
+          backdrop-filter: blur(5px) !important;
+          z-index: 1000 !important;
+          display: flex !important;
+          align-items: center !important;
+          gap: 3px !important;
+          width: fit-content !important;
+          text-align: center !important;
+          transition: all 0.3s ease !important;
+        `;
+        console.log('✅ 星星顯示已強制修復');
+      }
+      
+      if (totalStarsCount) {
+        // 強制顯示星星數量
+        totalStarsCount.style.cssText = `
+          font-weight: bold !important;
+          color: #ffd700 !important;
+          text-shadow: 0 0 10px rgba(255, 215, 0, 0.5) !important;
+          font-size: 1rem !important;
+        `;
+        console.log('✅ 星星數量顯示已強制修復');
+      }
+      
+      // 重新更新星星顯示
+      if (typeof updateStarsDisplay === 'function') {
+        updateStarsDisplay();
+      }
+      
+      console.log('✅ 緊急星星顯示修復完成');
+      showCustomMessage('✅ 星星顯示已修復', 'success');
     }
 
 
@@ -2896,49 +3468,33 @@
       }
     }
 
-    // 頁面載入時檢查公告
-    document.addEventListener('DOMContentLoaded', function() {
-      // 延遲檢查，避免影響頁面載入速度
-      setTimeout(() => {
-        checkNewAnnouncements();
-      }, 2000);
-
-      // 綁定公告按鈕點擊事件
-      const announcementBtn = document.querySelector('.announcement-btn');
-      if (announcementBtn) {
-        announcementBtn.addEventListener('click', updateAnnouncementCheckTime);
+    // 單字下載中心功能
+    function showVocabularyDownload() {
+      console.log('🚀 開啟單字下載中心...');
+      const modal = document.getElementById('vocabularyDownloadModal');
+      if (modal) {
+        modal.style.display = 'flex';
+        // 初始化 Vue.js 應用
+        initVocabularyDownloadApp();
+      } else {
+        console.error('❌ 找不到單字下載模態視窗');
       }
+    }
 
-      // 每5分鐘檢查一次新公告
-      setInterval(checkNewAnnouncements, 5 * 60 * 1000);
-
-      // 單字下載中心功能
-      function showVocabularyDownload() {
-        console.log('🚀 開啟單字下載中心...');
-        const modal = document.getElementById('vocabularyDownloadModal');
-        if (modal) {
-          modal.style.display = 'flex';
-          // 初始化 Vue.js 應用
-          initVocabularyDownloadApp();
-        } else {
-          console.error('❌ 找不到單字下載模態視窗');
+    function closeVocabularyDownload() {
+      console.log('🔒 關閉單字下載中心...');
+      const modal = document.getElementById('vocabularyDownloadModal');
+      if (modal) {
+        modal.style.display = 'none';
+        // 銷毀 Vue.js 應用
+        if (window.vocabularyDownloadApp) {
+          window.vocabularyDownloadApp.unmount();
+          window.vocabularyDownloadApp = null;
         }
       }
+    }
 
-      function closeVocabularyDownload() {
-        console.log('🔒 關閉單字下載中心...');
-        const modal = document.getElementById('vocabularyDownloadModal');
-        if (modal) {
-          modal.style.display = 'none';
-          // 銷毀 Vue.js 應用
-          if (window.vocabularyDownloadApp) {
-            window.vocabularyDownloadApp.unmount();
-            window.vocabularyDownloadApp = null;
-          }
-        }
-      }
-
-      function initVocabularyDownloadApp() {
+    function initVocabularyDownloadApp() {
         console.log('🎯 初始化 Vue.js 應用...');
         if (window.vocabularyDownloadApp) {
           window.vocabularyDownloadApp.unmount();
@@ -3318,7 +3874,211 @@
           });
         }
       });
+
+    // 載入首頁公告功能
+    function loadHomeAnnouncements() {
+      const GOOGLE_SHEETS_API = "https://script.google.com/macros/s/AKfycbyfM8pLiWIjRsvg7u3rJ5Zh4XdKLFuScaQ5t_0yQviBp11IwOZSyrgZ-KFHkrJT43UBPg/exec";
+      
+      // 本地備用公告數據
+      const fallbackAnnouncements = [
+        {
+          type: "🔴",
+          content: "系統維護中，部分功能可能暫時無法使用",
+          time: "2024-01-15 10:00"
+        },
+        {
+          type: "🟢",
+          content: "歡迎使用英打小英雄！新功能陸續推出中",
+          time: "2024-01-10 09:30"
+        },
+        {
+          type: "🔵",
+          content: "如有問題請聯繫客服或使用玩家信箱功能",
+          time: "2024-01-05 14:20"
+        },
+        {
+          type: "🟡",
+          content: "新增宇宙科技風格公告頁面！",
+          time: new Date().toISOString().slice(0, 19).replace('T', ' ')
+        }
+      ];
+
+      const contentDiv = document.getElementById('announcementsContent');
+      const homeAnnouncements = document.getElementById('homeAnnouncements');
+      
+      if (!contentDiv) {
+        console.error('找不到公告內容元素');
+        return;
+      }
+      
+      if (!homeAnnouncements) {
+        console.error('找不到公告區域元素');
+        return;
+      }
+      
+      // 確保公告區域可見
+      homeAnnouncements.style.display = 'block';
+      homeAnnouncements.style.visibility = 'visible';
+      homeAnnouncements.style.opacity = '1';
+      
+      console.log('開始載入首頁公告...');
+      
+      // 從 Google Sheets 載入
+      fetch(GOOGLE_SHEETS_API)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        })
+        .then(data => {
+          console.log('首頁公告載入成功:', data);
+          if (data && data.length > 0) {
+            displayHomeAnnouncements(data.slice(0, 3)); // 只顯示最新的3條公告
+          } else {
+            throw new Error('No data received');
+          }
+        })
+        .catch(error => {
+          console.log('首頁公告載入失敗，使用本地數據:', error);
+          displayHomeAnnouncements(fallbackAnnouncements.slice(0, 3));
+        });
+    }
+
+    function displayHomeAnnouncements(announcements) {
+      const contentDiv = document.getElementById('announcementsContent');
+      const homeAnnouncements = document.getElementById('homeAnnouncements');
+      
+      if (!contentDiv) {
+        console.error('找不到公告內容元素');
+        return;
+      }
+      
+      if (!homeAnnouncements) {
+        console.error('找不到公告區域元素');
+        return;
+      }
+      
+      // 確保公告區域可見
+      homeAnnouncements.style.display = 'block';
+      homeAnnouncements.style.visibility = 'visible';
+      homeAnnouncements.style.opacity = '1';
+      
+      if (!announcements || announcements.length === 0) {
+        contentDiv.innerHTML = '<div class="no-announcements">目前沒有公告</div>';
+        return;
+      }
+
+      console.log('顯示公告:', announcements);
+
+      const announcementsHTML = announcements.map(announcement => {
+        let className = 'announcement-item';
+        if (announcement.type === '🔴') className += ' urgent';
+        else if (announcement.type === '🟢') className += ' info';
+        else if (announcement.type === '🔵') className += ' update';
+        else if (announcement.type === '🟡') className += ' update';
+
+        return `
+          <div class="${className}">
+            <div class="announcement-content">
+              <span class="announcement-type">${announcement.type}</span>
+              ${announcement.content}
+            </div>
+            <div class="announcement-time">🕒 ${announcement.time}</div>
+          </div>
+        `;
+      }).join('');
+
+      contentDiv.innerHTML = announcementsHTML;
+      console.log('公告顯示完成');
+      
+      // 強制重新渲染
+      homeAnnouncements.offsetHeight;
+    }
+
+
+
+    // 頁面載入時自動檢查每日簽到獎勵
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('📄 頁面載入完成，檢查滾動狀態...');
+      
+      // 確保滾動功能正常
+      document.body.style.overflow = 'auto';
+      document.documentElement.style.overflow = 'auto';
+      
+      // 確保星星顯示可見
+      const starsDisplay = document.getElementById('starsDisplay');
+      if (starsDisplay) {
+                     starsDisplay.style.cssText = `
+               position: fixed !important;
+               top: 15px !important;
+               left: 15px !important;
+               background: rgba(10, 20, 40, 0.8) !important;
+               padding: 4px 8px !important;
+               border-radius: 8px !important;
+               color: #ffd700 !important;
+               font-weight: bold !important;
+               box-shadow: 0 0 8px #ffd700, 0 0 16px #00ffff !important;
+               border: 1px solid #00ffff !important;
+               font-size: 1rem !important;
+               backdrop-filter: blur(5px) !important;
+               z-index: 1000 !important;
+               display: flex !important;
+               align-items: center !important;
+               gap: 3px !important;
+               width: fit-content !important;
+               text-align: center !important;
+               transition: all 0.3s ease !important;
+             `;
+        console.log('✅ 星星顯示已確保可見');
+      }
+      
+      // 確保公告區域可見
+      const homeAnnouncements = document.getElementById('homeAnnouncements');
+      if (homeAnnouncements) {
+        homeAnnouncements.style.display = 'block';
+        homeAnnouncements.style.visibility = 'visible';
+        homeAnnouncements.style.opacity = '1';
+        homeAnnouncements.style.position = 'relative';
+        homeAnnouncements.style.zIndex = '1000';
+        console.log('✅ 公告區域已確保可見');
+      }
+      
+      // 延遲一點時間確保所有系統都已載入
+      setTimeout(() => {
+        checkDailyReward();
+        // 確保cards.js載入完成後再檢查成就
+        if (window.allCards) {
+          updateAchievementBadge();
+        } else {
+          // 如果cards.js還沒載入，再等一下
+          setTimeout(updateAchievementBadge, 2000);
+        }
+        
+        // 載入首頁公告
+        console.log('🔄 準備載入首頁公告...');
+        loadHomeAnnouncements();
+        
+        // 再次確保公告區域可見
+        setTimeout(() => {
+          if (homeAnnouncements) {
+            homeAnnouncements.style.cssText = `
+              display: block !important;
+              visibility: visible !important;
+              opacity: 1 !important;
+              position: relative !important;
+              z-index: 1000 !important;
+              margin: 20px 0 !important;
+              background: rgba(10, 20, 40, 0.8) !important;
+              border-radius: 15px !important;
+              border: 2px solid rgba(0, 255, 255, 0.5) !important;
+              box-shadow: 0 0 20px rgba(0, 255, 255, 0.3) !important;
+            `;
+            console.log('✅ 公告區域已強制顯示');
+          }
+        }, 2000);
+      }, 1000);
     });
   </script>
 </body>
-</html>s
+</html>
