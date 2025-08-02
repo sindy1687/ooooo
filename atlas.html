@@ -696,7 +696,7 @@
           // 解鎖所有希臘神祇關卡
           const deities = ['宙斯', '赫拉', '波塞頓', '得墨忒耳', '雅典娜', '阿波羅', '阿爾忒彌斯', 
             '阿瑞斯', '阿芙蘿黛蒂', '赫菲斯托斯', '赫耳墨斯', '赫斯提亞', '狄俄尼索斯', '哈迪斯', 
-            '珀爾塞福涅', '厄洛斯', '尼刻', '蓋婭', '克洛諾斯', '墨耳甫斯'];
+            '珀爾塞福涅', '厄洛斯', '尼刻', '蓋婭', '阿特拉斯', '克洛諾斯', '瑞亞', '普羅米修斯'];
           localStorage.setItem('unlockedGreek', JSON.stringify(deities));
           
           // 顯示解鎖成功訊息
@@ -817,6 +817,11 @@
     };
     let passedAtlas = JSON.parse(localStorage.getItem('passed_atlas')||'[]');
     atlasCategories.forEach(key => {
+      // 確保每個星座都有成本設定
+      if (!costData[key]) {
+        costData[key] = Math.floor(Math.random()*21)+10;
+        localStorage.setItem('unlockCosts', JSON.stringify(costData));
+      }
       const cost = costData[key], unlocked = unlockedList.includes(key);
       const isCustom = false;
       const title = key.toUpperCase();
@@ -839,6 +844,7 @@
             cs -= cost; localStorage.setItem('totalStars',cs); totalStars=cs; updateDisplayStars();
             ul.push(key); localStorage.setItem('unlocked', JSON.stringify(ul));
             card.classList.remove('locked');
+            card.removeAttribute('data-locktext');
             card.querySelector('.card-info').textContent = '已解鎖';
           } else {
             alert('星星不足，無法解鎖。');
@@ -853,7 +859,7 @@
     // Tab3: 希臘神祇
     (function() {
       const deities = [
-        { name: '宙斯', url: 'zeus.html', img: 'images/zeus.png', desc: '天空與雷電之神，奧林匹斯眾神的首領，掌握閃電與風暴的威力' },
+        { name: '宙斯', url: 'zeus.html', img: 'https://i.pinimg.com/736x/f7/44/dc/f744dc2cd9f052369f1eda963bf3b547.jpg', desc: '天空與雷電之神，奧林匹斯眾神的首領，掌握閃電與風暴的威力' },
         { name: '赫拉', url: 'hera.html', img: 'https://images.nightcafe.studio/jobs/jrtc05QrGWfgcL9U7oQ5/jrtc05QrGWfgcL9U7oQ5--1--0kpbz.jpg?tr=w-1600,c-at_max', desc: '婚姻與家庭女神，眾神之母，保護婚姻誓約和婦女' },
         { name: '波塞頓', url: 'poseidon.html', img: 'https://th.bing.com/th/id/OIP.ds9l0HmwcwlBZUt1_SOAUQHaLF?r=0&rs=1&pid=ImgDetMain&cb=idpwebpc2', desc: '海洋之神，掌控海浪、地震與馬匹，被稱為「震海者」' },
         { name: '得墨忒耳', url: 'demeter.html', img: 'https://i.pinimg.com/736x/5e/55/f3/5e55f31c21d96c2055d39d07fa72eea2.jpg', desc: '農業與豐饒女神，掌管五穀生長與大地的豐饒' },
@@ -865,14 +871,16 @@
         { name: '赫菲斯托斯', url: 'hephaestus.html', img: 'https://th.bing.com/th/id/OIP.c9pf5fdxkTIC4f58Wwk7SQHaHa?r=0&w=1024&h=1024&rs=1&pid=ImgDetMain&cb=idpwebpc2', desc: '火與鍛造之神，巧手匠師，打造神兵利器與無比精巧的工藝品' },
         { name: '赫耳墨斯', url: 'hermes.html', img: 'https://substackcdn.com/image/fetch/f_auto,q_auto:good,fl_progressive:steep/https://substack-post-media.s3.amazonaws.com/public/images/49e898d3-33e8-4355-8049-5b32b6fa2695_1024x1024.png', desc: '信使與旅者之神，聰明狡黠，穿梭神界與人間的使者' },
         { name: '赫斯提亞', url: 'hestia.html', img: 'https://i.etsystatic.com/10441898/c/2143/2143/0/0/il/b01774/5669551924/il_600x600.5669551924_g09a.jpg', desc: '爐灶與家庭女神，守護家園與聖火，象徵溫暖與團聚' },
-        { name: '狄俄尼索斯', url: 'dionysus.html', img: 'https://www.paradijsvogelsmagazine.nl/wp-content/uploads/2023/10/dionysus-7683512_1920.jpg', desc: '象徵狂歡與葡萄酒之神，掌管慶典、狂歡與藝術創造力' },
+        { name: '狄俄尼索斯', url: 'dionysus.html', img: 'https://i.pinimg.com/1200x/d3/27/97/d327972a87a915c1cbd9fefe868307d1.jpg', desc: '象徵狂歡與葡萄酒之神，掌管慶典、狂歡與藝術創造力' },
         { name: '哈迪斯', url: 'hades.html', img: 'https://th.bing.com/th/id/OIP.jh5PoCyBjLDW-PQlC9_1dAHaHa?r=0&w=1024&h=1024&rs=1&pid=ImgDetMain&cb=idpwebpc2', desc: '掌管亡靈與冥界之神，冷酷且神秘，守護靈魂的終極歸宿' },
         { name: '珀爾塞福涅', url: 'persephone.html', img: 'https://cdn.openart.ai/stable_diffusion/af3394f52d952263c6c773045bcc5391f6702033_2000x2000.webp', desc: '新生象徵，春天女王，冥界與大地的雙重身份' },
-        { name: '厄洛斯', url: 'eros.html', img: 'images/eros.png', desc: '情感與愛欲之神，以金箭撩動人心，象徵激情與吸引力' },
-        { name: '尼刻', url: 'nike.html', img: 'images/nike.png', desc: '勝利女神，賦予勝利之翼，守護競賽與勝利的榮耀' },
-        { name: '蓋婭', url: 'gaia.html', img: 'images/gaia.png', desc: '萬物之母，地球與生命的化身，孕育萬物的源泉' },
-        { name: '克洛諾斯', url: 'chronos.html', img: 'images/chronos.png', desc: '時間之神，掌控歲月流逝與命運輪迴' },
-        { name: '墨耳甫斯', url: 'morpheus.html', img: 'images/morpheus.png', desc: '夢境之神，掌管夢境與幻象，能以夢語傳遞訊息' }
+        { name: '厄洛斯', url: 'eros.html', img: 'https://i.pinimg.com/736x/ad/63/63/ad6363477e4266b39aaf86e058facfb6.jpg', desc: '情感與愛欲之神，以金箭撩動人心，象徵激情與吸引力' },
+        { name: '尼刻', url: 'nike.html', img: 'https://i.pinimg.com/736x/d8/b4/51/d8b4515f750e0f8106ba69a91ff05679.jpg', desc: '勝利女神，賦予勝利之翼，守護競賽與勝利的榮耀' },
+        { name: '蓋婭', url: 'gaia.html', img: 'https://i.pinimg.com/1200x/4e/ac/31/4eac313f814d9044877241e163a43585.jpg', desc: '萬物之母，地球與生命的化身，孕育萬物的源泉' },
+        { name: '阿特拉斯', url: 'atlas_god.html', img: 'https://i.pinimg.com/736x/02/e2/14/02e214b507e55f3dddb673c7acdc25f7.jpg', desc: '扛起天空的泰坦神，象徵力量與支撐，承載世界的重量' },
+        { name: '克洛諾斯', url: 'cronus.html', img: 'https://i.pinimg.com/1200x/89/24/bc/8924bcdf6c9734a961ef956a8e8fbf79.jpg', desc: '時間之神，掌控歲月流逝與命運輪迴，象徵永恆的時間' },
+        { name: '瑞亞', url: 'rhea.html', img: 'https://i.pinimg.com/1200x/44/0e/e8/440ee8571b581d7ae728d2c9c765cb74.jpg', desc: '大地之母，家庭與母愛的化身，守護家庭和諧與溫暖' },
+        { name: '普羅米修斯', url: 'prometheus.html', img: 'https://i.pinimg.com/736x/2d/b4/24/2db4245bd440fa993e2e1ac1904800c6.jpg', desc: '智慧與創造之神，為人類帶來火種與知識，象徵智慧與進步' }
       ];
 
       let unlockedGreek = JSON.parse(localStorage.getItem('unlockedGreek') || '[]');
@@ -886,6 +894,12 @@
 
       let passedFlipcard = JSON.parse(localStorage.getItem('passed_flipcard')||'[]');
       deities.forEach(d => {
+        // 確保每個神祇都有成本設定
+        if (!greekCosts[d.name]) {
+          greekCosts[d.name] = Math.floor(Math.random() * 31) + 30;
+          // 保存更新後的成本到 localStorage
+          localStorage.setItem('unlockGreekCosts', JSON.stringify(greekCosts));
+        }
         const cost = greekCosts[d.name];
         const unlocked = unlockedGreek.includes(d.name);
         const card = document.createElement('div');
@@ -909,6 +923,10 @@
               updateDisplayStars();
               ug.push(d.name);
               localStorage.setItem('unlockedGreek', JSON.stringify(ug));
+              // 更新卡片顯示狀態
+              card.classList.remove('locked');
+              card.removeAttribute('data-locktext');
+              card.querySelector('.card-info').textContent = '已解鎖';
             } else {
               alert('星星不足，無法解鎖');
               return;
@@ -955,7 +973,7 @@
 
     // Tab3進度條
     function updateProgress3() {
-      const total = 20;
+      const total = 23;
       const unlocked = JSON.parse(localStorage.getItem('unlockedGreek')||'[]').length;
       const percent = Math.round(unlocked/total*100);
       document.getElementById('progressBar3').style.width = percent+'%';
