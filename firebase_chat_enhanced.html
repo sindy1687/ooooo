@@ -423,7 +423,7 @@
       border-radius: 20px;
       color: white;
       font-size: 14px;
-      z-index: 1000;
+      z-index: 999;
       transition: all 0.3s ease;
     }
 
@@ -496,6 +496,86 @@
       background: rgba(255,255,255,0.3);
     }
 
+    .gacha-button {
+      position: fixed;
+      top: 80px;
+      right: 20px;
+      background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 25px;
+      cursor: pointer;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.3s ease;
+      font-size: 16px;
+      font-weight: bold;
+      box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+      z-index: 1000;
+      min-width: 120px;
+      justify-content: center;
+    }
+
+
+
+    .gacha-button:hover {
+      background: linear-gradient(135deg, #ff5252 0%, #d84315 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(255, 107, 107, 0.5);
+    }
+
+    .gacha-button:active {
+      transform: translateY(0);
+    }
+
+    /* 抽卡按鈕脈衝動畫 */
+    .gacha-button {
+      animation: gachaPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes gachaPulse {
+      0%, 100% {
+        box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+        transform: scale(1);
+      }
+      50% {
+        box-shadow: 0 6px 20px rgba(255, 107, 107, 0.6);
+        transform: scale(1.05);
+      }
+    }
+
+    .gacha-button:hover {
+      animation: none;
+    }
+
+    /* 響應式設計 */
+    @media (max-width: 768px) {
+      .gacha-button {
+        top: 70px;
+        right: 10px;
+        padding: 10px 15px;
+        font-size: 14px;
+        min-width: 100px;
+      }
+      
+
+    }
+
+    @media (max-width: 480px) {
+      .gacha-button {
+        top: 60px;
+        right: 5px;
+        padding: 8px 12px;
+        font-size: 12px;
+        min-width: 90px;
+      }
+      
+
+    }
+
     .loading {
       text-align: center;
       padding: 40px;
@@ -535,11 +615,22 @@
     <span>←</span>
     返回首頁
   </a>
+  
+  <!-- 新增抽卡按鈕 -->
+  <button class="gacha-button" onclick="openGachaWindow()" title="點擊開啟抽卡系統">
+    🎲 抽卡
+  </button>
 
   <div class="container">
     <div class="header">
       <h1>💬 Firebase 即時聊天室</h1>
       <p>真正的即時通訊，無需等待回傳！</p>
+      <p style="font-size: 0.9em; opacity: 0.8; margin-top: 10px;">
+        💡 提示：當有玩家在抽卡系統中抽到 SSR 卡片時，會自動在此聊天室顯示通知！
+      </p>
+      <p style="font-size: 0.9em; opacity: 0.8; margin-top: 5px;">
+        🎲 點擊右上角的抽卡按鈕可以直接開啟抽卡系統！
+      </p>
     </div>
 
     <!-- 登入畫面 -->
@@ -1012,6 +1103,10 @@
       setUserName(name) {
         console.log('設定用戶名稱:', name);
         this.userName = name;
+        
+        // 儲存用戶名稱到 localStorage，供抽卡系統使用
+        localStorage.setItem('chatUserForGacha', name);
+        
         if (this.currentUser) {
           this.currentUser.name = name;
           console.log('✅ 用戶已登入，更新用戶資訊');
@@ -1069,6 +1164,29 @@
       const input = document.getElementById('messageInput');
       chat.sendMessage(input.value);
     };
+
+    // 開啟抽卡視窗函數
+    window.openGachaWindow = () => {
+      // 顯示提示訊息
+      if (chat && chat.showNotification) {
+        chat.showNotification('🎲 正在開啟抽卡系統...', 'info');
+      }
+      
+      // 開啟新視窗
+      const gachaWindow = window.open('gacha.html', '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+      
+      // 檢查視窗是否成功開啟
+      if (gachaWindow) {
+        console.log('✅ 抽卡視窗已開啟');
+      } else {
+        console.error('❌ 無法開啟抽卡視窗，可能被瀏覽器阻擋');
+        if (chat && chat.showNotification) {
+          chat.showNotification('❌ 無法開啟抽卡視窗，請檢查瀏覽器設定', 'error');
+        }
+      }
+    };
+
+
 
     window.enterChat = () => {
       const nameInput = document.getElementById('userNameInput');
