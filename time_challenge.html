@@ -387,6 +387,7 @@
       let timerId = null;
       let totalQuestions = questionPool.length;
       let currentIndex = 0;
+      let isProcessingAnswer = false; // 防止重複點擊
       
       // ===== 新增：遊戲狀態追蹤 =====
       let gameStats = {
@@ -657,8 +658,17 @@
           btn.style.cursor = 'pointer';
           btn.style.boxShadow = '0 2px 6px rgba(0,0,0,0.5)';
           btn.style.transition = 'background 0.2s';
-          btn.addEventListener('mouseenter', () => btn.style.background = '#66fcf1');
-          btn.addEventListener('mouseleave', () => btn.style.background = '#45a29e');
+          btn.disabled = false; // 確保按鈕初始狀態為可用
+          btn.addEventListener('mouseenter', () => {
+            if (!btn.disabled) {
+              btn.style.background = '#66fcf1';
+            }
+          });
+          btn.addEventListener('mouseleave', () => {
+            if (!btn.disabled) {
+              btn.style.background = '#45a29e';
+            }
+          });
           btn.addEventListener('click', () => handleChoice(text));
           choicesEl.appendChild(btn);
         });
@@ -697,7 +707,23 @@
       }
 
       function handleChoice(selected) {
+        // 防止重複點擊
+        if (isProcessingAnswer) {
+          return;
+        }
+        
+        isProcessingAnswer = true;
         clearInterval(timerId);
+        
+        // ===== 鎖定所有按鈕 =====
+        const allButtons = choicesEl.querySelectorAll('.choice-btn');
+        allButtons.forEach(btn => {
+          btn.disabled = true;
+          btn.style.background = '#555';
+          btn.style.color = '#aaa';
+          btn.style.cursor = 'not-allowed';
+          btn.style.boxShadow = 'none';
+        });
         
         // ===== 新增：計算答題時間 =====
         const answerTime = (Date.now() - gameStats.questionStartTime) / 1000;
@@ -774,6 +800,7 @@
         
         setTimeout(() => {
           loadQuestion();
+          isProcessingAnswer = false; // 重置處理狀態
         }, 1000);
       }
       
