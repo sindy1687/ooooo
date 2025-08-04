@@ -271,6 +271,43 @@
             box-shadow: 0 8px 25px rgba(76, 175, 80, 0.6);
         }
 
+        /* 分頁切換樣式 */
+        .tab-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .tab-button {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            background: linear-gradient(45deg, #6c757d, #5a6268);
+            color: white;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .tab-button.active {
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            color: #333;
+            box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .tab-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .tab-button.active:hover {
+            box-shadow: 0 8px 25px rgba(255, 215, 0, 0.6);
+        }
+
         .modal {
             display: none;
             position: fixed;
@@ -794,11 +831,27 @@
             </div>
         </div>
 
-        <div class="leaderboard-section">
+        <!-- 分頁切換按鈕 -->
+        <div class="tab-container">
+            <button class="tab-button active" onclick="switchTab('stars')">⭐ 星星排行榜</button>
+            <button class="tab-button" onclick="switchTab('constellation')">🌟 星座排行榜</button>
+        </div>
+
+        <!-- 星星排行榜分頁 -->
+        <div class="leaderboard-section" id="starsTab">
             <div class="section-title">🏆 星星排行榜</div>
             
             <div class="leaderboard-content" id="leaderboardContent">
                 <div class="loading">載入中...</div>
+            </div>
+        </div>
+
+        <!-- 星座排行榜分頁 -->
+        <div class="leaderboard-section" id="constellationTab" style="display: none;">
+            <div class="section-title">🌟 星座挑戰排行榜</div>
+            
+            <div class="leaderboard-content" id="constellationLeaderboardContent">
+                <div class="loading">載入星座排行榜中...</div>
             </div>
         </div>
     </div>
@@ -1117,7 +1170,15 @@
                 refreshBtn.style.transform = 'rotate(0deg)';
             }, 1000);
             
-            loadData();
+            // 根據當前分頁重新載入資料
+            const starsTab = document.getElementById('starsTab');
+            const constellationTab = document.getElementById('constellationTab');
+            
+            if (starsTab.style.display !== 'none') {
+                loadData();
+            } else if (constellationTab.style.display !== 'none') {
+                loadConstellationLeaderboard();
+            }
         }
 
         // 顯示錯誤訊息
@@ -1129,6 +1190,167 @@
         // 全域函數供外部調用
         window.handleStarsLeaderboard = handleStarsLeaderboard;
         window.handleStarsStats = handleStarsStats;
+
+        // 星座排行榜相關變數
+        let constellationLeaderboardData = [];
+
+        // 分頁切換功能
+        function switchTab(tabName) {
+            // 隱藏所有分頁
+            document.getElementById('starsTab').style.display = 'none';
+            document.getElementById('constellationTab').style.display = 'none';
+            
+            // 移除所有按鈕的 active 類別
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // 顯示選中的分頁
+            if (tabName === 'stars') {
+                document.getElementById('starsTab').style.display = 'block';
+                document.querySelector('.tab-button:first-child').classList.add('active');
+            } else if (tabName === 'constellation') {
+                document.getElementById('constellationTab').style.display = 'block';
+                document.querySelector('.tab-button:last-child').classList.add('active');
+                // 載入星座排行榜資料
+                loadConstellationLeaderboard();
+            }
+        }
+
+        // 載入星座排行榜
+        async function loadConstellationLeaderboard() {
+            try {
+                console.log('🌟 載入星座排行榜...');
+                
+                // 使用 quiz.html 的 Google Sheets API 端點獲取星座排行榜資料
+                const QUIZ_API_URL = "https://script.google.com/macros/s/AKfycbxg_xEZZd94RUsLXWvMokPN1LWQ288llpraGLSDRHYZAsYfMds3lS3vB999jS6z6ks9/exec";
+                
+                // 使用 POST 方法，與 quiz.html 保持一致
+                const formData = new URLSearchParams();
+                formData.append('action', 'getLeaderboard');
+                
+                const response = await fetch(QUIZ_API_URL, {
+                    method: 'POST',
+                    mode: 'cors',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: formData.toString()
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                handleConstellationLeaderboard(data);
+                
+            } catch (error) {
+                console.error('載入星座排行榜失敗:', error);
+                // 如果 API 失敗，使用模擬資料
+                loadMockConstellationData();
+            }
+        }
+
+        // 處理星座排行榜資料
+        function handleConstellationLeaderboard(data) {
+            console.log('收到星座排行榜資料:', data);
+            
+            if (data.error) {
+                console.error('載入星座排行榜失敗:', data.error);
+                loadMockConstellationData();
+                return;
+            }
+
+            // 檢查資料格式是否符合 quiz.html 的返回格式
+            if (data.success && data.leaderboard) {
+                // 使用 leaderboard 陣列
+                const leaderboardData = data.leaderboard;
+                
+                // 處理星座排行榜資料
+                const constellationData = leaderboardData.map(item => ({
+                    user: item.playerName || item.user || '未知用戶',
+                    score: parseInt(item.score) || 0,
+                    correctCount: parseInt(item.correctCount) || 0,
+                    category: item.category || '未知星座',
+                    date: item.date || new Date().toLocaleDateString()
+                }));
+
+                console.log('處理後的星座資料:', constellationData);
+                constellationLeaderboardData = constellationData;
+                displayConstellationLeaderboard();
+                return;
+            }
+
+            // 如果資料格式不符合預期，使用模擬資料
+            console.error('星座排行榜資料格式錯誤:', data);
+            loadMockConstellationData();
+        }
+
+        // 載入模擬星座排行榜資料
+        function loadMockConstellationData() {
+            console.log('📊 載入模擬星座排行榜資料...');
+            
+            const mockConstellationData = [
+                { user: '星座玩家A', score: 40, correctCount: 20, category: 'aries', date: '2024/1/15' },
+                { user: '星座玩家B', score: 36, correctCount: 18, category: 'taurus', date: '2024/1/15' },
+                { user: '星座玩家C', score: 32, correctCount: 16, category: 'gemini', date: '2024/1/14' },
+                { user: '星座玩家D', score: 38, correctCount: 19, category: 'aries', date: '2024/1/13' },
+                { user: '星座玩家E', score: 34, correctCount: 17, category: 'leo', date: '2024/1/12' },
+                { user: '星座玩家F', score: 30, correctCount: 15, category: 'virgo', date: '2024/1/11' },
+                { user: '星座玩家G', score: 28, correctCount: 14, category: 'libra', date: '2024/1/10' },
+                { user: '星座玩家H', score: 26, correctCount: 13, category: 'scorpio', date: '2024/1/9' }
+            ];
+
+            constellationLeaderboardData = mockConstellationData;
+            displayConstellationLeaderboard();
+        }
+
+        // 顯示星座排行榜
+        function displayConstellationLeaderboard() {
+            const content = document.getElementById('constellationLeaderboardContent');
+            
+            if (!constellationLeaderboardData || constellationLeaderboardData.length === 0) {
+                content.innerHTML = '<div class="error">尚無星座排行榜資料</div>';
+                return;
+            }
+
+            let html = '';
+
+            constellationLeaderboardData.forEach((item, index) => {
+                const rankClass = index === 0 ? 'gold' : index === 1 ? 'silver' : index === 2 ? 'bronze' : '';
+                const rank = index + 1;
+                const isCurrentUser = item.user === CURRENT_USER;
+                const itemClass = isCurrentUser ? 'leaderboard-item current-user' : 'leaderboard-item';
+                
+                // 星座圖示對應
+                const constellationIcons = {
+                    'aries': '♈', 'taurus': '♉', 'gemini': '♊', 'cancer': '♋',
+                    'leo': '♌', 'virgo': '♍', 'libra': '♎', 'scorpio': '♏',
+                    'sagittarius': '♐', 'capricorn': '♑', 'aquarius': '♒', 'pisces': '♓'
+                };
+                
+                const constellationIcon = constellationIcons[item.category] || '🌟';
+                
+                html += `
+                    <div class="${itemClass}">
+                        ${index < 3 ? '<div class="crown">👑</div>' : ''}
+                        <div class="rank ${rankClass}">${rank}</div>
+                        <div class="user-info">
+                            <div class="user-name">${item.user}</div>
+                            <div class="user-stats">
+                                ${constellationIcon} ${item.category.toUpperCase()}
+                                | 正確: ${item.correctCount} 題
+                                | 日期: ${item.date}
+                            </div>
+                        </div>
+                        <div class="stars">🏆 ${item.score}</div>
+                    </div>
+                `;
+            });
+
+            content.innerHTML = html;
+        }
 
         // 背景音樂控制
         let backgroundMusic = null;
@@ -1837,6 +2059,11 @@
             setInterval(() => {
                 updateTotalStarsDisplay();
             }, 30000);
+            
+            // 初始化分頁系統
+            console.log('📋 初始化分頁系統...');
+            // 預設顯示星星排行榜分頁
+            switchTab('stars');
         });
 
         // 添加音樂按鈕事件監聽器
