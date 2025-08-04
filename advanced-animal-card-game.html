@@ -921,7 +921,8 @@
                              :key="'player-' + index"
                              class="card"
                              :class="{ 'selected': selectedCard === index }"
-                             @click="selectCard(index)">
+                             @click="gameOver ? null : selectCard(index)"
+                             :style="{ cursor: gameOver ? 'not-allowed' : 'pointer' }">
                             <div class="card-type">{{ card.type }}</div>
                             <div class="card-image">{{ card.emoji }}</div>
                             <div class="card-name">{{ card.name }}</div>
@@ -955,7 +956,8 @@
                     特殊技能 (3能量)
                 </button>
                 <button class="btn btn-danger" 
-                        @click="newGame">
+                        @click="newGame"
+                        :disabled="gameOver">
                     新遊戲
                 </button>
             </div>
