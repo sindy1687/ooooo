@@ -407,7 +407,7 @@
       const pronounceRow = document.getElementById('pronounceRow');
 
       // ===== 新增：星星獎勵計算函數 =====
-      function calculateStarReward(isCorrect, answerTime, consecutiveCount) {
+      function calculateStarReward(isCorrect, answerTime, consecutiveCount, previousConsecutiveCount) {
         if (!isCorrect) return 0;
         
         let baseReward = 1; // 基礎獎勵
@@ -419,13 +419,14 @@
           baseReward += 1; // 5秒內 +1星
         }
         
-        // 連擊獎勵：連續答對越多獎勵越多
-        if (consecutiveCount >= 5) {
-          baseReward += 3; // 5連擊 +3星
-        } else if (consecutiveCount >= 3) {
-          baseReward += 2; // 3連擊 +2星
-        } else if (consecutiveCount >= 2) {
-          baseReward += 1; // 2連擊 +1星
+        // 連擊獎勵：只在達到新的連擊里程碑時給予獎勵
+        let comboBonus = 0;
+        if (consecutiveCount >= 5 && previousConsecutiveCount < 5) {
+          comboBonus = 3; // 首次達到5連擊 +3星
+        } else if (consecutiveCount >= 3 && previousConsecutiveCount < 3) {
+          comboBonus = 2; // 首次達到3連擊 +2星
+        } else if (consecutiveCount >= 2 && previousConsecutiveCount < 2) {
+          comboBonus = 1; // 首次達到2連擊 +1星
         }
         
         // 單字難度獎勵：根據單字長度給予額外獎勵
@@ -440,7 +441,7 @@
           baseReward += 1; // 英檢單字額外獎勵
         }
         
-        return baseReward;
+        return baseReward + comboBonus;
       }
       
       // ===== 新增：顯示獎勵動畫 =====
@@ -706,6 +707,7 @@
         if (selected === currentQuestion.meaning) {
           // ===== 新增：答對邏輯 =====
           gameStats.correctCount++;
+          const previousConsecutiveCount = gameStats.consecutiveCorrect;
           gameStats.consecutiveCorrect++;
           
           // 更新最快/最慢答題時間
@@ -722,7 +724,7 @@
           }
           
           // 計算星星獎勵
-          const starsEarned = calculateStarReward(true, answerTime, gameStats.consecutiveCorrect);
+          const starsEarned = calculateStarReward(true, answerTime, gameStats.consecutiveCorrect, previousConsecutiveCount);
           
           // 使用統一的星星系統
           if (typeof StarRewardSystem !== 'undefined') {
@@ -742,8 +744,14 @@
           } else if (answerTime <= 5) {
             reasonText = '🎯 快速答題！';
           }
-          if (gameStats.consecutiveCorrect >= 3) {
-            reasonText += reasonText ? ' + 連擊獎勵！' : '🔥 連擊獎勵！';
+          
+          // 檢查是否達到新的連擊里程碑
+          if (gameStats.consecutiveCorrect >= 5 && previousConsecutiveCount < 5) {
+            reasonText += reasonText ? ' + 🔥 5連擊獎勵！' : '🔥 5連擊獎勵！';
+          } else if (gameStats.consecutiveCorrect >= 3 && previousConsecutiveCount < 3) {
+            reasonText += reasonText ? ' + ⚡ 3連擊獎勵！' : '⚡ 3連擊獎勵！';
+          } else if (gameStats.consecutiveCorrect >= 2 && previousConsecutiveCount < 2) {
+            reasonText += reasonText ? ' + ✨ 2連擊獎勵！' : '✨ 2連擊獎勵！';
           }
           
           showRewardAnimation(starsEarned, reasonText);
