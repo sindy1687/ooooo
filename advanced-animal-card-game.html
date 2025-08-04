@@ -1030,6 +1030,7 @@
                     sounds: {},
                     totalStars: 0,
                     gameStarted: false, // 新增：遊戲是否已開始
+                    gameRewarded: false, // 新增：防止重複獎勵的標記
                     foodChain: {
                         '獅子': ['長頸鹿', '鹿', '斑馬'],
                         '長頸鹿': ['草'],
@@ -1375,6 +1376,7 @@
                     this.dealCards();
                     this.gameOver = false;
                     this.gameStarted = true; // 標記遊戲已開始
+                    this.gameRewarded = false; // 重置獎勵標記
                     this.playerEnergy = 5;
                     this.playSound('shuffle');
                     // 開始背景音樂
@@ -1601,10 +1603,10 @@
                             this.playSound('damage');
                             this.triggerStarsEffect('victory');
                             
-                            // 獎勵星星（增加）
-                            const starsEarned = Math.max(2, Math.floor(damage / 1.5));
-                            this.addStars(starsEarned);
-                            this.gameMessage += ` 獲得${starsEarned}顆星星！`;
+                            // 移除戰鬥中的星星獎勵，只在遊戲結束時給一次性獎勵
+                            // const starsEarned = Math.max(2, Math.floor(damage / 1.5));
+                            // this.addStars(starsEarned);
+                            // this.gameMessage += ` 獲得${starsEarned}顆星星！`;
                             // 星星獎勵彈窗會在 addStars 方法中自動顯示
                         } else if (opponentPower > playerPower) {
                             // 對手勝利
@@ -1618,9 +1620,9 @@
                         } else {
                             // 平手
                             this.gameMessage += ' 平手！雙方都沒有受到傷害';
-                            // 平手也給一點星星獎勵
-                            this.addStars(1);
-                            this.gameMessage += ' 平手獎勵1顆星星！';
+                            // 移除平手時的星星獎勵，只在遊戲結束時給一次性獎勵
+                            // this.addStars(1);
+                            // this.gameMessage += ' 平手獎勵1顆星星！';
                         }
 
                         // 檢查遊戲結束
@@ -1708,26 +1710,30 @@
                             this.playerHealth = Math.min(25, this.playerHealth + 5); 
                             this.gameMessage = '玩家使用治癒技能！恢復5點生命！'; 
                             this.playSound('heal');
-                            this.addStars(3); // 治癒技能獎勵3顆星星（增加）
+                            // 移除特殊技能中的星星獎勵，只在遊戲結束時給一次性獎勵
+                            // this.addStars(3); // 治癒技能獎勵3顆星星（增加）
                             // 星星獎勵彈窗會在 addStars 方法中自動顯示
                         },
                         () => { 
                             this.opponentHealth -= 3; 
                             this.gameMessage = '玩家使用攻擊技能！對手受到3點傷害！'; 
                             this.playSound('damage');
-                            this.addStars(4); // 攻擊技能獎勵4顆星星（增加）
+                            // 移除特殊技能中的星星獎勵，只在遊戲結束時給一次性獎勵
+                            // this.addStars(4); // 攻擊技能獎勵4顆星星（增加）
                             // 星星獎勵彈窗會在 addStars 方法中自動顯示
                         },
                         () => { 
                             this.gameMessage = '玩家使用抽牌技能！但沒有額外效果'; 
                             this.playSound('shuffle');
-                            this.addStars(2); // 抽牌技能獎勵2顆星星（增加）
+                            // 移除特殊技能中的星星獎勵，只在遊戲結束時給一次性獎勵
+                            // this.addStars(2); // 抽牌技能獎勵2顆星星（增加）
                             // 星星獎勵彈窗會在 addStars 方法中自動顯示
                         },
                         () => {
                             this.gameMessage = '玩家使用召喚技能！但沒有額外效果';
                             this.playSound('victory');
-                            this.addStars(5); // 召喚技能獎勵5顆星星（增加）
+                            // 移除特殊技能中的星星獎勵，只在遊戲結束時給一次性獎勵
+                            // this.addStars(5); // 召喚技能獎勵5顆星星（增加）
                             // 星星獎勵彈窗會在 addStars 方法中自動顯示
                         }
                     ];
@@ -1800,8 +1806,11 @@
                     if (this.playerHealth <= 0) {
                         this.gameOver = true;
                         this.gameOverMessage = '遊戲結束！對手獲勝！';
-                        this.addStars(-2); // 失敗扣除2顆星星
-                        this.gameMessage += ' 失敗扣除2顆星星！';
+                        if (!this.gameRewarded) {
+                            this.addStars(-2); // 失敗扣除2顆星星
+                            this.gameMessage += ' 失敗扣除2顆星星！';
+                            this.gameRewarded = true;
+                        }
                         this.playSound('gameOver');
                         // 立即清空牌面
                         this.clearAllCards();
@@ -1809,10 +1818,13 @@
                         this.gameOver = true;
                         this.gameOverMessage = '遊戲結束！玩家獲勝！';
                         this.playSound('victory');
-                        // 勝利獎勵20顆星星
-                        this.addStars(20);
-                        this.gameMessage += ` 勝利獎勵20顆星星！`;
-                        // 星星獎勵彈窗會在 addStars 方法中自動顯示
+                        // 勝利獎勵20顆星星（防止重複獎勵）
+                        if (!this.gameRewarded) {
+                            this.addStars(20);
+                            this.gameMessage += ` 勝利獎勵20顆星星！`;
+                            this.gameRewarded = true;
+                            // 星星獎勵彈窗會在 addStars 方法中自動顯示
+                        }
                         // 立即清空牌面
                         this.clearAllCards();
                     } else if (this.turn >= 5 && this.playerHand.length === 0 && this.opponentHand.length === 0) {
@@ -1821,20 +1833,29 @@
                         if (this.playerHealth > this.opponentHealth) {
                             this.gameOverMessage = '第五回合結束！玩家血量較多獲勝！';
                             this.playSound('victory');
-                            // 勝利獎勵20顆星星
-                            this.addStars(20);
-                            this.gameMessage += ` 勝利獎勵20顆星星！`;
-                            // 星星獎勵彈窗會在 addStars 方法中自動顯示
+                            // 勝利獎勵20顆星星（防止重複獎勵）
+                            if (!this.gameRewarded) {
+                                this.addStars(20);
+                                this.gameMessage += ` 勝利獎勵20顆星星！`;
+                                this.gameRewarded = true;
+                                // 星星獎勵彈窗會在 addStars 方法中自動顯示
+                            }
                         } else if (this.opponentHealth > this.playerHealth) {
                             this.gameOverMessage = '第五回合結束！對手血量較多獲勝！';
-                            this.addStars(-2); // 失敗扣除2顆星星
-                            this.gameMessage += ' 失敗扣除2顆星星！';
+                            if (!this.gameRewarded) {
+                                this.addStars(-2); // 失敗扣除2顆星星
+                                this.gameMessage += ' 失敗扣除2顆星星！';
+                                this.gameRewarded = true;
+                            }
                             this.playSound('gameOver');
                         } else {
                             this.gameOverMessage = '第五回合結束！平手！';
-                            this.addStars(5); // 平手獎勵5顆星星
-                            this.gameMessage += ' 平手獎勵5顆星星！';
-                            // 星星獎勵彈窗會在 addStars 方法中自動顯示
+                            if (!this.gameRewarded) {
+                                this.addStars(5); // 平手獎勵5顆星星
+                                this.gameMessage += ' 平手獎勵5顆星星！';
+                                this.gameRewarded = true;
+                                // 星星獎勵彈窗會在 addStars 方法中自動顯示
+                            }
                         }
                         // 立即清空牌面
                         this.clearAllCards();
@@ -1844,20 +1865,29 @@
                         if (this.playerHealth > this.opponentHealth) {
                             this.gameOverMessage = '遊戲結束！玩家獲勝！';
                             this.playSound('victory');
-                            // 勝利獎勵20顆星星
-                            this.addStars(20);
-                            this.gameMessage += ` 勝利獎勵20顆星星！`;
-                            // 星星獎勵彈窗會在 addStars 方法中自動顯示
+                            // 勝利獎勵20顆星星（防止重複獎勵）
+                            if (!this.gameRewarded) {
+                                this.addStars(20);
+                                this.gameMessage += ` 勝利獎勵20顆星星！`;
+                                this.gameRewarded = true;
+                                // 星星獎勵彈窗會在 addStars 方法中自動顯示
+                            }
                         } else if (this.opponentHealth > this.playerHealth) {
                             this.gameOverMessage = '遊戲結束！對手獲勝！';
-                            this.addStars(-2); // 失敗扣除2顆星星
-                            this.gameMessage += ' 失敗扣除2顆星星！';
+                            if (!this.gameRewarded) {
+                                this.addStars(-2); // 失敗扣除2顆星星
+                                this.gameMessage += ' 失敗扣除2顆星星！';
+                                this.gameRewarded = true;
+                            }
                             this.playSound('gameOver');
                         } else {
                             this.gameOverMessage = '遊戲結束！平手！';
-                            this.addStars(5); // 平手獎勵5顆星星
-                            this.gameMessage += ' 平手獎勵5顆星星！';
-                            // 星星獎勵彈窗會在 addStars 方法中自動顯示
+                            if (!this.gameRewarded) {
+                                this.addStars(5); // 平手獎勵5顆星星
+                                this.gameMessage += ' 平手獎勵5顆星星！';
+                                this.gameRewarded = true;
+                                // 星星獎勵彈窗會在 addStars 方法中自動顯示
+                            }
                         }
                         // 立即清空牌面
                         this.clearAllCards();
@@ -1889,6 +1919,7 @@
                     this.currentPlayer = 'player';
                     this.showEffects = false;
                     this.gameStarted = false; // 重置遊戲開始狀態
+                    this.gameRewarded = false; // 重置獎勵標記
                     this.playSound('button');
                 }
             }
