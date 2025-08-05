@@ -219,6 +219,110 @@
       box-shadow: 0 0 25px rgba(0, 255, 255, 0.5);
     }
 
+    /* 鎖定狀態樣式 */
+    .game-card.locked {
+      opacity: 0.6;
+      cursor: not-allowed;
+      border-color: var(--glow-red);
+      box-shadow: 0 0 20px rgba(255, 107, 107, 0.3);
+    }
+
+    .game-card.locked:hover {
+      transform: none;
+      box-shadow: 0 0 20px rgba(255, 107, 107, 0.3);
+      border-color: var(--glow-red);
+    }
+
+    .game-card.locked::before {
+      display: none;
+    }
+
+    .game-button.locked {
+      background: linear-gradient(45deg, #666, #999);
+      color: #ccc;
+      cursor: not-allowed;
+      opacity: 0.8;
+    }
+
+    .game-button.locked:hover {
+      transform: none;
+      box-shadow: none;
+    }
+
+    .game-button[disabled] {
+      cursor: not-allowed;
+      pointer-events: none;
+      opacity: 0.6;
+    }
+
+    .game-button.locked {
+      background: linear-gradient(45deg, #666, #999);
+      color: #ccc;
+      cursor: not-allowed;
+      opacity: 0.8;
+    }
+
+    .game-button.locked:hover {
+      transform: none;
+      box-shadow: none;
+    }
+
+    /* 嵌入式遊戲容器樣式 */
+    .embedded-game-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(10, 20, 40, 0.95);
+      z-index: 2000;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .embedded-game-header {
+      background: rgba(10, 20, 40, 0.98);
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid var(--glow-cyan);
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+    }
+
+    .embedded-game-header h2 {
+      margin: 0;
+      color: var(--glow-cyan);
+      font-size: 1.5rem;
+    }
+
+    .close-game-btn {
+      background: linear-gradient(45deg, var(--glow-red), var(--glow-magenta));
+      color: #fff;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .close-game-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 15px rgba(255, 107, 107, 0.5);
+    }
+
+    .embedded-game-frame {
+      flex: 1;
+      width: 100%;
+      background: #000;
+    }
+
+    .embedded-game-frame iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
     .back-button {
       position: fixed;
       top: 20px;
@@ -258,6 +362,80 @@
     .welcome-text {
       color: #ccc;
       line-height: 1.6;
+    }
+
+    /* 星星顯示區域 */
+    .stars-display {
+      background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(255, 215, 0, 0.05));
+      border: 2px solid var(--glow-gold);
+      border-radius: 15px;
+      padding: 20px;
+      margin-bottom: 30px;
+      text-align: center;
+      box-shadow: 0 0 30px rgba(255, 215, 0, 0.3);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stars-display::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.1), transparent);
+      animation: shine 3s infinite;
+    }
+
+    @keyframes shine {
+      0% { left: -100%; }
+      50% { left: 100%; }
+      100% { left: 100%; }
+    }
+
+    .stars-title {
+      font-size: 1.8rem;
+      color: var(--glow-gold);
+      margin-bottom: 10px;
+      font-weight: bold;
+      text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+    }
+
+    .stars-count {
+      font-size: 3rem;
+      font-weight: bold;
+      color: var(--glow-gold);
+      text-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+      margin-bottom: 10px;
+    }
+
+    .stars-icon {
+      font-size: 2rem;
+      margin: 0 10px;
+      animation: twinkle 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes twinkle {
+      from { transform: scale(1); opacity: 1; }
+      to { transform: scale(1.2); opacity: 0.8; }
+    }
+
+    .stars-subtitle {
+      color: #ccc;
+      font-size: 1rem;
+      margin-top: 10px;
+    }
+
+    /* 星星更新動畫 */
+    .stars-update {
+      animation: starsUpdate 0.5s ease-in-out;
+    }
+
+    @keyframes starsUpdate {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); box-shadow: 0 0 50px rgba(255, 215, 0, 0.6); }
+      100% { transform: scale(1); }
     }
 
     /* 音效控制 */
@@ -312,34 +490,59 @@
       <i class="material-icons">home</i> 返回首頁
     </button>
 
-    <div class="header">
-      <h1>🎮 三大遊戲中心</h1>
-    </div>
+         <div class="header">
+                     <h1>🎮 八大遊戲中心</h1>
+     </div>
 
     <div class="container">
       <!-- 歡迎訊息 -->
       <div class="welcome-message">
         <div class="welcome-title">歡迎來到遊戲中心！</div>
-        <div class="welcome-text">
-          這裡有我們精心設計的三個精彩遊戲，每個遊戲都有獨特的玩法和挑戰。
-          選擇你喜歡的遊戲開始冒險吧！
-        </div>
+                               <div class="welcome-text">
+            這裡有我們精心設計的八個精彩遊戲，每個遊戲都有獨特的玩法和挑戰。
+            選擇你喜歡的遊戲開始冒險吧！
+              </div>
       </div>
+
+             <!-- 星星顯示區域 -->
+       <div class="stars-display" :class="{ 'stars-update': starsAnimation }">
+         <div class="stars-title">你的星星</div>
+         <div class="stars-count">{{ totalStars }}</div>
+         <div class="stars-icon">⭐</div>
+         <div class="stars-subtitle">收集星星，解鎖更多遊戲！</div>
+         
+         <!-- 星星詳細資訊 -->
+         <div style="margin-top: 15px; padding: 10px; background: rgba(255, 215, 0, 0.1); border-radius: 8px;">
+           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 0.9rem;">
+             <div>
+               <div style="color: var(--glow-green);">獲得: {{ totalStarsEarned }}</div>
+               <div style="color: var(--glow-red);">花費: {{ starsSpent }}</div>
+             </div>
+             <div>
+               <div style="color: var(--glow-cyan);">等級: {{ playerLevel }}</div>
+               <div style="color: var(--glow-gold);">進度: {{ levelProgressPercentage }}%</div>
+             </div>
+           </div>
+         </div>
+         
+                   <div style="color: #999; font-size: 0.8rem; margin-top: 5px;">💡 提示：遊玩其他遊戲可以獲得星星</div>
+          <div style="color: var(--glow-cyan); font-size: 0.8rem; margin-top: 3px;">🔄 星星系統已與首頁同步</div>
+       </div>
 
       <!-- 統計面板 -->
       <div class="stats-panel">
         <div class="stats-grid">
           <div class="stat-item">
-            <div class="stat-value">{{ totalGames }}</div>
-            <div class="stat-label">總遊戲數</div>
+            <div class="stat-value">{{ availableGames }}/{{ totalGames }}</div>
+            <div class="stat-label">可用遊戲</div>
           </div>
           <div class="stat-item">
             <div class="stat-value">{{ completedGames }}</div>
             <div class="stat-label">已完成</div>
           </div>
-          <div class="stat-item">
-            <div class="stat-value">{{ totalStars }}</div>
-            <div class="stat-label">總星星</div>
+          <div class="stat-item" style="background: rgba(255, 215, 0, 0.15); border-color: var(--glow-gold);">
+            <div class="stat-value" style="color: var(--glow-gold); text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);">⭐ {{ totalStars }}</div>
+            <div class="stat-label" style="color: var(--glow-gold);">總星星</div>
           </div>
           <div class="stat-item">
             <div class="stat-value">{{ playerLevel }}</div>
@@ -354,24 +557,27 @@
 
       <!-- 遊戲卡片 -->
       <div class="games-grid">
-        <!-- 拉霸機遊戲 -->
-        <div class="game-card" @click="openGame('word_spin_game.html')">
-          <div class="game-icon">🎰</div>
-          <div class="game-title">拉霸機遊戲</div>
-          <div class="game-subtitle">經典三連線遊戲</div>
-          <div class="game-description">
-            經典的拉霸機遊戲，轉動拉霸機獲得三個相同圖案即可獲勝。
-            遊戲包含華麗的視覺效果和動畫，讓您體驗真正的拉霸機樂趣。
-          </div>
-          <div class="game-features">
-            <div class="feature-item">經典拉霸機玩法</div>
-            <div class="feature-item">三連線獲勝機制</div>
-            <div class="feature-item">華麗視覺效果</div>
-            <div class="feature-item">動態動畫效果</div>
-            <div class="feature-item">分數統計系統</div>
-          </div>
-          <button class="game-button">開始拉霸機遊戲</button>
-        </div>
+                 <!-- 拉霸機遊戲 -->
+         <div class="game-card" :class="{ locked: !canPlaySlotMachine }" @click="toggleSlotMachine">
+           <div class="game-icon">🎰</div>
+           <div class="game-title">拉霸機遊戲</div>
+           <div class="game-subtitle">經典三連線遊戲</div>
+           <div class="game-description">
+             經典的拉霸機遊戲，轉動拉霸機獲得三個相同圖案即可獲勝。
+             遊戲包含華麗的視覺效果和動畫，讓您體驗真正的拉霸機樂趣。
+           </div>
+           <div class="game-features">
+             <div class="feature-item">經典拉霸機玩法</div>
+             <div class="feature-item">三連線獲勝機制</div>
+             <div class="feature-item">華麗視覺效果</div>
+             <div class="feature-item">動態動畫效果</div>
+             <div class="feature-item">分數統計系統</div>
+             <div class="feature-item" style="color: var(--glow-gold); font-weight: bold;">⭐ 需要 {{ slotMachineCost }} 顆星星</div>
+           </div>
+           <button class="game-button" :class="{ locked: !canPlaySlotMachine }" @click.stop="toggleSlotMachine" :disabled="!canPlaySlotMachine">
+             {{ canPlaySlotMachine ? '開始拉霸機遊戲' : `需要 ${slotMachineCost} 顆星星` }}
+           </button>
+         </div>
 
         <!-- 動物卡牌 -->
         <div class="game-card" @click="openGame('advanced-animal-card-game.html')">
@@ -410,6 +616,138 @@
           </div>
           <button class="game-button">開始卡牌對戰</button>
         </div>
+
+         <!-- Tetris 遊戲 -->
+        <div class="game-card" :class="{ locked: !canPlayTetris }" @click="toggleTetris">
+          <div class="game-icon">🧩</div>
+          <div class="game-title">Tetris</div>
+          <div class="game-subtitle">經典俄羅斯方塊</div>
+          <div class="game-description">
+            經典的俄羅斯方塊遊戲，通過旋轉和移動不同形狀的方塊來消除完整的橫行。
+            遊戲包含多種難度等級和流暢的操作體驗，考驗你的空間思維和反應速度！
+          </div>
+          <div class="game-features">
+            <div class="feature-item">經典方塊玩法</div>
+            <div class="feature-item">多種方塊形狀</div>
+            <div class="feature-item">空間思維挑戰</div>
+            <div class="feature-item">流暢操作體驗</div>
+            <div class="feature-item">分數統計系統</div>
+            <div class="feature-item">多種難度等級</div>
+            <div class="feature-item" style="color: var(--glow-gold); font-weight: bold;">⭐ 需要 {{ tetrisCost }} 顆星星</div>
+          </div>
+          <button class="game-button" :class="{ locked: !canPlayTetris }" @click.stop="toggleTetris" :disabled="!canPlayTetris">
+            {{ canPlayTetris ? '開始 Tetris' : `需要 ${tetrisCost} 顆星星` }}
+          </button>
+        </div>
+
+         <!-- Classic Uno 遊戲 -->
+        <div class="game-card" :class="{ locked: !canPlayClassicUno }" @click="toggleClassicUno">
+          <div class="game-icon">🃏</div>
+          <div class="game-title">Classic Uno</div>
+          <div class="game-subtitle">經典卡牌遊戲</div>
+          <div class="game-description">
+            經典的 Uno 卡牌遊戲，通過出牌和特殊卡牌效果來清空手牌。
+            遊戲包含多種遊戲模式和策略玩法，考驗你的卡牌技巧和策略思維！
+          </div>
+          <div class="game-features">
+            <div class="feature-item">經典 Uno 玩法</div>
+            <div class="feature-item">多種特殊卡牌</div>
+            <div class="feature-item">策略思維挑戰</div>
+            <div class="feature-item">流暢遊戲體驗</div>
+            <div class="feature-item">多人遊戲模式</div>
+            <div class="feature-item">分數統計系統</div>
+            <div class="feature-item" style="color: var(--glow-gold); font-weight: bold;">⭐ 需要 {{ classicUnoCost }} 顆星星</div>
+          </div>
+          <button class="game-button" :class="{ locked: !canPlayClassicUno }" @click.stop="toggleClassicUno" :disabled="!canPlayClassicUno">
+            {{ canPlayClassicUno ? '開始 Classic Uno' : `需要 ${classicUnoCost} 顆星星` }}
+          </button>
+        </div>
+
+         <!-- Little Wheel 遊戲 -->
+        <div class="game-card" :class="{ locked: !canPlayLittleWheel }" @click="toggleLittleWheel">
+          <div class="game-icon">🎡</div>
+          <div class="game-title">Little Wheel</div>
+          <div class="game-subtitle">小輪子冒險遊戲</div>
+          <div class="game-description">
+            有趣的小輪子冒險遊戲，控制小輪子在各種地形上滾動和跳躍。
+            遊戲包含豐富的關卡設計和物理效果，考驗你的反應能力和操作技巧！
+          </div>
+          <div class="game-features">
+            <div class="feature-item">物理引擎遊戲</div>
+            <div class="feature-item">豐富關卡設計</div>
+            <div class="feature-item">反應能力挑戰</div>
+            <div class="feature-item">流暢操作體驗</div>
+            <div class="feature-item">多種地形變化</div>
+            <div class="feature-item">收集要素系統</div>
+            <div class="feature-item" style="color: var(--glow-gold); font-weight: bold;">⭐ 需要 {{ littleWheelCost }} 顆星星</div>
+          </div>
+          <button class="game-button" :class="{ locked: !canPlayLittleWheel }" @click.stop="toggleLittleWheel" :disabled="!canPlayLittleWheel">
+            {{ canPlayLittleWheel ? '開始 Little Wheel' : `需要 ${littleWheelCost} 顆星星` }}
+          </button>
+        </div>
+
+         <!-- Plants vs Zombies Demo 遊戲 -->
+        <div class="game-card" :class="{ locked: !canPlayPlantsVsZombies }" @click="togglePlantsVsZombies">
+          <div class="game-icon">🌱</div>
+          <div class="game-title">Plants vs Zombies Demo</div>
+          <div class="game-subtitle">植物大戰殭屍試玩版</div>
+          <div class="game-description">
+            經典的塔防遊戲，種植各種植物來抵禦殭屍的進攻。
+            遊戲包含豐富的植物種類和策略玩法，考驗你的戰略思維能力！
+          </div>
+          <div class="game-features">
+            <div class="feature-item">經典塔防玩法</div>
+            <div class="feature-item">豐富植物種類</div>
+            <div class="feature-item">策略思維挑戰</div>
+            <div class="feature-item">多樣化殭屍</div>
+            <div class="feature-item">關卡進階設計</div>
+            <div class="feature-item">陽光收集系統</div>
+            <div class="feature-item" style="color: var(--glow-gold); font-weight: bold;">⭐ 需要 {{ plantsVsZombiesCost }} 顆星星</div>
+          </div>
+          <button class="game-button" :class="{ locked: !canPlayPlantsVsZombies }" @click.stop="togglePlantsVsZombies" :disabled="!canPlayPlantsVsZombies">
+            {{ canPlayPlantsVsZombies ? '開始 Plants vs Zombies Demo' : `需要 ${plantsVsZombiesCost} 顆星星` }}
+          </button>
+        </div>
+
+         <!-- Cut the Rope 2 -->
+        <div class="game-card" :class="{ locked: !canPlayCutTheRope }" @click="toggleCutTheRope">
+          <div class="game-icon">🍭</div>
+          <div class="game-title">Cut the Rope 2</div>
+          <div class="game-subtitle">經典物理益智遊戲</div>
+          <div class="game-description">
+            經典的物理益智遊戲，通過切斷繩子讓糖果落入小怪物的口中。
+            遊戲包含豐富的關卡設計和有趣的物理效果，考驗你的邏輯思維能力！
+          </div>
+          <div class="game-features">
+            <div class="feature-item">經典物理玩法</div>
+            <div class="feature-item">豐富關卡設計</div>
+            <div class="feature-item">邏輯思維挑戰</div>
+            <div class="feature-item">可愛遊戲角色</div>
+            <div class="feature-item">流暢遊戲體驗</div>
+            <div class="feature-item" style="color: var(--glow-gold); font-weight: bold;">⭐ 需要 {{ cutTheRopeCost }} 顆星星</div>
+          </div>
+          <button class="game-button" :class="{ locked: !canPlayCutTheRope }" @click.stop="toggleCutTheRope" :disabled="!canPlayCutTheRope">
+            {{ canPlayCutTheRope ? '開始Cut the Rope 2' : `需要 ${cutTheRopeCost} 顆星星` }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Cut the Rope 2 嵌入式遊戲容器 -->
+      <div v-if="showCutTheRope" class="embedded-game-container">
+        <div class="embedded-game-header">
+          <h2>🍭 Cut the Rope 2</h2>
+          <button class="close-game-btn" @click="closeCutTheRope">
+            <i class="material-icons">close</i>
+          </button>
+        </div>
+        <div class="embedded-game-frame">
+          <iframe 
+            src="https://nutwg.com/cut-the-rope-2/"
+            frameborder="0"
+            allowfullscreen
+            title="Cut the Rope 2">
+          </iframe>
+        </div>
       </div>
     </div>
   </div>
@@ -436,33 +774,182 @@
     createApp({
       data() {
         return {
-          totalGames: 3,
+          totalGames: 8,
+          availableGames: 8,
           completedGames: 0,
           totalStars: 0,
-          playerLevel: 1
+          playerLevel: 1,
+                     showCutTheRope: false,
+                     cutTheRopeCost: 100, // Cut the Rope 2 遊戲成本
+          slotMachineCost: 50, // 拉霸機遊戲成本
+          tetrisCost: 100, // Tetris 遊戲成本
+          classicUnoCost: 100, // Classic Uno 遊戲成本
+          littleWheelCost: 100, // Little Wheel 遊戲成本
+          plantsVsZombiesCost: 200, // Plants vs Zombies Demo 遊戲成本
+          starsAnimation: false, // 星星動畫狀態
+          // 新增星星系統相關數據
+          starsEarned: 0, // 本局獲得的星星
+          totalStarsEarned: 0, // 總共獲得的星星
+          starsSpent: 0, // 花費的星星
+          achievements: [], // 成就列表
+          levelProgress: 0, // 等級進度
+          nextLevelStars: 100 // 下一等級需要的星星
         }
       },
       computed: {
         completionRate() {
           return Math.round((this.completedGames / this.totalGames) * 100);
+        },
+                 canPlayCutTheRope() {
+           return this.totalStars >= this.cutTheRopeCost;
+         },
+         canPlaySlotMachine() {
+           return this.totalStars >= this.slotMachineCost;
+         },
+         canPlayTetris() {
+           return this.totalStars >= this.tetrisCost;
+         },
+         canPlayClassicUno() {
+           return this.totalStars >= this.classicUnoCost;
+         },
+         canPlayLittleWheel() {
+           return this.totalStars >= this.littleWheelCost;
+         },
+         canPlayPlantsVsZombies() {
+           return this.totalStars >= this.plantsVsZombiesCost;
+         },
+        // 新增星星系統計算屬性
+        levelProgressPercentage() {
+          return Math.round((this.totalStars % this.nextLevelStars) / this.nextLevelStars * 100);
+        },
+        canLevelUp() {
+          return this.totalStars >= this.nextLevelStars;
+        },
+        starsEfficiency() {
+          return this.totalStarsEarned > 0 ? Math.round((this.totalStars / this.totalStarsEarned) * 100) : 0;
         }
       },
       methods: {
-        openGame(gamePath) {
-          // 在新視窗中打開遊戲
-          window.open(gamePath, '_blank');
-        },
+                 openGame(gamePath) {
+           // 在新視窗中打開遊戲
+           window.open(gamePath, '_blank');
+           
+           // 模擬遊戲完成獲得星星（這裡可以根據實際遊戲結果調整）
+           setTimeout(() => {
+             const gameNames = {
+               'advanced-animal-card-game.html': '動物卡牌相克',
+               'battle_system.html': '卡牌對戰系統',
+               'https://tw.pigame.cc/game/tetris': 'Tetris'
+             };
+             
+             const gameName = gameNames[gamePath] || '遊戲';
+             this.simulateGameCompletion(gameName);
+           }, 2000); // 2秒後模擬遊戲完成
+         },
+         openTetris() {
+           // 在新視窗中打開 Tetris 遊戲
+           window.open('https://tw.pigame.cc/game/tetris', '_blank');
+           
+           // 模擬遊戲完成獲得星星
+           setTimeout(() => {
+             this.simulateGameCompletion('Tetris');
+           }, 2000); // 2秒後模擬遊戲完成
+         },
+         toggleTetris() {
+           // 使用新的星星花費系統
+           if (!this.spendStars(this.tetrisCost)) {
+             alert(`❌ 星星不足！需要 ${this.tetrisCost} 顆星星才能遊玩 Tetris。\n\n目前星星：${this.totalStars} 顆\n需要星星：${this.tetrisCost} 顆`);
+             return;
+           }
+           
+           // 顯示扣除訊息
+           alert(`🧩 開始遊玩 Tetris！\n\n扣除星星：${this.tetrisCost} 顆\n剩餘星星：${this.totalStars} 顆`);
+           
+           // 開啟遊戲
+           window.open('https://tw.pigame.cc/game/tetris', '_blank');
+           
+           // 模擬遊戲完成獲得星星
+           setTimeout(() => {
+             this.simulateGameCompletion('Tetris');
+           }, 2000); // 2秒後模擬遊戲完成
+         },
+         toggleClassicUno() {
+           // 使用新的星星花費系統
+           if (!this.spendStars(this.classicUnoCost)) {
+             alert(`❌ 星星不足！需要 ${this.classicUnoCost} 顆星星才能遊玩 Classic Uno。\n\n目前星星：${this.totalStars} 顆\n需要星星：${this.classicUnoCost} 顆`);
+             return;
+           }
+           
+           // 顯示扣除訊息
+           alert(`🃏 開始遊玩 Classic Uno！\n\n扣除星星：${this.classicUnoCost} 顆\n剩餘星星：${this.totalStars} 顆`);
+           
+           // 開啟遊戲
+           window.open('https://tw.pigame.cc/game/classic-uno', '_blank');
+           
+           // 模擬遊戲完成獲得星星
+           setTimeout(() => {
+             this.simulateGameCompletion('Classic Uno');
+           }, 2000); // 2秒後模擬遊戲完成
+         },
+         toggleLittleWheel() {
+           // 使用新的星星花費系統
+           if (!this.spendStars(this.littleWheelCost)) {
+             alert(`❌ 星星不足！需要 ${this.littleWheelCost} 顆星星才能遊玩 Little Wheel。\n\n目前星星：${this.totalStars} 顆\n需要星星：${this.littleWheelCost} 顆`);
+             return;
+           }
+           
+           // 顯示扣除訊息
+           alert(`🎡 開始遊玩 Little Wheel！\n\n扣除星星：${this.littleWheelCost} 顆\n剩餘星星：${this.totalStars} 顆`);
+           
+           // 開啟遊戲
+           window.open('https://omiplay.com/zh/games/little-wheel/', '_blank');
+           
+           // 模擬遊戲完成獲得星星
+           setTimeout(() => {
+             this.simulateGameCompletion('Little Wheel');
+           }, 2000); // 2秒後模擬遊戲完成
+         },
+         togglePlantsVsZombies() {
+           // 使用新的星星花費系統
+           if (!this.spendStars(this.plantsVsZombiesCost)) {
+             alert(`❌ 星星不足！需要 ${this.plantsVsZombiesCost} 顆星星才能遊玩 Plants vs Zombies Demo。\n\n目前星星：${this.totalStars} 顆\n需要星星：${this.plantsVsZombiesCost} 顆`);
+             return;
+           }
+           
+           // 顯示扣除訊息
+           alert(`🌱 開始遊玩 Plants vs Zombies Demo！\n\n扣除星星：${this.plantsVsZombiesCost} 顆\n剩餘星星：${this.totalStars} 顆`);
+           
+           // 開啟遊戲
+           window.open('https://omiplay.com/zh/games/plants-vs-zombies-demo/', '_blank');
+           
+           // 模擬遊戲完成獲得星星
+           setTimeout(() => {
+             this.simulateGameCompletion('Plants vs Zombies Demo');
+           }, 2000); // 2秒後模擬遊戲完成
+         },
         goHome() {
           // 返回首頁
           window.location.href = 'index.html';
         },
         loadPlayerData() {
-          // 從localStorage讀取玩家數據
+          // 從localStorage讀取玩家數據，與首頁保持一致
+          const totalStars = parseInt(localStorage.getItem('totalStars') || '0');
+          this.totalStars = totalStars;
+          
+          // 讀取其他玩家數據
           const playerData = localStorage.getItem('playerData');
           if (playerData) {
             const data = JSON.parse(playerData);
-            this.totalStars = data.stars || 0;
             this.playerLevel = data.level || 1;
+            this.totalStarsEarned = data.totalStarsEarned || 0;
+            this.starsSpent = data.starsSpent || 0;
+            this.nextLevelStars = data.nextLevelStars || 100;
+          } else {
+            // 如果沒有 playerData，初始化基本數據
+            this.playerLevel = 1;
+            this.totalStarsEarned = totalStars; // 假設所有星星都是獲得的
+            this.starsSpent = 0;
+            this.nextLevelStars = 100;
           }
           
           // 讀取遊戲完成狀態
@@ -479,6 +966,166 @@
             lastPlayed: new Date().toISOString()
           };
           localStorage.setItem('gameProgress', JSON.stringify(progress));
+        },
+                 toggleCutTheRope() {
+           // 使用新的星星花費系統
+           if (!this.spendStars(this.cutTheRopeCost)) {
+             alert(`❌ 星星不足！需要 ${this.cutTheRopeCost} 顆星星才能遊玩 Cut the Rope 2。\n\n目前星星：${this.totalStars} 顆\n需要星星：${this.cutTheRopeCost} 顆`);
+             return;
+           }
+           
+           // 顯示扣除訊息
+           alert(`🎮 開始遊玩 Cut the Rope 2！\n\n扣除星星：${this.cutTheRopeCost} 顆\n剩餘星星：${this.totalStars} 顆`);
+           
+           // 開啟遊戲
+           this.showCutTheRope = true;
+         },
+         toggleSlotMachine() {
+           // 使用新的星星花費系統
+           if (!this.spendStars(this.slotMachineCost)) {
+             alert(`❌ 星星不足！需要 ${this.slotMachineCost} 顆星星才能遊玩拉霸機遊戲。\n\n目前星星：${this.totalStars} 顆\n需要星星：${this.slotMachineCost} 顆`);
+             return;
+           }
+           
+           // 顯示扣除訊息
+           alert(`🎰 開始遊玩拉霸機遊戲！\n\n扣除星星：${this.slotMachineCost} 顆\n剩餘星星：${this.totalStars} 顆`);
+           
+           // 開啟遊戲
+           window.open('word_spin_game.html', '_blank');
+           
+           // 模擬遊戲完成獲得星星
+           setTimeout(() => {
+             this.simulateGameCompletion('拉霸機遊戲');
+           }, 2000); // 2秒後模擬遊戲完成
+         },
+        closeCutTheRope() {
+          this.showCutTheRope = false;
+        },
+        savePlayerData() {
+          // 保存星星到localStorage，與首頁保持一致
+          localStorage.setItem('totalStars', this.totalStars.toString());
+          
+          // 保存其他玩家數據到localStorage
+          const playerData = {
+            level: this.playerLevel,
+            totalStarsEarned: this.totalStarsEarned,
+            starsSpent: this.starsSpent,
+            nextLevelStars: this.nextLevelStars,
+            lastUpdated: new Date().toISOString()
+          };
+          localStorage.setItem('playerData', JSON.stringify(playerData));
+        },
+        triggerStarsAnimation() {
+          // 觸發星星更新動畫
+          this.starsAnimation = true;
+          setTimeout(() => {
+            this.starsAnimation = false;
+          }, 500);
+        },
+        // 新增星星系統方法
+        earnStars(amount) {
+          // 獲得星星，與首頁保持一致
+          const currentStars = parseInt(localStorage.getItem('totalStars') || '0');
+          const newStars = currentStars + amount;
+          
+          // 更新本地數據
+          this.totalStars = newStars;
+          this.totalStarsEarned += amount;
+          this.starsEarned = amount;
+          
+          // 檢查是否可以升級
+          this.checkLevelUp();
+          
+          // 觸發動畫
+          this.triggerStarsAnimation();
+          
+          // 保存數據
+          this.savePlayerData();
+          
+          // 顯示獲得訊息
+          this.showStarsEarnedMessage(amount);
+        },
+        spendStars(amount) {
+          // 花費星星，與首頁保持一致
+          const currentStars = parseInt(localStorage.getItem('totalStars') || '0');
+          
+          if (currentStars >= amount) {
+            const newStars = currentStars - amount;
+            
+            // 更新本地數據
+            this.totalStars = newStars;
+            this.starsSpent += amount;
+            
+            // 觸發動畫
+            this.triggerStarsAnimation();
+            
+            // 保存數據
+            this.savePlayerData();
+            
+            return true;
+          }
+          return false;
+        },
+        checkLevelUp() {
+          // 檢查是否可以升級
+          if (this.canLevelUp) {
+            this.playerLevel++;
+            this.nextLevelStars = this.playerLevel * 100;
+            
+            // 顯示升級訊息
+            this.showLevelUpMessage();
+          }
+        },
+        showStarsEarnedMessage(amount) {
+          // 顯示獲得星星訊息
+          const message = `🎉 恭喜獲得 ${amount} 顆星星！\n\n當前星星：${this.totalStars} 顆`;
+          setTimeout(() => {
+            alert(message);
+          }, 100);
+        },
+        showLevelUpMessage() {
+          // 顯示升級訊息
+          const message = `🎊 恭喜升級！\n\n新等級：${this.playerLevel}\n\n繼續努力獲得更多星星！`;
+          setTimeout(() => {
+            alert(message);
+          }, 200);
+        },
+        // 模擬遊戲完成獲得星星
+        simulateGameCompletion(gameName) {
+          const starsReward = Math.floor(Math.random() * 50) + 10; // 10-60 顆星星
+          this.earnStars(starsReward);
+          
+          // 顯示遊戲完成訊息
+          setTimeout(() => {
+            alert(`🎮 ${gameName} 遊戲完成！\n\n獲得星星：${starsReward} 顆\n總星星：${this.totalStars} 顆`);
+          }, 300);
+        },
+        
+        // 同步星星顯示，與首頁保持一致
+        syncStarsDisplay() {
+          // 從 localStorage 重新讀取星星數量
+          const currentStars = parseInt(localStorage.getItem('totalStars') || '0');
+          this.totalStars = currentStars;
+          
+          // 觸發動畫
+          this.triggerStarsAnimation();
+        },
+        
+        // 檢查星星系統狀態
+        checkStarsSystem() {
+          const localStorageStars = parseInt(localStorage.getItem('totalStars') || '0');
+          const localStars = this.totalStars;
+          
+          console.log('🌟 星星系統檢查:');
+          console.log('  localStorage 星星:', localStorageStars);
+          console.log('  本地星星:', localStars);
+          console.log('  是否同步:', localStorageStars === localStars);
+          
+          if (localStorageStars !== localStars) {
+            console.log('⚠️ 星星不同步，正在修正...');
+            this.totalStars = localStorageStars;
+            this.triggerStarsAnimation();
+          }
         }
       },
       mounted() {
@@ -487,6 +1134,19 @@
         
         // 初始化背景音樂系統
         initBackgroundMusic();
+        
+        // 檢查星星系統狀態
+        this.checkStarsSystem();
+        
+        // 定期同步星星顯示，確保與首頁保持一致
+        setInterval(() => {
+          this.syncStarsDisplay();
+        }, 5000); // 每5秒同步一次
+        
+        // 定期檢查星星系統狀態
+        setInterval(() => {
+          this.checkStarsSystem();
+        }, 10000); // 每10秒檢查一次
       }
     }).mount('#app');
 
