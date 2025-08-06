@@ -1,6 +1,6 @@
 {
   "generatedAt": "2025-06-28T12:00:00.000Z",
-  "totalCodes": 98,
+  "totalCodes": 118,
   "codes": [
     {
       "code": "WELCOME1",
@@ -2609,6 +2609,174 @@
       "usedAt": null,
       "usedBy": null,
       "createdAt": "2024-07-01T00:00:00.000Z"
+    },
+    {
+      "code": "X7K2M9N4",
+      "stars": 100,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2025-01-15T00:00:00.000Z"
+    },
+    {
+      "code": "P3Q7R1S5",
+      "stars": 100,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2025-01-15T00:00:00.000Z"
+    },
+    {
+      "code": "T8U4V2W6",
+      "stars": 100,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2025-01-15T00:00:00.000Z"
+    },
+    {
+      "code": "Y1Z9A3B7",
+      "stars": 100,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2025-01-15T00:00:00.000Z"
+    },
+    {
+      "code": "C4D8E6F2",
+      "stars": 100,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2025-01-15T00:00:00.000Z"
+    },
+    {
+      "code": "G5H1I9J3",
+      "stars": 100,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2025-01-15T00:00:00.000Z"
+    },
+    {
+      "code": "L6M2N8P4",
+      "stars": 100,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2025-01-15T00:00:00.000Z"
+    },
+    {
+      "code": "Q9R5S1T7",
+      "stars": 100,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2025-01-15T00:00:00.000Z"
+    },
+    {
+      "code": "U2V8W4X6",
+      "stars": 100,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2025-01-15T00:00:00.000Z"
+    },
+    {
+      "code": "Y7Z3A9B5",
+      "stars": 100,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2025-01-15T00:00:00.000Z"
+    },
+    {
+      "code": "C8D4E2F8",
+      "stars": 100,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2025-01-15T00:00:00.000Z"
+    },
+    {
+      "code": "G1H7I3J9",
+      "stars": 100,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2025-01-15T00:00:00.000Z"
+    },
+    {
+      "code": "L2M8N4P6",
+      "stars": 100,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2025-01-15T00:00:00.000Z"
+    },
+    {
+      "code": "Q5R1S7T3",
+      "stars": 100,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2025-01-15T00:00:00.000Z"
+    },
+    {
+      "code": "U6V2W8X4",
+      "stars": 100,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2025-01-15T00:00:00.000Z"
+    },
+    {
+      "code": "Y3Z9A5B1",
+      "stars": 100,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2025-01-15T00:00:00.000Z"
+    },
+    {
+      "code": "C4D8E6F2",
+      "stars": 100,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2025-01-15T00:00:00.000Z"
+    },
+    {
+      "code": "G7H3I9J5",
+      "stars": 100,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2025-01-15T00:00:00.000Z"
+    },
+    {
+      "code": "L8M4N2P8",
+      "stars": 100,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2025-01-15T00:00:00.000Z"
+    },
+    {
+      "code": "Q1R7S3T9",
+      "stars": 100,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2025-01-15T00:00:00.000Z"
+    },
+    {
+      "code": "U2V8W4X6",
+      "stars": 100,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2025-01-15T00:00:00.000Z"
     }
   ]
 } 
