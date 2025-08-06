@@ -899,11 +899,8 @@
             <div class="sync-controls">
                 <button class="sync-btn" onclick="syncAllStars()">🔄 同步所有星星</button>
                 <button class="sync-btn" onclick="readLocalTotalStars()">📖 讀取本地星星</button>
-                <button class="sync-btn" onclick="manualAutoUpload()">📤 手動自動上傳</button>
-                <button class="sync-btn" id="autoUploadToggle" onclick="toggleAutoUpload()">⏸️ 停用自動上傳</button>
-                <button class="sync-btn" onclick="refreshUserDisplay()">👤 刷新用戶</button>
+                <button class="sync-btn" id="autoUploadToggle" onclick="toggleAutoUpload()">🔄 啟用自動上傳</button>
                 <button class="sync-btn" onclick="showSetUserModal()" style="background: linear-gradient(45deg, #9C27B0, #673AB7);">👤 設定用戶</button>
-                <button class="sync-btn" onclick="emergencyFixStarsSync()" style="background: linear-gradient(45deg, #ff4757, #ff3838);">🚨 緊急修復</button>
             </div>
         </div>
 
@@ -1757,7 +1754,7 @@
             gameStars: 0,
             leaderboardStars: 0,
             localTotalStars: 0,  // 本地總星星數
-            autoUploadEnabled: false  // 自動上傳開關
+            autoUploadEnabled: true  // 自動上傳開關 - 預設啟用
         };
 
         // 初始化星星連動系統
@@ -1791,10 +1788,10 @@
             const toggleBtn = document.getElementById('autoUploadToggle');
             if (toggleBtn) {
                 if (syncStarsData.autoUploadEnabled) {
-                    toggleBtn.textContent = '🔄 啟用自動上傳';
+                    toggleBtn.textContent = '⏸️ 停用自動上傳';
                     toggleBtn.style.background = 'linear-gradient(135deg, #4CAF50, #45a049)';
                 } else {
-                    toggleBtn.textContent = '⏸️ 停用自動上傳';
+                    toggleBtn.textContent = '🔄 啟用自動上傳';
                     toggleBtn.style.background = 'linear-gradient(135deg, #FFD700, #FFA500)';
                 }
             }
@@ -1901,12 +1898,7 @@
             messageDiv.innerHTML = `<div class="${className}">${message}</div>`;
         }
 
-        // 刷新用戶顯示
-        function refreshUserDisplay() {
-            console.log('👤 刷新用戶顯示...');
-            updateCurrentUserDisplay();
-            showCustomMessage('👤 用戶顯示已刷新', 'success');
-        }
+
 
         // 讀取本地總星星數
         function readLocalTotalStars() {
@@ -2039,31 +2031,7 @@
             }
         }
 
-        // 手動觸發自動上傳
-        async function manualAutoUpload() {
-            console.log('📤 手動觸發自動上傳...');
-            
-            // 檢查用戶名稱
-            const currentUser = localStorage.getItem('currentUser') || localStorage.getItem('playerName');
-            if (currentUser && currentUser.trim()) {
-                console.log(`👤 當前用戶: ${currentUser.trim()}`);
-            } else {
-                console.log('⚠️ 沒有找到首頁用戶名稱');
-                showCustomMessage('⚠️ 建議先在首頁設定用戶名稱', 'success');
-            }
-            
-            // 先讀取本地星星
-            readLocalTotalStars();
-            
-            // 延遲一點時間確保讀取完成
-            setTimeout(() => {
-                if (syncStarsData.localTotalStars > 0) {
-                    autoUploadLocalStars(syncStarsData.localTotalStars, '手動觸發');
-                } else {
-                    showCustomMessage('❌ 沒有找到本地星星資料，請先確保有本地星星', 'error');
-                }
-            }, 1000);
-        }
+
 
         // 切換自動上傳開關
         function toggleAutoUpload() {
@@ -2071,12 +2039,12 @@
             
             const toggleBtn = document.getElementById('autoUploadToggle');
             if (syncStarsData.autoUploadEnabled) {
-                toggleBtn.textContent = '🔄 啟用自動上傳';
+                toggleBtn.textContent = '⏸️ 停用自動上傳';
                 toggleBtn.style.background = 'linear-gradient(135deg, #4CAF50, #45a049)';
                 showCustomMessage('✅ 自動上傳已啟用', 'success');
                 console.log('✅ 自動上傳已啟用');
             } else {
-                toggleBtn.textContent = '⏸️ 停用自動上傳';
+                toggleBtn.textContent = '🔄 啟用自動上傳';
                 toggleBtn.style.background = 'linear-gradient(135deg, #FFD700, #FFA500)';
                 showCustomMessage('⏸️ 自動上傳已停用', 'success');
                 console.log('⏸️ 自動上傳已停用');
@@ -2219,80 +2187,7 @@
             }, 3000);
         }
 
-        // 緊急修復星星連動系統
-        function emergencyFixStarsSync() {
-            console.log('🚨 執行緊急星星連動系統修復...');
-            
-            // 強制顯示星星連動系統
-            const starsSyncSection = document.querySelector('.stars-sync-section');
-            if (starsSyncSection) {
-                starsSyncSection.style.cssText = `
-                    display: block !important;
-                    visibility: visible !important;
-                    opacity: 1 !important;
-                    position: relative !important;
-                    z-index: 1000 !important;
-                    background: rgba(255, 255, 255, 0.95) !important;
-                    border-radius: 20px !important;
-                    padding: 30px !important;
-                    margin-bottom: 30px !important;
-                    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1) !important;
-                    backdrop-filter: blur(10px) !important;
-                    border: 2px solid rgba(255, 215, 0, 0.3) !important;
-                `;
-                console.log('✅ 星星連動系統已強制顯示');
-            }
-            
-            // 強制顯示星星連動卡片
-            const syncCards = document.querySelectorAll('.sync-card');
-            syncCards.forEach(card => {
-                card.style.cssText = `
-                    display: block !important;
-                    visibility: visible !important;
-                    opacity: 1 !important;
-                    position: relative !important;
-                    z-index: 1005 !important;
-                    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%) !important;
-                    border-radius: 15px !important;
-                    padding: 20px !important;
-                    text-align: center !important;
-                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
-                    border: 2px solid rgba(255, 215, 0, 0.2) !important;
-                    transition: all 0.3s ease !important;
-                `;
-            });
-            console.log('✅ 星星連動卡片已強制顯示');
-            
-            // 強制顯示星星連動按鈕
-            const syncBtns = document.querySelectorAll('.sync-btn');
-            syncBtns.forEach(btn => {
-                btn.style.cssText = `
-                    display: inline-block !important;
-                    visibility: visible !important;
-                    opacity: 1 !important;
-                    position: relative !important;
-                    z-index: 1010 !important;
-                    padding: 12px 20px !important;
-                    border: none !important;
-                    border-radius: 25px !important;
-                    cursor: pointer !important;
-                    font-size: 1rem !important;
-                    font-weight: bold !important;
-                    transition: all 0.3s ease !important;
-                    background: linear-gradient(45deg, #FFD700, #FFA500) !important;
-                    color: #333 !important;
-                    overflow: hidden !important;
-                `;
-            });
-            console.log('✅ 星星連動按鈕已強制顯示');
-            
-            // 重新初始化星星連動系統
-            initStarsSync();
-            updateSyncDisplay();
-            
-            console.log('✅ 緊急星星連動系統修復完成');
-            showCustomMessage('✅ 星星連動系統已修復', 'success');
-        }
+
 
         // 添加動畫樣式
         const style = document.createElement('style');
