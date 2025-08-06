@@ -1146,7 +1146,7 @@
     }
     
     // ===== 新增：Google Sheets 排行榜系統 =====
-    const GOOGLE_SHEETS_API = "https://script.google.com/macros/s/AKfycbxg_xEZZd94RUsLXWvMokPN1LWQ288llpraGLSDRHYZAsYfMds3lS3vB999jS6z6ks9/exec";
+    const GOOGLE_SHEETS_API = "https://script.google.com/macros/s/AKfycbyhcoJVk9MVFWqsyee2PeE-vCo3u2p6oyL8HUCaMk0ZeNL0Td9mOBZnMlHNb6mIO5eCHQ/exec";
     const LEADERBOARD_SHEET_ID = "11kMAXtBxLICMUYysPLP1noZzTsjbfXmbRcZSKK8_6cw";
     
     // 當前選擇的關卡
@@ -1189,7 +1189,7 @@
       try {
         // 方法1：嘗試從 Google Apps Script API 獲取數據
         const formData = new URLSearchParams();
-        formData.append('action', 'getLeaderboard');
+        formData.append('action', 'getQuizLeaderboard');
         
         const response = await fetch(GOOGLE_SHEETS_API, {
           method: 'POST',
@@ -1216,11 +1216,73 @@
         // 方法2：如果 API 失敗，顯示測試數據
         console.log('API 調用失敗，顯示測試數據');
         const testData = [
-          { rank: 1, playerName: '測試玩家1', score: 40, correctCount: 20, category: 'aries', date: '2024/1/15' },
-          { rank: 2, playerName: '測試玩家2', score: 36, correctCount: 18, category: 'taurus', date: '2024/1/15' },
-          { rank: 3, playerName: '測試玩家3', score: 32, correctCount: 16, category: 'gemini', date: '2024/1/14' },
-          { rank: 4, playerName: '測試玩家4', score: 38, correctCount: 19, category: 'aries', date: '2024/1/13' },
-          { rank: 5, playerName: '測試玩家5', score: 34, correctCount: 17, category: 'leo', date: '2024/1/12' }
+          // 白羊座數據
+          { rank: 1, playerName: '白羊玩家1', score: 40, correctCount: 20, category: 'aries', date: new Date(Date.now() - 5 * 60 * 1000).toISOString(), totalTime: 450 },
+          { rank: 2, playerName: '白羊玩家2', score: 38, correctCount: 19, category: 'aries', date: new Date(Date.now() - 15 * 60 * 1000).toISOString(), totalTime: 480 },
+          { rank: 3, playerName: '白羊玩家3', score: 36, correctCount: 18, category: 'aries', date: new Date(Date.now() - 25 * 60 * 1000).toISOString(), totalTime: 520 },
+          { rank: 4, playerName: '白羊玩家4', score: 34, correctCount: 17, category: 'aries', date: new Date(Date.now() - 35 * 60 * 1000).toISOString(), totalTime: 550 },
+          { rank: 5, playerName: '白羊玩家5', score: 32, correctCount: 16, category: 'aries', date: new Date(Date.now() - 45 * 60 * 1000).toISOString(), totalTime: 580 },
+          
+          // 金牛座數據
+          { rank: 6, playerName: '金牛玩家1', score: 42, correctCount: 21, category: 'taurus', date: new Date(Date.now() - 10 * 60 * 1000).toISOString(), totalTime: 420 },
+          { rank: 7, playerName: '金牛玩家2', score: 40, correctCount: 20, category: 'taurus', date: new Date(Date.now() - 20 * 60 * 1000).toISOString(), totalTime: 450 },
+          { rank: 8, playerName: '金牛玩家3', score: 38, correctCount: 19, category: 'taurus', date: new Date(Date.now() - 30 * 60 * 1000).toISOString(), totalTime: 480 },
+          { rank: 9, playerName: '金牛玩家4', score: 36, correctCount: 18, category: 'taurus', date: new Date(Date.now() - 40 * 60 * 1000).toISOString(), totalTime: 510 },
+          { rank: 10, playerName: '金牛玩家5', score: 34, correctCount: 17, category: 'taurus', date: new Date(Date.now() - 50 * 60 * 1000).toISOString(), totalTime: 540 },
+          
+          // 雙子座數據
+          { rank: 11, playerName: '雙子玩家1', score: 44, correctCount: 22, category: 'gemini', date: new Date(Date.now() - 8 * 60 * 1000).toISOString(), totalTime: 380 },
+          { rank: 12, playerName: '雙子玩家2', score: 42, correctCount: 21, category: 'gemini', date: new Date(Date.now() - 18 * 60 * 1000).toISOString(), totalTime: 410 },
+          { rank: 13, playerName: '雙子玩家3', score: 40, correctCount: 20, category: 'gemini', date: new Date(Date.now() - 28 * 60 * 1000).toISOString(), totalTime: 440 },
+          { rank: 14, playerName: '雙子玩家4', score: 38, correctCount: 19, category: 'gemini', date: new Date(Date.now() - 38 * 60 * 1000).toISOString(), totalTime: 470 },
+          { rank: 15, playerName: '雙子玩家5', score: 36, correctCount: 18, category: 'gemini', date: new Date(Date.now() - 48 * 60 * 1000).toISOString(), totalTime: 500 },
+          
+          // 巨蟹座數據
+          { rank: 16, playerName: '巨蟹玩家1', score: 40, correctCount: 20, category: 'cancer', date: new Date(Date.now() - 12 * 60 * 1000).toISOString(), totalTime: 460 },
+          { rank: 17, playerName: '巨蟹玩家2', score: 38, correctCount: 19, category: 'cancer', date: new Date(Date.now() - 22 * 60 * 1000).toISOString(), totalTime: 490 },
+          { rank: 18, playerName: '巨蟹玩家3', score: 36, correctCount: 18, category: 'cancer', date: new Date(Date.now() - 32 * 60 * 1000).toISOString(), totalTime: 520 },
+          
+          // 獅子座數據
+          { rank: 19, playerName: '獅子玩家1', score: 46, correctCount: 23, category: 'leo', date: new Date(Date.now() - 6 * 60 * 1000).toISOString(), totalTime: 350 },
+          { rank: 20, playerName: '獅子玩家2', score: 44, correctCount: 22, category: 'leo', date: new Date(Date.now() - 16 * 60 * 1000).toISOString(), totalTime: 380 },
+          { rank: 21, playerName: '獅子玩家3', score: 42, correctCount: 21, category: 'leo', date: new Date(Date.now() - 26 * 60 * 1000).toISOString(), totalTime: 410 },
+          { rank: 22, playerName: '獅子玩家4', score: 40, correctCount: 20, category: 'leo', date: new Date(Date.now() - 36 * 60 * 1000).toISOString(), totalTime: 440 },
+          { rank: 23, playerName: '獅子玩家5', score: 38, correctCount: 19, category: 'leo', date: new Date(Date.now() - 46 * 60 * 1000).toISOString(), totalTime: 470 },
+          
+          // 處女座數據
+          { rank: 24, playerName: '處女玩家1', score: 42, correctCount: 21, category: 'virgo', date: new Date(Date.now() - 9 * 60 * 1000).toISOString(), totalTime: 430 },
+          { rank: 25, playerName: '處女玩家2', score: 40, correctCount: 20, category: 'virgo', date: new Date(Date.now() - 19 * 60 * 1000).toISOString(), totalTime: 460 },
+          { rank: 26, playerName: '處女玩家3', score: 38, correctCount: 19, category: 'virgo', date: new Date(Date.now() - 29 * 60 * 1000).toISOString(), totalTime: 490 },
+          
+          // 天秤座數據
+          { rank: 27, playerName: '天秤玩家1', score: 40, correctCount: 20, category: 'libra', date: new Date(Date.now() - 11 * 60 * 1000).toISOString(), totalTime: 470 },
+          { rank: 28, playerName: '天秤玩家2', score: 38, correctCount: 19, category: 'libra', date: new Date(Date.now() - 21 * 60 * 1000).toISOString(), totalTime: 500 },
+          { rank: 29, playerName: '天秤玩家3', score: 36, correctCount: 18, category: 'libra', date: new Date(Date.now() - 31 * 60 * 1000).toISOString(), totalTime: 530 },
+          
+          // 天蠍座數據
+          { rank: 30, playerName: '天蠍玩家1', score: 44, correctCount: 22, category: 'scorpio', date: new Date(Date.now() - 7 * 60 * 1000).toISOString(), totalTime: 390 },
+          { rank: 31, playerName: '天蠍玩家2', score: 42, correctCount: 21, category: 'scorpio', date: new Date(Date.now() - 17 * 60 * 1000).toISOString(), totalTime: 420 },
+          { rank: 32, playerName: '天蠍玩家3', score: 40, correctCount: 20, category: 'scorpio', date: new Date(Date.now() - 27 * 60 * 1000).toISOString(), totalTime: 450 },
+          
+          // 射手座數據
+          { rank: 33, playerName: '射手玩家1', score: 46, correctCount: 23, category: 'sagittarius', date: new Date(Date.now() - 4 * 60 * 1000).toISOString(), totalTime: 360 },
+          { rank: 34, playerName: '射手玩家2', score: 44, correctCount: 22, category: 'sagittarius', date: new Date(Date.now() - 14 * 60 * 1000).toISOString(), totalTime: 390 },
+          { rank: 35, playerName: '射手玩家3', score: 42, correctCount: 21, category: 'sagittarius', date: new Date(Date.now() - 24 * 60 * 1000).toISOString(), totalTime: 420 },
+          
+          // 摩羯座數據
+          { rank: 36, playerName: '摩羯玩家1', score: 42, correctCount: 21, category: 'capricorn', date: new Date(Date.now() - 13 * 60 * 1000).toISOString(), totalTime: 440 },
+          { rank: 37, playerName: '摩羯玩家2', score: 40, correctCount: 20, category: 'capricorn', date: new Date(Date.now() - 23 * 60 * 1000).toISOString(), totalTime: 470 },
+          { rank: 38, playerName: '摩羯玩家3', score: 38, correctCount: 19, category: 'capricorn', date: new Date(Date.now() - 33 * 60 * 1000).toISOString(), totalTime: 500 },
+          
+          // 水瓶座數據
+          { rank: 39, playerName: '水瓶玩家1', score: 44, correctCount: 22, category: 'aquarius', date: new Date(Date.now() - 3 * 60 * 1000).toISOString(), totalTime: 370 },
+          { rank: 40, playerName: '水瓶玩家2', score: 42, correctCount: 21, category: 'aquarius', date: new Date(Date.now() - 13 * 60 * 1000).toISOString(), totalTime: 400 },
+          { rank: 41, playerName: '水瓶玩家3', score: 40, correctCount: 20, category: 'aquarius', date: new Date(Date.now() - 23 * 60 * 1000).toISOString(), totalTime: 430 },
+          
+          // 雙魚座數據
+          { rank: 42, playerName: '雙魚玩家1', score: 40, correctCount: 20, category: 'pisces', date: new Date(Date.now() - 14 * 60 * 1000).toISOString(), totalTime: 480 },
+          { rank: 43, playerName: '雙魚玩家2', score: 38, correctCount: 19, category: 'pisces', date: new Date(Date.now() - 24 * 60 * 1000).toISOString(), totalTime: 510 },
+          { rank: 44, playerName: '雙魚玩家3', score: 36, correctCount: 18, category: 'pisces', date: new Date(Date.now() - 34 * 60 * 1000).toISOString(), totalTime: 540 }
         ];
         
         // 根據選擇的關卡過濾測試數據
@@ -1302,7 +1364,8 @@
                 <th style="padding: 12px 8px; text-align: left; color: #00ffff; border-bottom: 2px solid #00ffff; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px;">玩家</th>
                 <th style="padding: 12px 8px; text-align: center; color: #00ffff; border-bottom: 2px solid #00ffff; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px;">分數</th>
                 <th style="padding: 12px 8px; text-align: center; color: #00ffff; border-bottom: 2px solid #00ffff; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px;">答對</th>
-                <th style="padding: 12px 8px; text-align: center; color: #00ffff; border-bottom: 2px solid #00ffff; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px;">星座</th>
+                <th style="padding: 12px 8px; text-align: center; color: #00ffff; border-bottom: 2px solid #00ffff; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px;">平均時間</th>
+                <th style="padding: 12px 8px; text-align: center; color: #00ffff; border-bottom: 2px solid #00ffff; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px;">總時間</th>
               </tr>
             </thead>
             <tbody>
@@ -1316,6 +1379,30 @@
         
         // 獲取星座顯示名稱
         const categoryDisplayName = categoryNames[item.category] || item.category;
+        
+        // 格式化耗時時間顯示
+        const formatTime = (seconds) => {
+          if (!seconds || seconds === 0) return '-';
+          const minutes = Math.floor(seconds / 60);
+          const remainingSeconds = seconds % 60;
+          if (minutes > 0) {
+            return `${minutes}分${remainingSeconds}秒`;
+          } else {
+            return `${remainingSeconds}秒`;
+          }
+        };
+        
+        // 格式化遊戲時間顯示（總遊戲時間）
+        const formatGameTime = (totalTimeSeconds) => {
+          if (!totalTimeSeconds || totalTimeSeconds === 0) return '-';
+          const minutes = Math.floor(totalTimeSeconds / 60);
+          const remainingSeconds = totalTimeSeconds % 60;
+          if (minutes > 0) {
+            return `${minutes}分${remainingSeconds}秒`;
+          } else {
+            return `${remainingSeconds}秒`;
+          }
+        };
         
         html += `
           <tr style="${rowStyle}; transition: all 0.3s ease;" onmouseover="this.style.background='rgba(0, 255, 255, 0.1)'" onmouseout="this.style.background='${rowStyle}'">
@@ -1331,8 +1418,11 @@
             <td style="padding: 10px 8px; text-align: center; color: #0f0; font-weight: 500;">
               ${item.correctCount}/20
             </td>
+            <td style="padding: 10px 8px; text-align: center; color: #ff6b6b; font-weight: 500; font-size: 0.9rem;">
+              ${formatTime(item.totalTime && item.correctCount ? Math.round(item.totalTime / item.correctCount) : 0)}
+            </td>
             <td style="padding: 10px 8px; text-align: center; color: #a0a0ff; font-size: 0.9rem; font-style: italic;">
-              ${currentCategory === 'all' ? categoryDisplayName : ''}
+              ${formatGameTime(item.totalTime)}
             </td>
           </tr>
         `;
@@ -1356,6 +1446,7 @@
       const score = correctCount * 2;
       const category = categoryKey;
       const date = new Date().toLocaleDateString('zh-TW');
+      const totalTime = gameStats.totalTimeUsed; // 獲取總耗時時間
       
       try {
         const formData = new URLSearchParams();
@@ -1365,6 +1456,7 @@
         formData.append('correctCount', correctCount.toString());
         formData.append('category', category);
         formData.append('date', date);
+        formData.append('totalTime', totalTime.toString()); // 添加耗時時間
         
         const response = await fetch(GOOGLE_SHEETS_API, {
           method: 'POST',
@@ -1569,7 +1661,11 @@
         // 時間到
         if (timeLeft <= 0) {
           clearInterval(timer);
-          // 時間到算答錯
+          // 時間到算答錯，也要計算耗時時間
+          const answerTime = 30; // 時間到就是用了30秒
+          gameStats.totalAnswered++;
+          gameStats.totalTimeUsed += answerTime;
+          
           document.getElementById('feedback').textContent = `⏰ 時間到！正解是：${current.en}`;
           document.getElementById('feedback').style.color = '#f66';
           SoundSystem.play('wrong');
@@ -1603,6 +1699,11 @@
       }
       // 跳過也要扣愛心並算錯題
       if (used.length > 0 && document.getElementById('answerInput').value === '') { // 只有跳過才扣愛心
+        // 跳過時也要計算耗時時間
+        const answerTime = (30 - timeLeft); // 計算已用時間
+        gameStats.totalAnswered++;
+        gameStats.totalTimeUsed += answerTime;
+        
         lives--;
         updateLives();
         wrongList.push(current);
