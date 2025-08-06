@@ -705,6 +705,79 @@
         #toggleMusic.playing {
             animation: musicPulse 2s infinite;
         }
+
+        /* 星座排行榜分關卡樣式 */
+        .category-section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 215, 0, 0.3);
+        }
+
+        .category-section h3 {
+            font-size: 1.8rem;
+            color: #333;
+            text-align: center;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            padding: 15px;
+            border-radius: 15px;
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .category-section h3::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.2), transparent);
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .category-section .leaderboard-item {
+            margin-bottom: 12px;
+            border-left: 6px solid #FFD700;
+            transition: all 0.3s ease;
+        }
+
+        .category-section .leaderboard-item:hover {
+            transform: translateX(8px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            border-left-color: #FFA500;
+        }
+
+        .category-section .leaderboard-item.current-user {
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            color: white;
+            border-left-color: #FF6B6B;
+        }
+
+        /* 時間顯示樣式 */
+        .time-display {
+            color: #FF6B6B;
+            font-weight: bold;
+            text-shadow: 0 0 5px rgba(255, 107, 107, 0.5);
+        }
+
+        .current-user .time-display {
+            color: white;
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
+        }
     </style>
 </head>
 <body>
@@ -735,9 +808,12 @@
     <div class="container">
         <div class="header">
             <h1>⭐ 星星排行榜</h1>
-            <p>看看誰擁有最多的星星！</p>
+            <p>從星座挑戰獲取的真實排行榜資料！</p>
             <div id="currentUserDisplay" style="margin-top: 10px; font-size: 1.1rem; color: #FFD700; text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);">
                 👤 當前用戶: <span id="currentUserName">未設定</span>
+            </div>
+            <div id="dataSourceInfo" style="margin-top: 5px; font-size: 0.9rem; color: #4CAF50; text-shadow: 0 0 5px rgba(76, 175, 80, 0.5);">
+                📊 資料來源: 指定 Google Apps Script API
             </div>
         </div>
 
@@ -949,6 +1025,12 @@
 
         // 初始化
         document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 星星排行榜頁面初始化...');
+            
+            // 初始化資料來源資訊
+            updateDataSourceInfo('🔄 正在載入資料...');
+            
+            // 載入資料
             loadData();
         });
 
@@ -967,8 +1049,9 @@
             }
         }
 
-        // 載入模擬資料
+        // 載入模擬資料（僅在 API 失敗時使用）
         function loadMockData() {
+            console.log('⚠️ 使用模擬資料（API 失敗）');
             // 模擬星星排行榜資料
             const mockLeaderboard = [
                 { user: '玩家A', stars: 150, level: 5, messages: 25 },
@@ -995,33 +1078,78 @@
             document.getElementById('totalPlayers').textContent = mockStats.totalPlayers;
             document.getElementById('totalStars').textContent = mockStats.totalStars;
             document.getElementById('topStars').textContent = mockStats.topStars;
+            
+            // 更新資料來源資訊
+            updateDataSourceInfo('⚠️ 使用模擬資料（API 失敗）');
         }
 
         // 載入星星排行榜
         async function loadStarsLeaderboard() {
             try {
-                // 嘗試使用星星排行榜 API
-                const response = await fetch(`${API_BASE_URL}?action=getStarsLeaderboard`);
-                if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                console.log('🔄 嘗試從指定的 Google Apps Script API 獲取星星排行榜資料...');
+                
+                // 直接使用指定的 API 獲取星星排行榜資料
+                const starsResponse = await fetch(`${API_BASE_URL}?action=getStarsLeaderboard`);
+                if (!starsResponse.ok) {
+                    throw new Error(`HTTP ${starsResponse.status}: ${starsResponse.statusText}`);
                 }
-                const data = await response.json();
-                handleStarsLeaderboard(data);
+                const starsData = await starsResponse.json();
+                console.log('✅ 成功從指定 API 獲取星星排行榜資料:', starsData);
+                handleStarsLeaderboard(starsData);
+                
             } catch (error) {
                 console.error('載入星星排行榜失敗:', error);
-                // 如果星星排行榜 API 不可用，使用一般排行榜 API
+                
+                // 如果星星排行榜 API 失敗，嘗試使用一般排行榜 API
                 try {
+                    console.log('🔄 嘗試使用一般排行榜 API 作為備用...');
                     const response = await fetch(`${API_BASE_URL}?action=getLeaderboard`);
                     if (!response.ok) {
                         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
                     }
                     const data = await response.json();
+                    console.log('✅ 成功從一般排行榜 API 獲取資料:', data);
                     handleStarsLeaderboard(data);
                 } catch (fallbackError) {
                     console.error('載入排行榜失敗:', fallbackError);
-                    showError('載入排行榜失敗');
+                    // 如果所有 API 都失敗，使用模擬資料
+                    loadMockData();
+                    updateDataSourceInfo('❌ API 失敗，使用模擬資料');
                 }
             }
+        }
+
+        // 將 quiz 排行榜資料轉換為星星排行榜格式
+        function convertQuizDataToStarsData(quizData) {
+            console.log('🔄 轉換 quiz 資料為星星排行榜格式...');
+            
+            // 將 quiz 排行榜資料轉換為星星排行榜格式
+            const convertedData = quizData.map((item, index) => {
+                // 根據分數計算星星數（每2分 = 1顆星）
+                const stars = Math.floor((item.score || 0) / 2);
+                
+                // 根據星星數計算等級（每20顆星 = 1級）
+                const level = Math.floor(stars / 20) + 1;
+                
+                // 根據星星數計算訊息數（每10顆星 = 1條訊息）
+                const messages = Math.floor(stars / 10);
+                
+                return {
+                    user: item.playerName || '未知用戶',
+                    stars: stars,
+                    level: level,
+                    messages: messages,
+                    // 保留原始 quiz 資料以供參考
+                    originalScore: item.score,
+                    originalCorrectCount: item.correctCount,
+                    originalCategory: item.category,
+                    originalDate: item.date,
+                    originalTotalTime: item.totalTime
+                };
+            });
+            
+            console.log('✅ 轉換完成，共', convertedData.length, '筆資料');
+            return convertedData;
         }
 
         // 處理星星排行榜資料
@@ -1032,6 +1160,7 @@
                 console.error('載入星星排行榜失敗:', data.error);
                 // 如果 API 失敗，使用模擬資料
                 loadMockData();
+                updateDataSourceInfo('❌ API 失敗，使用模擬資料');
                 return;
             }
 
@@ -1039,6 +1168,7 @@
             if (!Array.isArray(data)) {
                 console.error('排行榜資料格式錯誤:', data);
                 loadMockData();
+                updateDataSourceInfo('❌ 資料格式錯誤，使用模擬資料');
                 return;
             }
 
@@ -1053,6 +1183,13 @@
             console.log('處理後的星星資料:', starsData);
             leaderboardData = starsData;
             displayStarsLeaderboard();
+            
+            // 更新資料來源資訊
+            if (data.length > 0) {
+                updateDataSourceInfo('✅ 成功從指定 API 獲取星星排行榜資料');
+            } else {
+                updateDataSourceInfo('⚠️ 沒有排行榜資料');
+            }
         }
 
         // 顯示星星排行榜
@@ -1072,6 +1209,22 @@
                 const isCurrentUser = item.user === CURRENT_USER;
                 const itemClass = isCurrentUser ? 'leaderboard-item current-user' : 'leaderboard-item';
                 
+                // 顯示額外的 quiz 資訊（如果有的話）
+                let extraInfo = '';
+                if (item.originalScore !== undefined) {
+                    extraInfo = `🎯 原始分數: ${item.originalScore} | ✅ 答對: ${item.originalCorrectCount}/20`;
+                    if (item.originalCategory) {
+                        // 關卡中文名稱對應
+                        const categoryDisplayNames = {
+                            'aries': '白羊座', 'taurus': '金牛座', 'gemini': '雙子座', 'cancer': '巨蟹座',
+                            'leo': '獅子座', 'virgo': '處女座', 'libra': '天秤座', 'scorpio': '天蠍座',
+                            'sagittarius': '射手座', 'capricorn': '摩羯座', 'aquarius': '水瓶座', 'pisces': '雙魚座'
+                        };
+                        const categoryDisplayName = categoryDisplayNames[item.originalCategory] || item.originalCategory;
+                        extraInfo += ` | 🌟 關卡: ${categoryDisplayName}`;
+                    }
+                }
+                
                 html += `
                     <div class="${itemClass}">
                         ${index < 3 ? '<div class="crown">👑</div>' : ''}
@@ -1081,6 +1234,7 @@
                             <div class="user-stats">
                                 ${item.level ? `等級: ${item.level}` : ''}
                                 ${item.messages ? `訊息: ${item.messages}` : ''}
+                                ${extraInfo ? `<br><small style="color: #666; font-size: 0.9rem;">${extraInfo}</small>` : ''}
                             </div>
                         </div>
                         <div class="stars">⭐ ${item.stars || 0}</div>
@@ -1097,27 +1251,108 @@
         // 載入統計資料
         async function loadStats() {
             try {
-                // 嘗試使用星星統計 API
-                const response = await fetch(`${API_BASE_URL}?action=getStarsStats`);
-                if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                console.log('📊 嘗試從指定的 Google Apps Script API 獲取統計資料...');
+                
+                // 直接使用指定的 API 獲取星星統計資料
+                const statsResponse = await fetch(`${API_BASE_URL}?action=getStarsStats`);
+                if (!statsResponse.ok) {
+                    throw new Error(`HTTP ${statsResponse.status}: ${statsResponse.statusText}`);
                 }
-                const data = await response.json();
-                handleStarsStats(data);
+                const statsData = await statsResponse.json();
+                console.log('✅ 成功從指定 API 獲取統計資料:', statsData);
+                handleStarsStats(statsData);
+                
             } catch (error) {
                 console.error('載入星星統計失敗:', error);
-                // 如果星星統計 API 不可用，使用系統統計 API
+                
+                // 如果星星統計 API 失敗，嘗試使用系統統計 API
                 try {
+                    console.log('🔄 嘗試使用系統統計 API 作為備用...');
                     const response = await fetch(`${API_BASE_URL}?action=getSystemStats`);
                     if (!response.ok) {
                         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
                     }
                     const data = await response.json();
+                    console.log('✅ 成功從系統統計 API 獲取資料:', data);
                     handleStarsStats(data);
                 } catch (fallbackError) {
                     console.error('載入統計資料失敗:', fallbackError);
+                    // 如果所有 API 都失敗，使用模擬統計資料
+                    const mockStats = {
+                        totalPlayers: 8,
+                        totalStars: 615,
+                        topStars: 150
+                    };
+                    document.getElementById('totalPlayers').textContent = mockStats.totalPlayers;
+                    document.getElementById('totalStars').textContent = mockStats.totalStars;
+                    document.getElementById('topStars').textContent = mockStats.topStars;
+                    updateDataSourceInfo('❌ API 失敗，使用模擬統計資料');
                 }
             }
+        }
+
+        // 更新資料來源資訊
+        function updateDataSourceInfo(message) {
+            const dataSourceElement = document.getElementById('dataSourceInfo');
+            if (dataSourceElement) {
+                dataSourceElement.innerHTML = `📊 ${message}`;
+                
+                // 根據訊息類型設定顏色
+                if (message.includes('✅')) {
+                    dataSourceElement.style.color = '#4CAF50';
+                    dataSourceElement.style.textShadow = '0 0 5px rgba(76, 175, 80, 0.5)';
+                } else if (message.includes('❌')) {
+                    dataSourceElement.style.color = '#f44336';
+                    dataSourceElement.style.textShadow = '0 0 5px rgba(244, 67, 54, 0.5)';
+                } else {
+                    dataSourceElement.style.color = '#FF9800';
+                    dataSourceElement.style.textShadow = '0 0 5px rgba(255, 152, 0, 0.5)';
+                }
+            }
+        }
+
+        // 從 quiz 資料計算統計資訊
+        function calculateStatsFromQuizData(quizData) {
+            console.log('📊 從 quiz 資料計算統計資訊...');
+            
+            if (!quizData || !Array.isArray(quizData)) {
+                console.log('⚠️ quiz 資料為空或格式錯誤');
+                return {
+                    totalPlayers: 0,
+                    totalStars: 0,
+                    topStars: 0
+                };
+            }
+            
+            // 計算總玩家數（去重）
+            const uniquePlayers = new Set(quizData.map(item => item.playerName || '未知用戶'));
+            const totalPlayers = uniquePlayers.size;
+            
+            // 計算總星星數（將分數轉換為星星）
+            const totalStars = quizData.reduce((sum, item) => {
+                const score = parseInt(item.score) || 0;
+                const stars = Math.floor(score / 2); // 每2分 = 1顆星
+                return sum + stars;
+            }, 0);
+            
+            // 計算最高星星數
+            const topStars = Math.max(...quizData.map(item => {
+                const score = parseInt(item.score) || 0;
+                return Math.floor(score / 2);
+            }));
+            
+            console.log('📊 統計結果:', {
+                totalPlayers,
+                totalStars,
+                topStars,
+                totalRecords: quizData.length
+            });
+            
+            return {
+                totalPlayers,
+                totalStars,
+                topStars
+            };
         }
 
         // 處理統計資料
@@ -1222,12 +1457,11 @@
             try {
                 console.log('🌟 載入星座排行榜...');
                 
-                // 使用 quiz.html 的 Google Sheets API 端點獲取星座排行榜資料
-                const QUIZ_API_URL = "https://script.google.com/macros/s/AKfycbxg_xEZZd94RUsLXWvMokPN1LWQ288llpraGLSDRHYZAsYfMds3lS3vB999jS6z6ks9/exec";
+                // 使用 quiz.html 的 Google Sheets API 獲取真實星座排行榜資料
+                const QUIZ_API_URL = "https://script.google.com/macros/s/AKfycbyhcoJVk9MVFWqsyee2PeE-vCo3u2p6oyL8HUCaMk0ZeNL0Td9mOBZnMlHNb6mIO5eCHQ/exec";
                 
-                // 使用 POST 方法，與 quiz.html 保持一致
                 const formData = new URLSearchParams();
-                formData.append('action', 'getLeaderboard');
+                formData.append('action', 'getQuizLeaderboard');
                 
                 const response = await fetch(QUIZ_API_URL, {
                     method: 'POST',
@@ -1238,12 +1472,18 @@
                     body: formData.toString()
                 });
                 
-                if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.success && data.leaderboard) {
+                        console.log('✅ 成功從 quiz.html 獲取真實星座排行榜資料');
+                        handleConstellationLeaderboard(data);
+                        return;
+                    }
                 }
                 
-                const data = await response.json();
-                handleConstellationLeaderboard(data);
+                // 如果 API 失敗，使用模擬資料
+                console.log('⚠️ API 失敗，使用模擬星座排行榜資料');
+                loadMockConstellationData();
                 
             } catch (error) {
                 console.error('載入星座排行榜失敗:', error);
@@ -1262,22 +1502,48 @@
                 return;
             }
 
-            // 檢查資料格式是否符合 quiz.html 的返回格式
+            // 檢查資料格式
             if (data.success && data.leaderboard) {
-                // 使用 leaderboard 陣列
-                const leaderboardData = data.leaderboard;
+                // 處理分關卡的星座排行榜資料
+                const processedData = {};
                 
-                // 處理星座排行榜資料
-                const constellationData = leaderboardData.map(item => ({
-                    user: item.playerName || item.user || '未知用戶',
-                    score: parseInt(item.score) || 0,
-                    correctCount: parseInt(item.correctCount) || 0,
-                    category: item.category || '未知星座',
-                    date: item.date || new Date().toLocaleDateString()
-                }));
+                // 將所有資料按關卡分組
+                data.leaderboard.forEach(item => {
+                    const category = item.category || '未知關卡';
+                    
+                    if (!processedData[category]) {
+                        processedData[category] = [];
+                    }
+                    
+                    // 處理該關卡的資料，包含時間資訊
+                    const processedItem = {
+                        user: item.playerName || item.user || '未知用戶',
+                        score: parseInt(item.score) || 0,
+                        correctCount: parseInt(item.correctCount) || 0,
+                        time: parseInt(item.totalTime) || 0, // 完成時間（秒）
+                        category: category,
+                        date: item.date || new Date().toLocaleDateString()
+                    };
+                    
+                    processedData[category].push(processedItem);
+                });
+                
+                // 對每個關卡的資料進行排序
+                Object.keys(processedData).forEach(category => {
+                    const categoryData = processedData[category];
+                    
+                    // 按正確題數排序，相同題數按時間排序（時間越短越好）
+                    categoryData.sort((a, b) => {
+                        if (a.correctCount !== b.correctCount) {
+                            return b.correctCount - a.correctCount; // 正確題數多的排在前面
+                        } else {
+                            return a.time - b.time; // 相同題數，時間短的排在前面
+                        }
+                    });
+                });
 
-                console.log('處理後的星座資料:', constellationData);
-                constellationLeaderboardData = constellationData;
+                console.log('處理後的分關卡星座資料:', processedData);
+                constellationLeaderboardData = processedData;
                 displayConstellationLeaderboard();
                 return;
             }
@@ -1291,16 +1557,28 @@
         function loadMockConstellationData() {
             console.log('📊 載入模擬星座排行榜資料...');
             
-            const mockConstellationData = [
-                { user: '星座玩家A', score: 40, correctCount: 20, category: 'aries', date: '2024/1/15' },
-                { user: '星座玩家B', score: 36, correctCount: 18, category: 'taurus', date: '2024/1/15' },
-                { user: '星座玩家C', score: 32, correctCount: 16, category: 'gemini', date: '2024/1/14' },
-                { user: '星座玩家D', score: 38, correctCount: 19, category: 'aries', date: '2024/1/13' },
-                { user: '星座玩家E', score: 34, correctCount: 17, category: 'leo', date: '2024/1/12' },
-                { user: '星座玩家F', score: 30, correctCount: 15, category: 'virgo', date: '2024/1/11' },
-                { user: '星座玩家G', score: 28, correctCount: 14, category: 'libra', date: '2024/1/10' },
-                { user: '星座玩家H', score: 26, correctCount: 13, category: 'scorpio', date: '2024/1/9' }
-            ];
+            // 模擬分關卡的星座排行榜資料
+            const mockConstellationData = {
+                'aries': [
+                    { user: '星座玩家A', score: 40, correctCount: 20, time: 120, category: 'aries', date: '2024/1/15' },
+                    { user: '星座玩家D', score: 38, correctCount: 19, time: 135, category: 'aries', date: '2024/1/13' },
+                    { user: '星座玩家E', score: 36, correctCount: 18, time: 150, category: 'aries', date: '2024/1/12' },
+                    { user: '星座玩家F', score: 36, correctCount: 18, time: 180, category: 'aries', date: '2024/1/11' }
+                ],
+                'taurus': [
+                    { user: '星座玩家B', score: 36, correctCount: 18, time: 140, category: 'taurus', date: '2024/1/15' },
+                    { user: '星座玩家G', score: 34, correctCount: 17, time: 160, category: 'taurus', date: '2024/1/10' },
+                    { user: '星座玩家H', score: 32, correctCount: 16, time: 170, category: 'taurus', date: '2024/1/9' }
+                ],
+                'gemini': [
+                    { user: '星座玩家C', score: 32, correctCount: 16, time: 145, category: 'gemini', date: '2024/1/14' },
+                    { user: '星座玩家I', score: 30, correctCount: 15, time: 155, category: 'gemini', date: '2024/1/8' }
+                ],
+                'leo': [
+                    { user: '星座玩家J', score: 34, correctCount: 17, time: 130, category: 'leo', date: '2024/1/7' },
+                    { user: '星座玩家K', score: 32, correctCount: 16, time: 165, category: 'leo', date: '2024/1/6' }
+                ]
+            };
 
             constellationLeaderboardData = mockConstellationData;
             displayConstellationLeaderboard();
@@ -1310,43 +1588,74 @@
         function displayConstellationLeaderboard() {
             const content = document.getElementById('constellationLeaderboardContent');
             
-            if (!constellationLeaderboardData || constellationLeaderboardData.length === 0) {
+            if (!constellationLeaderboardData || Object.keys(constellationLeaderboardData).length === 0) {
                 content.innerHTML = '<div class="error">尚無星座排行榜資料</div>';
                 return;
             }
 
             let html = '';
 
-            constellationLeaderboardData.forEach((item, index) => {
-                const rankClass = index === 0 ? 'gold' : index === 1 ? 'silver' : index === 2 ? 'bronze' : '';
-                const rank = index + 1;
-                const isCurrentUser = item.user === CURRENT_USER;
-                const itemClass = isCurrentUser ? 'leaderboard-item current-user' : 'leaderboard-item';
+            // 星座圖示對應
+            const constellationIcons = {
+                'aries': '♈', 'taurus': '♉', 'gemini': '♊', 'cancer': '♋',
+                'leo': '♌', 'virgo': '♍', 'libra': '♎', 'scorpio': '♏',
+                'sagittarius': '♐', 'capricorn': '♑', 'aquarius': '♒', 'pisces': '♓'
+            };
+
+            // 星座中文名稱對應
+            const constellationNames = {
+                'aries': '白羊座', 'taurus': '金牛座', 'gemini': '雙子座', 'cancer': '巨蟹座',
+                'leo': '獅子座', 'virgo': '處女座', 'libra': '天秤座', 'scorpio': '天蠍座',
+                'sagittarius': '射手座', 'capricorn': '摩羯座', 'aquarius': '水瓶座', 'pisces': '雙魚座'
+            };
+
+            // 遍歷每個關卡
+            Object.keys(constellationLeaderboardData).forEach(category => {
+                const categoryData = constellationLeaderboardData[category];
+                const constellationIcon = constellationIcons[category] || '🌟';
+                const constellationName = constellationNames[category] || `關卡 ${category}`;
                 
-                // 星座圖示對應
-                const constellationIcons = {
-                    'aries': '♈', 'taurus': '♉', 'gemini': '♊', 'cancer': '♋',
-                    'leo': '♌', 'virgo': '♍', 'libra': '♎', 'scorpio': '♏',
-                    'sagittarius': '♐', 'capricorn': '♑', 'aquarius': '♒', 'pisces': '♓'
-                };
-                
-                const constellationIcon = constellationIcons[item.category] || '🌟';
-                
+                // 添加關卡標題
                 html += `
-                    <div class="${itemClass}">
-                        ${index < 3 ? '<div class="crown">👑</div>' : ''}
-                        <div class="rank ${rankClass}">${rank}</div>
-                        <div class="user-info">
-                            <div class="user-name">${item.user}</div>
-                            <div class="user-stats">
-                                ${constellationIcon} ${item.category.toUpperCase()}
-                                | 正確: ${item.correctCount} 題
-                                | 日期: ${item.date}
-                            </div>
-                        </div>
-                        <div class="stars">🏆 ${item.score}</div>
-                    </div>
+                    <div class="category-section">
+                        <h3>
+                            ${constellationIcon} ${constellationName} 排行榜
+                        </h3>
                 `;
+
+                // 顯示該關卡的排行榜
+                categoryData.forEach((item, index) => {
+                    const rankClass = index === 0 ? 'gold' : index === 1 ? 'silver' : index === 2 ? 'bronze' : '';
+                    const rank = index + 1;
+                    const isCurrentUser = item.user === CURRENT_USER;
+                    const itemClass = isCurrentUser ? 'leaderboard-item current-user' : 'leaderboard-item';
+                    
+                    // 格式化時間顯示
+                    const formatTime = (seconds) => {
+                        const minutes = Math.floor(seconds / 60);
+                        const remainingSeconds = seconds % 60;
+                        return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+                    };
+                    
+                    html += `
+                        <div class="${itemClass}">
+                            ${index < 3 ? '<div class="crown">👑</div>' : ''}
+                            <div class="rank ${rankClass}">${rank}</div>
+                            <div class="user-info">
+                                <div class="user-name">${item.user}</div>
+                                <div class="user-stats">
+                                    ${constellationIcon} ${constellationName}
+                                    | 正確: ${item.correctCount} 題
+                                    | 時間: <span class="time-display">${formatTime(item.time)}</span>
+                                    | 日期: ${item.date}
+                                </div>
+                            </div>
+                            <div class="stars">🏆 ${item.score}</div>
+                        </div>
+                    `;
+                });
+
+                html += '</div>'; // 關閉 category-section
             });
 
             content.innerHTML = html;
