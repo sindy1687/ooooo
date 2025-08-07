@@ -753,6 +753,29 @@
             {{ canPlayMotherload ? '開始 Motherload' : `需要 ${motherloadCost} 顆星星` }}
           </button>
         </div>
+
+         <!-- Keeper of the Grove 遊戲 -->
+        <div class="game-card" :class="{ locked: !canPlayKeeperOfTheGrove }" @click="toggleKeeperOfTheGrove">
+          <div class="game-icon">🌳</div>
+          <div class="game-title">Keeper of the Grove</div>
+          <div class="game-subtitle">神聖樹叢守護者</div>
+          <div class="game-description">
+            刺激且引人入勝的塔防遊戲，您將化身為保護神聖樹叢的守護者，抵禦危險的入侵者。
+            利用魔法力量建造和升級塔樓，抵擋旨在竊取樹叢珍貴寶石的怪物潮！
+          </div>
+          <div class="game-features">
+            <div class="feature-item">奇幻塔防遊戲</div>
+            <div class="feature-item">元素塔樓系統</div>
+            <div class="feature-item">策略性防禦</div>
+            <div class="feature-item">寶石保護機制</div>
+            <div class="feature-item">多波敵人挑戰</div>
+            <div class="feature-item">塔樓升級系統</div>
+            <div class="feature-item" style="color: var(--glow-gold); font-weight: bold;">⭐ 需要 {{ keeperOfTheGroveCost }} 顆星星</div>
+          </div>
+          <button class="game-button" :class="{ locked: !canPlayKeeperOfTheGrove }" @click.stop="toggleKeeperOfTheGrove" :disabled="!canPlayKeeperOfTheGrove">
+            {{ canPlayKeeperOfTheGrove ? '開始 Keeper of the Grove' : `需要 ${keeperOfTheGroveCost} 顆星星` }}
+          </button>
+        </div>
       </div>
 
       <!-- Cut the Rope 2 嵌入式遊戲容器 -->
@@ -797,8 +820,8 @@
     createApp({
       data() {
         return {
-          totalGames: 9,
-          availableGames: 9,
+          totalGames: 10,
+          availableGames: 10,
           completedGames: 0,
           totalStars: 0,
           playerLevel: 1,
@@ -810,6 +833,7 @@
           littleWheelCost: 100, // Little Wheel 遊戲成本
           plantsVsZombiesCost: 200, // Plants vs Zombies Demo 遊戲成本
           motherloadCost: 300, // Motherload 遊戲成本
+          keeperOfTheGroveCost: 500, // Keeper of the Grove 遊戲成本
           starsAnimation: false, // 星星動畫狀態
           // 新增星星系統相關數據
           starsEarned: 0, // 本局獲得的星星
@@ -844,6 +868,9 @@
          },
          canPlayMotherload() {
            return this.totalStars >= this.motherloadCost;
+         },
+         canPlayKeeperOfTheGrove() {
+           return this.totalStars >= this.keeperOfTheGroveCost;
          },
         // 新增星星系統計算屬性
         levelProgressPercentage() {
@@ -970,6 +997,24 @@
            // 模擬遊戲完成獲得星星
            setTimeout(() => {
              this.simulateGameCompletion('Motherload');
+           }, 2000); // 2秒後模擬遊戲完成
+         },
+         toggleKeeperOfTheGrove() {
+           // 使用新的星星花費系統
+           if (!this.spendStars(this.keeperOfTheGroveCost)) {
+             alert(`❌ 星星不足！需要 ${this.keeperOfTheGroveCost} 顆星星才能遊玩 Keeper of the Grove。\n\n目前星星：${this.totalStars} 顆\n需要星星：${this.keeperOfTheGroveCost} 顆`);
+             return;
+           }
+           
+           // 顯示扣除訊息
+           alert(`🌳 開始遊玩 Keeper of the Grove！\n\n扣除星星：${this.keeperOfTheGroveCost} 顆\n剩餘星星：${this.totalStars} 顆`);
+           
+           // 開啟遊戲
+           window.open('https://omiplay.com/zh/games/keeper-of-the-grove/', '_blank');
+           
+           // 模擬遊戲完成獲得星星
+           setTimeout(() => {
+             this.simulateGameCompletion('Keeper of the Grove');
            }, 2000); // 2秒後模擬遊戲完成
          },
         goHome() {
