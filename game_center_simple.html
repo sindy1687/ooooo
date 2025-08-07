@@ -730,6 +730,29 @@
             {{ canPlayCutTheRope ? '開始Cut the Rope 2' : `需要 ${cutTheRopeCost} 顆星星` }}
           </button>
         </div>
+
+         <!-- Motherload 遊戲 -->
+        <div class="game-card" :class="{ locked: !canPlayMotherload }" @click="toggleMotherload">
+          <div class="game-icon">⛏️</div>
+          <div class="game-title">Motherload</div>
+          <div class="game-subtitle">火星採礦冒險</div>
+          <div class="game-description">
+            引人入勝的基於瀏覽器的採礦冒險遊戲，將你帶入火星的地表之下。
+            作為一家未來派公司的勇敢礦工，你的目標是深入土壤、岩石和礦物層，收集寶貴資源！
+          </div>
+          <div class="game-features">
+            <div class="feature-item">火星採礦冒險</div>
+            <div class="feature-item">資源管理系統</div>
+            <div class="feature-item">設備升級系統</div>
+            <div class="feature-item">深度探索玩法</div>
+            <div class="feature-item">燃料管理機制</div>
+            <div class="feature-item">稀有寶藏發現</div>
+            <div class="feature-item" style="color: var(--glow-gold); font-weight: bold;">⭐ 需要 {{ motherloadCost }} 顆星星</div>
+          </div>
+          <button class="game-button" :class="{ locked: !canPlayMotherload }" @click.stop="toggleMotherload" :disabled="!canPlayMotherload">
+            {{ canPlayMotherload ? '開始 Motherload' : `需要 ${motherloadCost} 顆星星` }}
+          </button>
+        </div>
       </div>
 
       <!-- Cut the Rope 2 嵌入式遊戲容器 -->
@@ -774,8 +797,8 @@
     createApp({
       data() {
         return {
-          totalGames: 8,
-          availableGames: 8,
+          totalGames: 9,
+          availableGames: 9,
           completedGames: 0,
           totalStars: 0,
           playerLevel: 1,
@@ -786,6 +809,7 @@
           classicUnoCost: 100, // Classic Uno 遊戲成本
           littleWheelCost: 100, // Little Wheel 遊戲成本
           plantsVsZombiesCost: 200, // Plants vs Zombies Demo 遊戲成本
+          motherloadCost: 300, // Motherload 遊戲成本
           starsAnimation: false, // 星星動畫狀態
           // 新增星星系統相關數據
           starsEarned: 0, // 本局獲得的星星
@@ -817,6 +841,9 @@
          },
          canPlayPlantsVsZombies() {
            return this.totalStars >= this.plantsVsZombiesCost;
+         },
+         canPlayMotherload() {
+           return this.totalStars >= this.motherloadCost;
          },
         // 新增星星系統計算屬性
         levelProgressPercentage() {
@@ -925,6 +952,24 @@
            // 模擬遊戲完成獲得星星
            setTimeout(() => {
              this.simulateGameCompletion('Plants vs Zombies Demo');
+           }, 2000); // 2秒後模擬遊戲完成
+         },
+         toggleMotherload() {
+           // 使用新的星星花費系統
+           if (!this.spendStars(this.motherloadCost)) {
+             alert(`❌ 星星不足！需要 ${this.motherloadCost} 顆星星才能遊玩 Motherload。\n\n目前星星：${this.totalStars} 顆\n需要星星：${this.motherloadCost} 顆`);
+             return;
+           }
+           
+           // 顯示扣除訊息
+           alert(`⛏️ 開始遊玩 Motherload！\n\n扣除星星：${this.motherloadCost} 顆\n剩餘星星：${this.totalStars} 顆`);
+           
+           // 開啟遊戲
+           window.open('https://omiplay.com/zh/games/motherload/', '_blank');
+           
+           // 模擬遊戲完成獲得星星
+           setTimeout(() => {
+             this.simulateGameCompletion('Motherload');
            }, 2000); // 2秒後模擬遊戲完成
          },
         goHome() {
