@@ -872,6 +872,7 @@
     <div class="header-actions">
       <button class="btn" onclick="location.href='cards.html'">📁 卡片倉庫</button>
       <button class="btn" onclick="location.href='gacha.html'">🎰 抽卡</button>
+      <button class="btn" onclick="location.href='mailbox.html'">📬 信箱</button>
       <button class="btn" onclick="location.href='index.html'">🏠 首頁</button>
     </div>
   </header>
@@ -888,12 +889,12 @@
         <h3>🎫 邀請碼兌換</h3>
         <p>輸入邀請碼即可獲得對應數量的星星！</p>
         <div class="invite-input-group">
-          <input type="text" id="inviteCodeInput" placeholder="請輸入邀請碼" maxlength="8">
+          <input type="text" id="inviteCodeInput" placeholder="請輸入邀請碼" maxlength="9">
           <button class="invite-btn" onclick="ShopSystem.redeemInviteCode()">兌換</button>
         </div>
         <div class="invite-info">
-          <p>💡 邀請碼格式：7-8位英數字組合</p>
-          <p>🎁 可兌換星星數量：100、300、500、1000顆</p>
+          <p>💡 邀請碼格式：7-9位英數字組合</p>
+          <p>🎁 可兌換星星數量：100、300、500、1000、5000、10000顆</p>
         </div>
       </div>
     </div>
@@ -964,8 +965,8 @@
           return;
         }
 
-        if (code.length < 7 || code.length > 8) {
-          this.showNotification('邀請碼格式錯誤，應為7-8位英數字', 'error');
+        if (code.length < 7 || code.length > 9) {
+          this.showNotification('邀請碼格式錯誤，應為7-9位英數字', 'error');
           this.setInputStatus('error');
           return;
         }
@@ -1098,7 +1099,11 @@
 
     // 初始化點擊音效
     if (typeof SoundSystem !== 'undefined') {
-      SoundSystem.initClickSounds();
+      // 為所有按鈕添加點擊音效
+      SoundSystem.addClickSoundToElements(document.querySelectorAll('button'));
+      
+      // 為所有可點擊元素添加點擊音效
+      SoundSystem.addClickSoundToElements(document.querySelectorAll('a, .card, .avatarSlide'));
     }
   </script>
 </body>
