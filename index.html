@@ -2834,11 +2834,17 @@
 
     // 獲取並顯示星星總數
     function updateStarsDisplay() {
-      LinkageSystem.stars.updateDisplay();
+      if (typeof LinkageSystem !== 'undefined' && LinkageSystem.stars) {
+        LinkageSystem.stars.updateDisplay();
+      } else {
+        // 如果 LinkageSystem 還沒載入，直接更新星星顯示
+        const totalStarsCount = document.getElementById('totalStarsCount');
+        if (totalStarsCount) {
+          const currentStars = parseInt(localStorage.getItem('totalStars') || '0');
+          totalStarsCount.textContent = `⭐ ${currentStars}`;
+        }
+      }
     }
-
-    // 頁面載入時更新星星顯示
-    updateStarsDisplay();
 
     // 成就系統相關函數
     function getClaimedAchievements() {
@@ -3261,38 +3267,36 @@
       
       if (starsDisplay) {
         // 強制顯示星星顯示
-        starsDisplay.style.cssText = `
-          position: fixed !important;
-          top: 15px !important;
-          left: 15px !important;
-          background: rgba(10, 20, 40, 0.9) !important;
-          padding: 4px 8px !important;
-          border-radius: 8px !important;
-          color: #ffd700 !important;
-          font-weight: bold !important;
-          box-shadow: 0 0 8px #ffd700, 0 0 16px #00ffff !important;
-          border: 1px solid #00ffff !important;
-          font-size: 1rem !important;
-          backdrop-filter: blur(5px) !important;
-          z-index: 1000 !important;
-          display: flex !important;
-          align-items: center !important;
-          gap: 3px !important;
-          width: fit-content !important;
-          text-align: center !important;
-          transition: all 0.3s ease !important;
-        `;
+        starsDisplay.style.cssText = 
+          'position: fixed !important;' +
+          'top: 15px !important;' +
+          'left: 15px !important;' +
+          'background: rgba(10, 20, 40, 0.9) !important;' +
+          'padding: 4px 8px !important;' +
+          'border-radius: 8px !important;' +
+          'color: #ffd700 !important;' +
+          'font-weight: bold !important;' +
+          'box-shadow: 0 0 8px #ffd700, 0 0 16px #00ffff !important;' +
+          'border: 1px solid #00ffff !important;' +
+          'font-size: 1rem !important;' +
+          'backdrop-filter: blur(5px) !important;' +
+          'z-index: 1000 !important;' +
+          'display: flex !important;' +
+          'align-items: center !important;' +
+          'gap: 3px !important;' +
+          'width: fit-content !important;' +
+          'text-align: center !important;' +
+          'transition: all 0.3s ease !important;';
         console.log('✅ 星星顯示已強制修復');
       }
       
       if (totalStarsCount) {
         // 強制顯示星星數量
-        totalStarsCount.style.cssText = `
-          font-weight: bold !important;
-          color: #ffd700 !important;
-          text-shadow: 0 0 10px rgba(255, 215, 0, 0.5) !important;
-          font-size: 1rem !important;
-        `;
+        totalStarsCount.style.cssText = 
+          'font-weight: bold !important;' +
+          'color: #ffd700 !important;' +
+          'text-shadow: 0 0 10px rgba(255, 215, 0, 0.5) !important;' +
+          'font-size: 1rem !important;';
         console.log('✅ 星星數量顯示已強制修復');
       }
       
@@ -4305,7 +4309,7 @@
                     <div class="feature-item" style="color: #ffd700; font-weight: bold;">⭐ 需要 {{ slotMachineCost }} 顆星星</div>
                   </div>
                   <button class="game-button" :class="{ locked: !canPlaySlotMachine }" @click.stop="toggleSlotMachine" :disabled="!canPlaySlotMachine">
-                    {{ canPlaySlotMachine ? '開始拉霸機遊戲' : \`需要 \${slotMachineCost} 顆星星\` }}
+                    {{ canPlaySlotMachine ? '開始拉霸機遊戲' : '需要 ' + slotMachineCost + ' 顆星星' }}
                   </button>
                 </div>
 
@@ -4366,7 +4370,7 @@
                     <div class="feature-item" style="color: #ffd700; font-weight: bold;">⭐ 需要 {{ tetrisCost }} 顆星星</div>
                   </div>
                   <button class="game-button" :class="{ locked: !canPlayTetris }" @click.stop="toggleTetris" :disabled="!canPlayTetris">
-                    {{ canPlayTetris ? '開始 Tetris' : \`需要 \${tetrisCost} 顆星星\` }}
+                    {{ canPlayTetris ? '開始 Tetris' : '需要 ' + tetrisCost + ' 顆星星' }}
                   </button>
                 </div>
 
@@ -4389,7 +4393,7 @@
                     <div class="feature-item" style="color: #ffd700; font-weight: bold;">⭐ 需要 {{ classicUnoCost }} 顆星星</div>
                   </div>
                   <button class="game-button" :class="{ locked: !canPlayClassicUno }" @click.stop="toggleClassicUno" :disabled="!canPlayClassicUno">
-                    {{ canPlayTetris ? '開始 Classic Uno' : \`需要 \${classicUnoCost} 顆星星\` }}
+                    {{ canPlayTetris ? '開始 Classic Uno' : '需要 ' + classicUnoCost + ' 顆星星' }}
                   </button>
                 </div>
 
@@ -4412,7 +4416,7 @@
                     <div class="feature-item" style="color: #ffd700; font-weight: bold;">⭐ 需要 {{ littleWheelCost }} 顆星星</div>
                   </div>
                   <button class="game-button" :class="{ locked: !canPlayLittleWheel }" @click.stop="toggleLittleWheel" :disabled="!canPlayLittleWheel">
-                    {{ canPlayLittleWheel ? '開始 Little Wheel' : \`需要 \${littleWheelCost} 顆星星\` }}
+                    {{ canPlayLittleWheel ? '開始 Little Wheel' : '需要 ' + littleWheelCost + ' 顆星星' }}
                   </button>
                 </div>
               </div>
@@ -4539,10 +4543,10 @@
             },
             toggleLittleWheel() {
               if (!this.spendStars(this.littleWheelCost)) {
-                alert(\`❌ 星星不足！需要 \${this.littleWheelCost} 顆星星才能遊玩 Little Wheel。\n\n目前星星：\${this.totalStars} 顆\n需要星星：\${this.littleWheelCost} 顆\`);
+                alert(`❌ 星星不足！需要 ${this.littleWheelCost} 顆星星才能遊玩 Little Wheel。\n\n目前星星：${this.totalStars} 顆\n需要星星：${this.littleWheelCost} 顆`);
                 return;
               }
-              alert(\`🎡 開始遊玩 Little Wheel！\n\n扣除星星：\${this.littleWheelCost} 顆\n剩餘星星：\${this.totalStars} 顆\`);
+              alert(`🎡 開始遊玩 Little Wheel！\n\n扣除星星：${this.littleWheelCost} 顆\n剩餘星星：${this.totalStars} 顆`);
               window.open('https://omiplay.com/zh/games/little-wheel/', '_blank');
               setTimeout(() => {
                 this.simulateGameCompletion('Little Wheel');
@@ -4550,10 +4554,10 @@
             },
             toggleSlotMachine() {
               if (!this.spendStars(this.slotMachineCost)) {
-                alert(\`❌ 星星不足！需要 \${this.slotMachineCost} 顆星星才能遊玩拉霸機遊戲。\n\n目前星星：\${this.totalStars} 顆\n需要星星：\${this.slotMachineCost} 顆\`);
+                alert(`❌ 星星不足！需要 ${this.slotMachineCost} 顆星星才能遊玩拉霸機遊戲。\n\n目前星星：${this.totalStars} 顆\n需要星星：${this.slotMachineCost} 顆`);
                 return;
               }
-              alert(\`🎰 開始遊玩拉霸機遊戲！\n\n扣除星星：\${this.slotMachineCost} 顆\n剩餘星星：\${this.totalStars} 顆\`);
+              alert(`🎰 開始遊玩拉霸機遊戲！\n\n扣除星星：${this.slotMachineCost} 顆\n剩餘星星：${this.totalStars} 顆`);
               window.open('word_spin_game.html', '_blank');
               setTimeout(() => {
                 this.simulateGameCompletion('拉霸機遊戲');
@@ -4639,13 +4643,13 @@
               }
             },
             showStarsEarnedMessage(amount) {
-              const message = \`🎉 恭喜獲得 \${amount} 顆星星！\n\n當前星星：\${this.totalStars} 顆\`;
+              const message = `🎉 恭喜獲得 ${amount} 顆星星！\n\n當前星星：${this.totalStars} 顆`;
               setTimeout(() => {
                 alert(message);
               }, 100);
             },
             showLevelUpMessage() {
-              const message = \`🎊 恭喜升級！\n\n新等級：\${this.playerLevel}\n\n繼續努力獲得更多星星！\`;
+              const message = `🎊 恭喜升級！\n\n新等級：${this.playerLevel}\n\n繼續努力獲得更多星星！`;
               setTimeout(() => {
                 alert(message);
               }, 200);
@@ -4654,7 +4658,7 @@
               const starsReward = Math.floor(Math.random() * 50) + 10;
               this.earnStars(starsReward);
               setTimeout(() => {
-                alert(\`🎮 \${gameName} 遊戲完成！\n\n獲得星星：\${starsReward} 顆\n總星星：\${this.totalStars} 顆\`);
+                alert(`🎮 ${gameName} 遊戲完成！\n\n獲得星星：${starsReward} 顆\n總星星：${this.totalStars} 顆`);
               }, 300);
             },
             syncStarsDisplay() {
@@ -4804,15 +4808,13 @@
         else if (announcement.type === '🔵') className += ' update';
         else if (announcement.type === '🟡') className += ' update';
 
-        return `
-          <div class="${className}">
-            <div class="announcement-content">
-              <span class="announcement-type">${announcement.type}</span>
-              ${announcement.content}
-            </div>
-            <div class="announcement-time">🕒 ${announcement.time}</div>
-          </div>
-        `;
+        return '<div class="' + className + '">' +
+          '<div class="announcement-content">' +
+            '<span class="announcement-type">' + announcement.type + '</span>' +
+            announcement.content +
+          '</div>' +
+          '<div class="announcement-time">🕒 ' + announcement.time + '</div>' +
+        '</div>';
       }).join('');
 
       contentDiv.innerHTML = announcementsHTML;
@@ -4832,30 +4834,32 @@
       document.body.style.overflow = 'auto';
       document.documentElement.style.overflow = 'auto';
       
+      // 初始化星星顯示
+      updateStarsDisplay();
+      
       // 確保星星顯示可見
       const starsDisplay = document.getElementById('starsDisplay');
       if (starsDisplay) {
-                     starsDisplay.style.cssText = `
-               position: fixed !important;
-               top: 15px !important;
-               left: 15px !important;
-               background: rgba(10, 20, 40, 0.8) !important;
-               padding: 4px 8px !important;
-               border-radius: 8px !important;
-               color: #ffd700 !important;
-               font-weight: bold !important;
-               box-shadow: 0 0 8px #ffd700, 0 0 16px #00ffff !important;
-               border: 1px solid #00ffff !important;
-               font-size: 1rem !important;
-               backdrop-filter: blur(5px) !important;
-               z-index: 1000 !important;
-               display: flex !important;
-               align-items: center !important;
-               gap: 3px !important;
-               width: fit-content !important;
-               text-align: center !important;
-               transition: all 0.3s ease !important;
-             `;
+                     starsDisplay.style.cssText = 
+               'position: fixed !important;' +
+               'top: 15px !important;' +
+               'left: 15px !important;' +
+               'background: rgba(10, 20, 40, 0.8) !important;' +
+               'padding: 4px 8px !important;' +
+               'border-radius: 8px !important;' +
+               'color: #ffd700 !important;' +
+               'font-weight: bold !important;' +
+               'box-shadow: 0 0 8px #ffd700, 0 0 16px #00ffff !important;' +
+               'border: 1px solid #00ffff !important;' +
+               'font-size: 1rem !important;' +
+               'backdrop-filter: blur(5px) !important;' +
+               'z-index: 1000 !important;' +
+               'display: flex !important;' +
+               'align-items: center !important;' +
+               'gap: 3px !important;' +
+               'width: fit-content !important;' +
+               'text-align: center !important;' +
+               'transition: all 0.3s ease !important;';
         console.log('✅ 星星顯示已確保可見');
       }
       
@@ -4888,18 +4892,17 @@
         // 再次確保公告區域可見
         setTimeout(() => {
           if (homeAnnouncements) {
-            homeAnnouncements.style.cssText = `
-              display: block !important;
-              visibility: visible !important;
-              opacity: 1 !important;
-              position: relative !important;
-              z-index: 1000 !important;
-              margin: 20px 0 !important;
-              background: rgba(10, 20, 40, 0.8) !important;
-              border-radius: 15px !important;
-              border: 2px solid rgba(0, 255, 255, 0.5) !important;
-              box-shadow: 0 0 20px rgba(0, 255, 255, 0.3) !important;
-            `;
+            homeAnnouncements.style.cssText = 
+              'display: block !important;' +
+              'visibility: visible !important;' +
+              'opacity: 1 !important;' +
+              'position: relative !important;' +
+              'z-index: 1000 !important;' +
+              'margin: 20px 0 !important;' +
+              'background: rgba(10, 20, 40, 0.8) !important;' +
+              'border-radius: 15px !important;' +
+              'border: 2px solid rgba(0, 255, 255, 0.5) !important;' +
+              'box-shadow: 0 0 20px rgba(0, 255, 255, 0.3) !important;';
             console.log('✅ 公告區域已強制顯示');
           }
         }, 2000);
