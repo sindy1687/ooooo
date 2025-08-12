@@ -778,6 +778,166 @@
             color: white;
             text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
         }
+
+        /* 關卡人數統計樣式 */
+        .category-count {
+            font-size: 0.9rem;
+            color: #666;
+            font-weight: normal;
+            margin-left: 10px;
+            background: rgba(255, 215, 0, 0.2);
+            padding: 4px 8px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+        }
+
+        /* 錯誤訊息樣式 */
+        .error {
+            text-align: center;
+            padding: 40px 20px;
+            color: #666;
+            font-size: 1.2rem;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            border: 2px solid rgba(255, 107, 107, 0.3);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 排行榜項目改善樣式 */
+        .leaderboard-item {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(248, 249, 250, 0.9) 100%);
+            border-radius: 15px;
+            padding: 15px 20px;
+            margin-bottom: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .leaderboard-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(255, 215, 0, 0.05), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .leaderboard-item:hover::before {
+            opacity: 1;
+        }
+
+        /* 排名樣式改善 */
+        .rank {
+            font-size: 1.5rem;
+            font-weight: bold;
+            min-width: 40px;
+            text-align: center;
+            border-radius: 50%;
+            padding: 8px;
+            margin-right: 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .rank.gold {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: white;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+        }
+
+        .rank.silver {
+            background: linear-gradient(135deg, #C0C0C0, #A9A9A9);
+            color: white;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+        }
+
+        .rank.bronze {
+            background: linear-gradient(135deg, #CD7F32, #B8860B);
+            color: white;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+        }
+
+        /* 皇冠樣式改善 */
+        .crown {
+            position: absolute;
+            top: -5px;
+            right: 15px;
+            font-size: 1.8rem;
+            animation: crownGlow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes crownGlow {
+            0% { 
+                filter: drop-shadow(0 0 5px rgba(255, 215, 0, 0.5));
+                transform: scale(1);
+            }
+            100% { 
+                filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.8));
+                transform: scale(1.1);
+            }
+        }
+
+        /* 用戶資訊樣式改善 */
+        .user-info {
+            flex: 1;
+            margin: 0 15px;
+        }
+
+        .user-name {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .user-stats {
+            font-size: 0.9rem;
+            color: #666;
+            line-height: 1.4;
+        }
+
+        /* 星星分數樣式改善 */
+        .stars {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #FFD700;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+            min-width: 60px;
+            text-align: center;
+            background: rgba(255, 215, 0, 0.1);
+            padding: 8px 12px;
+            border-radius: 20px;
+            border: 2px solid rgba(255, 215, 0, 0.3);
+        }
+
+        /* 載入動畫 */
+        .loading {
+            text-align: center;
+            padding: 40px 20px;
+            color: #666;
+            font-size: 1.2rem;
+        }
+
+        .loading::after {
+            content: '';
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #FFD700;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 1s linear infinite;
+            margin-left: 10px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
@@ -922,6 +1082,18 @@
         <!-- 星座排行榜分頁 -->
         <div class="leaderboard-section" id="constellationTab" style="display: none;">
             <div class="section-title">🌟 星座挑戰排行榜</div>
+            
+            <!-- 除錯資訊 -->
+            <div id="debugInfo" style="background: #f8f9fa; padding: 15px; border-radius: 10px; margin-bottom: 20px; border-left: 4px solid #007bff;">
+                <h4 style="margin: 0 0 10px 0; color: #007bff;">🔍 除錯資訊</h4>
+                <div id="debugContent" style="font-family: monospace; font-size: 0.9rem; color: #666;">
+                    <div>📊 API 狀態: <span id="apiStatus">檢查中...</span></div>
+                    <div>📋 資料筆數: <span id="dataCount">-</span></div>
+                    <div>🎯 關卡數量: <span id="categoryCount">-</span></div>
+                    <div>⏰ 最後更新: <span id="lastUpdate">-</span></div>
+                </div>
+                <button class="sync-btn" onclick="refreshDebugInfo()" style="margin-top: 10px; font-size: 0.9rem; padding: 8px 16px;">🔄 重新檢查</button>
+            </div>
             
             <div class="leaderboard-content" id="constellationLeaderboardContent">
                 <div class="loading">載入星座排行榜中...</div>
@@ -1454,11 +1626,16 @@
             try {
                 console.log('🌟 載入星座排行榜...');
                 
-                // 使用 quiz.html 的 Google Sheets API 獲取真實星座排行榜資料
+                // 嚴格使用指定的 Google Sheets API 獲取星座排行榜資料
                 const QUIZ_API_URL = "https://script.google.com/macros/s/AKfycbyhcoJVk9MVFWqsyee2PeE-vCo3u2p6oyL8HUCaMk0ZeNL0Td9mOBZnMlHNb6mIO5eCHQ/exec";
+                
+                // 嚴格使用指定的 API 動作獲取星座排行榜資料
+                console.log('🔄 使用指定 API 獲取星座排行榜資料...');
+                console.log('🔗 API URL:', QUIZ_API_URL);
                 
                 const formData = new URLSearchParams();
                 formData.append('action', 'getQuizLeaderboard');
+                console.log('📝 發送的參數:', formData.toString());
                 
                 const response = await fetch(QUIZ_API_URL, {
                     method: 'POST',
@@ -1469,21 +1646,57 @@
                     body: formData.toString()
                 });
                 
+                console.log('📡 HTTP 回應狀態:', response.status, response.statusText);
+                
                 if (response.ok) {
                     const data = await response.json();
-                    if (data.success && data.leaderboard) {
-                        console.log('✅ 成功從 quiz.html 獲取真實星座排行榜資料');
+                    console.log('📊 API 回應資料:', data);
+                    console.log('📊 API 回應資料類型:', typeof data);
+                    console.log('📊 API 回應資料長度:', Array.isArray(data) ? data.length : '不是陣列');
+                    
+                    // 檢查資料格式
+                    if (data.success && data.leaderboard && Array.isArray(data.leaderboard)) {
+                        console.log('✅ 成功獲取星座排行榜資料');
+                        console.log('📊 leaderboard 資料長度:', data.leaderboard.length);
+                        console.log('📊 leaderboard 資料樣本:', data.leaderboard.slice(0, 3));
                         handleConstellationLeaderboard(data);
-                        return;
+                    } else if (data.leaderboard && Array.isArray(data.leaderboard)) {
+                        console.log('✅ 成功獲取星座排行榜資料（無 success 欄位）');
+                        console.log('📊 leaderboard 資料長度:', data.leaderboard.length);
+                        console.log('📊 leaderboard 資料樣本:', data.leaderboard.slice(0, 3));
+                        handleConstellationLeaderboard(data);
+                    } else if (Array.isArray(data)) {
+                        console.log('✅ 成功獲取星座排行榜資料（直接陣列格式）');
+                        console.log('📊 直接陣列資料長度:', data.length);
+                        console.log('📊 直接陣列資料樣本:', data.slice(0, 3));
+                        // 將直接陣列格式轉換為標準格式
+                        const convertedData = {
+                            success: true,
+                            leaderboard: data
+                        };
+                        handleConstellationLeaderboard(convertedData);
+                    } else {
+                        console.error('❌ API 回應格式不正確:', data);
+                        console.error('❌ 資料結構:', {
+                            hasSuccess: !!data.success,
+                            hasLeaderboard: !!data.leaderboard,
+                            isLeaderboardArray: Array.isArray(data.leaderboard),
+                            dataType: typeof data,
+                            dataKeys: data && typeof data === 'object' ? Object.keys(data) : 'N/A'
+                        });
+                        // 如果 API 回應格式不正確，使用模擬資料
+                        loadMockConstellationData();
                     }
+                } else {
+                    console.error('❌ API 請求失敗:', response.status, response.statusText);
+                    // 如果 API 請求失敗，使用模擬資料
+                    loadMockConstellationData();
                 }
-                
-                // 如果 API 失敗，使用模擬資料
-                console.log('⚠️ API 失敗，使用模擬星座排行榜資料');
-                loadMockConstellationData();
                 
             } catch (error) {
                 console.error('載入星座排行榜失敗:', error);
+                console.error('錯誤詳情:', error.message);
+                console.error('錯誤堆疊:', error.stack);
                 // 如果 API 失敗，使用模擬資料
                 loadMockConstellationData();
             }
@@ -1491,63 +1704,199 @@
 
         // 處理星座排行榜資料
         function handleConstellationLeaderboard(data) {
-            console.log('收到星座排行榜資料:', data);
+            console.log('🎯 開始處理星座排行榜資料...');
+            console.log('📊 原始資料:', data);
             
             if (data.error) {
-                console.error('載入星座排行榜失敗:', data.error);
+                console.error('❌ 載入星座排行榜失敗:', data.error);
                 loadMockConstellationData();
                 return;
             }
 
-            // 檢查資料格式
-            if (data.success && data.leaderboard) {
-                // 處理分關卡的星座排行榜資料
-                const processedData = {};
+            // 檢查資料格式並處理
+            let leaderboardData = [];
+            
+            if (data.success && data.leaderboard && Array.isArray(data.leaderboard)) {
+                leaderboardData = data.leaderboard;
+                console.log('✅ 使用 data.leaderboard 陣列');
+            } else if (data.leaderboard && Array.isArray(data.leaderboard)) {
+                leaderboardData = data.leaderboard;
+                console.log('✅ 使用 data.leaderboard 陣列（無 success 欄位）');
+            } else if (Array.isArray(data)) {
+                leaderboardData = data;
+                console.log('✅ 使用直接陣列格式');
+            } else {
+                console.error('❌ 星座排行榜資料格式錯誤:', data);
+                console.error('❌ 資料結構分析:', {
+                    hasSuccess: !!data.success,
+                    hasLeaderboard: !!data.leaderboard,
+                    isLeaderboardArray: Array.isArray(data.leaderboard),
+                    dataType: typeof data,
+                    dataKeys: data && typeof data === 'object' ? Object.keys(data) : 'N/A',
+                    dataLength: data && Array.isArray(data) ? data.length : '不是陣列'
+                });
+                loadMockConstellationData();
+                return;
+            }
+
+            if (leaderboardData.length === 0) {
+                console.log('⚠️ 星座排行榜資料為空');
+                loadMockConstellationData();
+                return;
+            }
+
+            console.log('📊 原始星座排行榜資料:', leaderboardData);
+            console.log('📊 資料總數:', leaderboardData.length);
+            
+            // 詳細檢查每筆資料的結構
+            console.log('🔍 資料結構分析:');
+            leaderboardData.slice(0, 3).forEach((item, index) => {
+                console.log(`📝 第 ${index + 1} 筆資料結構:`, {
+                    keys: Object.keys(item),
+                    values: item,
+                    type: typeof item
+                });
+            });
+            
+            // 檢查是否包含"有叫餐嗎"的資料
+            const hasJiaoCan = leaderboardData.some(item => {
+                const playerName = item.playerName || item.user || item.name || item.username || item.player || '';
+                return playerName.includes('有叫餐嗎') || playerName.includes('叫餐');
+            });
+            console.log('🔍 是否包含"有叫餐嗎"相關資料:', hasJiaoCan);
+            
+            if (hasJiaoCan) {
+                const jiaoCanItems = leaderboardData.filter(item => {
+                    const playerName = item.playerName || item.user || item.name || item.username || item.player || '';
+                    return playerName.includes('有叫餐嗎') || playerName.includes('叫餐');
+                });
+                console.log('🍽️ "有叫餐嗎"相關資料:', jiaoCanItems);
+            }
+            
+            // 處理分關卡的星座排行榜資料
+            const processedData = {};
+            let processedCount = 0;
+            let skippedCount = 0;
+            
+            // 將所有資料按關卡分組
+            leaderboardData.forEach((item, index) => {
+                console.log(`📝 處理第 ${index + 1} 筆資料:`, item);
                 
-                // 將所有資料按關卡分組
-                data.leaderboard.forEach(item => {
-                    const category = item.category || '未知關卡';
+                try {
+                    // 檢查並標準化資料欄位 - 支援更多可能的欄位名稱
+                    const category = item.category || item.quizCategory || item.quizType || item.level || item.difficulty || item.stage || '未知關卡';
+                    const playerName = item.playerName || item.user || item.name || item.username || item.player || item.nickname || '未知用戶';
+                    const score = parseInt(item.score) || parseInt(item.totalScore) || parseInt(item.points) || parseInt(item.finalScore) || 0;
+                    const correctCount = parseInt(item.correctCount) || parseInt(item.correctAnswers) || parseInt(item.correct) || parseInt(item.rightAnswers) || 0;
+                    const time = parseInt(item.totalTime) || parseInt(item.time) || parseInt(item.duration) || parseInt(item.completionTime) || parseInt(item.usedTime) || 0;
+                    const date = item.date || item.completedDate || item.finishDate || item.submitDate || item.timestamp || new Date().toLocaleDateString();
                     
-                    if (!processedData[category]) {
-                        processedData[category] = [];
+                    // 驗證資料有效性
+                    if (!playerName || playerName === '未知用戶') {
+                        console.warn(`⚠️ 第 ${index + 1} 筆資料缺少用戶名稱:`, item);
+                        skippedCount++;
+                        return;
+                    }
+                    
+                    if (isNaN(score) || isNaN(correctCount) || isNaN(time)) {
+                        console.warn(`⚠️ 第 ${index + 1} 筆資料數值無效:`, {
+                            score, correctCount, time, original: item
+                        });
+                        skippedCount++;
+                        return;
+                    }
+                    
+                    console.log(`📝 標準化後的資料:`, {
+                        category,
+                        playerName,
+                        score,
+                        correctCount,
+                        time,
+                        date
+                    });
+                    
+                    // 如果沒有 category，嘗試從其他欄位推斷
+                    let finalCategory = category;
+                    if (category === '未知關卡') {
+                        // 嘗試從其他欄位推斷關卡
+                        if (item.quizType) finalCategory = item.quizType;
+                        else if (item.level) finalCategory = `level_${item.level}`;
+                        else if (item.difficulty) finalCategory = `difficulty_${item.difficulty}`;
+                        else if (item.stage) finalCategory = `stage_${item.stage}`;
+                        else finalCategory = 'default'; // 預設關卡
+                    }
+                    
+                    // 確保關卡名稱是有效的
+                    if (!finalCategory || finalCategory === '未知關卡') {
+                        finalCategory = 'default';
+                    }
+                    
+                    if (!processedData[finalCategory]) {
+                        processedData[finalCategory] = [];
                     }
                     
                     // 處理該關卡的資料，包含時間資訊
                     const processedItem = {
-                        user: item.playerName || item.user || '未知用戶',
-                        score: parseInt(item.score) || 0,
-                        correctCount: parseInt(item.correctCount) || 0,
-                        time: parseInt(item.totalTime) || 0, // 完成時間（秒）
-                        category: category,
-                        date: item.date || new Date().toLocaleDateString()
+                        user: playerName,
+                        score: score,
+                        correctCount: correctCount,
+                        time: time, // 完成時間（秒）
+                        category: finalCategory,
+                        date: date,
+                        // 保留原始資料以供除錯
+                        originalData: item
                     };
                     
-                    processedData[category].push(processedItem);
+                    processedData[finalCategory].push(processedItem);
+                    processedCount++;
+                    console.log(`✅ 已添加到 ${finalCategory} 關卡:`, processedItem);
+                    
+                } catch (error) {
+                    console.error(`❌ 處理第 ${index + 1} 筆資料時發生錯誤:`, error);
+                    console.error(`❌ 問題資料:`, item);
+                    skippedCount++;
+                }
+            });
+            
+            console.log(`📊 資料處理完成: 成功 ${processedCount} 筆，跳過 ${skippedCount} 筆`);
+            
+            // 對每個關卡的資料進行排序
+            Object.keys(processedData).forEach(category => {
+                const categoryData = processedData[category];
+                console.log(`🔄 排序 ${category} 關卡資料，共 ${categoryData.length} 筆`);
+                
+                // 按正確題數排序，相同題數按時間排序（時間越短越好）
+                categoryData.sort((a, b) => {
+                    if (a.correctCount !== b.correctCount) {
+                        return b.correctCount - a.correctCount; // 正確題數多的排在前面
+                    } else {
+                        return a.time - b.time; // 相同題數，時間短的排在前面
+                    }
                 });
                 
-                // 對每個關卡的資料進行排序
-                Object.keys(processedData).forEach(category => {
-                    const categoryData = processedData[category];
-                    
-                    // 按正確題數排序，相同題數按時間排序（時間越短越好）
-                    categoryData.sort((a, b) => {
-                        if (a.correctCount !== b.correctCount) {
-                            return b.correctCount - a.correctCount; // 正確題數多的排在前面
-                        } else {
-                            return a.time - b.time; // 相同題數，時間短的排在前面
-                        }
-                    });
-                });
+                console.log(`📊 ${category} 關卡排序後資料:`, categoryData.map(item => ({
+                    user: item.user,
+                    correctCount: item.correctCount,
+                    time: item.time,
+                    score: item.score
+                })));
+            });
 
-                console.log('處理後的分關卡星座資料:', processedData);
-                constellationLeaderboardData = processedData;
-                displayConstellationLeaderboard();
+            console.log('✅ 處理後的分關卡星座資料:', processedData);
+            console.log('📊 關卡數量:', Object.keys(processedData).length);
+            Object.keys(processedData).forEach(category => {
+                console.log(`📊 ${category} 關卡資料數量:`, processedData[category].length);
+            });
+            
+            // 檢查是否有資料被處理
+            if (processedCount === 0) {
+                console.warn('⚠️ 沒有資料被成功處理，使用模擬資料');
+                loadMockConstellationData();
                 return;
             }
-
-            // 如果資料格式不符合預期，使用模擬資料
-            console.error('星座排行榜資料格式錯誤:', data);
-            loadMockConstellationData();
+            
+            constellationLeaderboardData = processedData;
+            displayConstellationLeaderboard();
         }
 
         // 載入模擬星座排行榜資料
@@ -1583,79 +1932,202 @@
 
         // 顯示星座排行榜
         function displayConstellationLeaderboard() {
+            console.log('🎯 開始顯示星座排行榜...');
+            console.log('📊 當前星座排行榜資料:', constellationLeaderboardData);
+            
             const content = document.getElementById('constellationLeaderboardContent');
             
+            if (!content) {
+                console.error('❌ 找不到星座排行榜內容容器');
+                return;
+            }
+            
             if (!constellationLeaderboardData || Object.keys(constellationLeaderboardData).length === 0) {
+                console.log('⚠️ 沒有星座排行榜資料可顯示');
                 content.innerHTML = '<div class="error">尚無星座排行榜資料</div>';
+                return;
+            }
+            
+            // 檢查資料完整性
+            let totalItems = 0;
+            let validCategories = 0;
+            
+            Object.keys(constellationLeaderboardData).forEach(category => {
+                const categoryData = constellationLeaderboardData[category];
+                if (Array.isArray(categoryData) && categoryData.length > 0) {
+                    totalItems += categoryData.length;
+                    validCategories++;
+                }
+            });
+            
+            console.log(`📊 資料統計: ${validCategories} 個關卡，共 ${totalItems} 筆資料`);
+            
+            if (totalItems === 0) {
+                console.log('⚠️ 沒有有效的排行榜資料可顯示');
+                content.innerHTML = '<div class="error">尚無有效的排行榜資料</div>';
                 return;
             }
 
             let html = '';
-
-            // 星座圖示對應
+            console.log('📊 準備顯示的關卡:', Object.keys(constellationLeaderboardData));
+            
+            // 星座圖示和名稱對應
             const constellationIcons = {
-                'aries': '♈', 'taurus': '♉', 'gemini': '♊', 'cancer': '♋',
-                'leo': '♌', 'virgo': '♍', 'libra': '♎', 'scorpio': '♏',
-                'sagittarius': '♐', 'capricorn': '♑', 'aquarius': '♒', 'pisces': '♓'
+                'aries': '♈',
+                'taurus': '♉',
+                'gemini': '♊',
+                'cancer': '♋',
+                'leo': '♌',
+                'virgo': '♍',
+                'libra': '♎',
+                'scorpio': '♏',
+                'sagittarius': '♐',
+                'capricorn': '♑',
+                'aquarius': '♒',
+                'pisces': '♓',
+                'default': '🌟',
+                'level_1': '⭐',
+                'level_2': '⭐⭐',
+                'level_3': '⭐⭐⭐',
+                'difficulty_easy': '🌱',
+                'difficulty_medium': '🌿',
+                'difficulty_hard': '🌳',
+                'stage_1': '🎯',
+                'stage_2': '🎯🎯',
+                'stage_3': '🎯🎯🎯'
             };
 
-            // 星座中文名稱對應
             const constellationNames = {
-                'aries': '白羊座', 'taurus': '金牛座', 'gemini': '雙子座', 'cancer': '巨蟹座',
-                'leo': '獅子座', 'virgo': '處女座', 'libra': '天秤座', 'scorpio': '天蠍座',
-                'sagittarius': '射手座', 'capricorn': '摩羯座', 'aquarius': '水瓶座', 'pisces': '雙魚座'
+                'aries': '白羊座',
+                'taurus': '金牛座',
+                'gemini': '雙子座',
+                'cancer': '巨蟹座',
+                'leo': '獅子座',
+                'virgo': '處女座',
+                'libra': '天秤座',
+                'scorpio': '天蠍座',
+                'sagittarius': '射手座',
+                'capricorn': '摩羯座',
+                'aquarius': '水瓶座',
+                'pisces': '雙魚座',
+                'default': '一般關卡',
+                'level_1': '初級關卡',
+                'level_2': '中級關卡',
+                'level_3': '高級關卡',
+                'difficulty_easy': '簡單模式',
+                'difficulty_medium': '普通模式',
+                'difficulty_hard': '困難模式',
+                'stage_1': '第一階段',
+                'stage_2': '第二階段',
+                'stage_3': '第三階段'
             };
 
             // 遍歷每個關卡
             Object.keys(constellationLeaderboardData).forEach(category => {
                 const categoryData = constellationLeaderboardData[category];
+                
+                // 驗證關卡資料
+                if (!Array.isArray(categoryData) || categoryData.length === 0) {
+                    console.warn(`⚠️ 關卡 ${category} 資料無效或為空:`, categoryData);
+                    return;
+                }
+                
                 const constellationIcon = constellationIcons[category] || '🌟';
                 const constellationName = constellationNames[category] || `關卡 ${category}`;
                 
-                // 添加關卡標題
-                html += `
-                    <div class="category-section">
-                        <h3>
-                            ${constellationIcon} ${constellationName} 排行榜
-                        </h3>
-                `;
+                console.log(`🎯 顯示關卡 ${category}:`, {
+                    icon: constellationIcon,
+                    name: constellationName,
+                    dataCount: categoryData.length
+                });
+                
+                                        // 添加關卡標題
+                        html += `
+                            <div class="category-section">
+                                <h3>
+                                    ${constellationIcon} ${constellationName} 排行榜 (前10名)
+                                    <span class="category-count">(${categoryData.length} 人)</span>
+                                </h3>
+                        `;
 
-                // 顯示該關卡的排行榜
-                categoryData.forEach((item, index) => {
-                    const rankClass = index === 0 ? 'gold' : index === 1 ? 'silver' : index === 2 ? 'bronze' : '';
-                    const rank = index + 1;
-                    const isCurrentUser = item.user === CURRENT_USER;
-                    const itemClass = isCurrentUser ? 'leaderboard-item current-user' : 'leaderboard-item';
-                    
-                    // 格式化時間顯示
-                    const formatTime = (seconds) => {
-                        const minutes = Math.floor(seconds / 60);
-                        const remainingSeconds = seconds % 60;
-                        return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
-                    };
-                    
-                    html += `
-                        <div class="${itemClass}">
-                            ${index < 3 ? '<div class="crown">👑</div>' : ''}
-                            <div class="rank ${rankClass}">${rank}</div>
-                            <div class="user-info">
-                                <div class="user-name">${item.user}</div>
-                                <div class="user-stats">
-                                    ${constellationIcon} ${constellationName}
-                                    | 正確: ${item.correctCount} 題
-                                    | 時間: <span class="time-display">${formatTime(item.time)}</span>
-                                    | 日期: ${item.date}
+                                        // 顯示該關卡的前10名排行榜
+                        categoryData.slice(0, 10).forEach((item, index) => {
+                    try {
+                        // 驗證項目資料
+                        if (!item || typeof item !== 'object') {
+                            console.warn(`⚠️ 關卡 ${category} 第 ${index + 1} 項資料無效:`, item);
+                            return;
+                        }
+                        
+                        const rankClass = index === 0 ? 'gold' : index === 1 ? 'silver' : index === 2 ? 'bronze' : '';
+                        const rank = index + 1;
+                        const isCurrentUser = item.user === CURRENT_USER;
+                        const itemClass = isCurrentUser ? 'leaderboard-item current-user' : 'leaderboard-item';
+                        
+                        // 驗證必要欄位
+                        const userName = item.user || '未知用戶';
+                        const correctCount = item.correctCount || 0;
+                        const time = item.time || 0;
+                        const score = item.score || 0;
+                        const date = item.date || '未知日期';
+                        
+                        console.log(`📊 顯示排行榜項目 ${index + 1}:`, {
+                            user: userName,
+                            rank: rank,
+                            correctCount: correctCount,
+                            time: time,
+                            score: score,
+                            isCurrentUser: isCurrentUser
+                        });
+                        
+                        // 格式化時間顯示
+                        const formatTime = (seconds) => {
+                            if (!seconds || isNaN(seconds)) return '0:00';
+                            const minutes = Math.floor(seconds / 60);
+                            const remainingSeconds = seconds % 60;
+                            return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+                        };
+                        
+                        html += `
+                            <div class="${itemClass}">
+                                ${index < 3 ? '<div class="crown">👑</div>' : ''}
+                                <div class="rank ${rankClass}">${rank}</div>
+                                <div class="user-info">
+                                    <div class="user-name">${userName}</div>
+                                    <div class="user-stats">
+                                        ${constellationIcon} ${constellationName}
+                                        | 正確: ${correctCount} 題
+                                        | 時間: <span class="time-display">${formatTime(time)}</span>
+                                        | 分數: ${score} 分
+                                        | 日期: ${date}
+                                    </div>
                                 </div>
+                                <div class="stars">🏆 ${score}</div>
                             </div>
-                            <div class="stars">🏆 ${item.score}</div>
-                        </div>
-                    `;
+                        `;
+                        
+                    } catch (error) {
+                        console.error(`❌ 顯示關卡 ${category} 第 ${index + 1} 項時發生錯誤:`, error);
+                        console.error(`❌ 問題資料:`, item);
+                    }
                 });
 
                 html += '</div>'; // 關閉 category-section
             });
 
+            console.log('📝 生成的 HTML 長度:', html.length);
+            
+            if (html.trim() === '') {
+                console.warn('⚠️ 生成的 HTML 為空');
+                content.innerHTML = '<div class="error">無法生成排行榜內容</div>';
+                return;
+            }
+            
             content.innerHTML = html;
+            console.log('✅ 星座排行榜顯示完成');
+            
+            // 顯示最終統計
+            console.log(`🎉 排行榜顯示完成: ${validCategories} 個關卡，共 ${totalItems} 筆資料`);
         }
 
         // 背景音樂控制
