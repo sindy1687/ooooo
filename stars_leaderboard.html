@@ -1068,6 +1068,7 @@
         <div class="tab-container">
             <button class="tab-button active" onclick="switchTab('stars')">⭐ 星星排行榜</button>
             <button class="tab-button" onclick="switchTab('constellation')">🌟 星座排行榜</button>
+                            <button class="tab-button" onclick="switchTab('total')">🏆 星座總排行榜</button>
         </div>
 
         <!-- 星星排行榜分頁 -->
@@ -1097,6 +1098,26 @@
             
             <div class="leaderboard-content" id="constellationLeaderboardContent">
                 <div class="loading">載入星座排行榜中...</div>
+            </div>
+        </div>
+
+        <!-- 星座總排行榜分頁 -->
+        <div class="leaderboard-section" id="totalTab" style="display: none;">
+            <div class="section-title">🏆 星座總排行榜</div>
+            
+            <!-- 星座總排行榜說明 -->
+            <div style="background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%); padding: 20px; border-radius: 15px; margin-bottom: 25px; border-left: 6px solid #2196F3;">
+                <h4 style="margin: 0 0 15px 0; color: #1976D2; font-size: 1.2rem;">📊 評分規則說明</h4>
+                <div style="color: #1565C0; line-height: 1.6;">
+                    <div><strong>🌟 星座挑戰：</strong>每關分數累加</div>
+                    <div><strong>🏆 總分計算：</strong>所有星座關卡分數總和</div>
+                    <div><strong>📈 等級計算：</strong>星座積分 ÷ 20 + 1</div>
+                    <div><strong>🎯 關卡統計：</strong>顯示完成的星座關卡數量和最佳分數</div>
+                </div>
+            </div>
+            
+            <div class="leaderboard-content" id="totalLeaderboardContent">
+                <div class="loading">載入星座總排行榜中...</div>
             </div>
         </div>
     </div>
@@ -1351,6 +1372,10 @@
 
             console.log('處理後的星星資料:', starsData);
             leaderboardData = starsData;
+            
+            // 將星星排行榜資料存儲到全域變數，供總排行榜使用
+            window.starsLeaderboardData = starsData;
+            
             displayStarsLeaderboard();
             
             // 更新資料來源資訊
@@ -1370,11 +1395,32 @@
                 return;
             }
 
+            // 去重邏輯：相同用戶只保留排名最高的記錄
+            const uniqueLeaderboardData = [];
+            const seenUsers = new Set();
+            
+            leaderboardData.forEach((item, index) => {
+                const userName = item.user || '未知用戶';
+                
+                // 如果這個用戶還沒出現過，則添加到結果中
+                if (!seenUsers.has(userName)) {
+                    seenUsers.add(userName);
+                    uniqueLeaderboardData.push({
+                        ...item,
+                        originalIndex: index // 保留原始排名用於皇冠顯示
+                    });
+                } else {
+                    console.log(`🔄 跳過重複用戶: ${userName} (原始排名: ${index + 1})`);
+                }
+            });
+
+            console.log(`📊 去重後排行榜: 原始 ${leaderboardData.length} 筆 → 去重後 ${uniqueLeaderboardData.length} 筆`);
+
             let html = '';
 
-            leaderboardData.forEach((item, index) => {
-                const rankClass = index === 0 ? 'gold' : index === 1 ? 'silver' : index === 2 ? 'bronze' : '';
-                const rank = index + 1;
+            uniqueLeaderboardData.forEach((item, displayIndex) => {
+                const rankClass = displayIndex === 0 ? 'gold' : displayIndex === 1 ? 'silver' : displayIndex === 2 ? 'bronze' : '';
+                const rank = displayIndex + 1;
                 const isCurrentUser = item.user === CURRENT_USER;
                 const itemClass = isCurrentUser ? 'leaderboard-item current-user' : 'leaderboard-item';
                 
@@ -1394,9 +1440,15 @@
                     }
                 }
                 
+                // 添加去重提示（如果原始排名不是第一）
+                let duplicateInfo = '';
+                if (item.originalIndex > 0) {
+                    duplicateInfo = `<br><small style="color: #FF9800; font-size: 0.8rem;">🔄 已合併重複記錄 (原始排名: ${item.originalIndex + 1})</small>`;
+                }
+                
                 html += `
                     <div class="${itemClass}">
-                        ${index < 3 ? '<div class="crown">👑</div>' : ''}
+                        ${displayIndex < 3 ? '<div class="crown">👑</div>' : ''}
                         <div class="rank ${rankClass}">${rank}</div>
                         <div class="user-info">
                             <div class="user-name">${item.user}</div>
@@ -1404,6 +1456,7 @@
                                 ${item.level ? `等級: ${item.level}` : ''}
                                 ${item.messages ? `訊息: ${item.messages}` : ''}
                                 ${extraInfo ? `<br><small style="color: #666; font-size: 0.9rem;">${extraInfo}</small>` : ''}
+                                ${duplicateInfo}
                             </div>
                         </div>
                         <div class="stars">⭐ ${item.stars || 0}</div>
@@ -1594,6 +1647,7 @@
         // 全域函數供外部調用
         window.handleStarsLeaderboard = handleStarsLeaderboard;
         window.handleStarsStats = handleStarsStats;
+        window.loadTotalLeaderboard = loadTotalLeaderboard;
 
         // 星座排行榜相關變數
         let constellationLeaderboardData = [];
@@ -1603,6 +1657,7 @@
             // 隱藏所有分頁
             document.getElementById('starsTab').style.display = 'none';
             document.getElementById('constellationTab').style.display = 'none';
+            document.getElementById('totalTab').style.display = 'none';
             
             // 移除所有按鈕的 active 類別
             document.querySelectorAll('.tab-button').forEach(btn => {
@@ -1615,9 +1670,14 @@
                 document.querySelector('.tab-button:first-child').classList.add('active');
             } else if (tabName === 'constellation') {
                 document.getElementById('constellationTab').style.display = 'block';
-                document.querySelector('.tab-button:last-child').classList.add('active');
+                document.querySelector('.tab-button:nth-child(2)').classList.add('active');
                 // 載入星座排行榜資料
                 loadConstellationLeaderboard();
+            } else if (tabName === 'total') {
+                document.getElementById('totalTab').style.display = 'block';
+                document.querySelector('.tab-button:last-child').classList.add('active');
+                // 載入總排行榜資料
+                loadTotalLeaderboard();
             }
         }
 
@@ -1896,6 +1956,10 @@
             }
             
             constellationLeaderboardData = processedData;
+            
+            // 將星座排行榜資料存儲到全域變數，供總排行榜使用
+            window.constellationLeaderboardData = processedData;
+            
             displayConstellationLeaderboard();
         }
 
@@ -1927,6 +1991,10 @@
             };
 
             constellationLeaderboardData = mockConstellationData;
+            
+            // 將模擬星座排行榜資料存儲到全域變數，供總排行榜使用
+            window.constellationLeaderboardData = mockConstellationData;
+            
             displayConstellationLeaderboard();
         }
 
@@ -2041,26 +2109,47 @@
                     dataCount: categoryData.length
                 });
                 
-                                        // 添加關卡標題
-                        html += `
-                            <div class="category-section">
-                                <h3>
-                                    ${constellationIcon} ${constellationName} 排行榜 (前10名)
-                                    <span class="category-count">(${categoryData.length} 人)</span>
-                                </h3>
-                        `;
+                // 去重邏輯：相同用戶只保留排名最高的記錄
+                const uniqueCategoryData = [];
+                const seenUsers = new Set();
+                
+                categoryData.forEach((item, index) => {
+                    const userName = item.user || '未知用戶';
+                    
+                    // 如果這個用戶還沒出現過，則添加到結果中
+                    if (!seenUsers.has(userName)) {
+                        seenUsers.add(userName);
+                        uniqueCategoryData.push({
+                            ...item,
+                            originalIndex: index // 保留原始排名用於去重提示
+                        });
+                    } else {
+                        console.log(`🔄 跳過重複用戶: ${userName} (關卡: ${category}, 原始排名: ${index + 1})`);
+                    }
+                });
+                
+                console.log(`📊 ${category} 關卡去重: 原始 ${categoryData.length} 筆 → 去重後 ${uniqueCategoryData.length} 筆`);
+                
+                // 添加關卡標題
+                html += `
+                    <div class="category-section">
+                        <h3>
+                            ${constellationIcon} ${constellationName} 排行榜 (前10名)
+                            <span class="category-count">(${uniqueCategoryData.length} 人)</span>
+                        </h3>
+                `;
 
-                                        // 顯示該關卡的前10名排行榜
-                        categoryData.slice(0, 10).forEach((item, index) => {
+                // 顯示該關卡的前10名排行榜（去重後）
+                uniqueCategoryData.slice(0, 10).forEach((item, displayIndex) => {
                     try {
                         // 驗證項目資料
                         if (!item || typeof item !== 'object') {
-                            console.warn(`⚠️ 關卡 ${category} 第 ${index + 1} 項資料無效:`, item);
+                            console.warn(`⚠️ 關卡 ${category} 第 ${displayIndex + 1} 項資料無效:`, item);
                             return;
                         }
                         
-                        const rankClass = index === 0 ? 'gold' : index === 1 ? 'silver' : index === 2 ? 'bronze' : '';
-                        const rank = index + 1;
+                        const rankClass = displayIndex === 0 ? 'gold' : displayIndex === 1 ? 'silver' : displayIndex === 2 ? 'bronze' : '';
+                        const rank = displayIndex + 1;
                         const isCurrentUser = item.user === CURRENT_USER;
                         const itemClass = isCurrentUser ? 'leaderboard-item current-user' : 'leaderboard-item';
                         
@@ -2071,7 +2160,7 @@
                         const score = item.score || 0;
                         const date = item.date || '未知日期';
                         
-                        console.log(`📊 顯示排行榜項目 ${index + 1}:`, {
+                        console.log(`📊 顯示排行榜項目 ${displayIndex + 1}:`, {
                             user: userName,
                             rank: rank,
                             correctCount: correctCount,
@@ -2088,9 +2177,15 @@
                             return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
                         };
                         
+                        // 添加去重提示（如果原始排名不是第一）
+                        let duplicateInfo = '';
+                        if (item.originalIndex > 0) {
+                            duplicateInfo = `<br><small style="color: #FF9800; font-size: 0.8rem;">🔄 已合併重複記錄 (原始排名: ${item.originalIndex + 1})</small>`;
+                        }
+                        
                         html += `
                             <div class="${itemClass}">
-                                ${index < 3 ? '<div class="crown">👑</div>' : ''}
+                                ${displayIndex < 3 ? '<div class="crown">👑</div>' : ''}
                                 <div class="rank ${rankClass}">${rank}</div>
                                 <div class="user-info">
                                     <div class="user-name">${userName}</div>
@@ -2100,6 +2195,7 @@
                                         | 時間: <span class="time-display">${formatTime(time)}</span>
                                         | 分數: ${score} 分
                                         | 日期: ${date}
+                                        ${duplicateInfo}
                                     </div>
                                 </div>
                                 <div class="stars">🏆 ${score}</div>
@@ -2107,7 +2203,7 @@
                         `;
                         
                     } catch (error) {
-                        console.error(`❌ 顯示關卡 ${category} 第 ${index + 1} 項時發生錯誤:`, error);
+                        console.error(`❌ 顯示關卡 ${category} 第 ${displayIndex + 1} 項時發生錯誤:`, error);
                         console.error(`❌ 問題資料:`, item);
                     }
                 });
@@ -2128,6 +2224,164 @@
             
             // 顯示最終統計
             console.log(`🎉 排行榜顯示完成: ${validCategories} 個關卡，共 ${totalItems} 筆資料`);
+        }
+
+        // 載入總排行榜
+        async function loadTotalLeaderboard() {
+            try {
+                console.log('🏆 載入總排行榜...');
+                
+                // 等待兩個排行榜都載入完成
+                await Promise.all([
+                    loadStarsLeaderboard(),
+                    loadConstellationLeaderboard()
+                ]);
+                
+                // 生成總排行榜
+                generateTotalLeaderboard();
+                
+            } catch (error) {
+                console.error('❌ 載入總排行榜失敗:', error);
+                const content = document.getElementById('totalLeaderboardContent');
+                content.innerHTML = '<div class="error">載入總排行榜失敗，請稍後再試</div>';
+            }
+        }
+
+        // 生成星座總排行榜
+        function generateTotalLeaderboard() {
+            console.log('🏆 生成星座總排行榜...');
+            
+            // 只獲取星座排行榜資料
+            const constellationData = window.constellationLeaderboardData || {};
+            
+            console.log('📊 星座排行榜資料:', constellationData);
+            
+            // 檢查是否有星座數據
+            if (Object.keys(constellationData).length === 0) {
+                console.log('⚠️ 沒有可用的星座排行榜資料');
+                const content = document.getElementById('totalLeaderboardContent');
+                content.innerHTML = '<div class="error">暫無星座排行榜資料，請先載入星座排行榜</div>';
+                return;
+            }
+            
+            // 合併用戶資料
+            const userTotalScores = new Map();
+            
+            // 只處理星座排行榜資料
+            // 星座排行榜資料是按關卡分組的，需要展開為單一用戶記錄
+            Object.keys(constellationData).forEach(category => {
+                const categoryData = constellationData[category];
+                if (Array.isArray(categoryData)) {
+                    categoryData.forEach(item => {
+                        const userName = item.user || '未知用戶';
+                        const score = parseInt(item.score) || 0;
+                        
+                        if (!userTotalScores.has(userName)) {
+                            userTotalScores.set(userName, {
+                                userName,
+                                constellationScore: score,
+                                totalScore: score,
+                                constellationCount: 1,
+                                bestConstellationScore: score
+                            });
+                        } else {
+                            const existing = userTotalScores.get(userName);
+                            existing.constellationScore += score;
+                            existing.constellationCount += 1;
+                            existing.bestConstellationScore = Math.max(existing.bestConstellationScore, score);
+                            existing.totalScore = existing.constellationScore;
+                        }
+                    });
+                }
+            });
+            
+            // 轉換為陣列並排序
+            const totalLeaderboard = Array.from(userTotalScores.values())
+                .sort((a, b) => b.totalScore - a.totalScore);
+            
+            console.log('📊 星座總排行榜資料:', totalLeaderboard);
+            
+            // 顯示總排行榜
+            displayTotalLeaderboard(totalLeaderboard);
+        }
+
+        // 顯示總排行榜
+        function displayTotalLeaderboard(totalLeaderboard) {
+            const content = document.getElementById('totalLeaderboardContent');
+            
+            if (!totalLeaderboard || totalLeaderboard.length === 0) {
+                content.innerHTML = '<div class="error">暫無總排行榜資料</div>';
+                return;
+            }
+            
+            let html = '';
+            
+            // 去重邏輯：相同用戶只保留排名最高的記錄
+            const uniqueLeaderboard = [];
+            const seenUsers = new Set();
+            
+            totalLeaderboard.forEach((item, index) => {
+                const userName = item.userName;
+                
+                if (!seenUsers.has(userName)) {
+                    seenUsers.add(userName);
+                    uniqueLeaderboard.push({
+                        ...item,
+                        originalIndex: index
+                    });
+                } else {
+                    console.log(`🔄 跳過重複用戶: ${userName} (原始排名: ${index + 1})`);
+                }
+            });
+            
+            console.log(`📊 總排行榜去重: 原始 ${totalLeaderboard.length} 筆 → 去重後 ${uniqueLeaderboard.length} 筆`);
+            
+            if (uniqueLeaderboard.length === 0) {
+                content.innerHTML = '<div class="error">暫無總排行榜資料</div>';
+                return;
+            }
+            
+            uniqueLeaderboard.forEach((item, displayIndex) => {
+                const rankClass = displayIndex === 0 ? 'gold' : displayIndex === 1 ? 'silver' : displayIndex === 2 ? 'bronze' : '';
+                const rank = displayIndex + 1;
+                const isCurrentUser = item.userName === CURRENT_USER;
+                const itemClass = isCurrentUser ? 'leaderboard-item current-user' : 'leaderboard-item';
+                
+                // 計算等級（基於星座積分計算）
+                const calculatedLevel = item.constellationScore > 0 ? Math.floor(item.constellationScore / 20) + 1 : 1;
+                
+                // 添加去重提示
+                let duplicateInfo = '';
+                if (item.originalIndex > 0) {
+                    duplicateInfo = `<br><small style="color: #FF9800; font-size: 0.8rem;">🔄 已合併重複記錄 (原始排名: ${item.originalIndex + 1})</small>`;
+                }
+                
+                html += `
+                    <div class="${itemClass}">
+                        ${displayIndex < 3 ? '<div class="crown">👑</div>' : ''}
+                        <div class="rank ${rankClass}">${rank}</div>
+                        <div class="user-info">
+                            <div class="user-name">${item.userName}</div>
+                            <div class="user-stats">
+                                <div style="margin-bottom: 8px;">
+                                    <span style="color: #2196F3;">🌟 星座積分: ${item.constellationScore || 0}</span> | 
+                                    <span style="color: #4CAF50;">🏆 總分: ${item.totalScore || 0}</span>
+                                </div>
+                                <div style="color: #666; font-size: 0.9rem;">
+                                    等級: ${calculatedLevel} | 
+                                    星座關卡: ${item.constellationCount || 0} 關
+                                    ${item.bestConstellationScore > 0 ? ` | 最佳星座分數: ${item.bestConstellationScore}` : ''}
+                                </div>
+                                ${duplicateInfo}
+                            </div>
+                        </div>
+                        <div class="stars">🏆 ${item.totalScore || 0}</div>
+                    </div>
+                `;
+            });
+            
+            content.innerHTML = html;
+            console.log('✅ 總排行榜顯示完成');
         }
 
         // 背景音樂控制
