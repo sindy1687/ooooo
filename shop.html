@@ -895,6 +895,7 @@
         <div class="invite-info">
           <p>💡 邀請碼格式：7-9位英數字組合</p>
           <p>🎁 可兌換星星數量：100、300、500、1000、5000、10000顆</p>
+          <p id="usedCodesInfo">📊 已使用邀請碼：0 個</p>
         </div>
       </div>
     </div>
@@ -921,6 +922,11 @@
         this.loadInviteCodes();
         this.setupEventListeners();
         
+        // 延遲更新統計信息，等待邀請碼載入完成
+        setTimeout(() => {
+          this.updateUsedCodesInfo();
+        }, 1000);
+        
         console.log('商城系統初始化完成');
       },
 
@@ -929,6 +935,16 @@
         const starsCount = document.getElementById('totalStarsCount');
         const currentStars = parseInt(localStorage.getItem('totalStars') || '0');
         starsCount.textContent = `⭐ ${currentStars}`;
+      },
+
+      // 更新已使用邀請碼統計
+      updateUsedCodesInfo() {
+        const usedCodesInfo = document.getElementById('usedCodesInfo');
+        const usedInviteCodes = JSON.parse(localStorage.getItem('usedInviteCodes') || '[]');
+        const totalCodes = this.inviteCodes.length;
+        const usedCount = usedInviteCodes.length;
+        
+        usedCodesInfo.textContent = `📊 已使用邀請碼：${usedCount} 個 / 總計 ${totalCodes} 個`;
       },
 
       // 切換標籤
@@ -947,11 +963,31 @@
           .then(data => {
             this.inviteCodes = data.codes;
             console.log(`✅ 成功載入 ${data.codes.length} 組邀請碼`);
+            
+            // 載入完成後，檢查本地已使用的邀請碼並同步狀態
+            this.syncLocalUsedCodes();
           })
           .catch(error => {
             console.error('❌ 載入邀請碼失敗:', error);
             this.inviteCodes = [];
           });
+      },
+
+      // 同步本地已使用的邀請碼狀態
+      syncLocalUsedCodes() {
+        const usedInviteCodes = JSON.parse(localStorage.getItem('usedInviteCodes') || '[]');
+        
+        // 將本地已使用的邀請碼標記為已使用
+        this.inviteCodes.forEach(code => {
+          const isUsed = usedInviteCodes.find(used => used.code === code.code);
+          if (isUsed) {
+            code.used = true;
+            code.usedAt = isUsed.usedAt || new Date().toISOString();
+            code.usedBy = isUsed.usedBy || 'user';
+          }
+        });
+        
+        console.log(`🔄 同步了 ${usedInviteCodes.length} 個已使用的邀請碼狀態`);
       },
 
       // 兌換邀請碼
@@ -980,11 +1016,14 @@
           return;
         }
 
-        // 讀取本地已兌換紀錄
+        // 檢查邀請碼是否已被使用（雙重檢查）
+        // 1. 檢查本地已兌換紀錄
         const usedInviteCodes = JSON.parse(localStorage.getItem('usedInviteCodes') || '[]');
         const alreadyUsed = usedInviteCodes.find(c => c.code === code);
+        
+        // 2. 檢查邀請碼本身的狀態
         if (inviteCode.used || alreadyUsed) {
-          this.showNotification('此邀請碼已被使用', 'error');
+          this.showNotification('此邀請碼已被使用，無法重複兌換', 'error');
           this.setInputStatus('error');
           return;
         }
@@ -1018,6 +1057,7 @@
 
         // 更新顯示
         this.updateStarsDisplay();
+        this.updateUsedCodesInfo();
 
         // 播放音效
         if (typeof StarRewardSystem !== 'undefined') {
@@ -1038,8 +1078,22 @@
 
       // 儲存已使用的邀請碼
       saveUsedInviteCodes() {
+        // 獲取所有已使用的邀請碼（包括本地記錄和當前標記的）
         const usedCodes = this.inviteCodes.filter(code => code.used);
+        
+        // 同時更新邀請碼本身的狀態
+        this.inviteCodes.forEach(code => {
+          if (code.used) {
+            code.usedAt = code.usedAt || new Date().toISOString();
+            code.usedBy = code.usedBy || 'user';
+          }
+        });
+        
+        // 儲存到本地存儲
         localStorage.setItem('usedInviteCodes', JSON.stringify(usedCodes));
+        
+        // 可選：同步到伺服器（如果有後端API）
+        this.syncUsedCodesToServer(usedCodes);
       },
 
       // 顯示通知
@@ -1067,6 +1121,27 @@
         setTimeout(() => {
           notification.remove();
         }, 3000);
+      },
+
+      // 同步已使用的邀請碼到伺服器（可選功能）
+      syncUsedCodesToServer(usedCodes) {
+        // 這裡可以實現與後端的同步邏輯
+        // 例如：發送 POST 請求到 API 端點
+        console.log('📤 同步已使用的邀請碼到伺服器:', usedCodes);
+        
+        // 示例：如果有後端API，可以這樣實現
+        /*
+        fetch('/api/invite-codes/used', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(usedCodes)
+        })
+        .then(response => response.json())
+        .then(data => console.log('✅ 同步成功:', data))
+        .catch(error => console.error('❌ 同步失敗:', error));
+        */
       },
 
       // 設置事件監聽器
