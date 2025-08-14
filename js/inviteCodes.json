@@ -1489,6 +1489,14 @@
       "usedAt": null,
       "usedBy": null,
       "createdAt": "2025-06-28T12:00:00.000Z"
+    },
+    {
+      "code": "X7K9M2N",
+      "stars": 60000,
+      "used": false,
+      "usedAt": null,
+      "usedBy": null,
+      "createdAt": "2025-06-28T12:00:00.000Z"
     }
   ]
 } 
