@@ -125,6 +125,35 @@
       font-style: italic;
     }
 
+    /* 編輯名稱按鈕 */
+    .edit-name-btn {
+      padding: 6px 12px;
+      margin-left: 8px;
+      font-size: 0.8rem;
+      background: rgba(255, 107, 107, 0.8);
+      border: 1px solid #ff6b6b;
+      border-radius: 6px;
+      color: #fff;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-family: 'Noto Sans TC', 'Microsoft JhengHei', Arial, sans-serif;
+    }
+
+    .edit-name-btn:hover {
+      background: rgba(255, 107, 107, 1);
+      box-shadow: 0 0 15px #ff6b6b80;
+      transform: scale(1.05);
+    }
+
+    /* 輸入群組樣式 */
+    .input-group {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin: 8px 0;
+    }
+
     /* 頭像選擇 */
     .avatar-grid {
       display: grid;
@@ -2570,6 +2599,7 @@
     <!-- 使用者名稱輸入 -->
     <div class="input-group">
       <input type="text" id="playerName" placeholder="請輸入您的名字" maxlength="10">
+      <button id="editNameBtn" class="edit-name-btn" onclick="toggleNameEdit()" style="display: none;">✏️ 編輯</button>
     </div>
 
     <!-- 角色預覽 -->
@@ -4825,6 +4855,41 @@
     }
 
 
+
+    // 切換名稱編輯模式
+    function toggleNameEdit() {
+      const nameInput = document.getElementById('playerName');
+      const editBtn = document.getElementById('editNameBtn');
+      
+      if (nameInput.readOnly) {
+        // 啟用編輯模式
+        nameInput.readOnly = false;
+        nameInput.style.opacity = '1';
+        nameInput.style.cursor = 'text';
+        editBtn.textContent = '💾 儲存';
+        editBtn.style.background = 'rgba(0, 255, 0, 0.8)';
+        editBtn.style.borderColor = '#00ff00';
+        
+        // 聚焦到輸入欄位
+        nameInput.focus();
+        nameInput.select();
+      } else {
+        // 儲存並永久禁用編輯模式
+        const newName = nameInput.value.trim();
+        if (newName && newName !== '未命名玩家') {
+          LinkageSystem.player.setName(newName);
+          
+          // 永久禁用編輯功能
+          editBtn.style.display = 'none';
+          nameInput.readOnly = true;
+          nameInput.style.opacity = '0.7';
+          nameInput.style.cursor = 'not-allowed';
+          
+          // 標記為永久鎖定
+          localStorage.setItem('nameLocked', 'true');
+        }
+      }
+    }
 
     // 頁面載入時自動檢查每日簽到獎勵
     document.addEventListener('DOMContentLoaded', function() {
