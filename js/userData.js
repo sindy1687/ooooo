@@ -514,6 +514,8 @@ const LinkageSystem = {
         getName: () => localStorage.getItem("playerName") || "未命名玩家",
         setName: (name) => {
             localStorage.setItem("playerName", name);
+            // 標記名稱已經設定過
+            localStorage.setItem("nameSet", "true");
             LinkageSystem.player.updateDisplay();
         },
         getAvatar: () => localStorage.getItem("selectedAvatar") || "img/avatars/avatar_TL.png",
@@ -533,11 +535,47 @@ const LinkageSystem = {
             
             const currentName = LinkageSystem.player.getName();
             const currentAvatar = LinkageSystem.player.getAvatar();
+            const nameSet = localStorage.getItem("nameSet") === "true";
+            const nameLocked = localStorage.getItem("nameLocked") === "true";
             
             nameElements.forEach(el => {
                 if (el) {
                     if (el.tagName === "INPUT") {
-                        el.value = currentName;
+                        // 如果名稱已經設定過，讓輸入欄位變成唯讀
+                        if (nameSet && currentName && currentName !== "未命名玩家") {
+                            el.readOnly = true;
+                            el.style.opacity = "0.7";
+                            el.style.cursor = "not-allowed";
+                            
+                            // 只有在沒有永久鎖定的情況下才顯示編輯按鈕
+                            if (!nameLocked) {
+                                const editBtn = document.getElementById("editNameBtn");
+                                if (editBtn) {
+                                    editBtn.style.display = "inline-block";
+                                }
+                            } else {
+                                // 如果永久鎖定，隱藏編輯按鈕
+                                const editBtn = document.getElementById("editNameBtn");
+                                if (editBtn) {
+                                    editBtn.style.display = "none";
+                                }
+                            }
+                        } else {
+                            el.readOnly = false;
+                            el.style.opacity = "1";
+                            el.style.cursor = "text";
+                            
+                            // 隱藏編輯按鈕
+                            const editBtn = document.getElementById("editNameBtn");
+                            if (editBtn) {
+                                editBtn.style.display = "none";
+                            }
+                        }
+                        
+                        // 如果輸入欄位沒有焦點，更新其值
+                        if (document.activeElement !== el) {
+                            el.value = currentName;
+                        }
                     } else {
                         el.textContent = currentName;
                     }
