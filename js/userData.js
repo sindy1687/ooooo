@@ -541,23 +541,29 @@ const LinkageSystem = {
             nameElements.forEach(el => {
                 if (el) {
                     if (el.tagName === "INPUT") {
-                        // 如果名稱已經設定過，讓輸入欄位變成唯讀
+                        // 如果名稱已經設定過且沒有永久鎖定，顯示編輯按鈕但保持輸入欄位可編輯
                         if (nameSet && currentName && currentName !== "未命名玩家") {
-                            el.readOnly = true;
-                            el.style.opacity = "0.7";
-                            el.style.cursor = "not-allowed";
-                            
-                            // 只有在沒有永久鎖定的情況下才顯示編輯按鈕
-                            if (!nameLocked) {
-                                const editBtn = document.getElementById("editNameBtn");
-                                if (editBtn) {
-                                    editBtn.style.display = "inline-block";
-                                }
-                            } else {
+                            // 只有在永久鎖定時才設為只讀
+                            if (nameLocked) {
+                                el.readOnly = true;
+                                el.style.opacity = "0.7";
+                                el.style.cursor = "not-allowed";
+                                
                                 // 如果永久鎖定，隱藏編輯按鈕
                                 const editBtn = document.getElementById("editNameBtn");
                                 if (editBtn) {
                                     editBtn.style.display = "none";
+                                }
+                            } else {
+                                // 沒有永久鎖定時，保持輸入欄位可編輯
+                                el.readOnly = false;
+                                el.style.opacity = "1";
+                                el.style.cursor = "text";
+                                
+                                // 顯示編輯按鈕
+                                const editBtn = document.getElementById("editNameBtn");
+                                if (editBtn) {
+                                    editBtn.style.display = "inline-block";
                                 }
                             }
                         } else {
