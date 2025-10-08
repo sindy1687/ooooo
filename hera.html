@@ -530,309 +530,48 @@
 
   <script src="js/gameDialogue.js"></script>
   <script>
-    const rawData = [
-      {
-    "word": "or",
-    "zh": "或者；否則",
-    "en_sentence": "Do you want tea or juice?",
-    "zh_sentence": "你要茶或者果汁？",
-    "category": "連接詞介系詞"
-  },
-  {
-    "word": "off",
-    "zh": "脫下；離去",
-    "en_sentence": "Take off your shoes at the door.",
-    "zh_sentence": "在門口把鞋子脫下。",
-    "category": "動作動詞"
-  },
-  {
-    "word": "noodle",
-    "zh": "麵條",
-    "en_sentence": "I like noodle with soup.",
-    "zh_sentence": "我喜歡加湯的麵條。",
-    "category": "食物飲料"
-  },
-  {
-    "word": "chocolate",
-    "zh": "巧克力",
-    "en_sentence": "Chocolate melts in your mouth.",
-    "zh_sentence": "巧克力在嘴裡融化。",
-    "category": "食物飲料"
-  },
-  {
-    "word": "shake",
-    "zh": "搖動",
-    "en_sentence": "Please shake the bottle before drinking.",
-    "zh_sentence": "喝之前請搖動瓶子。",
-    "category": "動作動詞"
-  },
-  {
-    "word": "sugar",
-    "zh": "糖",
-    "en_sentence": "Add sugar to your tea if you like it sweet.",
-    "zh_sentence": "如果你喜歡甜的，就在茶裡加糖。",
-    "category": "食物飲料"
-  },
-  {
-    "word": "meal",
-    "zh": "餐",
-    "en_sentence": "We eat three meals a day.",
-    "zh_sentence": "我們一天吃三餐。",
-    "category": "食物飲料"
-  },
-  {
-    "word": "bottle",
-    "zh": "瓶子",
-    "en_sentence": "Bring a water bottle to gym class.",
-    "zh_sentence": "去體育課時帶一個水瓶。",
-    "category": "日常生活用品"
-  },
-  {
-    "word": "plate",
-    "zh": "盤子",
-    "en_sentence": "Please put the cake on a plate.",
-    "zh_sentence": "請把蛋糕放到盤子上。",
-    "category": "日常生活用品"
-  },
-  {
-    "word": "pick",
-    "zh": "撿起",
-    "en_sentence": "Pick up the trash in the yard.",
-    "zh_sentence": "把院子裡的垃圾撿起來。",
-    "category": "動作動詞"
-  },
-  {
-    "word": "mean",
-    "zh": "吝嗇的；意指",
-    "en_sentence": "What do you mean by that?",
-    "zh_sentence": "你那樣說是什麼意思？",
-    "category": "形容詞"
-  },
-  {
-    "word": "first",
-    "zh": "第一(的)",
-    "en_sentence": "She came in first in the race.",
-    "zh_sentence": "她在比賽中獲得第一名。",
-    "category": "序數詞"
-  },
-  {
-    "word": "second",
-    "zh": "第二(的)",
-    "en_sentence": "He finished second in the contest.",
-    "zh_sentence": "他在比賽中拿到第二名。",
-    "category": "序數詞"
-  },
-  {
-    "word": "third",
-    "zh": "第三(的)",
-    "en_sentence": "I got the third slice of pizza.",
-    "zh_sentence": "我拿到了第三片披薩。",
-    "category": "序數詞"
-  },
-  {
-    "word": "money",
-    "zh": "錢",
-    "en_sentence": "He saved his money to buy a toy.",
-    "zh_sentence": "他存錢想買一個玩具。",
-    "category": "金錢相關"
-  },
-  {
-    "word": "Mother's Day",
-    "zh": "母親節",
-    "en_sentence": "We give flowers on Mother's Day.",
-    "zh_sentence": "我們在母親節送花。",
-    "category": "節日慶祝"
-  },
-  {
-    "word": "idea",
-    "zh": "主意；點子",
-    "en_sentence": "I have an idea for a new game.",
-    "zh_sentence": "我有一個新遊戲的點子。",
-    "category": "抽象概念"
-  },
-  {
-    "word": "because",
-    "zh": "因為",
-    "en_sentence": "I am happy because I passed the test.",
-    "zh_sentence": "因為我考試及格，所以很開心。",
-    "category": "邏輯關係"
-  },
-  {
-    "word": "drawer",
-    "zh": "抽屜",
-    "en_sentence": "The toy is in the drawer.",
-    "zh_sentence": "玩具在抽屜裡。",
-    "category": "日常生活用品"
-  },
-  {
-    "word": "bath",
-    "zh": "澡",
-    "en_sentence": "I take a bath every night.",
-    "zh_sentence": "我每天晚上洗澡。",
-    "category": "個人衛生"
-  },
-  {
-    "word": "cow",
-    "zh": "母牛",
-    "en_sentence": "A cow eats grass in the field.",
-    "zh_sentence": "母牛在田裡吃草。",
-    "category": "動物"
-  },
-  {
-    "word": "market",
-    "zh": "市場",
-    "en_sentence": "We go to the market on Sunday.",
-    "zh_sentence": "我們星期天去市場。",
-    "category": "商業場所"
-  },
-  {
-    "word": "expensive",
-    "zh": "昂貴的",
-    "en_sentence": "That toy is too expensive.",
-    "zh_sentence": "那個玩具太昂貴了。",
-    "category": "形容詞"
-  },
-  {
-    "word": "cheap",
-    "zh": "便宜的",
-    "en_sentence": "These shoes are very cheap.",
-    "zh_sentence": "這雙鞋子很便宜。",
-    "category": "形容詞"
-  },
-  {
-    "word": "enough",
-    "zh": "足夠的",
-    "en_sentence": "Do we have enough chairs?",
-    "zh_sentence": "我們有足夠的椅子嗎？",
-    "category": "形容詞"
-  },
-  {
-    "word": "all",
-    "zh": "全部的；整個的",
-    "en_sentence": "All students must bring their books.",
-    "zh_sentence": "所有學生都必須帶書來。",
-    "category": "形容詞"
-  },
-  {
-    "word": "poor",
-    "zh": "可憐的；貧窮的；不佳的",
-    "en_sentence": "The poor puppy needs food.",
-    "zh_sentence": "那隻可憐的小狗需要食物。",
-    "category": "形容詞"
-  },
-  {
-    "word": "early",
-    "zh": "早的；早地",
-    "en_sentence": "We wake up early every morning.",
-    "zh_sentence": "我們每天早上很早就起床。",
-    "category": "時間頻率"
-  },
-  {
-    "word": "dirty",
-    "zh": "髒的",
-    "en_sentence": "Your shirt is dirty; please wash it.",
-    "zh_sentence": "你的襯衫很髒，請去洗。",
-    "category": "形容詞"
-  },
-  {
-    "word": "easy",
-    "zh": "容易的",
-    "en_sentence": "This question is easy to answer.",
-    "zh_sentence": "這個問題很容易回答。",
-    "category": "形容詞"
-  },
-  {
-    "word": "hard",
-    "zh": "艱難的；硬的",
-    "en_sentence": "The test was hard for me.",
-    "zh_sentence": "對我來說，考試很艱難。",
-    "category": "形容詞"
-  },
-  {
-    "word": "busy",
-    "zh": "忙碌的",
-    "en_sentence": "Mom is busy cooking dinner.",
-    "zh_sentence": "媽媽正忙著做晚餐。",
-    "category": "形容詞"
-  },
-  {
-    "word": "free",
-    "zh": "空閒的；免費的",
-    "en_sentence": "This game is free to play.",
-    "zh_sentence": "這個遊戲可以免費玩。",
-    "category": "形容詞"
-  },
-  {
-    "word": "need",
-    "zh": "需要",
-    "en_sentence": "I need a pencil to write.",
-    "zh_sentence": "我需要一支鉛筆來寫字。",
-    "category": "需求表達"
-  },
-  {
-    "word": "end",
-    "zh": "結束",
-    "en_sentence": "The movie will end soon.",
-    "zh_sentence": "電影很快就要結束了。",
-    "category": "結束完成"
-  },
-  {
-    "word": "cost",
-    "zh": "花費",
-    "en_sentence": "How much does it cost?",
-    "zh_sentence": "這要花費多少錢？",
-    "category": "金錢交易"
-  },
-  {
-    "word": "buy",
-    "zh": "購買",
-    "en_sentence": "I will buy a gift for my friend.",
-    "zh_sentence": "我會為我的朋友買一份禮物。",
-    "category": "金錢交易"
-  },
-  {
-    "word": "put",
-    "zh": "放置",
-    "en_sentence": "Put your bag on the desk.",
-    "zh_sentence": "把你的書包放在桌上。",
-    "category": "動作操作"
-  },
-  {
-    "word": "feed",
-    "zh": "餵養",
-    "en_sentence": "Feed the cat every morning.",
-    "zh_sentence": "每天早上餵那隻貓。",
-    "category": "動作操作"
-  },
-  {
-    "word": "hate",
-    "zh": "討厭",
-    "en_sentence": "I hate doing chores on weekends.",
-    "zh_sentence": "我討厭週末做家務。",
-    "category": "情感表達"
-  },
-  {
-    "word": "sell",
-    "zh": "賣",
-    "en_sentence": "They sell fresh vegetables at the market.",
-    "zh_sentence": "他們在市場賣新鮮蔬菜。",
-    "category": "商業活動"
-  },
-  {
-    "word": "also",
-    "zh": "也",
-    "en_sentence": "I like ice cream, and I also like cake.",
-    "zh_sentence": "我喜歡冰淇淋，也喜歡蛋糕。",
-    "category": "附加表達"
-  },
-  {
-    "word": "once",
-    "zh": "一次",
-    "en_sentence": "I went there only once last year.",
-    "zh_sentence": "我去年只去過那裡一次。",
-    "category": "頻率表達"
-  }
-    ];
+   const VOCAB_DATA = [
+  { "word": "balcony", "zh": "陽台", "en_sentence": "We drink tea on the balcony in the evening.", "zh_sentence": "我們晚上在陽台喝茶。", "category": "場所位置" },
+  { "word": "koala", "zh": "無尾熊", "en_sentence": "A koala sleeps in the eucalyptus tree.", "zh_sentence": "無尾熊睡在尤加利樹上。", "category": "動物" },
+  { "word": "hippo", "zh": "河馬", "en_sentence": "The hippo swims across the river.", "zh_sentence": "河馬游過河面。", "category": "動物" },
+  { "word": "zebra", "zh": "斑馬", "en_sentence": "The zebra has black and white stripes.", "zh_sentence": "斑馬有黑白相間的條紋。", "category": "動物" },
+  { "word": "kangaroo", "zh": "袋鼠", "en_sentence": "A kangaroo can jump very far.", "zh_sentence": "袋鼠可以跳得很遠。", "category": "動物" },
+  { "word": "person", "zh": "人(單數)", "en_sentence": "One person is waiting at the door.", "zh_sentence": "一個人在門口等候。", "category": "稱謂人際" },
+  { "word": "people", "zh": "人們(複數)", "en_sentence": "Many people visit the museum on weekends.", "zh_sentence": "很多人週末參觀博物館。", "category": "稱謂人際" },
+  { "word": "man", "zh": "男人", "en_sentence": "The man reads a newspaper.", "zh_sentence": "那位男人在看報紙。", "category": "稱謂人際" },
+  { "word": "woman", "zh": "女人", "en_sentence": "The woman works at a bank.", "zh_sentence": "那位女人在銀行工作。", "category": "稱謂人際" },
+  { "word": "center", "zh": "中心；中央", "en_sentence": "Please stand in the center of the circle.", "zh_sentence": "請站在圓的中央。", "category": "場所位置" },
+  { "word": "future", "zh": "未來", "en_sentence": "We should plan for the future.", "zh_sentence": "我們應該為未來做打算。", "category": "抽象概念" },
+  { "word": "age", "zh": "年齡", "en_sentence": "What is your age?", "zh_sentence": "你的年齡是多少？", "category": "抽象概念" },
+  { "word": "minute", "zh": "分鐘", "en_sentence": "Please wait one minute.", "zh_sentence": "請等一分鐘。", "category": "時間日期" },
+  { "word": "Christmas", "zh": "聖誕節", "en_sentence": "We open gifts on Christmas morning.", "zh_sentence": "我們在聖誕節早上打開禮物。", "category": "節日慶祝" },
+  { "word": "bell", "zh": "鈴；鐘", "en_sentence": "The school bell rings at eight.", "zh_sentence": "學校的鐘在八點響起。", "category": "聲音表演" },
+  { "word": "turkey", "zh": "火雞", "en_sentence": "We eat turkey for dinner.", "zh_sentence": "我們晚餐吃火雞。", "category": "動物" },
+  { "word": "thing", "zh": "事物；東西", "en_sentence": "This thing is very useful.", "zh_sentence": "這個東西很有用。", "category": "抽象概念" },
+  { "word": "glasses", "zh": "眼鏡", "en_sentence": "She wears glasses to read.", "zh_sentence": "她戴眼鏡閱讀。", "category": "日常生活用品" },
+  { "word": "belt", "zh": "皮帶", "en_sentence": "He wears a belt with his jeans.", "zh_sentence": "他牛仔褲配了一條皮帶。", "category": "日常生活用品" },
+  { "word": "think", "zh": "思考；認為", "en_sentence": "I think this answer is correct.", "zh_sentence": "我認為這個答案是正確的。", "category": "動作動詞" },
+  { "word": "quiet", "zh": "安靜的", "en_sentence": "Please be quiet in the library.", "zh_sentence": "請在圖書館保持安靜。", "category": "形容詞" },
+  { "word": "interesting", "zh": "有趣的", "en_sentence": "This book is very interesting.", "zh_sentence": "這本書非常有趣。", "category": "形容詞" },
+  { "word": "favorite", "zh": "最喜愛的", "en_sentence": "Ice cream is my favorite dessert.", "zh_sentence": "冰淇淋是我最喜愛的甜點。", "category": "形容詞" },
+  { "word": "any", "zh": "任何的", "en_sentence": "Do you have any questions?", "zh_sentence": "你有任何問題嗎？", "category": "形容詞" },
+  { "word": "wait", "zh": "等待", "en_sentence": "Please wait for your turn.", "zh_sentence": "請等待輪到你。", "category": "動作動詞" },
+  { "word": "worry", "zh": "擔心", "en_sentence": "Don't worry about the test.", "zh_sentence": "別擔心考試。", "category": "情感表達" },
+  { "word": "get", "zh": "得到；取得", "en_sentence": "I will get a new bike.", "zh_sentence": "我要得到一台新腳踏車。", "category": "動作動詞" },
+  { "word": "share", "zh": "分享", "en_sentence": "We share our snacks with friends.", "zh_sentence": "我們和朋友分享零食。", "category": "動作動詞" },
+  { "word": "kick", "zh": "踢", "en_sentence": "He can kick the ball very hard.", "zh_sentence": "他能很用力地踢球。", "category": "動作動詞" },
+  { "word": "remember", "zh": "記得", "en_sentence": "Please remember to lock the door.", "zh_sentence": "請記得把門鎖上。", "category": "動作動詞" },
+  { "word": "fight", "zh": "打架；對抗", "en_sentence": "They fight over the toy.", "zh_sentence": "他們為了玩具打架。", "category": "動作動詞" },
+  { "word": "shout", "zh": "大喊", "en_sentence": "Don't shout in the classroom.", "zh_sentence": "不要在教室裡大喊。", "category": "動作動詞" },
+  { "word": "behind", "zh": "在…後面", "en_sentence": "The cat is behind the chair.", "zh_sentence": "貓在椅子後面。", "category": "場所位置" },
+  { "word": "front", "zh": "在…前面；前面", "en_sentence": "Stand in front of the line.", "zh_sentence": "請站在隊伍前面。", "category": "場所位置" },
+  { "word": "between", "zh": "在…之間", "en_sentence": "The ball is between the boxes.", "zh_sentence": "球在兩個箱子之間。", "category": "場所位置" },
+  { "word": "down", "zh": "向下；在下方", "en_sentence": "The bird flies down to the tree.", "zh_sentence": "那隻鳥向下飛到樹上。", "category": "場所位置" },
+  { "word": "then", "zh": "然後；接著", "en_sentence": "Finish your homework, then play.", "zh_sentence": "先完成作業，然後再玩。", "category": "邏輯關係" },
+  { "word": "even", "zh": "甚至", "en_sentence": "He can swim even in cold water.", "zh_sentence": "他甚至可以在冷水中游泳。", "category": "附加表達" },
+  { "word": "wrong", "zh": "錯誤的", "en_sentence": "Your answer is wrong.", "zh_sentence": "你的答案是錯的。", "category": "形容詞" },
+  { "word": "many", "zh": "許多", "en_sentence": "There are many books on the shelf.", "zh_sentence": "書架上有許多書。", "category": "數量分數" }
+];
 
     const QUESTIONS_COUNT = 20;
     const TIME_LIMIT = 30;
@@ -1570,4 +1309,5 @@
     });
   </script>
 </body>
+
 </html>
