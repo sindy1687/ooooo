@@ -720,302 +720,50 @@
     };
 
     // ===== 題庫資料 =====
-    const VOCAB_DATA = [
-      {
-        "word": "garden",
-        "zh": "花園",
-        "en_sentence": "They grow roses in their garden.",
-        "zh_sentence": "他們在花園裡種玫瑰。",
-        "category": "自然環境"
-      },
-      {
-        "word": "grass",
-        "zh": "草地",
-        "en_sentence": "We lie on the grass to read books.",
-        "zh_sentence": "我們躺在草地上看書。",
-        "category": "自然環境"
-      },
-      {
-        "word": "refrigerator",
-        "zh": "冰箱",
-        "en_sentence": "Put the milk back in the refrigerator.",
-        "zh_sentence": "把牛奶放回冰箱。",
-        "category": "日常生活用品"
-      },
-      {
-        "word": "police",
-        "zh": "警察",
-        "en_sentence": "The police help keep the city safe.",
-        "zh_sentence": "警察幫助保持城市安全。",
-        "category": "職業"
-      },
-      {
-        "word": "officer",
-        "zh": "官員",
-        "en_sentence": "The officer gave us directions.",
-        "zh_sentence": "那位官員給了我們指引。",
-        "category": "職業"
-      },
-      {
-        "word": "actress",
-        "zh": "女演員",
-        "en_sentence": "The actress performed on stage.",
-        "zh_sentence": "那位女演員在舞臺上表演。",
-        "category": "職業"
-      },
-      {
-        "word": "writer",
-        "zh": "作家",
-        "en_sentence": "The writer is working on a new book.",
-        "zh_sentence": "那位作家正在寫新書。",
-        "category": "職業"
-      },
-      {
-        "word": "reporter",
-        "zh": "記者",
-        "en_sentence": "The reporter asked questions at the event.",
-        "zh_sentence": "記者在活動中提問。",
-        "category": "職業"
-      },
-      {
-        "word": "fisherman",
-        "zh": "漁夫",
-        "en_sentence": "The fisherman caught a big fish this morning.",
-        "zh_sentence": "漁夫今天早上捕到了一條大魚。",
-        "category": "職業"
-      },
-      {
-        "word": "factory",
-        "zh": "工廠",
-        "en_sentence": "The factory makes toys for children.",
-        "zh_sentence": "這家工廠為孩子們製造玩具。",
-        "category": "場所建築"
-      },
-      {
-        "word": "again",
-        "zh": "再一次",
-        "en_sentence": "Please say that again.",
-        "zh_sentence": "請再說一次。",
-        "category": "時間頻率"
-      },
-      {
-        "word": "mail",
-        "zh": "信件；郵寄",
-        "en_sentence": "I need to mail this letter today.",
-        "zh_sentence": "我今天需要郵寄這封信。",
-        "category": "通訊"
-      },
-      {
-        "word": "mailman",
-        "zh": "郵差",
-        "en_sentence": "The mailman delivers letters every morning.",
-        "zh_sentence": "郵差每天早上送信。",
-        "category": "職業"
-      },
-      {
-        "word": "glove",
-        "zh": "手套",
-        "en_sentence": "Wear gloves when it's cold.",
-        "zh_sentence": "天冷時要戴手套。",
-        "category": "服飾配件"
-      },
-      {
-        "word": "ring",
-        "zh": "戒指",
-        "en_sentence": "She wears a gold ring on her finger.",
-        "zh_sentence": "她手指上戴著一枚金戒指。",
-        "category": "服飾配件"
-      },
-      {
-        "word": "rope",
-        "zh": "繩索",
-        "en_sentence": "Tie the box with a rope.",
-        "zh_sentence": "用繩索綁好那個箱子。",
-        "category": "日常生活用品"
-      },
-      {
-        "word": "medicine",
-        "zh": "藥",
-        "en_sentence": "Take your medicine after dinner.",
-        "zh_sentence": "晚餐後服用你的藥。",
-        "category": "醫療健康"
-      },
-      {
-        "word": "stomach",
-        "zh": "胃",
-        "en_sentence": "My stomach hurts after eating too much.",
-        "zh_sentence": "吃太多後我的胃很疼。",
-        "category": "醫療健康"
-      },
-      {
-        "word": "fever",
-        "zh": "發燒",
-        "en_sentence": "He has a fever and needs to rest.",
-        "zh_sentence": "他發燒了，需要休息。",
-        "category": "醫療健康"
-      },
-      {
-        "word": "throat",
-        "zh": "喉嚨",
-        "en_sentence": "Her throat is sore from singing.",
-        "zh_sentence": "她因為唱歌喉嚨很痛。",
-        "category": "醫療健康"
-      },
-      {
-        "word": "sore",
-        "zh": "疼痛",
-        "en_sentence": "My muscles are sore after exercise.",
-        "zh_sentence": "運動後我的肌肉很疼痛。",
-        "category": "醫療健康"
-      },
-      {
-        "word": "language",
-        "zh": "語言",
-        "en_sentence": "Learning a new language is fun.",
-        "zh_sentence": "學習新語言很有趣。",
-        "category": "語言文化"
-      },
-      {
-        "word": "band",
-        "zh": "樂團",
-        "en_sentence": "The band plays music at the concert.",
-        "zh_sentence": "那個樂團在音樂會上演奏。",
-        "category": "娛樂活動"
-      },
-      {
-        "word": "drum",
-        "zh": "鼓",
-        "en_sentence": "He plays the drum in the school band.",
-        "zh_sentence": "他在學校樂團裡打鼓。",
-        "category": "娛樂活動"
-      },
-      {
-        "word": "picnic",
-        "zh": "野餐",
-        "en_sentence": "We have a picnic by the lake.",
-        "zh_sentence": "我們在湖邊野餐。",
-        "category": "娛樂活動"
-      },
-      {
-        "word": "goat",
-        "zh": "山羊",
-        "en_sentence": "The goat eats grass on the farm.",
-        "zh_sentence": "山羊在農場吃草。",
-        "category": "動物植物"
-      },
-      {
-        "word": "rose",
-        "zh": "玫瑰",
-        "en_sentence": "She smells the rose in the garden.",
-        "zh_sentence": "她聞了聞花園裡的玫瑰。",
-        "category": "動物植物"
-      },
-      {
-        "word": "foreigner",
-        "zh": "外國人",
-        "en_sentence": "A foreigner asked for directions.",
-        "zh_sentence": "一位外國人問路。",
-        "category": "語言文化"
-      },
-      {
-        "word": "e-mail",
-        "zh": "電子郵件",
-        "en_sentence": "I send an e-mail to my teacher.",
-        "zh_sentence": "我寄了一封電子郵件給我的老師。",
-        "category": "通訊"
-      },
-      {
-        "word": "honey",
-        "zh": "蜂蜜",
-        "en_sentence": "We put honey on our toast.",
-        "zh_sentence": "我們在吐司上塗蜂蜜。",
-        "category": "食物飲料"
-      },
-      {
-        "word": "dear",
-        "zh": "親愛的",
-        "en_sentence": "Dear friend, thank you for your help.",
-        "zh_sentence": "親愛的朋友，謝謝你的幫助。",
-        "category": "形容詞"
-      },
-      {
-        "word": "common",
-        "zh": "共同的；普遍的",
-        "en_sentence": "It is common to say hello in the morning.",
-        "zh_sentence": "早上打招呼是很普遍的。",
-        "category": "形容詞"
-      },
-      {
-        "word": "little",
-        "zh": "小的；很少的",
-        "en_sentence": "There is little water left in the bottle.",
-        "zh_sentence": "瓶子裡只剩下一點水。",
-        "category": "形容詞"
-      },
-      {
-        "word": "straight",
-        "zh": "直的；直接地",
-        "en_sentence": "Walk straight to reach the library.",
-        "zh_sentence": "直走就能到圖書館。",
-        "category": "形容詞"
-      },
-      {
-        "word": "understand",
-        "zh": "了解",
-        "en_sentence": "I understand the lesson well.",
-        "zh_sentence": "我很了解這課。",
-        "category": "理解表達"
-      },
-      {
-        "word": "invite",
-        "zh": "邀請",
-        "en_sentence": "I invite my friends to my birthday party.",
-        "zh_sentence": "我邀請朋友來參加我的生日派對。",
-        "category": "動作動詞"
-      },
-      {
-        "word": "visit",
-        "zh": "拜訪；參觀",
-        "en_sentence": "We visit the museum on Saturday.",
-        "zh_sentence": "我們星期六去參觀博物館。",
-        "category": "動作動詞"
-      },
-      {
-        "word": "prepare",
-        "zh": "準備",
-        "en_sentence": "Please prepare your workbook before class.",
-        "zh_sentence": "上課前請準備好你的作業本。",
-        "category": "動作動詞"
-      },
-      {
-        "word": "mop",
-        "zh": "拖(地)；拖把",
-        "en_sentence": "She uses a mop to clean the floor.",
-        "zh_sentence": "她用拖把拖地。",
-        "category": "動作動詞"
-      },
-      {
-        "word": "send",
-        "zh": "寄",
-        "en_sentence": "I send a letter to my grandmother.",
-        "zh_sentence": "我寄信給我的奶奶。",
-        "category": "動作動詞"
-      },
-      {
-        "word": "could",
-        "zh": "can的過去式",
-        "en_sentence": "When I was young, I could run very fast.",
-        "zh_sentence": "我年輕時能跑得很快。",
-        "category": "助動詞"
-      },
-      {
-        "word": "still",
-        "zh": "仍然",
-        "en_sentence": "He is still sleeping at eight o'clock.",
-        "zh_sentence": "他在八點仍然在睡覺。",
-        "category": "時間頻率"
-      }
-    ];
+   // ===== 題庫資料（第二批單字） =====
+const VOCAB_DATA = [
+  { word: "hotel", zh: "旅館", en_sentence: "We stayed at a nice hotel near the beach.", zh_sentence: "我們住在海邊附近的一家不錯的旅館。" },
+  { word: "season", zh: "季節", en_sentence: "Spring is my favorite season.", zh_sentence: "春天是我最喜歡的季節。" },
+  { word: "high", zh: "高的", en_sentence: "That mountain is very high.", zh_sentence: "那座山很高。" },
+  { word: "autumn", zh: "秋天", en_sentence: "The leaves turn yellow in autumn.", zh_sentence: "秋天時樹葉會變黃。" },
+  { word: "snow", zh: "雪", en_sentence: "It may snow tomorrow.", zh_sentence: "明天可能會下雪。" },
+  { word: "snowman", zh: "雪人", en_sentence: "The children made a snowman in the yard.", zh_sentence: "孩子們在院子裡堆雪人。" },
+  { word: "plan", zh: "計畫", en_sentence: "I have a plan to travel next summer.", zh_sentence: "我計畫明年夏天去旅行。" },
+  { word: "date", zh: "日期", en_sentence: "What is the date today?", zh_sentence: "今天是幾號？" },
+  { word: "Father's Day", zh: "父親節", en_sentence: "We give gifts on Father's Day.", zh_sentence: "我們在父親節送禮物。" },
+  { word: "USA", zh: "美國", en_sentence: "My cousin lives in the USA.", zh_sentence: "我的表弟住在美國。" },
+  { word: "photo", zh: "照片", en_sentence: "She took a photo of the sunset.", zh_sentence: "她拍了一張日落的照片。" },
+  { word: "mind", zh: "心智；介意", en_sentence: "Do you mind if I open the window?", zh_sentence: "你介意我開窗嗎？" },
+  { word: "work", zh: "工作；作品", en_sentence: "He goes to work by bus every day.", zh_sentence: "他每天搭公車上班。" },
+  { word: "exercise", zh: "運動", en_sentence: "We should exercise every morning.", zh_sentence: "我們應該每天早上運動。" },
+  { word: "turtle", zh: "烏龜", en_sentence: "The turtle moves slowly.", zh_sentence: "烏龜動得很慢。" },
+  { word: "practice", zh: "練習", en_sentence: "You need to practice speaking English.", zh_sentence: "你需要練習說英語。" },
+  { word: "race", zh: "比賽；賽跑", en_sentence: "He joined the 100-meter race.", zh_sentence: "他參加了一百公尺賽跑。" },
+  { word: "team", zh: "隊伍", en_sentence: "Our basketball team won the game.", zh_sentence: "我們的籃球隊贏了比賽。" },
+  { word: "problem", zh: "問題", en_sentence: "I have a problem with my computer.", zh_sentence: "我的電腦有問題。" },
+  { word: "toe", zh: "腳趾", en_sentence: "I hurt my toe while running.", zh_sentence: "我跑步時扭傷了腳趾。" },
+  { word: "kind", zh: "種類；親切的", en_sentence: "She is a kind person.", zh_sentence: "她是一個親切的人。" },
+  { word: "violin", zh: "小提琴", en_sentence: "He plays the violin beautifully.", zh_sentence: "他的小提琴拉得很動聽。" },
+  { word: "flute", zh: "長笛", en_sentence: "She can play the flute well.", zh_sentence: "她長笛吹得很好。" },
+  { word: "special", zh: "特別的", en_sentence: "Today is a special day for us.", zh_sentence: "今天對我們來說是特別的一天。" },
+  { word: "afraid", zh: "害怕的", en_sentence: "She is afraid of snakes.", zh_sentence: "她害怕蛇。" },
+  { word: "same", zh: "相同的", en_sentence: "We are in the same class.", zh_sentence: "我們在同一個班。" },
+  { word: "different", zh: "不同的", en_sentence: "Dogs and cats are different animals.", zh_sentence: "狗和貓是不同的動物。" },
+  { word: "snowy", zh: "下雪的", en_sentence: "It’s a snowy day today.", zh_sentence: "今天是個下雪天。" },
+  { word: "dry", zh: "乾的", en_sentence: "The clothes are dry now.", zh_sentence: "衣服現在乾了。" },
+  { word: "wet", zh: "濕的", en_sentence: "My shoes are wet from the rain.", zh_sentence: "我的鞋子被雨淋濕了。" },
+  { word: "popular", zh: "受歡迎的", en_sentence: "That singer is very popular.", zh_sentence: "那位歌手非常受歡迎。" },
+  { word: "dark", zh: "黑暗的", en_sentence: "It gets dark early in winter.", zh_sentence: "冬天天黑得很早。" },
+  { word: "know", zh: "知道；認識", en_sentence: "Do you know the answer?", zh_sentence: "你知道答案嗎？" },
+  { word: "keep", zh: "保持", en_sentence: "Please keep quiet in class.", zh_sentence: "上課時請保持安靜。" },
+  { word: "join", zh: "加入", en_sentence: "I want to join the music club.", zh_sentence: "我想加入音樂社。" },
+  { word: "throw", zh: "丟", en_sentence: "Throw the ball to me!", zh_sentence: "把球丟給我！" },
+  { word: "hit", zh: "打擊；碰撞", en_sentence: "He hit the ball very hard.", zh_sentence: "他用力打球。" },
+  { word: "enjoy", zh: "享受", en_sentence: "I enjoy listening to music.", zh_sentence: "我喜歡聽音樂。" },
+  { word: "bow", zh: "鞠躬；弓", en_sentence: "The actors bow at the end of the show.", zh_sentence: "演員在表演結束時鞠躬。" },
+  { word: "win", zh: "贏", en_sentence: "We will win the game together.", zh_sentence: "我們會一起贏得比賽。" }
+];
+
 
     // ===== 遊戲狀態變數 =====
     let gameState = {
@@ -1868,3 +1616,4 @@
   </script>
 </body>
 </html>
+
