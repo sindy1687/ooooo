@@ -617,266 +617,50 @@
     };
 
     // ===== 題庫資料 =====
-    const VOCAB_DATA = [
-      {
-        "word": "twice",
-        "zh": "兩次",
-        "en_sentence": "He has visited Japan twice.",
-        "zh_sentence": "他去過日本兩次。"
-      },
-      {
-        "word": "of",
-        "zh": "…的",
-        "en_sentence": "This is a photo of my family.",
-        "zh_sentence": "這是一張我家人的照片。"
-      },
-      {
-        "word": "place",
-        "zh": "住處；地方",
-        "en_sentence": "This park is a nice place to relax.",
-        "zh_sentence": "這個公園是個很棒的放鬆地方。"
-      },
-      {
-        "word": "road",
-        "zh": "道路",
-        "en_sentence": "The road to school is crowded in the morning.",
-        "zh_sentence": "早上上學的道路很擁擠。"
-      },
-      {
-        "word": "temple",
-        "zh": "寺廟",
-        "en_sentence": "We visit the temple during the festival.",
-        "zh_sentence": "我們在節日期間參觀寺廟。"
-      },
-      {
-        "word": "museum",
-        "zh": "博物館",
-        "en_sentence": "The museum has ancient artifacts.",
-        "zh_sentence": "博物館裡有古代文物。"
-      },
-      {
-        "word": "hotel",
-        "zh": "旅館；飯店",
-        "en_sentence": "We stay at a hotel near the beach.",
-        "zh_sentence": "我們住在海灘附近的飯店。"
-      },
-      {
-        "word": "season",
-        "zh": "季節",
-        "en_sentence": "Spring is my favorite season.",
-        "zh_sentence": "春天是我最喜歡的季節。"
-      },
-      {
-        "word": "high",
-        "zh": "高的",
-        "en_sentence": "That building is very high.",
-        "zh_sentence": "那棟建築物非常高。"
-      },
-      {
-        "word": "autumn",
-        "zh": "秋季；秋天",
-        "en_sentence": "Leaves change color in autumn.",
-        "zh_sentence": "葉子在秋天變色。"
-      },
-      {
-        "word": "snow",
-        "zh": "雪；下雪",
-        "en_sentence": "It may snow tomorrow.",
-        "zh_sentence": "明天可能會下雪。"
-      },
-      {
-        "word": "snowman",
-        "zh": "雪人",
-        "en_sentence": "We built a snowman in the yard.",
-        "zh_sentence": "我們在院子裡堆了雪人。"
-      },
-      {
-        "word": "plan",
-        "zh": "計畫",
-        "en_sentence": "I have a plan to study abroad next year.",
-        "zh_sentence": "我計畫明年出國留學。"
-      },
-      {
-        "word": "date",
-        "zh": "日期",
-        "en_sentence": "What is the date today?",
-        "zh_sentence": "今天的日期是什麼？"
-      },
-      {
-        "word": "Father's Day",
-        "zh": "父親節",
-        "en_sentence": "We give gifts on Father's Day.",
-        "zh_sentence": "我們在父親節送禮物。"
-      },
-      {
-        "word": "USA",
-        "zh": "美國",
-        "en_sentence": "He hopes to study in the USA.",
-        "zh_sentence": "他希望到美國念書。"
-      },
-      {
-        "word": "photo",
-        "zh": "照片",
-        "en_sentence": "She took a photo of the sunset.",
-        "zh_sentence": "她拍了一張日落的照片。"
-      },
-      {
-        "word": "mind",
-        "zh": "心智；介意",
-        "en_sentence": "Mind your manners at the dinner table.",
-        "zh_sentence": "在餐桌上要注意禮貌。"
-      },
-      {
-        "word": "work",
-        "zh": "作品；工作",
-        "en_sentence": "I finish my work before dinner.",
-        "zh_sentence": "我在晚餐前完成工作。"
-      },
-      {
-        "word": "exercise",
-        "zh": "運動",
-        "en_sentence": "We do exercise every morning.",
-        "zh_sentence": "我們每天早上做運動。"
-      },
-      {
-        "word": "turtle",
-        "zh": "海龜",
-        "en_sentence": "The turtle swims slowly in the pond.",
-        "zh_sentence": "海龜在池塘裡慢慢游泳。"
-      },
-      {
-        "word": "practice",
-        "zh": "練習",
-        "en_sentence": "Practice your piano every day.",
-        "zh_sentence": "每天練習彈鋼琴。"
-      },
-      {
-        "word": "race",
-        "zh": "競賽",
-        "en_sentence": "They will race in the school competition.",
-        "zh_sentence": "他們將參加學校的競賽。"
-      },
-      {
-        "word": "team",
-        "zh": "隊",
-        "en_sentence": "Our soccer team won the match.",
-        "zh_sentence": "我們的足球隊贏得了比賽。"
-      },
-      {
-        "word": "problem",
-        "zh": "問題；毛病",
-        "en_sentence": "I need help with this math problem.",
-        "zh_sentence": "我需要人幫我解這個數學問題。"
-      },
-      {
-        "word": "toe",
-        "zh": "腳趾",
-        "en_sentence": "I stubbed my toe on the chair.",
-        "zh_sentence": "我撞到椅子，腳趾很痛。"
-      },
-      {
-        "word": "kind",
-        "zh": "種類",
-        "en_sentence": "There are many kinds of flowers here.",
-        "zh_sentence": "這裡有很多種類的花。"
-      },
-      {
-        "word": "violin",
-        "zh": "小提琴",
-        "en_sentence": "She plays the violin beautifully.",
-        "zh_sentence": "她小提琴拉得很美。"
-      },
-      {
-        "word": "flute",
-        "zh": "長笛；橫笛",
-        "en_sentence": "He learns to play the flute at school.",
-        "zh_sentence": "他在學校學習吹長笛。"
-      },
-      {
-        "word": "special",
-        "zh": "特別的",
-        "en_sentence": "Today is a special day for us.",
-        "zh_sentence": "今天對我們來說是特別的一天。"
-      },
-      {
-        "word": "afraid",
-        "zh": "害怕的",
-        "en_sentence": "She is afraid of spiders.",
-        "zh_sentence": "她害怕蜘蛛。"
-      },
-      {
-        "word": "same",
-        "zh": "相同的",
-        "en_sentence": "We have the same shoes.",
-        "zh_sentence": "我們有相同的鞋子。"
-      },
-      {
-        "word": "different",
-        "zh": "不同的",
-        "en_sentence": "They like different kinds of music.",
-        "zh_sentence": "他們喜歡不同種類的音樂。"
-      },
-      {
-        "word": "snowy",
-        "zh": "下雪的",
-        "en_sentence": "It is snowy outside today.",
-        "zh_sentence": "今天外面正在下雪。"
-      },
-      {
-        "word": "dry",
-        "zh": "乾的；弄乾",
-        "en_sentence": "Hang your clothes to dry in the sun.",
-        "zh_sentence": "把衣服掛到太陽下曬乾。"
-      },
-      {
-        "word": "wet",
-        "zh": "濕的",
-        "en_sentence": "My shoes got wet in the rain.",
-        "zh_sentence": "我的鞋子在下雨時濕了。"
-      },
-      {
-        "word": "popular",
-        "zh": "受歡迎的",
-        "en_sentence": "That movie is very popular with students.",
-        "zh_sentence": "那部電影在學生間非常受歡迎。"
-      },
-      {
-        "word": "dark",
-        "zh": "暗的",
-        "en_sentence": "It gets dark early in winter.",
-        "zh_sentence": "冬天天黑得很早。"
-      },
-      {
-        "word": "know",
-        "zh": "知道；認識",
-        "en_sentence": "Do you know how to solve this?",
-        "zh_sentence": "你知道如何解決這個嗎？"
-      },
-      {
-        "word": "keep",
-        "zh": "保持；一直",
-        "en_sentence": "Please keep the room tidy.",
-        "zh_sentence": "請保持房間整潔。"
-      },
-      {
-        "word": "join",
-        "zh": "參加；加入",
-        "en_sentence": "I want to join the art club.",
-        "zh_sentence": "我想加入美術社團。"
-      },
-      {
-        "word": "throw",
-        "zh": "丟",
-        "en_sentence": "Throw the ball to me.",
-        "zh_sentence": "把球丟給我。"
-      },
-      {
-        "word": "hit",
-        "zh": "打擊；成功而風行一時的事物",
-        "en_sentence": "He can hit the baseball far.",
-        "zh_sentence": "他能把棒球打得很遠。"
-      }
-    ];
+  // ===== 題庫資料（已替換成你的字表） =====
+const VOCAB_DATA = [
+  { word: "pick", zh: "挑選", en_sentence: "Please pick a card from the deck.", zh_sentence: "請從牌堆中挑一張牌。" },
+  { word: "mean", zh: "意思是；刻薄的", en_sentence: "What do you mean by that?", zh_sentence: "你那句話是什麼意思？" },
+  { word: "first", zh: "第一", en_sentence: "I finished the race in first place.", zh_sentence: "我以第一名完成比賽。" },
+  { word: "second", zh: "第二", en_sentence: "She came in second in the contest.", zh_sentence: "她在比賽中拿到第二名。" },
+  { word: "third", zh: "第三", en_sentence: "This is my third try today.", zh_sentence: "這是我今天第三次嘗試。" },
+  { word: "money", zh: "錢", en_sentence: "I save money for a new bike.", zh_sentence: "我存錢想買一台新腳踏車。" },
+  { word: "Mother's Day", zh: "母親節", en_sentence: "We make a card on Mother's Day.", zh_sentence: "我們在母親節做卡片。" },
+  { word: "idea", zh: "主意；想法", en_sentence: "That is a great idea!", zh_sentence: "那是個很棒的點子！" },
+  { word: "because", zh: "因為", en_sentence: "I stayed home because it rained.", zh_sentence: "因為下雨，我待在家裡。" },
+  { word: "drawer", zh: "抽屜", en_sentence: "The keys are in the top drawer.", zh_sentence: "鑰匙在最上面的抽屜裡。" },
+  { word: "bath", zh: "洗澡", en_sentence: "The baby takes a bath every night.", zh_sentence: "寶寶每晚都洗澡。" },
+  { word: "cow", zh: "牛", en_sentence: "The cow is eating grass.", zh_sentence: "那頭牛正在吃草。" },
+  { word: "market", zh: "市場", en_sentence: "We buy fruit at the morning market.", zh_sentence: "我們在早市買水果。" },
+  { word: "expensive", zh: "昂貴的", en_sentence: "This watch is very expensive.", zh_sentence: "這支手錶很貴。" },
+  { word: "cheap", zh: "便宜的", en_sentence: "These pencils are cheap but useful.", zh_sentence: "這些鉛筆很便宜但很好用。" },
+  { word: "enough", zh: "足夠的", en_sentence: "I have enough time to finish it.", zh_sentence: "我有足夠的時間完成它。" },
+  { word: "all", zh: "全部", en_sentence: "All students must wear uniforms.", zh_sentence: "所有學生都必須穿制服。" },
+  { word: "poor", zh: "貧窮的；可憐的；差勁的", en_sentence: "He grew up in a poor village.", zh_sentence: "他在一個貧窮的村莊長大。" },
+  { word: "early", zh: "早的；提早", en_sentence: "I got up early this morning.", zh_sentence: "我今天一早就起床。" },
+  { word: "dirty", zh: "髒的", en_sentence: "Your shoes are dirty after the rain.", zh_sentence: "你的鞋子下雨後變髒了。" },
+  { word: "easy", zh: "容易的", en_sentence: "This puzzle is easy for me.", zh_sentence: "這個拼圖對我來說很容易。" },
+  { word: "hard", zh: "困難的；用力地；硬的", en_sentence: "The test is hard but fair.", zh_sentence: "考試很難但很公平。" },
+  { word: "busy", zh: "忙碌的", en_sentence: "Mom is busy cooking dinner.", zh_sentence: "媽媽正忙著煮晚餐。" },
+  { word: "free", zh: "有空的；免費的", en_sentence: "Are you free this afternoon?", zh_sentence: "你今天下午有空嗎？" },
+  { word: "need", zh: "需要", en_sentence: "I need help with my homework.", zh_sentence: "我的功課需要幫忙。" },
+  { word: "end", zh: "結束；末端", en_sentence: "The movie will end at nine.", zh_sentence: "電影在九點結束。" },
+  { word: "cost", zh: "花費", en_sentence: "How much does this book cost?", zh_sentence: "這本書要多少錢？" },
+  { word: "buy", zh: "買", en_sentence: "Let’s buy some bread.", zh_sentence: "我們去買些麵包吧。" },
+  { word: "put", zh: "放置", en_sentence: "Please put your bag on the chair.", zh_sentence: "請把你的包放在椅子上。" },
+  { word: "feed", zh: "餵養", en_sentence: "We feed the cow every morning.", zh_sentence: "我們每天早上餵牛。" },
+  { word: "hate", zh: "討厭", en_sentence: "I hate getting up late on school days.", zh_sentence: "我討厭上學日睡太晚。" },
+  { word: "sell", zh: "賣", en_sentence: "They sell vegetables at the market.", zh_sentence: "他們在市場賣蔬菜。" },
+  { word: "also", zh: "也", en_sentence: "She is smart and also kind.", zh_sentence: "她很聰明，也很善良。" },
+  { word: "once", zh: "一次；曾經", en_sentence: "I read this book once.", zh_sentence: "我讀過這本書一次。" },
+  { word: "twice", zh: "兩次", en_sentence: "He has visited Japan twice.", zh_sentence: "他去過日本兩次。" },
+  { word: "of", zh: "……的", en_sentence: "This is a photo of my family.", zh_sentence: "這是一張我家人的照片。" },
+  { word: "place", zh: "地方", en_sentence: "This park is a nice place to relax.", zh_sentence: "這個公園是放鬆的好地方。" },
+  { word: "road", zh: "道路", en_sentence: "Be careful when you cross the road.", zh_sentence: "過馬路時要小心。" },
+  { word: "temple", zh: "寺廟", en_sentence: "We visit the temple on weekends.", zh_sentence: "我們週末會去寺廟參拜。" },
+  { word: "museum", zh: "博物館", en_sentence: "The museum has ancient artifacts.", zh_sentence: "博物館裡有古代文物。" }
+];
+
 
     // ===== 遊戲狀態變數 =====
     let gameState = {
@@ -1443,3 +1227,4 @@
   </script>
 </body>
 </html>
+
