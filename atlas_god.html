@@ -730,435 +730,289 @@
     };
 
     // ===== 題庫資料 =====
-    const VOCAB_DATA = [
-      {
-        "word": "world",
-        "zh": "世界",
-        "en_sentence": "The world is very big.",
-        "zh_sentence": "世界很大。",
-        "category": "地理環境"
-      },
-      {
-        "word": "earth",
-        "zh": "地球",
-        "en_sentence": "We live on Earth.",
-        "zh_sentence": "我們住在地球上。",
-        "category": "地理環境"
-      },
-      {
-        "word": "sky",
-        "zh": "天空",
-        "en_sentence": "The sky is blue today.",
-        "zh_sentence": "今天天空是藍色的。",
-        "category": "地理環境"
-      },
-      {
-        "word": "mountain",
-        "zh": "山",
-        "en_sentence": "The mountain is very high.",
-        "zh_sentence": "這座山很高。",
-        "category": "地理環境"
-      },
-      {
-        "word": "ocean",
-        "zh": "海洋",
-        "en_sentence": "The ocean is deep.",
-        "zh_sentence": "海洋很深。",
-        "category": "地理環境"
-      },
-      {
-        "word": "river",
-        "zh": "河流",
-        "en_sentence": "The river flows to the sea.",
-        "zh_sentence": "河流流向大海。",
-        "category": "地理環境"
-      },
-      {
-        "word": "forest",
-        "zh": "森林",
-        "en_sentence": "Many animals live in the forest.",
-        "zh_sentence": "許多動物住在森林裡。",
-        "category": "地理環境"
-      },
-      {
-        "word": "desert",
-        "zh": "沙漠",
-        "en_sentence": "The desert is very hot.",
-        "zh_sentence": "沙漠很熱。",
-        "category": "地理環境"
-      },
-      {
-        "word": "island",
-        "zh": "島嶼",
-        "en_sentence": "The island is surrounded by water.",
-        "zh_sentence": "島嶼被水包圍。",
-        "category": "地理環境"
-      },
-      {
-        "word": "valley",
-        "zh": "山谷",
-        "en_sentence": "The valley is between two mountains.",
-        "zh_sentence": "山谷在兩座山之間。",
-        "category": "地理環境"
-      },
-      {
-        "word": "cave",
-        "zh": "洞穴",
-        "en_sentence": "Bears live in caves.",
-        "zh_sentence": "熊住在洞穴裡。",
-        "category": "地理環境"
-      },
-      {
-        "word": "cliff",
-        "zh": "懸崖",
-        "en_sentence": "The cliff is very steep.",
-        "zh_sentence": "懸崖很陡峭。",
-        "category": "地理環境"
-      },
-      {
-        "word": "beach",
-        "zh": "海灘",
-        "en_sentence": "We play on the beach.",
-        "zh_sentence": "我們在海灘上玩。",
-        "category": "地理環境"
-      },
-      {
-        "word": "lake",
-        "zh": "湖泊",
-        "en_sentence": "The lake is very clear.",
-        "zh_sentence": "湖泊很清澈。",
-        "category": "地理環境"
-      },
-      {
-        "word": "waterfall",
-        "zh": "瀑布",
-        "en_sentence": "The waterfall is beautiful.",
-        "zh_sentence": "瀑布很美。",
-        "category": "地理環境"
-      },
-      {
-        "word": "volcano",
-        "zh": "火山",
-        "en_sentence": "The volcano is active.",
-        "zh_sentence": "火山是活躍的。",
-        "category": "地理環境"
-      },
-      {
-        "word": "glacier",
-        "zh": "冰川",
-        "en_sentence": "The glacier is melting.",
-        "zh_sentence": "冰川正在融化。",
-        "category": "地理環境"
-      },
-      {
-        "word": "canyon",
-        "zh": "峽谷",
-        "en_sentence": "The canyon is very deep.",
-        "zh_sentence": "峽谷很深。",
-        "category": "地理環境"
-      },
-      {
-        "word": "plateau",
-        "zh": "高原",
-        "en_sentence": "The plateau is flat.",
-        "zh_sentence": "高原是平坦的。",
-        "category": "地理環境"
-      },
-      {
-        "word": "peninsula",
-        "zh": "半島",
-        "en_sentence": "The peninsula extends into the sea.",
-        "zh_sentence": "半島延伸到海中。",
-        "category": "地理環境"
-      },
-      {
-        "word": "archipelago",
-        "zh": "群島",
-        "en_sentence": "The archipelago has many islands.",
-        "zh_sentence": "群島有許多島嶼。",
-        "category": "地理環境"
-      },
-      {
-        "word": "continent",
-        "zh": "大陸",
-        "en_sentence": "Asia is the largest continent.",
-        "zh_sentence": "亞洲是最大的大陸。",
-        "category": "地理環境"
-      },
-      {
-        "word": "country",
-        "zh": "國家",
-        "en_sentence": "Taiwan is a beautiful country.",
-        "zh_sentence": "台灣是一個美麗的國家。",
-        "category": "地理環境"
-      },
-      {
-        "word": "city",
-        "zh": "城市",
-        "en_sentence": "Taipei is a big city.",
-        "zh_sentence": "台北是一個大城市。",
-        "category": "地理環境"
-      },
-      {
-        "word": "village",
-        "zh": "村莊",
-        "en_sentence": "The village is very quiet.",
-        "zh_sentence": "村莊很安靜。",
-        "category": "地理環境"
-      },
-      {
-        "word": "town",
-        "zh": "城鎮",
-        "en_sentence": "The town has a library.",
-        "zh_sentence": "城鎮有一間圖書館。",
-        "category": "地理環境"
-      },
-      {
-        "word": "capital",
-        "zh": "首都",
-        "en_sentence": "Taipei is the capital of Taiwan.",
-        "zh_sentence": "台北是台灣的首都。",
-        "category": "地理環境"
-      },
-      {
-        "word": "border",
-        "zh": "邊界",
-        "en_sentence": "The border separates two countries.",
-        "zh_sentence": "邊界分隔兩個國家。",
-        "category": "地理環境"
-      },
-      {
-        "word": "coast",
-        "zh": "海岸",
-        "en_sentence": "The coast is very long.",
-        "zh_sentence": "海岸很長。",
-        "category": "地理環境"
-      },
-      {
-        "word": "shore",
-        "zh": "岸邊",
-        "en_sentence": "We walk along the shore.",
-        "zh_sentence": "我們沿著岸邊走。",
-        "category": "地理環境"
-      },
-      {
-        "word": "bay",
-        "zh": "海灣",
-        "en_sentence": "The bay is very calm.",
-        "zh_sentence": "海灣很平靜。",
-        "category": "地理環境"
-      },
-      {
-        "word": "gulf",
-        "zh": "海灣",
-        "en_sentence": "The gulf is very wide.",
-        "zh_sentence": "海灣很寬。",
-        "category": "地理環境"
-      },
-      {
-        "word": "strait",
-        "zh": "海峽",
-        "en_sentence": "The strait connects two seas.",
-        "zh_sentence": "海峽連接兩個海洋。",
-        "category": "地理環境"
-      },
-      {
-        "word": "channel",
-        "zh": "海峽；頻道",
-        "en_sentence": "The channel is very deep.",
-        "zh_sentence": "海峽很深。",
-        "category": "地理環境"
-      },
-      {
-        "word": "current",
-        "zh": "洋流",
-        "en_sentence": "The current is very strong.",
-        "zh_sentence": "洋流很強。",
-        "category": "地理環境"
-      },
-      {
-        "word": "tide",
-        "zh": "潮汐",
-        "en_sentence": "The tide is high now.",
-        "zh_sentence": "現在潮汐很高。",
-        "category": "地理環境"
-      },
-      {
-        "word": "wave",
-        "zh": "波浪",
-        "en_sentence": "The waves are very big.",
-        "zh_sentence": "波浪很大。",
-        "category": "地理環境"
-      },
-      {
-        "word": "storm",
-        "zh": "暴風雨",
-        "en_sentence": "The storm is coming.",
-        "zh_sentence": "暴風雨要來了。",
-        "category": "地理環境"
-      },
-      {
-        "word": "hurricane",
-        "zh": "颶風",
-        "en_sentence": "The hurricane is very dangerous.",
-        "zh_sentence": "颶風很危險。",
-        "category": "地理環境"
-      },
-      {
-        "word": "tornado",
-        "zh": "龍捲風",
-        "en_sentence": "The tornado is very powerful.",
-        "zh_sentence": "龍捲風很強大。",
-        "category": "地理環境"
-      },
-      {
-        "word": "earthquake",
-        "zh": "地震",
-        "en_sentence": "The earthquake is very strong.",
-        "zh_sentence": "地震很強。",
-        "category": "地理環境"
-      },
-      {
-        "word": "tsunami",
-        "zh": "海嘯",
-        "en_sentence": "The tsunami is very destructive.",
-        "zh_sentence": "海嘯很有破壞性。",
-        "category": "地理環境"
-      },
-      {
-        "word": "climate",
-        "zh": "氣候",
-        "en_sentence": "The climate is changing.",
-        "zh_sentence": "氣候正在改變。",
-        "category": "地理環境"
-      },
-      {
-        "word": "weather",
-        "zh": "天氣",
-        "en_sentence": "The weather is nice today.",
-        "zh_sentence": "今天天氣很好。",
-        "category": "地理環境"
-      },
-      {
-        "word": "temperature",
-        "zh": "溫度",
-        "en_sentence": "The temperature is high.",
-        "zh_sentence": "溫度很高。",
-        "category": "地理環境"
-      },
-      {
-        "word": "pressure",
-        "zh": "壓力",
-        "en_sentence": "The pressure is very high.",
-        "zh_sentence": "壓力很高。",
-        "category": "地理環境"
-      },
-      {
-        "word": "gravity",
-        "zh": "重力",
-        "en_sentence": "Gravity keeps us on Earth.",
-        "zh_sentence": "重力讓我們留在地球上。",
-        "category": "地理環境"
-      },
-      {
-        "word": "atmosphere",
-        "zh": "大氣層",
-        "en_sentence": "The atmosphere protects Earth.",
-        "zh_sentence": "大氣層保護地球。",
-        "category": "地理環境"
-      },
-      {
-        "word": "orbit",
-        "zh": "軌道",
-        "en_sentence": "The Earth orbits the Sun.",
-        "zh_sentence": "地球繞太陽運行。",
-        "category": "地理環境"
-      },
-      {
-        "word": "universe",
-        "zh": "宇宙",
-        "en_sentence": "The universe is very big.",
-        "zh_sentence": "宇宙很大。",
-        "category": "地理環境"
-      },
-      {
-        "word": "galaxy",
-        "zh": "星系",
-        "en_sentence": "Our galaxy is the Milky Way.",
-        "zh_sentence": "我們的星系是銀河系。",
-        "category": "地理環境"
-      },
-      {
-        "word": "planet",
-        "zh": "行星",
-        "en_sentence": "Earth is a planet.",
-        "zh_sentence": "地球是一顆行星。",
-        "category": "地理環境"
-      },
-      {
-        "word": "star",
-        "zh": "星星",
-        "en_sentence": "The stars are very bright.",
-        "zh_sentence": "星星很亮。",
-        "category": "地理環境"
-      },
-      {
-        "word": "moon",
-        "zh": "月亮",
-        "en_sentence": "The moon is full tonight.",
-        "zh_sentence": "今晚月亮是滿月。",
-        "category": "地理環境"
-      },
-      {
-        "word": "sun",
-        "zh": "太陽",
-        "en_sentence": "The sun is very hot.",
-        "zh_sentence": "太陽很熱。",
-        "category": "地理環境"
-      },
-      {
-        "word": "comet",
-        "zh": "彗星",
-        "en_sentence": "The comet is very beautiful.",
-        "zh_sentence": "彗星很美。",
-        "category": "地理環境"
-      },
-      {
-        "word": "meteor",
-        "zh": "流星",
-        "en_sentence": "The meteor is very fast.",
-        "zh_sentence": "流星很快。",
-        "category": "地理環境"
-      },
-      {
-        "word": "satellite",
-        "zh": "衛星",
-        "en_sentence": "The satellite orbits Earth.",
-        "zh_sentence": "衛星繞地球運行。",
-        "category": "地理環境"
-      },
-      {
-        "word": "telescope",
-        "zh": "望遠鏡",
-        "en_sentence": "Use the telescope to see stars.",
-        "zh_sentence": "用望遠鏡看星星。",
-        "category": "地理環境"
-      },
-      {
-        "word": "space",
-        "zh": "太空",
-        "en_sentence": "Astronauts travel in space.",
-        "zh_sentence": "太空人在太空中旅行。",
-        "category": "地理環境"
-      },
-      {
-        "word": "cosmos",
-        "zh": "宇宙",
-        "en_sentence": "The cosmos is infinite.",
-        "zh_sentence": "宇宙是無限的。",
-        "category": "地理環境"
-      }
-    ];
+   // ===== 題庫資料 (已更新為新的單字列表 P217 並增加分類) =====
+const VOCAB_DATA = [
+    {
+        "word": "dumpling",
+        "zh": "餃子",
+        "en_sentence": "We ate thirty boiled dumplings for dinner.",
+        "zh_sentence": "我們晚餐吃了三十個水煮餃子。",
+        "category": "食物/名詞"
+    },
+    {
+        "word": "note",
+        "zh": "筆記；紙條；音符",
+        "en_sentence": "I took many notes during the lecture.",
+        "zh_sentence": "我在演講中做了很多筆記。",
+        "category": "名詞/資訊"
+    },
+    {
+        "word": "line",
+        "zh": "線；隊伍",
+        "en_sentence": "Please stand in a straight line.",
+        "zh_sentence": "請排成一條直線。",
+        "category": "名詞/形狀"
+    },
+    {
+        "word": "voice",
+        "zh": "聲音；嗓音",
+        "en_sentence": "She has a beautiful singing voice.",
+        "zh_sentence": "她有美麗的歌聲。",
+        "category": "名詞/感官"
+    },
+    {
+        "word": "wake",
+        "zh": "醒來；喚醒",
+        "en_sentence": "I usually wake up early in the morning.",
+        "zh_sentence": "我通常在早上很早醒來。",
+        "category": "動詞/動作"
+    },
+    {
+        "word": "screen",
+        "zh": "螢幕；紗窗",
+        "en_sentence": "The movie was shown on a very large screen.",
+        "zh_sentence": "電影在一個非常大的螢幕上放映。",
+        "category": "物品/名詞"
+    },
+    {
+        "word": "puppy",
+        "zh": "小狗",
+        "en_sentence": "The children love to play with their new puppy.",
+        "zh_sentence": "孩子們喜歡和他們的新小狗玩耍。",
+        "category": "動物/名詞"
+    },
+    {
+        "word": "lid",
+        "zh": "蓋子",
+        "en_sentence": "Put the lid back on the jar after you use it.",
+        "zh_sentence": "用完罐子後請把蓋子蓋回去。",
+        "category": "物品/名詞"
+    },
+    {
+        "word": "cage",
+        "zh": "籠子",
+        "en_sentence": "The bird lives in a small wooden cage.",
+        "zh_sentence": "這隻鳥住在一個小的木製籠子裡。",
+        "category": "物品/名詞"
+    },
+    {
+        "word": "sight",
+        "zh": "視力；景象",
+        "en_sentence": "The mountain view was an incredible sight.",
+        "zh_sentence": "這山景是一個令人難以置信的景象。",
+        "category": "名詞/感官"
+    },
+    {
+        "word": "secretary",
+        "zh": "秘書",
+        "en_sentence": "The secretary manages the office schedule.",
+        "zh_sentence": "這位秘書管理辦公室的行程。",
+        "category": "人/職業"
+    },
+    {
+        "word": "list",
+        "zh": "清單",
+        "en_sentence": "I wrote a shopping list before going to the market.",
+        "zh_sentence": "我去市場前寫了一張購物清單。",
+        "category": "名詞/資訊"
+    },
+    {
+        "word": "pair",
+        "zh": "一對；一副",
+        "en_sentence": "I need a new pair of running shoes.",
+        "zh_sentence": "我需要一雙新的跑鞋。",
+        "category": "名詞/量詞"
+    },
+    {
+        "word": "pin",
+        "zh": "大頭針；別針",
+        "en_sentence": "She used a safety pin to hold the fabric together.",
+        "zh_sentence": "她用了一個安全別針將布料固定在一起。",
+        "category": "物品/名詞"
+    },
+    {
+        "word": "pipe",
+        "zh": "管子；煙斗",
+        "en_sentence": "The broken water pipe caused a flood in the basement.",
+        "zh_sentence": "破裂的水管導致地下室淹水。",
+        "category": "物品/名詞"
+    },
+    {
+        "word": "medium",
+        "zh": "中等的",
+        "en_sentence": "I usually wear a medium size shirt.",
+        "zh_sentence": "我通常穿中等尺碼的襯衫。",
+        "category": "形容詞"
+    },
+    {
+        "word": "married",
+        "zh": "已婚的",
+        "en_sentence": "They have been married for over twenty years.",
+        "zh_sentence": "他們結婚已經超過二十年了。",
+        "category": "形容詞/狀態"
+    },
+    {
+        "word": "modern",
+        "zh": "現代的",
+        "en_sentence": "The museum exhibits modern art.",
+        "zh_sentence": "這座博物館展出的是現代藝術。",
+        "category": "形容詞"
+    },
+    {
+        "word": "foreign",
+        "zh": "外國的",
+        "en_sentence": "Learning a foreign language is a challenge.",
+        "zh_sentence": "學習一門外語是一個挑戰。",
+        "category": "形容詞"
+    },
+    {
+        "word": "national",
+        "zh": "國家的",
+        "en_sentence": "The national park attracts many tourists.",
+        "zh_sentence": "這座國家公園吸引了許多遊客。",
+        "category": "形容詞"
+    },
+    {
+        "word": "few",
+        "zh": "很少的 (可數)",
+        "en_sentence": "There are only a few chairs left in the room.",
+        "zh_sentence": "房間裡只剩下幾張椅子。",
+        "category": "量詞/形容詞"
+    },
+    {
+        "word": "useful",
+        "zh": "有用的",
+        "en_sentence": "This dictionary is very useful for students.",
+        "zh_sentence": "這本字典對學生來說非常有用。",
+        "category": "形容詞"
+    },
+    {
+        "word": "helpful",
+        "zh": "有幫助的",
+        "en_sentence": "The librarian was very helpful in finding the book.",
+        "zh_sentence": "圖書館員在尋找這本書方面提供了很大的幫助。",
+        "category": "形容詞"
+    },
+    {
+        "word": "least",
+        "zh": "最少的；最不",
+        "en_sentence": "He ate the least amount of food.",
+        "zh_sentence": "他吃了最少的食物。",
+        "category": "量詞/副詞"
+    },
+    {
+        "word": "blind",
+        "zh": "瞎的；盲的",
+        "en_sentence": "The blind man uses a white cane to walk.",
+        "zh_sentence": "那位盲人使用白色手杖走路。",
+        "category": "形容詞"
+    },
+    {
+        "word": "tidy",
+        "zh": "整潔的；整理",
+        "en_sentence": "Please keep your desk tidy and organized.",
+        "zh_sentence": "請保持你的桌子整潔且有條理。",
+        "category": "形容詞/動詞"
+    },
+    {
+        "word": "believe",
+        "zh": "相信",
+        "en_sentence": "I believe that everything will be fine.",
+        "zh_sentence": "我相信一切都會好起來的。",
+        "category": "動詞/心理"
+    },
+    {
+        "word": "celebrate",
+        "zh": "慶祝",
+        "en_sentence": "We will celebrate her birthday with a big party.",
+        "zh_sentence": "我們將用一個盛大的派對來慶祝她的生日。",
+        "category": "動詞/動作"
+    },
+    {
+        "word": "laugh",
+        "zh": "笑",
+        "en_sentence": "The funny movie made everyone laugh.",
+        "zh_sentence": "這部有趣的電影讓每個人都笑了。",
+        "category": "動詞/動作"
+    },
+    {
+        "word": "lead",
+        "zh": "領導；帶領",
+        "en_sentence": "He was chosen to lead the discussion group.",
+        "zh_sentence": "他被選中領導這個討論小組。",
+        "category": "動詞/動作"
+    },
+    {
+        "word": "playground",
+        "zh": "操場；遊樂場",
+        "en_sentence": "The children love playing on the school playground.",
+        "zh_sentence": "孩子們喜歡在學校操場玩耍。",
+        "category": "地點/場所"
+    },
+    {
+        "word": "set",
+        "zh": "設置；一套",
+        "en_sentence": "Please set the table for dinner.",
+        "zh_sentence": "請擺好餐桌準備晚餐。",
+        "category": "動詞/名詞"
+    },
+    {
+        "word": "bite",
+        "zh": "咬",
+        "en_sentence": "The dog did not bite the mailman.",
+        "zh_sentence": "這隻狗沒有咬郵差。",
+        "category": "動詞/動作"
+    },
+    {
+        "word": "die",
+        "zh": "死亡",
+        "en_sentence": "The small plant started to die from lack of water.",
+        "zh_sentence": "這棵小植物因為缺水開始死亡。",
+        "category": "動詞/狀態"
+    },
+    {
+        "word": "somewhere",
+        "zh": "某處",
+        "en_sentence": "I left my keys somewhere in the office.",
+        "zh_sentence": "我把鑰匙忘在辦公室的某個地方了。",
+        "category": "副詞/地點"
+    },
+    {
+        "word": "abroad",
+        "zh": "在國外",
+        "en_sentence": "She plans to study abroad next year.",
+        "zh_sentence": "她計畫明年出國讀書。",
+        "category": "副詞/地點"
+    },
+    {
+        "word": "beside",
+        "zh": "在...旁邊",
+        "en_sentence": "The dog sat quietly beside its owner.",
+        "zh_sentence": "這隻狗安靜地坐在牠的主人旁邊。",
+        "category": "介系詞"
+    },
+    {
+        "word": "example",
+        "zh": "例子；榜樣",
+        "en_sentence": "For example, you can use these sentences.",
+        "zh_sentence": "舉例來說，你可以使用這些句子。",
+        "category": "名詞/抽象"
+    },
+    {
+        "word": "knowledge",
+        "zh": "知識",
+        "en_sentence": "Reading books helps you gain knowledge.",
+        "zh_sentence": "閱讀書籍有助於你獲取知識。",
+        "category": "名詞/抽象"
+    },
+    {
+        "word": "matter",
+        "zh": "事情；重要",
+        "en_sentence": "What is the matter? You look worried.",
+        "zh_sentence": "怎麼了？你看起來很擔心。",
+        "category": "名詞/動詞"
+    }
+];
 
     // ===== 遊戲狀態變數 =====
     let gameState = {
