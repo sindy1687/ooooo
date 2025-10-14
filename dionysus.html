@@ -1059,49 +1059,289 @@
     };
 
     // ===== 題庫資料 =====
-    const VOCAB_DATA = [
-      {"word": "chalk", "zh": "粉筆", "en_sentence": "Write on the board with chalk.", "zh_sentence": "用粉筆在黑板上寫字。"},
-      {"word": "newspaper", "zh": "報紙", "en_sentence": "He reads the newspaper every morning.", "zh_sentence": "他每天早上看報紙。"},
-      {"word": "glue", "zh": "膠水", "en_sentence": "Use glue to stick the pieces together.", "zh_sentence": "用膠水把零件黏在一起。"},
-      {"word": "hurry", "zh": "匆忙；趕快", "en_sentence": "Hurry up or we will be late.", "zh_sentence": "快一點，否則我們會遲到。"},
-      {"word": "hobby", "zh": "嗜好", "en_sentence": "My hobby is drawing.", "zh_sentence": "我的嗜好是畫畫。"},
-      {"word": "across", "zh": "橫越；穿過", "en_sentence": "We walk across the bridge.", "zh_sentence": "我們穿過那座橋。"},
-      {"word": "vest", "zh": "背心", "en_sentence": "He wears a vest in winter.", "zh_sentence": "冬天他穿背心。"},
-      {"word": "interest", "zh": "興趣", "en_sentence": "I have an interest in science.", "zh_sentence": "我對科學有興趣。"},
-      {"word": "interested", "zh": "感興趣的", "en_sentence": "She is interested in learning English.", "zh_sentence": "她對學英語感興趣。"},
-      {"word": "pleasure", "zh": "快樂；喜悅", "en_sentence": "It is a pleasure to meet you.", "zh_sentence": "很高興見到你。"},
-      {"word": "business", "zh": "事業", "en_sentence": "He works in his family's business.", "zh_sentence": "他在家族事業工作。"},
-      {"word": "salt", "zh": "鹽", "en_sentence": "Add a pinch of salt to the soup.", "zh_sentence": "在湯裡加一小撮鹽。"},
-      {"word": "popcorn", "zh": "爆米花", "en_sentence": "We eat popcorn at the movie theater.", "zh_sentence": "我們在電影院吃爆米花。"},
-      {"word": "bakery", "zh": "麵包店", "en_sentence": "The bakery near my house sells fresh bread.", "zh_sentence": "我家附近的麵包店賣新鮮麵包。"},
-      {"word": "public", "zh": "公眾；公共的", "en_sentence": "This is a public park.", "zh_sentence": "這是一個公共公園。"},
-      {"word": "truck", "zh": "卡車", "en_sentence": "A truck delivers goods to the store.", "zh_sentence": "卡車把貨物運到商店。"},
-      {"word": "apartment", "zh": "公寓", "en_sentence": "She lives in an apartment building.", "zh_sentence": "她住在一棟公寓大樓裡。"},
-      {"word": "heat", "zh": "高溫；加熱", "en_sentence": "The heat in summer is uncomfortable.", "zh_sentence": "夏天的高溫令人不舒服。"},
-      {"word": "boss", "zh": "老闆；上司", "en_sentence": "Her boss praised her work.", "zh_sentence": "她的老闆讚揚了她的工作。"},
-      {"word": "stranger", "zh": "陌生人", "en_sentence": "Don't talk to strangers.", "zh_sentence": "不要和陌生人說話。"},
-      {"word": "meeting", "zh": "會議", "en_sentence": "We have a meeting every Monday.", "zh_sentence": "我們每個星期一都開會。"},
-      {"word": "nod", "zh": "點頭", "en_sentence": "She gave me a nod to say hello.", "zh_sentence": "她向我點頭打招呼。"},
-      {"word": "born", "zh": "出生的；天生的", "en_sentence": "He was born in 2008.", "zh_sentence": "他出生於2008年。"},
-      {"word": "stupid", "zh": "愚笨的", "en_sentence": "That was a stupid mistake.", "zh_sentence": "那是一個愚笨的錯誤。"},
-      {"word": "polite", "zh": "有禮貌的", "en_sentence": "Be polite to your teachers.", "zh_sentence": "對老師要有禮貌。"},
-      {"word": "less", "zh": "較少的", "en_sentence": "We have less homework today.", "zh_sentence": "我們今天的作業比較少。"},
-      {"word": "possible", "zh": "可能的", "en_sentence": "Is it possible to finish early?", "zh_sentence": "有可能提前完成嗎？"},
-      {"word": "rich", "zh": "富有的；豐富的", "en_sentence": "The rich man donated money to charity.", "zh_sentence": "那位富有的人向慈善機構捐款。"},
-      {"word": "brown", "zh": "棕色(的)", "en_sentence": "I have a brown backpack.", "zh_sentence": "我有一個棕色的書包。"},
-      {"word": "honest", "zh": "誠實的", "en_sentence": "Be honest with your friends.", "zh_sentence": "對朋友要誠實。"},
-      {"word": "bake", "zh": "烘焙", "en_sentence": "My mom will bake a cake for my birthday.", "zh_sentence": "我媽媽會為我的生日烘焙蛋糕。"},
-      {"word": "attack", "zh": "攻擊", "en_sentence": "The cat tried to attack the mouse.", "zh_sentence": "那隻貓想攻擊那隻老鼠。"},
-      {"word": "lend", "zh": "借出", "en_sentence": "Can you lend me your pencil?", "zh_sentence": "你能借我你的鉛筆嗎？"},
-      {"word": "screen", "zh": "螢幕", "en_sentence": "The teacher shows the video on the screen.", "zh_sentence": "老師在螢幕上播放影片。"},
-      {"word": "puppy", "zh": "幼犬", "en_sentence": "The puppy plays with a ball in the yard.", "zh_sentence": "幼犬在院子裡玩球。"},
-      {"word": "lid", "zh": "蓋子", "en_sentence": "Put the lid on the jar after you finish.", "zh_sentence": "用完後把蓋子蓋上罐子。"},
-      {"word": "cage", "zh": "籠子", "en_sentence": "The bird sings in its cage every morning.", "zh_sentence": "那隻鳥每天早上在籠子裡唱歌。"},
-      {"word": "sight", "zh": "視力；景象", "en_sentence": "The mountain view is a beautiful sight.", "zh_sentence": "那座山的景象非常美麗。"},
-      {"word": "secretary", "zh": "秘書", "en_sentence": "The secretary answers phone calls at the office.", "zh_sentence": "秘書在辦公室接電話。"},
-      {"word": "list", "zh": "清單", "en_sentence": "Write a list of things you need to buy.", "zh_sentence": "寫一張你需要購買物品的清單。"},
-      {"word": "pair", "zh": "一雙；一對", "en_sentence": "I bought a new pair of shoes today.", "zh_sentence": "我今天買了一雙新鞋。"}
-    ];
+   // ===== 題庫資料 (已更新為新的單字列表 P145 並增加分類) =====
+const VOCAB_DATA = [
+    {
+        "word": "chance",
+        "zh": "機會；可能性",
+        "en_sentence": "Everyone deserves a second chance.",
+        "zh_sentence": "每個人都值得第二次機會。",
+        "category": "抽象名詞"
+    },
+    {
+        "word": "prize",
+        "zh": "獎品；獎金",
+        "en_sentence": "The first prize in the competition was a new laptop.",
+        "zh_sentence": "比賽的第一個獎品是一台新筆電。",
+        "category": "物品/名詞"
+    },
+    {
+        "word": "moment",
+        "zh": "片刻；瞬間",
+        "en_sentence": "Please wait for a moment, I'll be right back.",
+        "zh_sentence": "請等一下，我馬上回來。",
+        "category": "時間/名詞"
+    },
+    {
+        "word": "giant",
+        "zh": "巨人；巨大的",
+        "en_sentence": "The children were amazed by the giant dinosaur model.",
+        "zh_sentence": "孩子們對那個巨大的恐龍模型感到驚訝。",
+        "category": "名詞/形容詞"
+    },
+    {
+        "word": "mile",
+        "zh": "英里 (距離單位)",
+        "en_sentence": "We walked about a mile to the nearest bus stop.",
+        "zh_sentence": "我們走了大約一英里到最近的公車站。",
+        "category": "量詞/名詞"
+    },
+    {
+        "word": "mad",
+        "zh": "瘋狂的；生氣的",
+        "en_sentence": "He was mad when he found his bike was missing.",
+        "zh_sentence": "當他發現他的腳踏車不見了，他很生氣。",
+        "category": "形容詞/情緒"
+    },
+    {
+        "word": "lonely",
+        "zh": "孤單的",
+        "en_sentence": "The old dog seemed lonely without its owner.",
+        "zh_sentence": "那隻老狗沒有主人陪伴顯得很孤單。",
+        "category": "形容詞/情緒"
+    },
+    {
+        "word": "unhappy",
+        "zh": "不開心的",
+        "en_sentence": "He was unhappy with the results of the game.",
+        "zh_sentence": "他對比賽結果不開心。",
+        "category": "形容詞/情緒"
+    },
+    {
+        "word": "shy",
+        "zh": "害羞的",
+        "en_sentence": "The little girl is too shy to speak in public.",
+        "zh_sentence": "那個小女孩太害羞了，不敢公開講話。",
+        "category": "形容詞/特質"
+    },
+    {
+        "word": "ice",
+        "zh": "冰",
+        "en_sentence": "I like to put ice in my cola on a hot day.",
+        "zh_sentence": "在炎熱的一天，我喜歡在可樂裡放冰塊。",
+        "category": "食物/自然"
+    },
+    {
+        "word": "loud",
+        "zh": "大聲的；吵鬧的",
+        "en_sentence": "The music in the club was too loud.",
+        "zh_sentence": "俱樂部裡的音樂太吵了。",
+        "category": "形容詞"
+    },
+    {
+        "word": "strange",
+        "zh": "奇怪的；陌生的",
+        "en_sentence": "I heard a strange noise from the basement.",
+        "zh_sentence": "我聽到地下室傳來一個奇怪的聲音。",
+        "category": "形容詞"
+    },
+    {
+        "word": "both",
+        "zh": "兩者都",
+        "en_sentence": "Both his parents work at the university.",
+        "zh_sentence": "他的父母都在大學工作。",
+        "category": "代名詞/限定詞"
+    },
+    {
+        "word": "bright",
+        "zh": "明亮的；聰明的",
+        "en_sentence": "The sun is very bright this morning.",
+        "zh_sentence": "今天早上的太陽非常明亮。",
+        "category": "形容詞"
+    },
+    {
+        "word": "convenient",
+        "zh": "方便的",
+        "en_sentence": "It is convenient to travel by subway in the city.",
+        "zh_sentence": "在城市裡搭乘地鐵很方便。",
+        "category": "形容詞"
+    },
+    {
+        "word": "fix",
+        "zh": "修理；固定",
+        "en_sentence": "Can you fix my broken chair?",
+        "zh_sentence": "你能修理我壞掉的椅子嗎？",
+        "category": "動詞/動作"
+    },
+    {
+        "word": "choose",
+        "zh": "選擇",
+        "en_sentence": "You must choose between the two options.",
+        "zh_sentence": "你必須在兩個選項中做出選擇。",
+        "category": "動詞/動作"
+    },
+    {
+        "word": "fact",
+        "zh": "事實",
+        "en_sentence": "It is a known fact that water boils at 100 degrees Celsius.",
+        "zh_sentence": "水在攝氏 100 度沸騰是一個眾所周知的事實。",
+        "category": "抽象名詞"
+    },
+    {
+        "word": "cry",
+        "zh": "哭泣；大喊",
+        "en_sentence": "The baby started to cry loudly.",
+        "zh_sentence": "嬰兒開始大聲哭泣。",
+        "category": "動詞/動作"
+    },
+    {
+        "word": "smile",
+        "zh": "微笑",
+        "en_sentence": "She gave me a warm smile when she saw me.",
+        "zh_sentence": "她看到我時，給了我一個溫暖的微笑。",
+        "category": "動詞/動作"
+    },
+    {
+        "word": "save",
+        "zh": "儲存；拯救",
+        "en_sentence": "I try to save some money every month.",
+        "zh_sentence": "我努力每個月存一些錢。",
+        "category": "動詞/動作"
+    },
+    {
+        "word": "tell",
+        "zh": "告訴",
+        "en_sentence": "Please tell me the truth about what happened.",
+        "zh_sentence": "請告訴我發生了什麼事的真相。",
+        "category": "動詞/動作"
+    },
+    {
+        "word": "maybe",
+        "zh": "或許；可能",
+        "en_sentence": "Maybe we should leave a little earlier.",
+        "zh_sentence": "或許我們應該早點離開。",
+        "category": "副詞"
+    },
+    {
+        "word": "either",
+        "zh": "兩者之一；也 (不)",
+        "en_sentence": "You can choose either the blue one or the red one.",
+        "zh_sentence": "你可以選擇藍色的或紅色的其中一個。",
+        "category": "限定詞/副詞"
+    },
+    {
+        "word": "sit",
+        "zh": "坐",
+        "en_sentence": "Please sit down and make yourself comfortable.",
+        "zh_sentence": "請坐下，讓自己舒服一點。",
+        "category": "動詞/動作"
+    },
+    {
+        "word": "quick",
+        "zh": "快速的",
+        "en_sentence": "She took a quick look at the clock.",
+        "zh_sentence": "她快速地看了一眼時鐘。",
+        "category": "形容詞"
+    },
+    {
+        "word": "ticket",
+        "zh": "票",
+        "en_sentence": "Do you have your movie ticket ready?",
+        "zh_sentence": "你的電影票準備好了嗎？",
+        "category": "物品/名詞"
+    },
+    {
+        "word": "carefully",
+        "zh": "小心地；仔細地",
+        "en_sentence": "He crossed the street carefully.",
+        "zh_sentence": "他小心翼翼地過馬路。",
+        "category": "副詞"
+    },
+    {
+        "word": "until",
+        "zh": "直到",
+        "en_sentence": "We waited until the rain stopped.",
+        "zh_sentence": "我們一直等到雨停。",
+        "category": "介系詞/連接詞"
+    },
+    {
+        "word": "nothing",
+        "zh": "沒什麼；沒有東西",
+        "en_sentence": "There is nothing left in the box.",
+        "zh_sentence": "盒子裡什麼都沒有剩下。",
+        "category": "代名詞"
+    },
+    {
+        "word": "must",
+        "zh": "必須 (助動詞)",
+        "en_sentence": "You must wear a seatbelt while driving.",
+        "zh_sentence": "開車時你必須繫安全帶。",
+        "category": "助動詞"
+    },
+    {
+        "word": "should",
+        "zh": "應該 (助動詞)",
+        "en_sentence": "We should go to bed early tonight.",
+        "zh_sentence": "我們今晚應該早點上床睡覺。",
+        "category": "助動詞"
+    },
+    {
+        "word": "bean",
+        "zh": "豆子",
+        "en_sentence": "Green bean is a healthy vegetable.",
+        "zh_sentence": "綠豆是一種健康的蔬菜。",
+        "category": "食物/名詞"
+    },
+    {
+        "word": "bun",
+        "zh": "小圓麵包；包子",
+        "en_sentence": "I bought a steamed bun for breakfast.",
+        "zh_sentence": "我買了一個包子當早餐。",
+        "category": "食物/名詞"
+    },
+    {
+        "word": "butter",
+        "zh": "奶油",
+        "en_sentence": "She spread butter thickly on the toast.",
+        "zh_sentence": "她把奶油厚厚地塗在吐司上。",
+        "category": "食物/名詞"
+    },
+    {
+        "word": "cheese",
+        "zh": "起司；乳酪",
+        "en_sentence": "Do you want extra cheese on your pizza?",
+        "zh_sentence": "你的披薩想要額外的起司嗎？",
+        "category": "食物/名詞"
+    },
+    {
+        "word": "French fries",
+        "zh": "薯條",
+        "en_sentence": "French fries are my favorite side dish.",
+        "zh_sentence": "薯條是我最喜歡的配菜。",
+        "category": "食物/名詞"
+    },
+    {
+        "word": "lettuce",
+        "zh": "萵苣；生菜",
+        "en_sentence": "Add some fresh lettuce to the sandwich.",
+        "zh_sentence": "在三明治裡加一些新鮮的生菜。",
+        "category": "食物/名詞"
+    },
+    {
+        "word": "steak",
+        "zh": "牛排",
+        "en_sentence": "He ordered a medium-rare steak for dinner.",
+        "zh_sentence": "他晚餐點了一份五分熟的牛排。",
+        "category": "食物/名詞"
+    },
+    {
+        "word": "spaghetti",
+        "zh": "義大利麵",
+        "en_sentence": "We had spaghetti with meat sauce for lunch.",
+        "zh_sentence": "我們午餐吃了肉醬義大利麵。",
+        "category": "食物/名詞"
+    }
+];
 
     // ===== 遊戲狀態變數 =====
     let gameState = {
