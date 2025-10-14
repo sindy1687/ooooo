@@ -730,225 +730,289 @@
     };
 
     // ===== 題庫資料 =====
-    const VOCAB_DATA = [
-      {
-        "word": "time",
-        "zh": "時間",
-        "en_sentence": "Time is the most precious resource.",
-        "zh_sentence": "時間是最寶貴的資源。",
-        "category": "時間概念"
-      },
-      {
-        "word": "power",
-        "zh": "力量",
-        "en_sentence": "Power comes with great responsibility.",
-        "zh_sentence": "力量伴隨著重大責任。",
-        "category": "力量統治"
-      },
-      {
-        "word": "rule",
-        "zh": "統治",
-        "en_sentence": "He will rule the kingdom wisely.",
-        "zh_sentence": "他將明智地統治王國。",
-        "category": "力量統治"
-      },
-      {
-        "word": "destiny",
-        "zh": "命運",
-        "en_sentence": "Destiny cannot be avoided.",
-        "zh_sentence": "命運無法避免。",
-        "category": "命運時間"
-      },
-      {
-        "word": "fate",
-        "zh": "命運",
-        "en_sentence": "Fate brought them together.",
-        "zh_sentence": "命運讓他們相遇。",
-        "category": "命運時間"
-      },
-      {
-        "word": "eternal",
-        "zh": "永恆的",
-        "en_sentence": "Love is eternal and unchanging.",
-        "zh_sentence": "愛是永恆且不變的。",
-        "category": "時間概念"
-      },
-      {
-        "word": "ancient",
-        "zh": "古老的",
-        "en_sentence": "Ancient wisdom still holds true.",
-        "zh_sentence": "古老的智慧仍然有效。",
-        "category": "時間概念"
-      },
-      {
-        "word": "throne",
-        "zh": "王座",
-        "en_sentence": "The king sits on his throne.",
-        "zh_sentence": "國王坐在他的王座上。",
-        "category": "力量統治"
-      },
-      {
-        "word": "crown",
-        "zh": "王冠",
-        "en_sentence": "The crown symbolizes authority.",
-        "zh_sentence": "王冠象徵著權威。",
-        "category": "力量統治"
-      },
-      {
-        "word": "kingdom",
-        "zh": "王國",
-        "en_sentence": "The kingdom prospered under his rule.",
-        "zh_sentence": "王國在他的統治下繁榮昌盛。",
-        "category": "力量統治"
-      },
-      {
-        "word": "authority",
-        "zh": "權威",
-        "en_sentence": "He has authority over the army.",
-        "zh_sentence": "他對軍隊有權威。",
-        "category": "力量統治"
-      },
-      {
-        "word": "control",
-        "zh": "控制",
-        "en_sentence": "He has control over the situation.",
-        "zh_sentence": "他對情況有控制權。",
-        "category": "力量統治"
-      },
-      {
-        "word": "future",
-        "zh": "未來",
-        "en_sentence": "The future is uncertain.",
-        "zh_sentence": "未來是不確定的。",
-        "category": "時間概念"
-      },
-      {
-        "word": "past",
-        "zh": "過去",
-        "en_sentence": "The past cannot be changed.",
-        "zh_sentence": "過去無法改變。",
-        "category": "時間概念"
-      },
-      {
-        "word": "present",
-        "zh": "現在",
-        "en_sentence": "Live in the present moment.",
-        "zh_sentence": "活在當下。",
-        "category": "時間概念"
-      },
-      {
-        "word": "century",
-        "zh": "世紀",
-        "en_sentence": "We live in the 21st century.",
-        "zh_sentence": "我們生活在21世紀。",
-        "category": "時間概念"
-      },
-      {
-        "word": "generation",
-        "zh": "世代",
-        "en_sentence": "Each generation has its own challenges.",
-        "zh_sentence": "每個世代都有自己的挑戰。",
-        "category": "時間概念"
-      },
-      {
-        "word": "legacy",
-        "zh": "遺產",
-        "en_sentence": "He left a great legacy.",
-        "zh_sentence": "他留下了偉大的遺產。",
-        "category": "時間概念"
-      },
-      {
-        "word": "empire",
-        "zh": "帝國",
-        "en_sentence": "The empire expanded its territory.",
-        "zh_sentence": "帝國擴張了其領土。",
-        "category": "力量統治"
-      },
-      {
-        "word": "sovereign",
-        "zh": "主權者",
-        "en_sentence": "The sovereign makes the final decision.",
-        "zh_sentence": "主權者做出最終決定。",
-        "category": "力量統治"
-      },
-      {
-        "word": "reign",
-        "zh": "統治時期",
-        "en_sentence": "His reign lasted for thirty years.",
-        "zh_sentence": "他的統治持續了三十年。",
-        "category": "力量統治"
-      },
-      {
-        "word": "titan",
-        "zh": "泰坦",
-        "en_sentence": "The titans ruled before the gods.",
-        "zh_sentence": "泰坦在眾神之前統治。",
-        "category": "力量統治"
-      },
-      {
-        "word": "cycle",
-        "zh": "循環",
-        "en_sentence": "The cycle of time never ends.",
-        "zh_sentence": "時間的循環永不結束。",
-        "category": "時間概念"
-      },
-      {
-        "word": "prophecy",
-        "zh": "預言",
-        "en_sentence": "The prophecy foretold his fate.",
-        "zh_sentence": "預言預示了他的命運。",
-        "category": "命運時間"
-      },
-      {
-        "word": "oracle",
-        "zh": "神諭",
-        "en_sentence": "The oracle revealed the truth.",
-        "zh_sentence": "神諭揭示了真相。",
-        "category": "命運時間"
-      },
-      {
-        "word": "temple",
-        "zh": "神殿",
-        "en_sentence": "The temple stands for centuries.",
-        "zh_sentence": "神殿屹立了數個世紀。",
-        "category": "時間概念"
-      },
-      {
-        "word": "sacred",
-        "zh": "神聖的",
-        "en_sentence": "The sacred ground is protected.",
-        "zh_sentence": "神聖的土地受到保護。",
-        "category": "力量統治"
-      },
-      {
-        "word": "divine",
-        "zh": "神聖的",
-        "en_sentence": "The divine power is absolute.",
-        "zh_sentence": "神聖的力量是絕對的。",
-        "category": "力量統治"
-      },
-      {
-        "word": "immortal",
-        "zh": "不朽的",
-        "en_sentence": "The gods are immortal beings.",
-        "zh_sentence": "眾神是不朽的存在。",
-        "category": "時間概念"
-      },
-      {
-        "word": "mortal",
-        "zh": "凡人的",
-        "en_sentence": "Mortal life is brief.",
-        "zh_sentence": "凡人的生命短暫。",
-        "category": "時間概念"
-      },
-      {
-        "word": "wisdom",
-        "zh": "智慧",
-        "en_sentence": "Wisdom comes with age.",
-        "zh_sentence": "智慧隨年齡而來。",
-        "category": "力量統治"
-      }
-    ];
+   // ===== 題庫資料 (已更新為新的單字列表 P229 並增加分類) =====
+const VOCAB_DATA = [
+    {
+        "word": "excuse",
+        "zh": "藉口；原諒",
+        "en_sentence": "He gave an excuse for being late.",
+        "zh_sentence": "他為遲到找了一個藉口。",
+        "category": "名詞/動詞"
+    },
+    {
+        "word": "magic",
+        "zh": "魔術；有魔力的",
+        "en_sentence": "The magician performed a great magic trick.",
+        "zh_sentence": "魔術師表演了一個很棒的魔術。",
+        "category": "抽象名詞/形容詞"
+    },
+    {
+        "word": "planet",
+        "zh": "行星",
+        "en_sentence": "Jupiter is the largest planet in our solar system.",
+        "zh_sentence": "木星是我們太陽系中最大的行星。",
+        "category": "自然/地理"
+    },
+    {
+        "word": "base",
+        "zh": "基地；基礎",
+        "en_sentence": "The military base is located near the coast.",
+        "zh_sentence": "軍事基地設在海岸附近。",
+        "category": "名詞/地點"
+    },
+    {
+        "word": "typhoon",
+        "zh": "颱風",
+        "en_sentence": "Schools were closed because of the typhoon warning.",
+        "zh_sentence": "由於颱風警報，學校停課了。",
+        "category": "自然/名詞"
+    },
+    {
+        "word": "kilogram",
+        "zh": "公斤 (重量單位)",
+        "en_sentence": "The package weighs exactly one kilogram.",
+        "zh_sentence": "這個包裹的重量剛好是一公斤。",
+        "category": "量詞/名詞"
+    },
+    {
+        "word": "pound",
+        "zh": "磅 (重量或貨幣單位)",
+        "en_sentence": "The baby weighed six pounds at birth.",
+        "zh_sentence": "這個嬰兒出生時重六磅。",
+        "category": "量詞/名詞"
+    },
+    {
+        "word": "gram",
+        "zh": "克 (重量單位)",
+        "en_sentence": "Sugar is usually measured in grams.",
+        "zh_sentence": "糖通常以克為單位測量。",
+        "category": "量詞/名詞"
+    },
+    {
+        "word": "page",
+        "zh": "頁",
+        "en_sentence": "Please turn to page twenty-five.",
+        "zh_sentence": "請翻到第二十五頁。",
+        "category": "名詞/物品"
+    },
+    {
+        "word": "dozen",
+        "zh": "一打 (十二個)",
+        "en_sentence": "I need a dozen eggs to bake the cake.",
+        "zh_sentence": "我需要一打雞蛋來烤蛋糕。",
+        "category": "量詞/名詞"
+    },
+    {
+        "word": "cent",
+        "zh": "分 (貨幣單位)",
+        "en_sentence": "The candy cost fifty cents.",
+        "zh_sentence": "這顆糖果花了五十分錢。",
+        "category": "名詞/金錢"
+    },
+    {
+        "word": "businessman",
+        "zh": "商人",
+        "en_sentence": "My uncle is a successful businessman.",
+        "zh_sentence": "我叔叔是一位成功的商人。",
+        "category": "人/職業"
+    },
+    {
+        "word": "salesman",
+        "zh": "銷售員",
+        "en_sentence": "The salesman showed us the new model car.",
+        "zh_sentence": "那位銷售員向我們展示了新款汽車。",
+        "category": "人/職業"
+    },
+    {
+        "word": "shopkeeper",
+        "zh": "店主",
+        "en_sentence": "The friendly shopkeeper gave me a discount.",
+        "zh_sentence": "友善的店主給了我折扣。",
+        "category": "人/職業"
+    },
+    {
+        "word": "lawyer",
+        "zh": "律師",
+        "en_sentence": "She works as a lawyer in a big firm.",
+        "zh_sentence": "她在一家大型事務所擔任律師。",
+        "category": "人/職業"
+    },
+    {
+        "word": "dentist",
+        "zh": "牙醫",
+        "en_sentence": "I have an appointment with the dentist next week.",
+        "zh_sentence": "我下週和牙醫有預約。",
+        "category": "人/職業"
+    },
+    {
+        "word": "touch",
+        "zh": "觸摸；感動",
+        "en_sentence": "Please do not touch the exhibits in the museum.",
+        "zh_sentence": "請不要觸摸博物館裡的展品。",
+        "category": "動詞/動作"
+    },
+    {
+        "word": "headache",
+        "zh": "頭痛",
+        "en_sentence": "I took some medicine for my terrible headache.",
+        "zh_sentence": "我為我嚴重的頭痛吃了些藥。",
+        "category": "健康/名詞"
+    },
+    {
+        "word": "cheer",
+        "zh": "歡呼；喝采",
+        "en_sentence": "The crowd began to cheer when the team scored.",
+        "zh_sentence": "當球隊得分時，人群開始歡呼。",
+        "category": "動詞/動作"
+    },
+    {
+        "word": "leader",
+        "zh": "領導者；領袖",
+        "en_sentence": "A good leader inspires the team to work hard.",
+        "zh_sentence": "一位好的領導者會激勵團隊努力工作。",
+        "category": "人/身份"
+    },
+    {
+        "word": "class leader",
+        "zh": "班長",
+        "en_sentence": "The class leader helps the teacher manage the class.",
+        "zh_sentence": "班長幫助老師管理班級。",
+        "category": "人/身份"
+    },
+    {
+        "word": "ready",
+        "zh": "準備好的",
+        "en_sentence": "Are you ready to start the game now?",
+        "zh_sentence": "你現在準備好開始遊戲了嗎？",
+        "category": "形容詞/狀態"
+    },
+    {
+        "word": "every",
+        "zh": "每一個",
+        "en_sentence": "Every day is a new beginning.",
+        "zh_sentence": "每一天都是新的開始。",
+        "category": "限定詞"
+    },
+    {
+        "word": "kill",
+        "zh": "殺死",
+        "en_sentence": "The hunter used a gun to kill the wild animal.",
+        "zh_sentence": "獵人用槍殺死了野生動物。",
+        "category": "動詞/動作"
+    },
+    {
+        "word": "barbecue",
+        "zh": "烤肉 (BBQ)",
+        "en_sentence": "We had a family barbecue in the backyard.",
+        "zh_sentence": "我們在後院舉行了一次家庭烤肉。",
+        "category": "活動/名詞"
+    },
+    {
+        "word": "sidewalk",
+        "zh": "人行道",
+        "en_sentence": "Please walk on the sidewalk for safety.",
+        "zh_sentence": "為了安全，請走在人行道上。",
+        "category": "地點/名詞"
+    },
+    {
+        "word": "middle",
+        "zh": "中間",
+        "en_sentence": "Put the chair in the middle of the room.",
+        "zh_sentence": "把椅子放在房間的中間。",
+        "category": "方位/名詞"
+    },
+    {
+        "word": "bottom",
+        "zh": "底部",
+        "en_sentence": "Write your name at the bottom of the page.",
+        "zh_sentence": "請在頁面的底部寫上你的名字。",
+        "category": "方位/名詞"
+    },
+    {
+        "word": "shark",
+        "zh": "鯊魚",
+        "en_sentence": "A great white shark is a powerful predator.",
+        "zh_sentence": "大白鯊是一種強大的掠食者。",
+        "category": "動物/名詞"
+    },
+    {
+        "word": "low",
+        "zh": "低的",
+        "en_sentence": "The fence is too low for the dog.",
+        "zh_sentence": "這個圍欄對狗來說太低了。",
+        "category": "形容詞"
+    },
+    {
+        "word": "dead",
+        "zh": "死的",
+        "en_sentence": "The plant is dead because it didn't get enough sunlight.",
+        "zh_sentence": "這棵植物死了，因為它沒有得到足夠的陽光。",
+        "category": "形容詞/狀態"
+    },
+    {
+        "word": "slim",
+        "zh": "苗條的；微小的",
+        "en_sentence": "She has a very slim figure from exercising regularly.",
+        "zh_sentence": "她因為經常運動而保持著非常苗條的身材。",
+        "category": "形容詞"
+    },
+    {
+        "word": "thick",
+        "zh": "厚的；濃密的",
+        "en_sentence": "The book has a thick cover and many pages.",
+        "zh_sentence": "這本書有厚厚的封面和許多頁。",
+        "category": "形容詞"
+    },
+    {
+        "word": "burn",
+        "zh": "燃燒；燙傷",
+        "en_sentence": "Be careful not to burn the toast.",
+        "zh_sentence": "小心不要烤焦吐司。",
+        "category": "動詞/動作"
+    },
+    {
+        "word": "tie",
+        "zh": "綁；領帶",
+        "en_sentence": "He knows how to tie a perfect knot.",
+        "zh_sentence": "他知道如何打一個完美的結。",
+        "category": "動詞/名詞"
+    },
+    {
+        "word": "deal",
+        "zh": "處理；交易",
+        "en_sentence": "We made a good business deal with the new client.",
+        "zh_sentence": "我們和新客戶做了一筆很好的生意。",
+        "category": "動詞/名詞"
+    },
+    {
+        "word": "piece",
+        "zh": "一片；部分",
+        "en_sentence": "Can I have one piece of cake?",
+        "zh_sentence": "我可以吃一塊蛋糕嗎？",
+        "category": "名詞/量詞"
+    },
+    {
+        "word": "into",
+        "zh": "進入...之內",
+        "en_sentence": "She put the keys into her pocket.",
+        "zh_sentence": "她把鑰匙放進口袋裡。",
+        "category": "介系詞"
+    },
+    {
+        "word": "Internet",
+        "zh": "網際網路",
+        "en_sentence": "You can find almost any information on the Internet.",
+        "zh_sentence": "你幾乎可以在網際網路上找到任何資訊。",
+        "category": "科技/名詞"
+    },
+    {
+        "word": "interview",
+        "zh": "面試；採訪",
+        "en_sentence": "He prepared for the job interview all night.",
+        "zh_sentence": "他為這份工作面試準備了一整晚。",
+        "category": "名詞/動詞"
+    }
+];
 
     // ===== 遊戲狀態變數 =====
     let gameState = {
