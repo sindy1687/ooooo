@@ -708,296 +708,291 @@
     };
 
     // ===== 題庫資料 =====
-    const VOCAB_DATA = [
-      {
-        "word": "lake",
-        "zh": "湖泊",
-        "en_sentence": "They rented a boat on the lake for fishing.",
-        "zh_sentence": "他們在湖上租了一艘船去釣魚。",
-        "category": "場所位置"
-      },
-      {
-        "word": "please",
-        "zh": "請；取悅",
-        "en_sentence": "Please sit down and enjoy the show.",
-        "zh_sentence": "請坐下，欣賞表演。",
-        "category": "抽象概念"
-      },
-      {
-        "word": "chance",
-        "zh": "機會",
-        "en_sentence": "I want to get a chance to perform in the school play.",
-        "zh_sentence": "我想得到機會在校園劇中表演。",
-        "category": "抽象概念"
-      },
-      {
-        "word": "prize",
-        "zh": "獎品",
-        "en_sentence": "She won a prize for her drawing in the contest.",
-        "zh_sentence": "她在比賽中因畫作獲得獎品。",
-        "category": "抽象概念"
-      },
-      {
-        "word": "moment",
-        "zh": "時刻",
-        "en_sentence": "Wait a moment, I need to tie my shoe.",
-        "zh_sentence": "等一下，我需要綁鞋帶。",
-        "category": "時間日期"
-      },
-      {
-        "word": "giant",
-        "zh": "巨人；巨大的",
-        "en_sentence": "In the fairy tale, a giant guards the castle.",
-        "zh_sentence": "在童話裡，一個巨人守護著城堡。",
-        "category": "形容詞"
-      },
-      {
-        "word": "mile",
-        "zh": "英里",
-        "en_sentence": "They ran five miles in the marathon.",
-        "zh_sentence": "他們在馬拉松中跑了五英里。",
-        "category": "數量分數"
-      },
-      {
-        "word": "mad",
-        "zh": "生氣的；瘋狂的",
-        "en_sentence": "He was so mad when he lost the game.",
-        "zh_sentence": "當他輸掉比賽時，他非常生氣。",
-        "category": "形容詞"
-      },
-      {
-        "word": "lonely",
-        "zh": "孤獨的",
-        "en_sentence": "She felt lonely after moving to a new city.",
-        "zh_sentence": "搬到新城市後，她感到很孤獨。",
-        "category": "形容詞"
-      },
-      {
-        "word": "unhappy",
-        "zh": "不快樂的",
-        "en_sentence": "He was unhappy because he missed the bus.",
-        "zh_sentence": "因為他錯過了公車，他感到不快樂。",
-        "category": "形容詞"
-      },
-      {
-        "word": "shy",
-        "zh": "害羞的",
-        "en_sentence": "She is too shy to speak in front of the class.",
-        "zh_sentence": "她太害羞，無法在全班面前講話。",
-        "category": "形容詞"
-      },
-      {
-        "word": "ice",
-        "zh": "冰",
-        "en_sentence": "The pond froze and turned to ice overnight.",
-        "zh_sentence": "池塘一夜之間結冰變成冰面。",
-        "category": "抽象概念"
-      },
-      {
-        "word": "loud",
-        "zh": "大聲的；吵鬧的",
-        "en_sentence": "The music was so loud that we had to cover our ears.",
-        "zh_sentence": "音樂非常大聲，我們不得不用手捂住耳朵。",
-        "category": "形容詞"
-      },
-      {
-        "word": "strange",
-        "zh": "奇怪的",
-        "en_sentence": "It felt strange to walk in the dark forest.",
-        "zh_sentence": "在黑暗的森林中行走讓人感到奇怪。",
-        "category": "形容詞"
-      },
-      {
-        "word": "both",
-        "zh": "兩者",
-        "en_sentence": "Both of my sisters play piano.",
-        "zh_sentence": "我的兩個妹妹都會彈鋼琴。",
-        "category": "抽象概念"
-      },
-      {
-        "word": "bright",
-        "zh": "明亮的",
-        "en_sentence": "The room is bright thanks to the large windows.",
-        "zh_sentence": "由於有大窗戶，這間房間很明亮。",
-        "category": "形容詞"
-      },
-      {
-        "word": "convenient",
-        "zh": "便利的",
-        "en_sentence": "Living near the station is very convenient.",
-        "zh_sentence": "住在車站附近非常便利。",
-        "category": "形容詞"
-      },
-      {
-        "word": "fix",
-        "zh": "修理；確定",
-        "en_sentence": "He learned how to fix his bike after it broke.",
-        "zh_sentence": "自行車壞了之後，他學會了如何修理。",
-        "category": "動作動詞"
-      },
-      {
-        "word": "choose",
-        "zh": "選擇",
-        "en_sentence": "Choose a book you like for silent reading time.",
-        "zh_sentence": "在安靜閱讀時間，選擇一本你喜歡的書。",
-        "category": "動作動詞"
-      },
-      {
-        "word": "fact",
-        "zh": "事實",
-        "en_sentence": "It's a fact that plants need sunlight to grow.",
-        "zh_sentence": "植物需要陽光才能生長，這是一個事實。",
-        "category": "抽象概念"
-      },
-      {
-        "word": "cry",
-        "zh": "哭；大叫",
-        "en_sentence": "Babies often cry when they are hungry.",
-        "zh_sentence": "嬰兒餓了時常常會哭。",
-        "category": "動作動詞"
-      },
-      {
-        "word": "smile",
-        "zh": "微笑",
-        "en_sentence": "Her smile brightened everyone's day.",
-        "zh_sentence": "她的微笑讓大家的心情都變好了。",
-        "category": "動作動詞"
-      },
-      {
-        "word": "safe",
-        "zh": "安全的",
-        "en_sentence": "Always wear a helmet to stay safe when you ride a bike.",
-        "zh_sentence": "騎腳踏車時一定要戴安全帽才能保持安全。",
-        "category": "形容詞"
-      },
-      {
-        "word": "sharp",
-        "zh": "鋒利的；劇烈的",
-        "en_sentence": "Be careful with that knife; it is very sharp.",
-        "zh_sentence": "要小心那把刀，它非常鋒利。",
-        "category": "形容詞"
-      },
-      {
-        "word": "lazy",
-        "zh": "懶散的",
-        "en_sentence": "The lazy cat sleeps on the sofa all day.",
-        "zh_sentence": "那隻懶散的貓整天躺在沙發上睡覺。",
-        "category": "形容詞"
-      },
-      {
-        "word": "glad",
-        "zh": "高興的",
-        "en_sentence": "I am glad we won the game today.",
-        "zh_sentence": "我很高興我們今天贏得了比賽。",
-        "category": "形容詞"
-      },
-      {
-        "word": "excellent",
-        "zh": "優秀的",
-        "en_sentence": "She did an excellent job on her science project.",
-        "zh_sentence": "她在科學專題上做得很優秀。",
-        "category": "形容詞"
-      },
-      {
-        "word": "over",
-        "zh": "結束；超過",
-        "en_sentence": "The cat jumped over the wall to catch the bird.",
-        "zh_sentence": "那隻貓跳過牆壁去追那隻鳥。",
-        "category": "抽象概念"
-      },
-      {
-        "word": "pass",
-        "zh": "經過；通過",
-        "en_sentence": "We pass the library on our way to school.",
-        "zh_sentence": "我們上學的路上會經過圖書館。",
-        "category": "動作動詞"
-      },
-      {
-        "word": "fail",
-        "zh": "不及格；失敗",
-        "en_sentence": "If you don't study, you might fail the test.",
-        "zh_sentence": "如果你不讀書，你可能會考試不及格。",
-        "category": "動作動詞"
-      },
-      {
-        "word": "preparation",
-        "zh": "準備",
-        "en_sentence": "Good preparation helped him do well in the contest.",
-        "zh_sentence": "良好的準備幫助他在比賽中表現優異。",
-        "category": "學術教育"
-      },
-      {
-        "word": "cheat",
-        "zh": "作弊",
-        "en_sentence": "Don't cheat on the exam; be honest.",
-        "zh_sentence": "考試時不要作弊，要誠實。",
-        "category": "學術教育"
-      },
-      {
-        "word": "copy",
-        "zh": "抄寫；複製",
-        "en_sentence": "Please copy the notes from the board into your notebook.",
-        "zh_sentence": "請把黑板上的筆記抄到你的筆記本裡。",
-        "category": "學術教育"
-      },
-      {
-        "word": "blow",
-        "zh": "吹",
-        "en_sentence": "Blow on the hot soup before you eat it.",
-        "zh_sentence": "在吃燙湯前先吹一下。",
-        "category": "動作動詞"
-      },
-      {
-        "word": "knock",
-        "zh": "敲；打",
-        "en_sentence": "Knock gently on the door before you enter.",
-        "zh_sentence": "進屋前請輕輕敲門。",
-        "category": "動作動詞"
-      },
-      {
-        "word": "rise",
-        "zh": "上升；升起",
-        "en_sentence": "The sun will rise at six o'clock tomorrow morning.",
-        "zh_sentence": "明天早上六點太陽會升起。",
-        "category": "動作動詞"
-      },
-      {
-        "word": "decide",
-        "zh": "決定",
-        "en_sentence": "I need to decide which book to read first.",
-        "zh_sentence": "我需要決定先讀哪一本書。",
-        "category": "動作動詞"
-      },
-      {
-        "word": "notice",
-        "zh": "注意",
-        "en_sentence": "Please notice the sign that says 'Keep Off the Grass.'",
-        "zh_sentence": "請注意寫著『請勿踩踏草皮』的告示。",
-        "category": "動作動詞"
-      },
-      {
-        "word": "collect",
-        "zh": "收集",
-        "en_sentence": "He likes to collect stamps from different countries.",
-        "zh_sentence": "他喜歡收集來自不同國家的郵票。",
-        "category": "動作動詞"
-      },
-      {
-        "word": "leave",
-        "zh": "離開；遺忘",
-        "en_sentence": "Don't leave your umbrella at school when it rains.",
-        "zh_sentence": "下雨時不要把傘留在學校。",
-        "category": "動作動詞"
-      },
-      {
-        "word": "treat",
-        "zh": "款待；對待；處理",
-        "en_sentence": "She will treat her friends to ice cream after school.",
-        "zh_sentence": "她放學後要請朋友們吃冰淇淋。",
-        "category": "動作動詞"
-      }
-    ];
-
+   // ===== 題庫資料 (已更新為新的單字列表 P109 並增加分類) =====
+// ===== 題庫資料 (已更新為新的單字列表 P115 並增加分類) =====
+const VOCAB_DATA = [
+    {
+        "word": "agree",
+        "zh": "同意",
+        "en_sentence": "I agree with your suggestion.",
+        "zh_sentence": "我同意你的建議。",
+        "category": "動詞/心理"
+    },
+    {
+        "word": "garbage",
+        "zh": "垃圾",
+        "en_sentence": "Please take out the garbage before you leave.",
+        "zh_sentence": "請在你離開前把垃圾拿出去。",
+        "category": "物品/名詞"
+    },
+    {
+        "word": "forget",
+        "zh": "忘記",
+        "en_sentence": "Don't forget to lock the door.",
+        "zh_sentence": "不要忘記鎖門。",
+        "category": "動詞/心理"
+    },
+    {
+        "word": "hear",
+        "zh": "聽見",
+        "en_sentence": "I can hear the music from next door.",
+        "zh_sentence": "我能聽到隔壁傳來的音樂聲。",
+        "category": "動詞/感官"
+    },
+    {
+        "word": "another",
+        "zh": "另一個",
+        "en_sentence": "Would you like another cup of tea?",
+        "zh_sentence": "你想要再一杯茶嗎？",
+        "category": "限定詞/代名詞"
+    },
+    {
+        "word": "delicious",
+        "zh": "美味的",
+        "en_sentence": "This pie is truly delicious.",
+        "zh_sentence": "這個派真的非常美味。",
+        "category": "形容詞/食物"
+    },
+    {
+        "word": "yummy",
+        "zh": "美味的 (口語)",
+        "en_sentence": "The pizza looks yummy and hot.",
+        "zh_sentence": "這個披薩看起來又美味又燙。",
+        "category": "形容詞/食物"
+    },
+    {
+        "word": "difficult",
+        "zh": "困難的",
+        "en_sentence": "Learning a new language is difficult but rewarding.",
+        "zh_sentence": "學習一門新語言很困難，但很有收穫。",
+        "category": "形容詞"
+    },
+    {
+        "word": "as",
+        "zh": "如同；作為",
+        "en_sentence": "He ran as fast as he could.",
+        "zh_sentence": "他盡可能跑得快。",
+        "category": "連接詞/介系詞"
+    },
+    {
+        "word": "own",
+        "zh": "自己的；擁有",
+        "en_sentence": "She has her own style of painting.",
+        "zh_sentence": "她有自己獨特的繪畫風格。",
+        "category": "形容詞/動詞"
+    },
+    {
+        "word": "true",
+        "zh": "真實的；正確的",
+        "en_sentence": "Everything he said turned out to be true.",
+        "zh_sentence": "他所說的一切都被證明是真的。",
+        "category": "形容詞"
+    },
+    {
+        "word": "sea",
+        "zh": "海；海洋",
+        "en_sentence": "The ship sailed across the deep sea.",
+        "zh_sentence": "船航行過深海。",
+        "category": "自然/景觀"
+    },
+    {
+        "word": "welcome",
+        "zh": "歡迎",
+        "en_sentence": "A friendly smile will welcome the guests.",
+        "zh_sentence": "一個友善的微笑會迎接客人。",
+        "category": "動詞/感歎詞"
+    },
+    {
+        "word": "proud",
+        "zh": "驕傲的；自豪的",
+        "en_sentence": "We are proud of our school team.",
+        "zh_sentence": "我們為我們的校隊感到驕傲。",
+        "category": "形容詞/情緒"
+    },
+    {
+        "word": "away",
+        "zh": "離開；遠離",
+        "en_sentence": "The little bird flew away quickly.",
+        "zh_sentence": "那隻小鳥快速飛走了。",
+        "category": "副詞"
+    },
+    {
+        "word": "will",
+        "zh": "將會 (助動詞)",
+        "en_sentence": "The sun will rise at 6 AM tomorrow.",
+        "zh_sentence": "太陽明天早上六點將會升起。",
+        "category": "助動詞"
+    },
+    {
+        "word": "camera",
+        "zh": "照相機",
+        "en_sentence": "Don't forget to pack your camera for the trip.",
+        "zh_sentence": "別忘了為旅行打包你的照相機。",
+        "category": "物品/科技"
+    },
+    {
+        "word": "radio",
+        "zh": "收音機；廣播",
+        "en_sentence": "The radio is playing my favorite song.",
+        "zh_sentence": "收音機正在播放我最喜歡的歌。",
+        "category": "物品/科技"
+    },
+    {
+        "word": "machine",
+        "zh": "機器",
+        "en_sentence": "The washing machine broke down yesterday.",
+        "zh_sentence": "洗衣機昨天壞掉了。",
+        "category": "物品/科技"
+    },
+    {
+        "word": "tape",
+        "zh": "膠帶；錄音帶",
+        "en_sentence": "We need tape to fix the box.",
+        "zh_sentence": "我們需要膠帶修理這個盒子。",
+        "category": "物品/名詞"
+    },
+    // 以下為 P109 列表中的反身代名詞、物品、水果及稱謂
+    {
+        "word": "myself",
+        "zh": "我自己",
+        "en_sentence": "I bought myself a new shirt.",
+        "zh_sentence": "我為我自己買了一件新襯衫。",
+        "category": "反身代名詞"
+    },
+    {
+        "word": "yourself",
+        "zh": "你自己",
+        "en_sentence": "Did you teach yourself to play guitar?",
+        "zh_sentence": "你是自學彈吉他的嗎？",
+        "category": "反身代名詞"
+    },
+    {
+        "word": "yourselves",
+        "zh": "你們自己",
+        "en_sentence": "Make sure you enjoy yourselves at the party.",
+        "zh_sentence": "確保你們在派對上玩得開心。",
+        "category": "反身代名詞"
+    },
+    {
+        "word": "himself",
+        "zh": "他自己",
+        "en_sentence": "He can fix the computer himself.",
+        "zh_sentence": "他可以自己修好電腦。",
+        "category": "反身代名詞"
+    },
+    {
+        "word": "herself",
+        "zh": "她自己",
+        "en_sentence": "She did all the homework by herself.",
+        "zh_sentence": "她獨自完成了所有的作業。",
+        "category": "反身代名詞"
+    },
+    {
+        "word": "itself",
+        "zh": "它自己",
+        "en_sentence": "The problem solved itself eventually.",
+        "zh_sentence": "這個問題最終自己解決了。",
+        "category": "反身代名詞"
+    },
+    {
+        "word": "ourselves",
+        "zh": "我們自己",
+        "en_sentence": "We built the snowman ourselves.",
+        "zh_sentence": "我們自己堆了雪人。",
+        "category": "反身代名詞"
+    },
+    {
+        "word": "themselves",
+        "zh": "他們自己；它們自己",
+        "en_sentence": "The birds built the nest by themselves.",
+        "zh_sentence": "那些鳥兒自己築了巢。",
+        "category": "反身代名詞"
+    },
+    {
+        "word": "recorder",
+        "zh": "錄音機；記錄器",
+        "en_sentence": "Please use a voice recorder to capture the speech.",
+        "zh_sentence": "請使用錄音機來記錄這段演講。",
+        "category": "物品/科技"
+    },
+    {
+        "word": "video",
+        "zh": "影片；錄影",
+        "en_sentence": "He took a video of the fireworks display.",
+        "zh_sentence": "他錄下了煙火表演的影片。",
+        "category": "物品/科技"
+    },
+    {
+        "word": "price",
+        "zh": "價格",
+        "en_sentence": "The price of gas went up this week.",
+        "zh_sentence": "這週汽油的價格上漲了。",
+        "category": "商業/數字"
+    },
+    {
+        "word": "total",
+        "zh": "總數；總計的",
+        "en_sentence": "What is the total number of students in the class?",
+        "zh_sentence": "班級裡的學生總數是多少？",
+        "category": "數字/名詞"
+    },
+    {
+        "word": "watermelon",
+        "zh": "西瓜",
+        "en_sentence": "I love to eat a big slice of watermelon.",
+        "zh_sentence": "我喜歡吃一大片西瓜。",
+        "category": "食物/水果"
+    },
+    {
+        "word": "papaya",
+        "zh": "木瓜",
+        "en_sentence": "Papaya is rich in Vitamin C.",
+        "zh_sentence": "木瓜富含維生素 C。",
+        "category": "食物/水果"
+    },
+    {
+        "word": "lemon",
+        "zh": "檸檬",
+        "en_sentence": "The lemonade is sour because it has too much lemon.",
+        "zh_sentence": "檸檬水太酸了，因為檸檬太多。",
+        "category": "食物/水果"
+    },
+    {
+        "word": "guava",
+        "zh": "芭樂；番石榴",
+        "en_sentence": "I often snack on fresh guava.",
+        "zh_sentence": "我經常把新鮮芭樂當作零食。",
+        "category": "食物/水果"
+    },
+    {
+        "word": "sir",
+        "zh": "先生 (尊稱)",
+        "en_sentence": "The bellhop said, 'Your luggage is ready, sir.'",
+        "zh_sentence": "行李員說：'您的行李準備好了，先生。'",
+        "category": "稱謂"
+    },
+    {
+        "word": "Dr.",
+        "zh": "博士；醫生",
+        "en_sentence": "Dr. Lee gave a lecture on modern physics.",
+        "zh_sentence": "李博士（或李醫生）作了一場關於現代物理學的演講。",
+        "category": "稱謂/職業"
+    },
+    {
+        "word": "neighbor",
+        "zh": "鄰居",
+        "en_sentence": "My neighbor has a lovely garden.",
+        "zh_sentence": "我的鄰居有一個可愛的花園。",
+        "category": "人/身份"
+    },
+    {
+        "word": "Easter",
+        "zh": "復活節",
+        "en_sentence": "Easter is celebrated with colorful eggs and bunnies.",
+        "zh_sentence": "復活節是用彩蛋和小兔子來慶祝的。",
+        "category": "節日/活動"
+    }
+];
     // ===== 遊戲狀態變數 =====
     let gameState = {
       data: [],
