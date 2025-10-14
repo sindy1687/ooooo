@@ -1024,302 +1024,289 @@
     };
 
     // ===== 題庫資料 =====
-    const VOCAB_DATA = [
-      {
-        "word": "papaya",
-        "zh": "木瓜",
-        "en_sentence": "Papaya is sweet and delicious.",
-        "zh_sentence": "木瓜又甜又美味。",
-        "category": "食物水果"
-      },
-      {
-        "word": "lemon",
-        "zh": "檸檬",
-        "en_sentence": "Lemon juice is very sour.",
-        "zh_sentence": "檸檬汁非常酸。",
-        "category": "食物水果"
-      },
-      {
-        "word": "guava",
-        "zh": "芭樂",
-        "en_sentence": "Guava is green on the outside.",
-        "zh_sentence": "芭樂外皮是綠色的。",
-        "category": "食物水果"
-      },
-      {
-        "word": "sir",
-        "zh": "先生（尊稱）",
-        "en_sentence": "Excuse me, sir, where is the bus stop?",
-        "zh_sentence": "不好意思，先生，公車站在哪裡？",
-        "category": "稱謂人際"
-      },
-      {
-        "word": "Dr.",
-        "zh": "博士；醫生",
-        "en_sentence": "Dr. Lee helps patients feel better.",
-        "zh_sentence": "李醫生幫助病人感覺好一點。",
-        "category": "稱謂人際"
-      },
-      {
-        "word": "neighbor",
-        "zh": "鄰居",
-        "en_sentence": "My neighbor waters my plants when I'm away.",
-        "zh_sentence": "我不在時，我的鄰居會幫我澆花。",
-        "category": "稱謂人際"
-      },
-      {
-        "word": "Easter",
-        "zh": "復活節",
-        "en_sentence": "We hunt for eggs on Easter.",
-        "zh_sentence": "復活節我們去尋蛋。",
-        "category": "節日慶祝"
-      },
-      {
-        "word": "basket",
-        "zh": "籃子",
-        "en_sentence": "I carry apples in a basket to the picnic.",
-        "zh_sentence": "我用籃子把蘋果帶到野餐。",
-        "category": "日常用品"
-      },
-      {
-        "word": "church",
-        "zh": "教堂",
-        "en_sentence": "We go to church on Sunday morning.",
-        "zh_sentence": "我們星期天早上去教堂。",
-        "category": "場所位置"
-      },
-      {
-        "word": "hunt",
-        "zh": "打獵",
-        "en_sentence": "My grandfather used to hunt in the forest.",
-        "zh_sentence": "我爺爺以前在森林裡打獵。",
-        "category": "動作動詞"
-      },
-      {
-        "word": "roll",
-        "zh": "滾動；晃動",
-        "en_sentence": "The ball will roll down the hill.",
-        "zh_sentence": "球會從小山滾下來。",
-        "category": "動作動詞"
-      },
-      {
-        "word": "hang",
-        "zh": "掛；懸吊",
-        "en_sentence": "Please hang your coat on that hook.",
-        "zh_sentence": "請把外套掛在那個掛勾上。",
-        "category": "動作動詞"
-      },
-      {
-        "word": "snack",
-        "zh": "點心；小吃",
-        "en_sentence": "I eat a snack after school every day.",
-        "zh_sentence": "我每天放學後都吃點心。",
-        "category": "食物水果"
-      },
-      {
-        "word": "tool",
-        "zh": "工具",
-        "en_sentence": "He uses a tool to fix the bike.",
-        "zh_sentence": "他用工具修理自行車。",
-        "category": "日常用品"
-      },
-      {
-        "word": "letter",
-        "zh": "信；字母",
-        "en_sentence": "I write a letter to my friend every week.",
-        "zh_sentence": "我每週都給朋友寫一封信。",
-        "category": "日常用品"
-      },
-      {
-        "word": "envelope",
-        "zh": "信封",
-        "en_sentence": "Put the letter inside the envelope.",
-        "zh_sentence": "把信放進信封裡。",
-        "category": "日常用品"
-      },
-      {
-        "word": "ground",
-        "zh": "地面",
-        "en_sentence": "The children sit on the ground to play.",
-        "zh_sentence": "孩子們坐在地面上玩。",
-        "category": "場所位置"
-      },
-      {
-        "word": "R.O.C.",
-        "zh": "中華民國",
-        "en_sentence": "The flag of the R.O.C. flies on the building.",
-        "zh_sentence": "中華民國的國旗飄揚在那棟建築上。",
-        "category": "抽象概念"
-      },
-      {
-        "word": "world",
-        "zh": "世界",
-        "en_sentence": "He dreams of traveling around the world.",
-        "zh_sentence": "他夢想環遊世界。",
-        "category": "抽象概念"
-      },
-      {
-        "word": "seed",
-        "zh": "種子",
-        "en_sentence": "She plants a seed in the pot.",
-        "zh_sentence": "她在花盆裡種下一粒種子。",
-        "category": "自然環境"
-      },
-      {
-        "word": "other",
-        "zh": "其他",
-        "en_sentence": "I have no other ideas right now.",
-        "zh_sentence": "目前我沒有其他想法。",
-        "category": "抽象概念"
-      },
-      {
-        "word": "taste",
-        "zh": "味道；嚐",
-        "en_sentence": "Please taste the soup and tell me if it needs salt.",
-        "zh_sentence": "請嚐嚐湯，告訴我是否需要加鹽。",
-        "category": "身體健康"
-      },
-      {
-        "word": "smell",
-        "zh": "氣味；聞",
-        "en_sentence": "I smell cookies baking in the oven.",
-        "zh_sentence": "我聞到烤箱裡餅乾的香味。",
-        "category": "身體健康"
-      },
-      {
-        "word": "sound",
-        "zh": "聲音；聽",
-        "en_sentence": "Do you hear the sound of birds in the morning?",
-        "zh_sentence": "你聽到早晨鳥兒的聲音嗎？",
-        "category": "身體健康"
-      },
-      {
-        "word": "feel",
-        "zh": "感覺",
-        "en_sentence": "I feel cold when I go outside without a coat.",
-        "zh_sentence": "如果我不穿外套出門，我會感到寒冷。",
-        "category": "身體健康"
-      },
-      {
-        "word": "large",
-        "zh": "大的",
-        "en_sentence": "They lived in a large house near the lake.",
-        "zh_sentence": "他們住在靠近湖邊的一棟大房子裡。",
-        "category": "形容詞"
-      },
-      {
-        "word": "heavy",
-        "zh": "重的",
-        "en_sentence": "This box is too heavy for me to lift.",
-        "zh_sentence": "這個箱子對我來說太重了，無法抬起。",
-        "category": "形容詞"
-      },
-      {
-        "word": "try",
-        "zh": "試做",
-        "en_sentence": "I will try my best on the exam.",
-        "zh_sentence": "我會在考試中盡力而為。",
-        "category": "動作動詞"
-      },
-      {
-        "word": "comfortable",
-        "zh": "舒適的",
-        "en_sentence": "This chair is very comfortable to sit on.",
-        "zh_sentence": "這張椅子坐起來非常舒適。",
-        "category": "形容詞"
-      },
-      {
-        "word": "successful",
-        "zh": "成功的",
-        "en_sentence": "She felt successful after finishing the race.",
-        "zh_sentence": "她跑完比賽後感到很成功。",
-        "category": "形容詞"
-      },
-      {
-        "word": "famous",
-        "zh": "有名的",
-        "en_sentence": "The famous singer visited our school.",
-        "zh_sentence": "那位有名的歌手來訪我們學校。",
-        "category": "形容詞"
-      },
-      {
-        "word": "care",
-        "zh": "關心；喜歡",
-        "en_sentence": "She takes care of her little brother every day.",
-        "zh_sentence": "她每天照顧她的弟弟。",
-        "category": "動作動詞"
-      },
-      {
-        "word": "careful",
-        "zh": "小心的",
-        "en_sentence": "Be careful when you cross the street.",
-        "zh_sentence": "過馬路時要小心。",
-        "category": "形容詞"
-      },
-      {
-        "word": "friendly",
-        "zh": "友善的",
-        "en_sentence": "The neighbors are very friendly to us.",
-        "zh_sentence": "鄰居對我們非常友善。",
-        "category": "形容詞"
-      },
-      {
-        "word": "fresh",
-        "zh": "新鮮的",
-        "en_sentence": "We picked fresh strawberries from the farm.",
-        "zh_sentence": "我們從農場採摘了新鮮的草莓。",
-        "category": "形容詞"
-      },
-      {
-        "word": "sweet",
-        "zh": "甜美的",
-        "en_sentence": "The cake tastes sweet and soft.",
-        "zh_sentence": "蛋糕嘗起來甜美又鬆軟。",
-        "category": "形容詞"
-      },
-      {
-        "word": "each",
-        "zh": "每一；每個",
-        "en_sentence": "Each student must bring a pencil to class.",
-        "zh_sentence": "每個學生都必須帶鉛筆來上課。",
-        "category": "抽象概念"
-      },
-      {
-        "word": "swing",
-        "zh": "搖擺；鞦韆",
-        "en_sentence": "The children love to swing at the playground.",
-        "zh_sentence": "孩子們喜歡在遊樂場的鞦韆上搖擺。",
-        "category": "動作動詞"
-      },
-      {
-        "word": "slide",
-        "zh": "滑動；滑坡",
-        "en_sentence": "Please slide the door open slowly.",
-        "zh_sentence": "請慢慢地把門滑開。",
-        "category": "動作動詞"
-      },
-      {
-        "word": "hide",
-        "zh": "躲藏",
-        "en_sentence": "He likes to hide behind the tree during games.",
-        "zh_sentence": "他喜歡在遊戲時躲在樹後面。",
-        "category": "動作動詞"
-      },
-      {
-        "word": "restaurant",
-        "zh": "餐廳",
-        "en_sentence": "We celebrate our birthday at a restaurant.",
-        "zh_sentence": "我們在餐廳慶祝生日。",
-        "category": "場所位置"
-      },
-      {
-        "word": "drop",
-        "zh": "掉落；滴下",
-        "en_sentence": "Be careful not to drop the vase.",
-        "zh_sentence": "小心別把花瓶掉落。",
-        "category": "動作動詞"
-      }
-    ];
+   // ===== 題庫資料 (已更新為新的單字列表 P85 並增加分類) =====
+const VOCAB_DATA = [
+    {
+        "word": "ring",
+        "zh": "戒指；鈴聲",
+        "en_sentence": "She wears a gold ring on her finger.",
+        "zh_sentence": "她手指上戴著一枚金戒指。",
+        "category": "物品/名詞"
+    },
+    {
+        "word": "rope",
+        "zh": "繩索",
+        "en_sentence": "We used a long rope to tie the boat.",
+        "zh_sentence": "我們用一條長繩來綁船。",
+        "category": "物品/名詞"
+    },
+    {
+        "word": "medicine",
+        "zh": "藥物",
+        "en_sentence": "You should take your medicine with water.",
+        "zh_sentence": "你應該用水服用你的藥物。",
+        "category": "健康/名詞"
+    },
+    {
+        "word": "stomach",
+        "zh": "胃；肚子",
+        "en_sentence": "My stomach hurts after eating too much.",
+        "zh_sentence": "我吃太多後肚子痛。",
+        "category": "身體部位"
+    },
+    {
+        "word": "fever",
+        "zh": "發燒",
+        "en_sentence": "The child has a high fever and needs rest.",
+        "zh_sentence": "這個孩子發高燒，需要休息。",
+        "category": "健康/名詞"
+    },
+    {
+        "word": "throat",
+        "zh": "喉嚨",
+        "en_sentence": "I have a sore throat and can't talk loudly.",
+        "zh_sentence": "我喉嚨痛，不能大聲說話。",
+        "category": "身體部位"
+    },
+    {
+        "word": "sore",
+        "zh": "疼痛的",
+        "en_sentence": "My muscles are sore after the long walk.",
+        "zh_sentence": "長途步行後我的肌肉很痠痛。",
+        "category": "形容詞"
+    },
+    {
+        "word": "language",
+        "zh": "語言",
+        "en_sentence": "English is an international language.",
+        "zh_sentence": "英文是一種國際語言。",
+        "category": "學科/概念"
+    },
+    {
+        "word": "band",
+        "zh": "樂隊；帶子",
+        "en_sentence": "The rock band played loud music.",
+        "zh_sentence": "這支搖滾樂隊演奏了吵雜的音樂。",
+        "category": "音樂/團體"
+    },
+    {
+        "word": "drum",
+        "zh": "鼓",
+        "en_sentence": "He plays the drum in a local band.",
+        "zh_sentence": "他在一個當地的樂隊裡打鼓。",
+        "category": "音樂/物品"
+    },
+    {
+        "word": "picnic",
+        "zh": "野餐",
+        "en_sentence": "Let's have a picnic in the park tomorrow.",
+        "zh_sentence": "我們明天去公園野餐吧。",
+        "category": "休閒/活動"
+    },
+    {
+        "word": "goat",
+        "zh": "山羊",
+        "en_sentence": "A goat is eating grass on the hill.",
+        "zh_sentence": "一隻山羊正在山丘上吃草。",
+        "category": "動物"
+    },
+    {
+        "word": "rose",
+        "zh": "玫瑰",
+        "en_sentence": "The rose is a beautiful flower.",
+        "zh_sentence": "玫瑰是一種美麗的花。",
+        "category": "自然/植物"
+    },
+    {
+        "word": "foreigner",
+        "zh": "外國人",
+        "en_sentence": "A foreigner asked me for directions.",
+        "zh_sentence": "一位外國人向我問路。",
+        "category": "人/身份"
+    },
+    {
+        "word": "email",
+        "zh": "電子郵件",
+        "en_sentence": "Did you get my email yesterday?",
+        "zh_sentence": "你昨天收到我的電子郵件了嗎？",
+        "category": "科技/通訊"
+    },
+    {
+        "word": "honey",
+        "zh": "蜂蜜；親愛的",
+        "en_sentence": "She likes to put honey in her tea.",
+        "zh_sentence": "她喜歡在茶裡加蜂蜜。",
+        "category": "食物/稱謂"
+    },
+    {
+        "word": "dear",
+        "zh": "親愛的；昂貴的",
+        "en_sentence": "Dear John, I am writing to you.",
+        "zh_sentence": "親愛的約翰，我正在給你寫信。",
+        "category": "形容詞/稱謂"
+    },
+    {
+        "word": "common",
+        "zh": "常見的；共同的",
+        "en_sentence": "Flu is a common illness in winter.",
+        "zh_sentence": "流感是冬季常見的疾病。",
+        "category": "形容詞"
+    },
+    {
+        "word": "little",
+        "zh": "小的；一點點",
+        "en_sentence": "She has a cute little dog.",
+        "zh_sentence": "她有一隻可愛的小狗。",
+        "category": "形容詞"
+    },
+    {
+        "word": "straight",
+        "zh": "直的；筆直地",
+        "en_sentence": "Please walk straight down this road.",
+        "zh_sentence": "請沿著這條路直走。",
+        "category": "形容詞/副詞"
+    },
+    {
+        "word": "understand",
+        "zh": "理解；明白",
+        "en_sentence": "I understand the concept now.",
+        "zh_sentence": "我現在理解這個概念了。",
+        "category": "動詞/心理"
+    },
+    {
+        "word": "invite",
+        "zh": "邀請",
+        "en_sentence": "They invited us to their party.",
+        "zh_sentence": "他們邀請我們參加他們的派對。",
+        "category": "動詞/動作"
+    },
+    {
+        "word": "visit",
+        "zh": "拜訪；參觀",
+        "en_sentence": "We plan to visit the museum next month.",
+        "zh_sentence": "我們計畫下個月去參觀博物館。",
+        "category": "動詞/動作"
+    },
+    {
+        "word": "prepare",
+        "zh": "準備",
+        "en_sentence": "I need to prepare for the job interview.",
+        "zh_sentence": "我需要為工作面試做準備。",
+        "category": "動詞/動作"
+    },
+    {
+        "word": "mop",
+        "zh": "拖地；拖把",
+        "en_sentence": "Please mop the kitchen floor after dinner.",
+        "zh_sentence": "請在晚餐後拖廚房地板。",
+        "category": "動詞/動作"
+    },
+    {
+        "word": "send",
+        "zh": "寄送",
+        "en_sentence": "Did you send the letter yet?",
+        "zh_sentence": "你寄信了嗎？",
+        "category": "動詞/動作"
+    },
+    {
+        "word": "could",
+        "zh": "能；可以 (助動詞過去式)",
+        "en_sentence": "Could you help me with this box?",
+        "zh_sentence": "你能幫我搬這個箱子嗎？",
+        "category": "助動詞"
+    },
+    {
+        "word": "still",
+        "zh": "仍然；還",
+        "en_sentence": "He is still waiting for the bus.",
+        "zh_sentence": "他仍然在等公車。",
+        "category": "副詞"
+    },
+    {
+        "word": "soon",
+        "zh": "很快地；不久",
+        "en_sentence": "I hope to see you again soon.",
+        "zh_sentence": "我希望很快能再次見到你。",
+        "category": "副詞"
+    },
+    {
+        "word": "me",
+        "zh": "我 (受格)",
+        "en_sentence": "Please give the book to me.",
+        "zh_sentence": "請把書給我。",
+        "category": "代名詞"
+    },
+    {
+        "word": "him",
+        "zh": "他 (受格)",
+        "en_sentence": "I saw him at the library this morning.",
+        "zh_sentence": "我今天早上在圖書館看到他。",
+        "category": "代名詞"
+    },
+    {
+        "word": "often",
+        "zh": "經常",
+        "en_sentence": "She often visits her grandparents.",
+        "zh_sentence": "她經常拜訪她的祖父母。",
+        "category": "副詞"
+    },
+    {
+        "word": "us",
+        "zh": "我們 (受格)",
+        "en_sentence": "The teacher gave us a lot of homework.",
+        "zh_sentence": "老師給了我們很多家庭作業。",
+        "category": "代名詞"
+    },
+    {
+        "word": "them",
+        "zh": "他們/牠們/它們 (受格)",
+        "en_sentence": "I bought gifts for them.",
+        "zh_sentence": "我為他們買了禮物。",
+        "category": "代名詞"
+    },
+    {
+        "word": "mine",
+        "zh": "我的 (所有格代名詞)",
+        "en_sentence": "This red pen is mine.",
+        "zh_sentence": "這支紅筆是我的。",
+        "category": "代名詞"
+    },
+    {
+        "word": "yours",
+        "zh": "你的/你們的 (所有格代名詞)",
+        "en_sentence": "Is this umbrella yours?",
+        "zh_sentence": "這把傘是你的嗎？",
+        "category": "代名詞"
+    },
+    {
+        "word": "hers",
+        "zh": "她的 (所有格代名詞)",
+        "en_sentence": "The blue bike is hers.",
+        "zh_sentence": "這輛藍色腳踏車是她的。",
+        "category": "代名詞"
+    },
+    {
+        "word": "birthday",
+        "zh": "生日",
+        "en_sentence": "Today is my friend's birthday.",
+        "zh_sentence": "今天是我朋友的生日。",
+        "category": "節日/活動"
+    },
+    {
+        "word": "ours",
+        "zh": "我們的 (所有格代名詞)",
+        "en_sentence": "That large house is ours.",
+        "zh_sentence": "那棟大房子是我們的。",
+        "category": "代名詞"
+    },
+    {
+        "word": "theirs",
+        "zh": "他們的/牠們的/它們的 (所有格代名詞)",
+        "en_sentence": "I think the keys are theirs.",
+        "zh_sentence": "我想這些鑰匙是他們的。",
+        "category": "代名詞"
+    }
+];
 
     // ===== 遊戲狀態變數 =====
     let gameState = {
