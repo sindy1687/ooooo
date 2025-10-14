@@ -708,303 +708,290 @@
     };
 
     // ===== 題庫資料 =====
-    const VOCAB_DATA = [
-      {
-        "word": "homework",
-        "zh": "家庭作業",
-        "en_sentence": "Please finish your homework before dinner.",
-        "zh_sentence": "請在晚餐前完成你的家庭作業。",
-        "category": "學術教育"
-      },
-      {
-        "word": "surprised",
-        "zh": "感到驚訝的",
-        "en_sentence": "She was surprised by the unexpected gift.",
-        "zh_sentence": "她對那份意外的禮物感到驚訝。",
-        "category": "形容詞"
-      },
-      {
-        "word": "north",
-        "zh": "北方；向北",
-        "en_sentence": "The wind is blowing from the north today.",
-        "zh_sentence": "今天風從北方吹來。",
-        "category": "場所位置"
-      },
-      {
-        "word": "west",
-        "zh": "西方；向西",
-        "en_sentence": "The sun sets in the west every evening.",
-        "zh_sentence": "太陽每天傍晚都在西方落下。",
-        "category": "場所位置"
-      },
-      {
-        "word": "east",
-        "zh": "東方；向東",
-        "en_sentence": "We saw a beautiful sunrise in the east.",
-        "zh_sentence": "我們在東方看到美麗的日出。",
-        "category": "場所位置"
-      },
-      {
-        "word": "south",
-        "zh": "南方；向南",
-        "en_sentence": "The river flows toward the south.",
-        "zh_sentence": "河流向南方流去。",
-        "category": "場所位置"
-      },
-      {
-        "word": "grow",
-        "zh": "種植；發展",
-        "en_sentence": "We grow tomatoes in our garden every summer.",
-        "zh_sentence": "我們每年夏天在花園裡種植番茄。",
-        "category": "動作動詞"
-      },
-      {
-        "word": "since",
-        "zh": "自從；因為",
-        "en_sentence": "She has been happy since she got a new puppy.",
-        "zh_sentence": "自從她得到一隻新小狗後，她一直很開心。",
-        "category": "抽象概念"
-      },
-      {
-        "word": "traffic",
-        "zh": "交通",
-        "en_sentence": "Traffic is heavy on this road during rush hour.",
-        "zh_sentence": "在尖峰時段這條路的交通很擁擠。",
-        "category": "抽象概念"
-      },
-      {
-        "word": "case",
-        "zh": "情況",
-        "en_sentence": "In that case, we should leave early.",
-        "zh_sentence": "在那種情況下，我們應該早點離開。",
-        "category": "抽象概念"
-      },
-      {
-        "word": "gate",
-        "zh": "大門",
-        "en_sentence": "Please wait for me at the school gate.",
-        "zh_sentence": "請在學校大門等我。",
-        "category": "場所位置"
-      },
-      {
-        "word": "teenager",
-        "zh": "青少年",
-        "en_sentence": "Many teenagers like to listen to pop music.",
-        "zh_sentence": "許多青少年喜歡聽流行音樂。",
-        "category": "稱謂人際"
-      },
-      {
-        "word": "restroom",
-        "zh": "廁所",
-        "en_sentence": "Where is the restroom in this building?",
-        "zh_sentence": "這棟建築物的廁所在哪裡？",
-        "category": "場所位置"
-      },
-      {
-        "word": "uniform",
-        "zh": "制服",
-        "en_sentence": "Students must wear their uniform to school every day.",
-        "zh_sentence": "學生每天都必須穿制服上學。",
-        "category": "學術教育"
-      },
-      {
-        "word": "paint",
-        "zh": "動畫圖；油漆",
-        "en_sentence": "Please paint the wall blue.",
-        "zh_sentence": "請把牆壁漆成藍色。",
-        "category": "動作動詞"
-      },
-      {
-        "word": "bridge",
-        "zh": "橋樑",
-        "en_sentence": "We walked across the bridge to get to the park.",
-        "zh_sentence": "我們走過橋樑到達公園。",
-        "category": "場所位置"
-      },
-      {
-        "word": "airport",
-        "zh": "機場",
-        "en_sentence": "They arrived at the airport early in the morning.",
-        "zh_sentence": "他們一大早就到達機場。",
-        "category": "場所位置"
-      },
-      {
-        "word": "postcard",
-        "zh": "明信片",
-        "en_sentence": "She sent a postcard from her vacation in Japan.",
-        "zh_sentence": "她從日本度假時寄了一張明信片。",
-        "category": "抽象概念"
-      },
-      {
-        "word": "stair",
-        "zh": "樓梯",
-        "en_sentence": "He climbed the stair to reach his room.",
-        "zh_sentence": "他爬樓梯到他的房間。",
-        "category": "場所位置"
-      },
-      {
-        "word": "hard-working",
-        "zh": "勤奮工作的",
-        "en_sentence": "She is a hard-working student who studies every day.",
-        "zh_sentence": "她是一個每天都勤奮學習的學生。",
-        "category": "形容詞"
-      },
-      {
-        "word": "clap",
-        "zh": "拍（手）",
-        "en_sentence": "Please clap your hands for the singer.",
-        "zh_sentence": "請為歌手拍手。",
-        "category": "動作動詞"
-      },
-      {
-        "word": "serious",
-        "zh": "嚴肅的；認真的",
-        "en_sentence": "He looks serious during the exam.",
-        "zh_sentence": "他在考試時表情很嚴肅。",
-        "category": "形容詞"
-      },
-      {
-        "word": "simple",
-        "zh": "簡單的",
-        "en_sentence": "This math problem is very simple.",
-        "zh_sentence": "這道數學題非常簡單。",
-        "category": "形容詞"
-      },
-      {
-        "word": "cross",
-        "zh": "跨越",
-        "en_sentence": "Cross the street at the crosswalk.",
-        "zh_sentence": "在斑馬線處過馬路。",
-        "category": "動作動詞"
-      },
-      {
-        "word": "enter",
-        "zh": "進入",
-        "en_sentence": "Enter the classroom quietly.",
-        "zh_sentence": "輕聲地進入教室。",
-        "category": "動作動詞"
-      },
-      {
-        "word": "appear",
-        "zh": "出現",
-        "en_sentence": "A rainbow will appear after the rain.",
-        "zh_sentence": "雨後會出現彩虹。",
-        "category": "動作動詞"
-      },
-      {
-        "word": "space",
-        "zh": "空位；太空",
-        "en_sentence": "We need space to play basketball.",
-        "zh_sentence": "我們需要空間來打籃球。",
-        "category": "抽象概念"
-      },
-      {
-        "word": "lie",
-        "zh": "說謊；謊言",
-        "en_sentence": "Don't lie to your parents.",
-        "zh_sentence": "不要對你的父母說謊。",
-        "category": "動作動詞"
-      },
-      {
-        "word": "shine",
-        "zh": "發光；照耀",
-        "en_sentence": "The sun will shine tomorrow.",
-        "zh_sentence": "明天太陽會照耀。",
-        "category": "動作動詞"
-      },
-      {
-        "word": "pray",
-        "zh": "祈求；祈禱",
-        "en_sentence": "We pray for our family's safety.",
-        "zh_sentence": "我們為家人的平安祈禱。",
-        "category": "動作動詞"
-      },
-      {
-        "word": "belong",
-        "zh": "屬於",
-        "en_sentence": "That book belongs to me.",
-        "zh_sentence": "那本書屬於我。",
-        "category": "動作動詞"
-      },
-      {
-        "word": "build",
-        "zh": "建造；建立",
-        "en_sentence": "They build a sandcastle on the beach.",
-        "zh_sentence": "他們在海灘上建造沙堡。",
-        "category": "動作動詞"
-      },
-      {
-        "word": "ever",
-        "zh": "曾經",
-        "en_sentence": "Have you ever been to Tokyo?",
-        "zh_sentence": "你曾經去過東京嗎？",
-        "category": "抽象概念"
-      },
-      {
-        "word": "however",
-        "zh": "然而",
-        "en_sentence": "However, it started to rain.",
-        "zh_sentence": "然而，開始下雨了。",
-        "category": "抽象概念"
-      },
-      {
-        "word": "almost",
-        "zh": "幾乎",
-        "en_sentence": "I almost missed the bus.",
-        "zh_sentence": "我差點錯過公車。",
-        "category": "抽象概念"
-      },
-      {
-        "word": "finally",
-        "zh": "最後；終於",
-        "en_sentence": "Finally, we finished the project.",
-        "zh_sentence": "最後我們終於完成了專案。",
-        "category": "抽象概念"
-      },
-      {
-        "word": "quite",
-        "zh": "相當地",
-        "en_sentence": "She is quite good at singing.",
-        "zh_sentence": "她唱歌相當好。",
-        "category": "抽象概念"
-      },
-      {
-        "word": "whether",
-        "zh": "是否",
-        "en_sentence": "I don't know whether it will rain.",
-        "zh_sentence": "我不知道是否會下雨。",
-        "category": "抽象概念"
-      },
-      {
-        "word": "stand",
-        "zh": "站住；攤子",
-        "en_sentence": "Please stand in line.",
-        "zh_sentence": "請站隊。",
-        "category": "動作動詞"
-      },
-      {
-        "word": "except",
-        "zh": "除了",
-        "en_sentence": "Everyone went except me.",
-        "zh_sentence": "除了我以外，所有人都去了。",
-        "category": "抽象概念"
-      },
-      {
-        "word": "club",
-        "zh": "社團",
-        "en_sentence": "I joined the art club at school.",
-        "zh_sentence": "我加入了學校的美術社團。",
-        "category": "學術教育"
-      },
-      {
-        "word": "chess",
-        "zh": "西洋棋",
-        "en_sentence": "They play chess after class.",
-        "zh_sentence": "他們課後下西洋棋。",
-        "category": "運動娛樂"
-      }
-    ];
-
+    // ===== 題庫資料 (已更新為新的單字列表 P133 並增加分類) =====
+// ===== 題庫資料 (已更新為新的單字列表 P133 及其新增單字並增加分類) =====
+const VOCAB_DATA = [
+    {
+        "word": "most",
+        "zh": "最多數的；大部分",
+        "en_sentence": "Most of the students passed the exam.",
+        "zh_sentence": "大部分學生通過了考試。",
+        "category": "形容詞/代名詞"
+    },
+    {
+        "word": "whose",
+        "zh": "誰的",
+        "en_sentence": "Whose book is lying on the table?",
+        "zh_sentence": "誰的書放在桌上？",
+        "category": "疑問詞/所有格"
+    },
+    {
+        "word": "than",
+        "zh": "比 (用於比較)",
+        "en_sentence": "The train is faster than the bus.",
+        "zh_sentence": "火車比公車快。",
+        "category": "連接詞/介系詞"
+    },
+    {
+        "word": "heart",
+        "zh": "心臟；心",
+        "en_sentence": "He has a kind heart and helps everyone.",
+        "zh_sentence": "他有一顆善良的心，幫助每個人。",
+        "category": "身體部位/名詞"
+    },
+    {
+        "word": "arm",
+        "zh": "手臂",
+        "en_sentence": "She carried the basket in her left arm.",
+        "zh_sentence": "她用左手臂提著籃子。",
+        "category": "身體部位"
+    },
+    {
+        "word": "nail",
+        "zh": "指甲；釘子",
+        "en_sentence": "I need to trim my fingernail.",
+        "zh_sentence": "我需要修剪我的指甲。",
+        "category": "身體部位/物品"
+    },
+    {
+        "word": "knee",
+        "zh": "膝蓋",
+        "en_sentence": "He fell and hurt his right knee.",
+        "zh_sentence": "他跌倒並傷到了他的右膝蓋。",
+        "category": "身體部位"
+    },
+    {
+        "word": "shoulder",
+        "zh": "肩膀",
+        "en_sentence": "She tapped me on the shoulder.",
+        "zh_sentence": "她拍了拍我的肩膀。",
+        "category": "身體部位"
+    },
+    {
+        "word": "part",
+        "zh": "部分；角色",
+        "en_sentence": "This is the most difficult part of the test.",
+        "zh_sentence": "這是測驗中最困難的部分。",
+        "category": "名詞/數量"
+    },
+    {
+        "word": "rest",
+        "zh": "休息；剩餘部分",
+        "en_sentence": "I will finish the rest of the work later.",
+        "zh_sentence": "我稍後會完成剩下的工作。",
+        "category": "動詞/名詞"
+    },
+    {
+        "word": "cut",
+        "zh": "切；割傷",
+        "en_sentence": "Be careful when you cut the vegetables.",
+        "zh_sentence": "切蔬菜時要小心。",
+        "category": "動詞/動作"
+    },
+    {
+        "word": "fill",
+        "zh": "裝滿；填補",
+        "en_sentence": "He needs to fill out this application form.",
+        "zh_sentence": "他需要填寫這份申請表。",
+        "category": "動詞/動作"
+    },
+    {
+        "word": "pack",
+        "zh": "打包；包裹",
+        "en_sentence": "Pack light for your weekend trip.",
+        "zh_sentence": "週末旅行時請輕裝打包。",
+        "category": "動詞/動作"
+    },
+    {
+        "word": "package",
+        "zh": "包裹；包裝",
+        "en_sentence": "I'm expecting a package from the post office.",
+        "zh_sentence": "我正在等郵局的一個包裹。",
+        "category": "物品/名詞"
+    },
+    {
+        "word": "air",
+        "zh": "空氣；天空",
+        "en_sentence": "The fresh air outside feels good.",
+        "zh_sentence": "外面的新鮮空氣感覺很好。",
+        "category": "自然/名詞"
+    },
+    {
+        "word": "smoke",
+        "zh": "煙；抽煙",
+        "en_sentence": "Please do not smoke inside the building.",
+        "zh_sentence": "請勿在建築物內吸煙。",
+        "category": "自然/名詞/動詞"
+    },
+    {
+        "word": "earth",
+        "zh": "地球；泥土",
+        "en_sentence": "We learned about the history of the earth.",
+        "zh_sentence": "我們學習了地球的歷史。",
+        "category": "自然/地理"
+    },
+    {
+        "word": "plant",
+        "zh": "植物；種植",
+        "en_sentence": "They plan to plant more trees in the area.",
+        "zh_sentence": "他們計畫在該地區種植更多的樹木。",
+        "category": "自然/名詞/動詞"
+    },
+    {
+        "word": "life",
+        "zh": "生命；生活",
+        "en_sentence": "What is the meaning of life?",
+        "zh_sentence": "生命的意義是什麼？",
+        "category": "抽象名詞"
+    },
+    {
+        "word": "light",
+        "zh": "光；輕的",
+        "en_sentence": "The backpack is very light and easy to carry.",
+        "zh_sentence": "這個背包很輕，很容易攜帶。",
+        "category": "物理/名詞/形容詞"
+    },
+    {
+        "word": "tub",
+        "zh": "浴缸；桶",
+        "en_sentence": "The baby is splashing water in the tub.",
+        "zh_sentence": "寶寶在浴缸裡潑水。",
+        "category": "家居/名詞"
+    },
+    {
+        "word": "mat",
+        "zh": "墊子；席子",
+        "en_sentence": "We sat on a straw mat at the beach.",
+        "zh_sentence": "我們在海灘上坐在草蓆上。",
+        "category": "家居/名詞"
+    },
+    {
+        "word": "candle",
+        "zh": "蠟燭",
+        "en_sentence": "The birthday cake had ten candles on it.",
+        "zh_sentence": "生日蛋糕上有十根蠟燭。",
+        "category": "物品/名詞"
+    },
+    {
+        "word": "lamp",
+        "zh": "燈；檯燈",
+        "en_sentence": "I turned on the desk lamp to read.",
+        "zh_sentence": "我打開檯燈看書。",
+        "category": "家居/名詞"
+    },
+    {
+        "word": "fire",
+        "zh": "火；火災",
+        "en_sentence": "Be careful when you play with fire.",
+        "zh_sentence": "玩火時要小心。",
+        "category": "自然/名詞"
+    },
+    {
+        "word": "wind",
+        "zh": "風",
+        "en_sentence": "The cool wind made me feel refreshed.",
+        "zh_sentence": "涼爽的風讓我感到精神煥發。",
+        "category": "自然/名詞"
+    },
+    {
+        "word": "sky",
+        "zh": "天空",
+        "en_sentence": "I looked up at the night sky and saw the stars.",
+        "zh_sentence": "我抬頭望著夜空，看到了星星。",
+        "category": "自然/名詞"
+    },
+    {
+        "word": "rainbow",
+        "zh": "彩虹",
+        "en_sentence": "The rainbow has seven beautiful colors.",
+        "zh_sentence": "彩虹有七種美麗的顏色。",
+        "category": "自然/名詞"
+    },
+    {
+        "word": "yet",
+        "zh": "還沒；但是",
+        "en_sentence": "Have you finished your chores yet?",
+        "zh_sentence": "你已經完成你的家事了嗎？",
+        "category": "副詞"
+    },
+    {
+        "word": "wave",
+        "zh": "波浪；揮手",
+        "en_sentence": "She gave a friendly wave to her friends.",
+        "zh_sentence": "她向她的朋友們友好地揮手。",
+        "category": "自然/名詞/動詞"
+    },
+    {
+        "word": "rock",
+        "zh": "岩石；搖滾樂",
+        "en_sentence": "The geologist studied the composition of the rock.",
+        "zh_sentence": "那位地質學家研究了岩石的組成。",
+        "category": "自然/名詞"
+    },
+    {
+        "word": "nature",
+        "zh": "自然；大自然",
+        "en_sentence": "We went on a hike to appreciate nature.",
+        "zh_sentence": "我們去健行以欣賞大自然。",
+        "category": "抽象名詞"
+    },
+    {
+        "word": "land",
+        "zh": "陸地；著陸",
+        "en_sentence": "The plane landed smoothly on the runway.",
+        "zh_sentence": "飛機平穩地降落在跑道上。",
+        "category": "地理/名詞/動詞"
+    },
+    {
+        "word": "pond",
+        " zh": "池塘",
+        "en_sentence": "There are small fish swimming in the pond.",
+        "zh_sentence": "小池塘裡有小魚在游泳。",
+        "category": "地理/名詞"
+    },
+    {
+        "word": "mud",
+        "zh": "泥巴；泥濘",
+        "en_sentence": "My boots got stuck in the thick mud.",
+        "zh_sentence": "我的靴子陷在厚厚的泥巴裡。",
+        "category": "自然/名詞"
+    },
+    {
+        "word": "mountain",
+        "zh": "山",
+        "en_sentence": "We decided to climb the mountain next weekend.",
+        "zh_sentence": "我們決定下週末去爬山。",
+        "category": "地理/名詞"
+    },
+    {
+        "word": "beach",
+        "zh": "海灘",
+        "en_sentence": "The children love playing in the sand at the beach.",
+        "zh_sentence": "孩子們喜歡在海灘上玩沙。",
+        "category": "地理/名詞"
+    },
+    {
+        "word": "river",
+        "zh": "河流",
+        "en_sentence": "We followed the river downstream to the sea.",
+        "zh_sentence": "我們沿著河流往下游走到海邊。",
+        "category": "地理/名詞"
+    },
+    {
+        "word": "lake",
+        "zh": "湖",
+        "en_sentence": "They rented a small cabin by the lake.",
+        "zh_sentence": "他們在湖邊租了一個小木屋。",
+        "category": "地理/名詞"
+    },
+    {
+        "word": "please",
+        "zh": "請；取悅",
+        "en_sentence": "It is difficult to please everyone.",
+        "zh_sentence": "取悅每個人是很困難的。",
+        "category": "動詞/感歎詞"
+    }
+];
     // ===== 遊戲狀態變數 =====
     let gameState = {
       data: [],
