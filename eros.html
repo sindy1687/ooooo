@@ -702,190 +702,289 @@
     };
 
     // ===== 題庫資料 =====
-    const VOCAB_DATA = [
-      {
-        "word": "lawyer",
-        "zh": "律師",
-        "en_sentence": "She wants to become a lawyer when she grows up.",
-        "zh_sentence": "她長大後想成為律師。",
-        "category": "學術教育"
-      },
-      {
-        "word": "dentist",
-        "zh": "牙醫",
-        "en_sentence": "I have an appointment with the dentist tomorrow.",
-        "zh_sentence": "我明天有牙醫預約。",
-        "category": "身體健康"
-      },
-      {
-        "word": "touch",
-        "zh": "觸摸；感動",
-        "en_sentence": "Don't touch the hot pan, it's too hot.",
-        "zh_sentence": "不要觸摸那個熱鍋，非常燙。",
-        "category": "動作動詞"
-      },
-      {
-        "word": "headache",
-        "zh": "頭痛",
-        "en_sentence": "I have a headache after studying all afternoon.",
-        "zh_sentence": "下午一直念書之後我頭痛。",
-        "category": "身體健康"
-      },
-      {
-        "word": "cheer",
-        "zh": "鼓舞；歡呼",
-        "en_sentence": "The crowd will cheer for the winning team.",
-        "zh_sentence": "人群會為獲勝的隊伍歡呼。",
-        "category": "聲音表演"
-      },
-      {
-        "word": "leader",
-        "zh": "領導者",
-        "en_sentence": "The leader guided the group up the mountain.",
-        "zh_sentence": "領導者帶領小組爬上山。",
-        "category": "稱謂人際"
-      },
-      {
-        "word": "class leader",
-        "zh": "班長",
-        "en_sentence": "The class leader hands out the worksheets.",
-        "zh_sentence": "班長發放工作紙。",
-        "category": "學術教育"
-      },
-      {
-        "word": "ready",
-        "zh": "準備好的",
-        "en_sentence": "Are you ready for the test?",
-        "zh_sentence": "你準備好考試了嗎？",
-        "category": "形容詞"
-      },
-      {
-        "word": "every",
-        "zh": "每一個的",
-        "en_sentence": "Every student needs to bring a notebook.",
-        "zh_sentence": "每位學生都需要帶筆記本。",
-        "category": "形容詞"
-      },
-      {
-        "word": "kill",
-        "zh": "殺",
-        "en_sentence": "The farmer uses a trap to kill weeds.",
-        "zh_sentence": "農夫用陷阱除草。",
-        "category": "動作動詞"
-      },
-      {
-        "word": "barbecue",
-        "zh": "烤肉；烤肉野餐",
-        "en_sentence": "They barbecue chicken in the backyard on weekends.",
-        "zh_sentence": "他們週末在後院烤雞。",
-        "category": "食物"
-      },
-      {
-        "word": "sidewalk",
-        "zh": "人行道",
-        "en_sentence": "Walk on the sidewalk, not in the street.",
-        "zh_sentence": "在人行道上走，不要在人行道外走。",
-        "category": "場所位置"
-      },
-      {
-        "word": "middle",
-        "zh": "中間",
-        "en_sentence": "Stand in the middle of the stage when you speak.",
-        "zh_sentence": "講話時要站在舞臺中間。",
-        "category": "場所位置"
-      },
-      {
-        "word": "bottom",
-        "zh": "底部",
-        "en_sentence": "Look at the bottom of the book for the index.",
-        "zh_sentence": "看書底部的索引。",
-        "category": "場所位置"
-      },
-      {
-        "word": "shark",
-        "zh": "鯊魚",
-        "en_sentence": "We saw a shark in the aquarium tank.",
-        "zh_sentence": "我們在水族館水槽裡看到鯊魚。",
-        "category": "動物"
-      },
-      {
-        "word": "low",
-        "zh": "低的",
-        "en_sentence": "The battery is low, so please charge your tablet.",
-        "zh_sentence": "電池電量低，請為你的平板充電。",
-        "category": "形容詞"
-      },
-      {
-        "word": "dead",
-        "zh": "死亡的",
-        "en_sentence": "The flowers are dead because you forgot to water them.",
-        "zh_sentence": "你忘了澆水，花都枯死了。",
-        "category": "形容詞"
-      },
-      {
-        "word": "slim",
-        "zh": "苗條的；渺茫的",
-        "en_sentence": "He has a slim chance of winning the lottery.",
-        "zh_sentence": "他中獎的機會很渺茫。",
-        "category": "形容詞"
-      },
-      {
-        "word": "thick",
-        "zh": "厚的",
-        "en_sentence": "The book has a thick cover to protect the pages.",
-        "zh_sentence": "這本書有一個厚的書皮來保護頁面。",
-        "category": "形容詞"
-      },
-      {
-        "word": "burn",
-        "zh": "發熱；燃燒",
-        "en_sentence": "Be careful not to burn your hand on the stove.",
-        "zh_sentence": "小心別把手燙傷在爐子上。",
-        "category": "動作動詞"
-      },
-      {
-        "word": "tie",
-        "zh": "繫；打結",
-        "en_sentence": "Please tie your shoe laces before you run.",
-        "zh_sentence": "跑步前請先把鞋帶繫好。",
-        "category": "動作動詞"
-      },
-      {
-        "word": "deal",
-        "zh": "處理",
-        "en_sentence": "He will deal with the problem after class.",
-        "zh_sentence": "他會在下課後處理這個問題。",
-        "category": "動作動詞"
-      },
-      {
-        "word": "piece",
-        "zh": "件；片",
-        "en_sentence": "Give me one piece of paper, please.",
-        "zh_sentence": "請給我一張紙。",
-        "category": "數量分數"
-      },
-      {
-        "word": "into",
-        "zh": "到…之中",
-        "en_sentence": "Jump into the water, it's fun to swim!",
-        "zh_sentence": "跳進水裡，游泳很有趣！",
-        "category": "場所位置"
-      },
-      {
-        "word": "Internet",
-        "zh": "網際網路",
-        "en_sentence": "I research information on the Internet for my report.",
-        "zh_sentence": "我在網際網路上查資料做報告。",
-        "category": "抽象概念"
-      },
-      {
-        "word": "interview",
-        "zh": "面談；面試",
-        "en_sentence": "She has an interview for a summer job tomorrow.",
-        "zh_sentence": "她明天有一個暑期工作的面試。",
-        "category": "學術教育"
-      }
-    ];
+    // ===== 題庫資料 (已更新為新的單字列表 P181 並增加分類) =====
+const VOCAB_DATA = [
+    {
+        "word": "row",
+        "zh": "一排；划船",
+        "en_sentence": "We sat in the front row of the cinema.",
+        "zh_sentence": "我們坐在電影院的前排。",
+        "category": "名詞/動作"
+    },
+    {
+        "word": "million",
+        "zh": "百萬",
+        "en_sentence": "The new stadium cost ten million dollars.",
+        "zh_sentence": "這個新體育場花費了一千萬美元。",
+        "category": "數字/量詞"
+    },
+    {
+        "word": "goose",
+        "zh": "鵝",
+        "en_sentence": "The goose chased the children away.",
+        "zh_sentence": "那隻鵝把孩子們趕走了。",
+        "category": "動物/名詞"
+    },
+    {
+        "word": "bug",
+        "zh": "蟲子；錯誤 (電腦)",
+        "en_sentence": "There is a small bug crawling on the window.",
+        "zh_sentence": "有隻小蟲子在窗戶上爬行。",
+        "category": "動物/名詞"
+    },
+    {
+        "word": "hen",
+        "zh": "母雞",
+        "en_sentence": "The hen laid an egg this morning.",
+        "zh_sentence": "這隻母雞今天早上生了一個蛋。",
+        "category": "動物/名詞"
+    },
+    {
+        "word": "Halloween",
+        "zh": "萬聖節",
+        "en_sentence": "Children dress up in costumes for Halloween.",
+        "zh_sentence": "孩子們在萬聖節會打扮成各種服裝。",
+        "category": "節日/活動"
+    },
+    {
+        "word": "lantern",
+        "zh": "燈籠",
+        "en_sentence": "We lit a paper lantern to celebrate the festival.",
+        "zh_sentence": "我們點亮紙燈籠來慶祝節日。",
+        "category": "物品/名詞"
+    },
+    {
+        "word": "ghost",
+        "zh": "鬼；幽靈",
+        "en_sentence": "The story is about a ghost living in an old house.",
+        "zh_sentence": "這個故事是關於一個住在老房子裡的幽靈。",
+        "category": "抽象名詞/虛構"
+    },
+    {
+        "word": "mask",
+        "zh": "面具",
+        "en_sentence": "He wore a scary mask for the party.",
+        "zh_sentence": "他為派對戴了一個可怕的面具。",
+        "category": "衣物/用品"
+    },
+    {
+        "word": "doorbell",
+        "zh": "門鈴",
+        "en_sentence": "The delivery man rang the doorbell.",
+        "zh_sentence": "送貨員按了門鈴。",
+        "category": "家居/名詞"
+    },
+    {
+        "word": "surprise",
+        "zh": "驚喜；使驚訝",
+        "en_sentence": "The birthday party was a total surprise.",
+        "zh_sentence": "這個生日派對完全是個驚喜。",
+        "category": "名詞/動詞"
+    },
+    {
+        "word": "experience",
+        "zh": "經驗；經歷",
+        "en_sentence": "She has many years of experience in teaching.",
+        "zh_sentence": "她有多年的教學經驗。",
+        "category": "抽象名詞"
+    },
+    {
+        "word": "senior high school",
+        "zh": "高中",
+        "en_sentence": "He is planning to attend a senior high school in the city.",
+        "zh_sentence": "他正計畫去市區的一所高中就讀。",
+        "category": "教育/地點"
+    },
+    {
+        "word": "joy",
+        "zh": "歡樂；高興",
+        "en_sentence": "The family reunion brought great joy to everyone.",
+        "어를 "家庭聚會為每個人帶來了巨大的歡樂。",
+        "category": "抽象名詞/情緒"
+    },
+    {
+        "word": "oil",
+        "zh": "油",
+        "en_sentence": "We need more cooking oil to fry the fish.",
+        "zh_sentence": "我們需要更多的食用油來炸魚。",
+        "category": "物品/名詞"
+    },
+    {
+        "word": "gas",
+        "zh": "氣體；瓦斯；汽油",
+        "en_sentence": "We need to stop for gas before the long drive.",
+        "zh_sentence": "長途駕駛前我們需要停下來加油。",
+        "category": "物品/名詞"
+    },
+    {
+        "word": "top",
+        "zh": "頂部；最佳的",
+        "en_sentence": "Put the box on the top shelf.",
+        "zh_sentence": "把盒子放在最上面的架子上。",
+        "category": "方位/名詞"
+    },
+    {
+        "word": "several",
+        "zh": "幾個；數個",
+        "en_sentence": "I bought several books at the book fair.",
+        "zh_sentence": "我在書展買了好幾本書。",
+        "category": "量詞/形容詞"
+    },
+    {
+        "word": "real",
+        "zh": "真的；真實的",
+        "en_sentence": "Is that diamond real or fake?",
+        "zh_sentence": "那顆鑽石是真的還是假的？",
+        "category": "形容詞"
+    },
+    {
+        "word": "dangerous",
+        "zh": "危險的",
+        "en_sentence": "It is dangerous to swim alone in the deep sea.",
+        "zh_sentence": "獨自在深海游泳是很危險的。",
+        "category": "形容詞"
+    },
+    {
+        "word": "excited",
+        "zh": "感到興奮的",
+        "en_sentence": "I was excited about the coming holiday.",
+        "zh_sentence": "我對即將到來的假期感到興奮。",
+        "category": "形容詞/情緒"
+    },
+    {
+        "word": "exciting",
+        "zh": "令人興奮的",
+        "en_sentence": "The movie has an exciting plot.",
+        "zh_sentence": "這部電影有一個令人興奮的情節。",
+        "category": "形容詞"
+    },
+    {
+        "word": "scared",
+        "zh": "感到害怕的",
+        "en_sentence": "The little dog was scared by the loud noise.",
+        "zh_sentence": "小狗被巨大的噪音嚇到了。",
+        "category": "形容詞/情緒"
+    },
+    {
+        "word": "bored",
+        "zh": "感到無聊的",
+        "en_sentence": "The children were bored on the long rainy afternoon.",
+        "zh_sentence": "孩子們在漫長的下雨午後感到無聊。",
+        "category": "形容詞/情緒"
+    },
+    {
+        "word": "homework",
+        "zh": "家庭作業",
+        "en_sentence": "I finished my homework before dinner.",
+        "zh_sentence": "我在晚餐前完成了我的家庭作業。",
+        "category": "教育/名詞"
+    },
+    {
+        "word": "surprised",
+        "zh": "感到驚訝的",
+        "en_sentence": "I was surprised by the news of his marriage.",
+        "zh_sentence": "我對他結婚的消息感到驚訝。",
+        "category": "形容詞/情緒"
+    },
+    {
+        "word": "north",
+        "zh": "北邊",
+        "en_sentence": "The city is located in the north of the island.",
+        "zh_sentence": "這座城市位於島的北邊。",
+        "category": "方位/名詞"
+    },
+    {
+        "word": "west",
+        "zh": "西邊",
+        "en_sentence": "The sun sets in the west.",
+        "zh_sentence": "太陽在西邊落下。",
+        "category": "方位/名詞"
+    },
+    {
+        "word": "east",
+        "zh": "東邊",
+        "en_sentence": "The train is traveling east toward the coast.",
+        "zh_sentence": "火車正往東邊開往海岸。",
+        "category": "方位/名詞"
+    },
+    {
+        "word": "south",
+        "zh": "南邊",
+        "en_sentence": "They drove south for their winter vacation.",
+        "zh_sentence": "他們開車往南邊去度假。",
+        "category": "方位/名詞"
+    },
+    {
+        "word": "grow",
+        "zh": "生長；種植",
+        "en_sentence": "The plants grow fast in the summer heat.",
+        "zh_sentence": "這些植物在夏天炎熱的天氣下生長得很快。",
+        "category": "動詞/動作"
+    },
+    {
+        "word": "since",
+        "zh": "自從；因為",
+        "en_sentence": "I haven't seen her since last year.",
+        "zh_sentence": "我從去年起就沒見過她了。",
+        "category": "介系詞/連接詞"
+    },
+    {
+        "word": "traffic",
+        "zh": "交通",
+        "en_sentence": "The morning traffic is always heavy.",
+        "zh_sentence": "早晨的交通總是擁擠。",
+        "category": "名詞/交通"
+    },
+    {
+        "word": "case",
+        "zh": "情況；箱子",
+        "en_sentence": "In case of fire, use the stairs.",
+        "zh_sentence": "如果發生火災，請使用樓梯。",
+        "category": "名詞/抽象"
+    },
+    {
+        "word": "gate",
+        "zh": "大門；登機門",
+        "en_sentence": "The plane is boarding at gate number five.",
+        "zh_sentence": "這架飛機正在五號登機門登機。",
+        "category": "地點/名詞"
+    },
+    {
+        "word": "teenager",
+        "zh": "青少年",
+        "en_sentence": "Most teenagers enjoy playing video games.",
+        "zh_sentence": "大多數青少年喜歡玩電子遊戲。",
+        "category": "人/身份"
+    },
+    {
+        "word": "restroom",
+        "zh": "洗手間",
+        "en_sentence": "Excuse me, where is the nearest restroom?",
+        "zh_sentence": "不好意思，最近的洗手間在哪裡？",
+        "category": "地點/場所"
+    },
+    {
+        "word": "uniform",
+        "zh": "制服",
+        "en_sentence": "Students must wear a school uniform every day.",
+        "zh_sentence": "學生每天必須穿學校制服。",
+        "category": "衣物/名詞"
+    },
+    {
+        "word": "paint",
+        "zh": "顏料；油漆；繪畫",
+        "en_sentence": "She used blue paint to color the wall.",
+        "zh_sentence": "她用藍色油漆來粉刷牆壁。",
+        "category": "物品/動作"
+    },
+    {
+        "word": "bridge",
+        "zh": "橋",
+        "en_sentence": "We drove across the long bridge to the island.",
+        "zh_sentence": "我們開車穿過長長的橋到島上。",
+        "category": "建築/名詞"
+    }
+];
 
     // ===== 遊戲狀態變數 =====
     let gameState = {
@@ -1665,3 +1764,4 @@
   </script>
 </body>
 </html>
+
