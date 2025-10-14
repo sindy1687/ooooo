@@ -707,295 +707,289 @@
     };
 
     // ===== 題庫資料 =====
-    const VOCAB_DATA = [
-      {
-        "word": "enjoy",
-        "zh": "享受；喜愛",
-        "en_sentence": "Enjoy your meal!",
-        "zh_sentence": "好好享受你的餐點！",
-        "category": "動作動詞"
-      },
-      {
-        "word": "bow",
-        "zh": "鞠躬",
-        "en_sentence": "The actor will bow to the audience.",
-        "zh_sentence": "演員會向觀眾鞠躬。",
-        "category": "動作動詞"
-      },
-      {
-        "word": "win",
-        "zh": "贏",
-        "en_sentence": "I hope to win the game today.",
-        "zh_sentence": "我希望今天能贏得比賽。",
-        "category": "動作動詞"
-      },
-      {
-        "word": "subject",
-        "zh": "學科；科目",
-        "en_sentence": "Math is my favorite subject.",
-        "zh_sentence": "數學是我最喜歡的科目。",
-        "category": "學術教育"
-      },
-      {
-        "word": "test",
-        "zh": "測驗",
-        "en_sentence": "We have a test on Friday.",
-        "zh_sentence": "我們星期五有一次測驗。",
-        "category": "學術教育"
-      },
-      {
-        "word": "vacation",
-        "zh": "假期",
-        "en_sentence": "Vacation starts next week.",
-        "zh_sentence": "假期下週開始。",
-        "category": "時間日期"
-      },
-      {
-        "word": "holiday",
-        "zh": "假日",
-        "en_sentence": "We rest at home on the holiday.",
-        "zh_sentence": "假日我們待在家裡休息。",
-        "category": "時間日期"
-      },
-      {
-        "word": "Teacher's Day",
-        "zh": "教師節",
-        "en_sentence": "We give cards on Teacher's Day.",
-        "zh_sentence": "我們在教師節送卡片。",
-        "category": "節日慶祝"
-      },
-      {
-        "word": "festival",
-        "zh": "節日",
-        "en_sentence": "The festival has many performances.",
-        "zh_sentence": "節日有許多表演。",
-        "category": "節日慶祝"
-      },
-      {
-        "word": "Moon Festival",
-        "zh": "中秋節",
-        "en_sentence": "We eat mooncakes on Moon Festival.",
-        "zh_sentence": "中秋節我們吃月餅。",
-        "category": "節日慶祝"
-      },
-      {
-        "word": "half",
-        "zh": "一半；二分之一",
-        "en_sentence": "Cut the sandwich in half.",
-        "zh_sentence": "把三明治切成一半。",
-        "category": "數量分數"
-      },
-      {
-        "word": "quarter",
-        "zh": "四分之一；十五分鐘",
-        "en_sentence": "School starts in a quarter hour.",
-        "zh_sentence": "學校在十五分鐘後開始。",
-        "category": "數量分數"
-      },
-      {
-        "word": "noise",
-        "zh": "聲音；噪音",
-        "en_sentence": "Turn down the noise, please.",
-        "zh_sentence": "請降低噪音。",
-        "category": "聲音表演"
-      },
-      {
-        "word": "show",
-        "zh": "表演；展現",
-        "en_sentence": "We watch a show at the theater.",
-        "zh_sentence": "我們在劇院看表演。",
-        "category": "聲音表演"
-      },
-      {
-        "word": "start",
-        "zh": "開始",
-        "en_sentence": "The race will start soon.",
-        "zh_sentence": "比賽很快就要開始。",
-        "category": "動作動詞"
-      },
-      {
-        "word": "stay",
-        "zh": "停留",
-        "en_sentence": "Please stay here until I return.",
-        "zh_sentence": "請在這裡停留直到我回來。",
-        "category": "動作動詞"
-      },
-      {
-        "word": "Ms.",
-        "zh": "小姐",
-        "en_sentence": "Ms. Chen is our new English teacher.",
-        "zh_sentence": "陳小姐是我們的新英語老師。",
-        "category": "稱謂人際"
-      },
-      {
-        "word": "kid",
-        "zh": "小孩",
-        "en_sentence": "The kids play in the park every day.",
-        "zh_sentence": "這些小孩每天在公園玩。",
-        "category": "稱謂人際"
-      },
-      {
-        "word": "child",
-        "zh": "孩童",
-        "en_sentence": "Every child needs a good education.",
-        "zh_sentence": "每個孩童都需要良好的教育。",
-        "category": "稱謂人際"
-      },
-      {
-        "word": "boat",
-        "zh": "船",
-        "en_sentence": "We ride a boat on the lake during summer.",
-        "zh_sentence": "夏天我們在湖上坐船。",
-        "category": "交通工具"
-      },
-      {
-        "word": "floor",
-        "zh": "地板；層",
-        "en_sentence": "The ball rolled across the floor.",
-        "zh_sentence": "球在地板上滾來滾去。",
-        "category": "場所位置"
-      },
-      {
-        "word": "frisbee",
-        "zh": "飛盤",
-        "en_sentence": "They throw a frisbee at the beach.",
-        "zh_sentence": "他們在海灘拋飛盤。",
-        "category": "運動娛樂"
-      },
-      {
-        "word": "hurt",
-        "zh": "疼痛；受傷",
-        "en_sentence": "Be careful or you might hurt yourself.",
-        "zh_sentence": "小心，不然你可能會受傷。",
-        "category": "身體健康"
-      },
-      {
-        "word": "begin",
-        "zh": "開始",
-        "en_sentence": "The movie will begin at six o'clock.",
-        "zh_sentence": "電影將在六點開始。",
-        "category": "動作動詞"
-      },
-      {
-        "word": "finish",
-        "zh": "完成；結束",
-        "en_sentence": "I finish my homework before dinner.",
-        "zh_sentence": "我在晚餐前完成作業。",
-        "category": "動作動詞"
-      },
-      {
-        "word": "happen",
-        "zh": "發生",
-        "en_sentence": "What will happen next?",
-        "zh_sentence": "接下來會發生什麼？",
-        "category": "抽象概念"
-      },
-      {
-        "word": "jog",
-        "zh": "慢跑",
-        "en_sentence": "I jog in the park every morning.",
-        "zh_sentence": "我每天早上在公園慢跑。",
-        "category": "運動娛樂"
-      },
-      {
-        "word": "hop",
-        "zh": "跳",
-        "en_sentence": "The bunny can hop very fast.",
-        "zh_sentence": "那隻兔子能跳得很快。",
-        "category": "動作動詞"
-      },
-      {
-        "word": "teach",
-        "zh": "教導",
-        "en_sentence": "She will teach us math tomorrow.",
-        "zh_sentence": "她明天要教我們數學。",
-        "category": "動作動詞"
-      },
-      {
-        "word": "important",
-        "zh": "重要的",
-        "en_sentence": "It is important to finish your homework.",
-        "zh_sentence": "完成作業很重要。",
-        "category": "形容詞"
-      },
-      {
-        "word": "health",
-        "zh": "健康",
-        "en_sentence": "Good sleep is essential for your health.",
-        "zh_sentence": "良好的睡眠對你的健康很重要。",
-        "category": "身體健康"
-      },
-      {
-        "word": "healthy",
-        "zh": "健康的",
-        "en_sentence": "She eats healthy food every day.",
-        "zh_sentence": "她每天吃健康的食物。",
-        "category": "形容詞"
-      },
-      {
-        "word": "weak",
-        "zh": "虛弱的",
-        "en_sentence": "He felt weak after the long run.",
-        "zh_sentence": "長跑後他感到虛弱。",
-        "category": "形容詞"
-      },
-      {
-        "word": "terrible",
-        "zh": "可怕的",
-        "en_sentence": "That thunderstorm last night was terrible.",
-        "zh_sentence": "昨晚的雷雨非常可怕。",
-        "category": "形容詞"
-      },
-      {
-        "word": "funny",
-        "zh": "有趣的",
-        "en_sentence": "Her joke was very funny.",
-        "zh_sentence": "她的笑話非常有趣。",
-        "category": "形容詞"
-      },
-      {
-        "word": "lot",
-        "zh": "很多",
-        "en_sentence": "He has a lot of books in his room.",
-        "zh_sentence": "他房間裡有很多書。",
-        "category": "形容詞"
-      },
-      {
-        "word": "already",
-        "zh": "已經",
-        "en_sentence": "I already finished my lunch.",
-        "zh_sentence": "我已經吃完午餐了。",
-        "category": "形容詞"
-      },
-      {
-        "word": "just",
-        "zh": "剛才；只",
-        "en_sentence": "I just arrived at school.",
-        "zh_sentence": "我剛才到學校。",
-        "category": "形容詞"
-      },
-      {
-        "word": "why",
-        "zh": "為什麼",
-        "en_sentence": "Why are you so happy today?",
-        "zh_sentence": "你今天為什麼這麼高興？",
-        "category": "形容詞"
-      },
-      {
-        "word": "couch",
-        "zh": "沙發",
-        "en_sentence": "He sits on the couch to watch TV.",
-        "zh_sentence": "他坐在沙發上看電視。",
-        "category": "場所位置"
-      },
-      {
-        "word": "give",
-        "zh": "給",
-        "en_sentence": "Please give me the pencil.",
-        "zh_sentence": "請把鉛筆給我。",
-        "category": "動作動詞"
-      }
-    ];
+    // ===== 題庫資料 (已更新為新的單字列表 P157 並增加分類) =====
+const VOCAB_DATA = [
+    {
+        "word": "toast",
+        "zh": "吐司；烤麵包片",
+        "en_sentence": "I eat buttered toast and coffee for breakfast.",
+        "zh_sentence": "我早餐吃塗了奶油的吐司和咖啡。",
+        "category": "食物/名詞"
+    },
+    {
+        "word": "salad",
+        "zh": "沙拉",
+        "en_sentence": "A fresh vegetable salad is very healthy.",
+        "zh_sentence": "一份新鮮的蔬菜沙拉非常健康。",
+        "category": "食物/名詞"
+    },
+    {
+        "word": "order",
+        "zh": "點餐；訂購；命令",
+        "en_sentence": "We are ready to order our dinner now.",
+        "zh_sentence": "我們現在準備好點晚餐了。",
+        "category": "動詞/名詞"
+    },
+    {
+        "word": "ham",
+        "zh": "火腿",
+        "en_sentence": "She made a sandwich with cheese and ham.",
+        "zh_sentence": "她做了一個放了起司和火腿的三明治。",
+        "category": "食物/名詞"
+    },
+    {
+        "word": "menu",
+        "zh": "菜單",
+        "en_sentence": "Could you please bring us the menu?",
+        "zh_sentence": "你可以把菜單拿給我們嗎？",
+        "category": "物品/名詞"
+    },
+    {
+        "word": "castle",
+        "zh": "城堡",
+        "en_sentence": "The ancient castle is now a museum.",
+        "zh_sentence": "這座古老的城堡現在是一座博物館。",
+        "category": "建築/名詞"
+    },
+    {
+        "word": "king",
+        "zh": "國王",
+        "en_sentence": "The king ruled the country for fifty years.",
+        "zh_sentence": "這位國王統治這個國家五十年。",
+        "category": "人/身份"
+    },
+    {
+        "word": "queen",
+        "zh": "女王；王后",
+        "en_sentence": "The queen wore a beautiful crown.",
+        "zh_sentence": "女王戴著一頂美麗的皇冠。",
+        "category": "人/身份"
+    },
+    {
+        "word": "prince",
+        "zh": "王子",
+        "en_sentence": "The young prince will inherit the throne.",
+        "zh_sentence": "年輕的王子將繼承王位。",
+        "category": "人/身份"
+    },
+    {
+        "word": "princess",
+        "zh": "公主",
+        "en_sentence": "The princess is known for her kindness.",
+        "zh_sentence": "這位公主以她的善良而聞名。",
+        "category": "人/身份"
+    },
+    {
+        "word": "soldier",
+        "zh": "士兵",
+        "en_sentence": "The soldier stood guard at the gate.",
+        "zh_sentence": "士兵站在門口站崗。",
+        "category": "人/職業"
+    },
+    {
+        "word": "dragon",
+        "zh": "龍",
+        "en_sentence": "The story tells of a knight fighting a fierce dragon.",
+        "zh_sentence": "這個故事講述了一位騎士與一條兇猛的龍戰鬥。",
+        "category": "動物/虛構"
+    },
+    {
+        "word": "quiz",
+        "zh": "小測驗",
+        "en_sentence": "We had a short quiz in history class today.",
+        "zh_sentence": "我們今天歷史課有一個簡短的小測驗。",
+        "category": "教育/名詞"
+    },
+    {
+        "word": "check",
+        "zh": "檢查；查看",
+        "en_sentence": "Did you check your email this morning?",
+        "zh_sentence": "你今天早上查看你的電子郵件了嗎？",
+        "category": "動詞/動作"
+    },
+    {
+        "word": "much",
+        "zh": "很多；非常",
+        "en_sentence": "How much does this pair of shoes cost?",
+        "zh_sentence": "這雙鞋要多少錢？",
+        "category": "量詞/副詞"
+    },
+    {
+        "word": "habit",
+        "zh": "習慣",
+        "en_sentence": "Waking up early is a good habit.",
+        "zh_sentence": "早起是一個好習慣。",
+        "category": "抽象名詞"
+    },
+    {
+        "word": "word",
+        "zh": "單字；詞",
+        "en_sentence": "I learned ten new English words today.",
+        "zh_sentence": "我今天學了十個新的英文單字。",
+        "category": "語言/名詞"
+    },
+    {
+        "word": "sentence",
+        "zh": "句子",
+        "en_sentence": "Please write a complete sentence.",
+        "zh_sentence": "請寫一個完整的句子。",
+        "category": "語言/名詞"
+    },
+    {
+        "word": "mark",
+        "zh": "分數；記號；標記",
+        "en_sentence": "She got a perfect mark on her spelling test.",
+        "zh_sentence": "她在拼寫測驗中獲得了滿分。",
+        "category": "教育/名詞"
+    },
+    {
+        "word": "dictionary",
+        "zh": "字典；詞典",
+        "en_sentence": "I looked up the meaning of the word in the dictionary.",
+        "zh_sentence": "我在字典裡查了那個單字的意思。",
+        "category": "教育/物品"
+    },
+    {
+        "word": "point",
+        "zh": "分數；重點；指出",
+        "en_sentence": "The teacher stressed the main point of the lesson.",
+        "zh_sentence": "老師強調了這堂課的重點。",
+        "category": "名詞/動詞"
+    },
+    {
+        "word": "grade",
+        "zh": "分數；年級",
+        "en_sentence": "He received a good grade on his final paper.",
+        "zh_sentence": "他的期末報告拿到了好分數。",
+        "category": "教育/名詞"
+    },
+    {
+        "word": "mistake",
+        "zh": "錯誤",
+        "en_sentence": "Everyone makes mistakes sometimes.",
+        "zh_sentence": "每個人有時都會犯錯。",
+        "category": "抽象名詞"
+    },
+    {
+        "word": "elementary school",
+        "zh": "小學",
+        "en_sentence": "She started attending elementary school at age six.",
+        "zh_sentence": "她六歲開始上小學。",
+        "category": "教育/地點"
+    },
+    {
+        "word": "bench",
+        "zh": "長凳；板凳",
+        "en_sentence": "We sat on a wooden bench in the park.",
+        "zh_sentence": "我們坐在公園裡的木製長凳上。",
+        "category": "物品/名詞"
+    },
+    {
+        "word": "seat",
+        "zh": "座位",
+        "en_sentence": "Is this seat free?",
+        "zh_sentence": "這個座位是空的嗎？",
+        "category": "物品/名詞"
+    },
+    {
+        "word": "office",
+        "zh": "辦公室",
+        "en_sentence": "My father works in a large office building.",
+        "zh_sentence": "我父親在一棟大型辦公大樓裡工作。",
+        "category": "地點/場所"
+    },
+    {
+        "word": "post office",
+        "zh": "郵局",
+        "en_sentence": "I need to mail this letter at the post office.",
+        "zh_sentence": "我需要去郵局寄這封信。",
+        "category": "地點/場所"
+    },
+    {
+        "word": "side",
+        "zh": "邊；面",
+        "en_sentence": "Look on the other side of the paper.",
+        "zh_sentence": "看看紙的另一面。",
+        "category": "方位/名詞"
+    },
+    {
+        "word": "way",
+        "zh": "路；方法",
+        "en_sentence": "Can you show me the way to the library?",
+        "zh_sentence": "你能告訴我去圖書館的路嗎？",
+        "category": "名詞/方向"
+    },
+    {
+        "word": "nobody",
+        "zh": "沒有人",
+        "en_sentence": "Nobody was home when I arrived.",
+        "zh_sentence": "我到達時沒有人在家。",
+        "category": "代名詞"
+    },
+    {
+        "word": "guy",
+        "zh": "傢伙；人 (口語)",
+        "en_sentence": "The guy next door helped me fix my car.",
+        "zh_sentence": "隔壁的那個傢伙幫我修了車。",
+        "category": "人/名詞"
+    },
+    {
+        "word": "group",
+        "zh": "組；群體",
+        "en_sentence": "Our study group meets every Tuesday.",
+        "zh_sentence": "我們的讀書小組每週二見面。",
+        "category": "名詞/團體"
+    },
+    {
+        "word": "country",
+        "zh": "國家；鄉下",
+        "en_sentence": "She visited many countries in Europe.",
+        "zh_sentence": "她參觀了歐洲的許多國家。",
+        "category": "地理/名詞"
+    },
+    {
+        "word": "program",
+        "zh": "節目；計畫；程式",
+        "en_sentence": "The concert program lasted two hours.",
+        "zh_sentence": "音樂會節目持續了兩個小時。",
+        "category": "科技/名詞"
+    },
+    {
+        "word": "straw",
+        "zh": "吸管；稻草",
+        "en_sentence": "I prefer to use a paper straw instead of plastic.",
+        "zh_sentence": "我喜歡用環保吸管而不是塑膠吸管。",
+        "category": "物品/名詞"
+    },
+    {
+        "word": "knife",
+        "zh": "刀子",
+        "en_sentence": "Be careful when handling a sharp knife.",
+        "zh_sentence": "處理鋒利的刀子時要小心。",
+        "category": "餐具/物品"
+    },
+    {
+        "word": "fork",
+        "zh": "叉子",
+        "en_sentence": "We need a fork to eat the spaghetti.",
+        "zh_sentence": "我們需要叉子來吃義大利麵。",
+        "category": "餐具/物品"
+    },
+    {
+        "word": "spoon",
+        "zh": "湯匙",
+        "en_sentence": "She used a large spoon to stir the soup.",
+        "zh_sentence": "她用一把大湯匙攪拌湯。",
+        "category": "餐具/物品"
+    },
+    {
+        "word": "lovely",
+        "zh": "可愛的；美好的",
+        "en_sentence": "What a lovely surprise to see you here!",
+        "zh_sentence": "在這裡見到你真是個美好的驚喜！",
+        "category": "形容詞"
+    }
+];
 
     // ===== 遊戲狀態變數 =====
     let gameState = {
