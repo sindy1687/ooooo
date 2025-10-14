@@ -7,29 +7,15 @@
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="responsive_enhanced.css">
   <style>
-    /* 防止水平滾動 */
-    html {
-      overflow-x: hidden;
-    }
-    
-    /* 確保所有元素都在視窗範圍內 */
-    * {
-      box-sizing: border-box;
-      max-width: 100%;
-    }
-    
     /* ===== 基礎樣式 ===== */
     body {
       margin: 0;
-      padding: 0;
       font-family: 'Segoe UI', Arial, sans-serif, 'Orbitron', sans-serif;
       background: linear-gradient(135deg, #232526 0%, #414345 100%);
       color: #fff;
       text-align: center;
       padding: 20px;
       min-height: 100vh;
-      width: 100%;
-      overflow-x: hidden;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -592,7 +578,7 @@
     <button onclick="showReviewModal()" aria-label="複習單字">📚 複習單字</button>
   </div>
 
-  <h1>填空挑戰</h1>
+  <h1>哈迪斯 Hades - 填空挑戰</h1>
 
   <!-- 本次星星顯示 -->
   <div id="sessionStarsDisplay" style="margin-bottom:10px;color:#ffd700;font-weight:bold;font-size:1.08rem;">
@@ -662,8 +648,6 @@
           <option value="形容詞">形容詞</option>
           <option value="抽象概念">抽象概念</option>
           <option value="場所位置">場所位置</option>
-          <option value="日常用品">日常用品</option>
-          <option value="建築設施">建築設施</option>
         </select>
       </div>
       
@@ -713,6 +697,7 @@
     <source src="sound/午後放鬆時光（純音樂）.mp3" type="audio/mpeg">
   </audio>
 
+  <script src="js/gameDialogue.js"></script>
   <script>
     // ===== 遊戲配置 =====
     const GAME_CONFIG = {
@@ -722,297 +707,289 @@
     };
 
     // ===== 題庫資料 =====
-    const VOCAB_DATA = [
-      {
-        "word": "pin",
-        "zh": "大頭針；別針",
-        "en_sentence": "Use a pin to attach the note to the board.",
-        "zh_sentence": "用大頭針把便條釘在板子上。",
-        "category": "日常用品"
-      },
-      {
-        "word": "pipe",
-        "zh": "水管",
-        "en_sentence": "The plumber fixed the broken pipe under the sink.",
-        "zh_sentence": "水電工修好了水槽下壞掉的水管。",
-        "category": "建築設施"
-      },
-      {
-        "word": "medium",
-        "zh": "中等的",
-        "en_sentence": "He likes his coffee at medium temperature.",
-        "zh_sentence": "他喜歡中等溫度的咖啡。",
-        "category": "形容詞"
-      },
-      {
-        "word": "married",
-        "zh": "已婚的",
-        "en_sentence": "My aunt is married to a doctor.",
-        "zh_sentence": "我的阿姨已婚，她的丈夫是一位醫生。",
-        "category": "稱謂人際"
-      },
-      {
-        "word": "modern",
-        "zh": "現代的；時髦的",
-        "en_sentence": "They live in a modern house with big windows.",
-        "zh_sentence": "他們住在一棟有大窗戶的現代房子裡。",
-        "category": "形容詞"
-      },
-      {
-        "word": "foreign",
-        "zh": "外國的",
-        "en_sentence": "She studies foreign languages at school.",
-        "zh_sentence": "她在學校學習外國語。",
-        "category": "形容詞"
-      },
-      {
-        "word": "national",
-        "zh": "國家的",
-        "en_sentence": "They fly the national flag at the town square.",
-        "zh_sentence": "他們在鎮廣場上升起國旗。",
-        "category": "形容詞"
-      },
-      {
-        "word": "few",
-        "zh": "不多的；很少的",
-        "en_sentence": "Only a few students stayed after class for help.",
-        "zh_sentence": "只有少數學生下課後留下來請教。",
-        "category": "數量分數"
-      },
-      {
-        "word": "useful",
-        "zh": "實用的",
-        "en_sentence": "This dictionary is very useful for learning new words.",
-        "zh_sentence": "這本字典對學習新單字非常實用。",
-        "category": "形容詞"
-      },
-      {
-        "word": "helpful",
-        "zh": "有幫助的",
-        "en_sentence": "The tutor gave me helpful tips for studying.",
-        "zh_sentence": "家教給了我一些有幫助的學習建議。",
-        "category": "形容詞"
-      },
-      {
-        "word": "least",
-        "zh": "最少的",
-        "en_sentence": "She finished her homework in the least amount of time.",
-        "zh_sentence": "她用最少的時間完成了作業。",
-        "category": "數量分數"
-      },
-      {
-        "word": "blind",
-        "zh": "盲的",
-        "en_sentence": "The blind student reads with a special device.",
-        "zh_sentence": "那位盲人學生用特殊設備閱讀。",
-        "category": "身體健康"
-      },
-      {
-        "word": "tidy",
-        "zh": "整齊的；整理",
-        "en_sentence": "Please tidy your desk before you leave.",
-        "zh_sentence": "離開前請整理好你的書桌。",
-        "category": "動作動詞"
-      },
-      {
-        "word": "believe",
-        "zh": "相信",
-        "en_sentence": "I believe in working hard to achieve my goals.",
-        "zh_sentence": "我相信努力工作可以實現我的目標。",
-        "category": "抽象概念"
-      },
-      {
-        "word": "celebrate",
-        "zh": "慶祝",
-        "en_sentence": "We celebrate Teacher's Day with a small party.",
-        "zh_sentence": "我們用小型派對慶祝教師節。",
-        "category": "節日慶祝"
-      },
-      {
-        "word": "laugh",
-        "zh": "笑",
-        "en_sentence": "They laugh at the funny joke during recess.",
-        "zh_sentence": "課間休息時他們因為那個好笑的笑話而笑。",
-        "category": "動作動詞"
-      },
-      {
-        "word": "lead",
-        "zh": "領導",
-        "en_sentence": "She will lead the team in the next game.",
-        "zh_sentence": "她將在下一場比賽中領導球隊。",
-        "category": "動作動詞"
-      },
-      {
-        "word": "playground",
-        "zh": "遊樂場；運動場",
-        "en_sentence": "We meet our friends at the playground after school.",
-        "zh_sentence": "放學後我們在遊樂場與朋友碰面。",
-        "category": "場所位置"
-      },
-      {
-        "word": "set",
-        "zh": "創立；擺設",
-        "en_sentence": "Please set the table before dinner.",
-        "zh_sentence": "請在晚餐前擺好桌子。",
-        "category": "動作動詞"
-      },
-      {
-        "word": "bite",
-        "zh": "咬",
-        "en_sentence": "Be careful, the dog might bite.",
-        "zh_sentence": "小心，那隻狗可能會咬人。",
-        "category": "動作動詞"
-      },
-      {
-        "word": "die",
-        "zh": "死亡",
-        "en_sentence": "The flowers will die without water.",
-        "zh_sentence": "花若沒水就會枯死。",
-        "category": "動作動詞"
-      },
-      {
-        "word": "somewhere",
-        "zh": "某處",
-        "en_sentence": "I left my book somewhere in the classroom.",
-        "zh_sentence": "我把書放在教室的某處。",
-        "category": "場所位置"
-      },
-      {
-        "word": "abroad",
-        "zh": "到國外；在國外",
-        "en_sentence": "She studies abroad next year.",
-        "zh_sentence": "她明年到國外念書。",
-        "category": "場所位置"
-      },
-      {
-        "word": "beside",
-        "zh": "在旁邊",
-        "en_sentence": "Sit beside me on the bench.",
-        "zh_sentence": "坐在長椅的我的旁邊。",
-        "category": "場所位置"
-      },
-      {
-        "word": "example",
-        "zh": "例子",
-        "en_sentence": "The teacher gave an example to explain the rule.",
-        "zh_sentence": "老師給了一個例子來解釋這個規則。",
-        "category": "學術教育"
-      },
-      {
-        "word": "knowledge",
-        "zh": "知識",
-        "en_sentence": "Reading books helps you gain knowledge.",
-        "zh_sentence": "閱讀書籍幫助你獲得知識。",
-        "category": "學術教育"
-      },
-      {
-        "word": "matter",
-        "zh": "事情",
-        "en_sentence": "It does not matter if you are late once.",
-        "zh_sentence": "偶爾遲到一次並不重要。",
-        "category": "抽象概念"
-      },
-      {
-        "word": "excuse",
-        "zh": "藉口；道歉；原諒",
-        "en_sentence": "Excuse me for being late to class.",
-        "zh_sentence": "對不起，我上課遲到了。",
-        "category": "抽象概念"
-      },
-      {
-        "word": "magic",
-        "zh": "魔力；魔術；魔術的",
-        "en_sentence": "He performed a magic trick with cards.",
-        "zh_sentence": "他用牌表演了一個魔術。",
-        "category": "運動娛樂"
-      },
-      {
-        "word": "planet",
-        "zh": "星球；行星",
-        "en_sentence": "Earth is our home planet.",
-        "zh_sentence": "地球是我們的家園星球。",
-        "category": "學術教育"
-      },
-      {
-        "word": "base",
-        "zh": "基地；總部",
-        "en_sentence": "The scouts set up base near the lake.",
-        "zh_sentence": "童子軍在湖邊建立了基地。",
-        "category": "場所位置"
-      },
-      {
-        "word": "typhoon",
-        "zh": "颱風",
-        "en_sentence": "The typhoon will reach us tomorrow.",
-        "zh_sentence": "颱風明天會到達我們這裡。",
-        "category": "抽象概念"
-      },
-      {
-        "word": "kilogram",
-        "zh": "公斤",
-        "en_sentence": "This bag of rice weighs one kilogram.",
-        "zh_sentence": "這袋米重一公斤。",
-        "category": "數量分數"
-      },
-      {
-        "word": "pound",
-        "zh": "磅",
-        "en_sentence": "He lifted a ten-pound weight at the gym.",
-        "zh_sentence": "他在健身房舉起了十磅重物。",
-        "category": "數量分數"
-      },
-      {
-        "word": "gram",
-        "zh": "公克",
-        "en_sentence": "One hundred grams of sugar is in the recipe.",
-        "zh_sentence": "食譜中需要一百公克的糖。",
-        "category": "數量分數"
-      },
-      {
-        "word": "page",
-        "zh": "頁",
-        "en_sentence": "Turn to page twenty in your workbook.",
-        "zh_sentence": "翻到你的作業本第二十頁。",
-        "category": "數量分數"
-      },
-      {
-        "word": "dozen",
-        "zh": "一打（十二個）",
-        "en_sentence": "She bought a dozen eggs at the market.",
-        "zh_sentence": "她在市場買了一打雞蛋。",
-        "category": "數量分數"
-      },
-      {
-        "word": "cent",
-        "zh": "分（錢）",
-        "en_sentence": "The candy costs fifty cents.",
-        "zh_sentence": "這顆糖果要價五十分錢。",
-        "category": "數量分數"
-      },
-      {
-        "word": "businessman",
-        "zh": "商人",
-        "en_sentence": "The businessman traveled abroad for a meeting.",
-        "zh_sentence": "那位商人出國開會。",
-        "category": "稱謂人際"
-      },
-      {
-        "word": "salesman",
-        "zh": "業務員",
-        "en_sentence": "The salesman showed us the new product.",
-        "zh_sentence": "業務員向我們展示了新產品。",
-        "category": "稱謂人際"
-      },
-      {
-        "word": "shopkeeper",
-        "zh": "店主",
-        "en_sentence": "The shopkeeper greeted every customer with a smile.",
-        "zh_sentence": "店主向每位顧客微笑打招呼。",
-        "category": "稱謂人際"
-      }
-    ];
-
-    // ===== 遊戲狀態變數 =====
+   // ===== 題庫資料 (已更新為新的單字列表 P169 並增加分類) =====
+const VOCAB_DATA = [
+    {
+        "word": "clear",
+        "zh": "清楚的；晴朗的",
+        "en_sentence": "The sky is very clear after the rain.",
+        "zh_sentence": "雨後的天空非常晴朗。",
+        "category": "形容詞"
+    },
+    {
+        "word": "correct",
+        "zh": "正確的",
+        "en_sentence": "Please check if your answer is correct.",
+        "zh_sentence": "請檢查你的答案是否正確。",
+        "category": "形容詞"
+    },
+    {
+        "word": "far",
+        "zh": "遠的",
+        "en_sentence": "How far is it from here to the station?",
+        "zh_sentence": "從這裡到車站有多遠？",
+        "category": "形容詞/副詞"
+    },
+    {
+        "word": "safe",
+        "zh": "安全的",
+        "en_sentence": "Always remember to drive safe.",
+        "zh_sentence": "永遠記得要安全駕駛。",
+        "category": "形容詞"
+    },
+    {
+        "word": "sharp",
+        "zh": "鋒利的；敏銳的",
+        "en_sentence": "Be careful with that sharp knife.",
+        "zh_sentence": "使用那把鋒利的刀時要小心。",
+        "category": "形容詞"
+    },
+    {
+        "word": "lazy",
+        "zh": "懶惰的",
+        "en_sentence": "The lazy cat slept all day long.",
+        "zh_sentence": "那隻懶惰的貓睡了一整天。",
+        "category": "形容詞"
+    },
+    {
+        "word": "glad",
+        "zh": "高興的",
+        "en_sentence": "I'm so glad to see you again.",
+        "zh_sentence": "我很高興再次見到你。",
+        "category": "形容詞/情緒"
+    },
+    {
+        "word": "excellent",
+        "zh": "優秀的；極好的",
+        "en_sentence": "The student did an excellent job on the presentation.",
+        "zh_sentence": "這位學生在報告中做得非常出色。",
+        "category": "形容詞"
+    },
+    {
+        "word": "over",
+        "zh": "結束；在...上方",
+        "en_sentence": "The game is finally over.",
+        "zh_sentence": "比賽終於結束了。",
+        "category": "介系詞/副詞"
+    },
+    {
+        "word": "pass",
+        "zh": "通過；傳遞",
+        "en_sentence": "I hope I can pass the final exam.",
+        "zh_sentence": "我希望我能通過期末考試。",
+        "category": "動詞/動作"
+    },
+    {
+        "word": "fail",
+        "zh": "失敗；不及格",
+        "en_sentence": "He was afraid to fail the driving test.",
+        "zh_sentence": "他害怕駕駛考試會不及格。",
+        "category": "動詞/狀態"
+    },
+    {
+        "word": "preparation",
+        "zh": "準備",
+        "en_sentence": "We need more preparation time for the show.",
+        "zh_sentence": "我們需要更多的時間為演出做準備。",
+        "category": "抽象名詞"
+    },
+    {
+        "word": "cheat",
+        "zh": "作弊；欺騙",
+        "en_sentence": "It is wrong to cheat on a test.",
+        "zh_sentence": "考試作弊是錯誤的。",
+        "category": "動詞/動作"
+    },
+    {
+        "word": "copy",
+        "zh": "複製；模仿",
+        "en_sentence": "Please don't copy my work, use your own ideas.",
+        "zh_sentence": "請不要抄襲我的作品，使用你自己的想法。",
+        "category": "動詞/動作"
+    },
+    {
+        "word": "blow",
+        "zh": "吹",
+        "en_sentence": "The wind will blow the leaves away.",
+        "zh_sentence": "風會把樹葉吹走。",
+        "category": "動詞/動作"
+    },
+    {
+        "word": "knock",
+        "zh": "敲擊",
+        "en_sentence": "Someone is knocking at the door.",
+        "zh_sentence": "有人在敲門。",
+        "category": "動詞/動作"
+    },
+    {
+        "word": "rise",
+        "zh": "上升；起身",
+        "en_sentence": "The sun will rise soon.",
+        "zh_sentence": "太陽很快就會升起。",
+        "category": "動詞/動作"
+    },
+    {
+        "word": "decide",
+        "zh": "決定",
+        "en_sentence": "I haven't decided where to go for vacation yet.",
+        "zh_sentence": "我還沒決定要去哪裡度假。",
+        "category": "動詞/心理"
+    },
+    {
+        "word": "notice",
+        "zh": "注意；通知",
+        "en_sentence": "Did you notice the new painting in the room?",
+        "zh_sentence": "你有注意到房間裡的新畫嗎？",
+        "category": "動詞/心理"
+    },
+    {
+        "word": "collect",
+        "zh": "收集",
+        "en_sentence": "She likes to collect stamps from different countries.",
+        "zh_sentence": "她喜歡收集來自不同國家的郵票。",
+        "category": "動詞/動作"
+    },
+    {
+        "word": "leave",
+        "zh": "離開；留下",
+        "en_sentence": "I need to leave for the airport soon.",
+        "zh_sentence": "我需要很快離開去機場。",
+        "category": "動詞/動作"
+    },
+    {
+        "word": "treat",
+        "zh": "對待；請客",
+        "en_sentence": "We should treat others with kindness.",
+        "zh_sentence": "我們應該以善良對待他人。",
+        "category": "動詞/動作"
+    },
+    {
+        "word": "along",
+        "zh": "沿著；一同",
+        "en_sentence": "Let's walk along the river bank.",
+        "zh_sentence": "我們沿著河岸走吧。",
+        "category": "介系詞/副詞"
+    },
+    {
+        "word": "without",
+        "zh": "沒有",
+        "en_sentence": "I cannot live without my phone.",
+        "zh_sentence": "我沒有手機不能活。",
+        "category": "介系詞"
+    },
+    {
+        "word": "inside",
+        "zh": "在裡面",
+        "en_sentence": "Please wait for me inside the house.",
+        "zh_sentence": "請在屋內等我。",
+        "category": "介系詞/副詞"
+    },
+    {
+        "word": "repeat",
+        "zh": "重複",
+        "en_sentence": "Can you repeat that sentence, please?",
+        "zh_sentence": "你能請重複那個句子嗎？",
+        "category": "動詞/動作"
+    },
+    {
+        "word": "perhaps",
+        "zh": "也許；可能",
+        "en_sentence": "Perhaps we will meet again someday.",
+        "zh_sentence": "也許有一天我們會再次見面。",
+        "category": "副詞"
+    },
+    {
+        "word": "if",
+        "zh": "如果",
+        "en_sentence": "If it rains, we will stay home.",
+        "zh_sentence": "如果下雨，我們就會待在家裡。",
+        "category": "連接詞"
+    },
+    {
+        "word": "although",
+        "zh": "雖然；儘管",
+        "en_sentence": "Although he was tired, he kept working.",
+        "zh_sentence": "儘管他很累，但他還是繼續工作。",
+        "category": "連接詞"
+    },
+    {
+        "word": "hope",
+        "zh": "希望",
+        "en_sentence": "I hope you have a great day.",
+        "zh_sentence": "我希望你今天過得愉快。",
+        "category": "動詞/名詞"
+    },
+    {
+        "word": "rule",
+        "zh": "規則",
+        "en_sentence": "We must follow the rules in the library.",
+        "zh_sentence": "我們必須遵守圖書館的規則。",
+        "category": "名詞"
+    },
+    {
+        "word": "wish",
+        "zh": "希望；願望",
+        "en_sentence": "I wish I could fly like a bird.",
+        "zh_sentence": "我希望我能像鳥一樣飛翔。",
+        "category": "動詞/名詞"
+    },
+    {
+        "word": "dot",
+        "zh": "點",
+        "en_sentence": "There is a small black dot on the paper.",
+        "zh_sentence": "紙上有一點小黑點。",
+        "category": "名詞"
+    },
+    {
+        "word": "circle",
+        "zh": "圓圈；環繞",
+        "en_sentence": "Draw a large circle on the whiteboard.",
+        "zh_sentence": "在白板上畫一個大圓圈。",
+        "category": "名詞/動作"
+    },
+    {
+        "word": "shape",
+        "zh": "形狀",
+        "en_sentence": "The cloud was in the shape of a dog.",
+        "zh_sentence": "那片雲的形狀像一隻狗。",
+        "category": "名詞"
+    },
+    {
+        "word": "size",
+        "zh": "尺寸；大小",
+        "en_sentence": "What size shoes do you wear?",
+        "zh_sentence": "你穿多大尺寸的鞋子？",
+        "category": "名詞"
+    },
+    {
+        "word": "square",
+        "zh": "正方形；廣場",
+        "en_sentence": "Draw a square with four equal sides.",
+        "zh_sentence": "畫一個有四個等邊的正方形。",
+        "category": "名詞"
+    },
+    {
+        "word": "let",
+        "zh": "讓；允許",
+        "en_sentence": "Let me know when you arrive.",
+        "zh_sentence": "你到達時請讓我知道。",
+        "category": "動詞/動作"
+    },
+    {
+        "word": "yard",
+        "zh": "院子；碼 (長度單位)",
+        "en_sentence": "The children are playing in the front yard.",
+        "zh_sentence": "孩子們正在前院玩耍。",
+        "category": "名詞/量詞"
+    },
+    {
+        "word": "inch",
+        "zh": "英吋 (長度單位)",
+        "en_sentence": "The ruler is exactly twelve inches long.",
+        "zh_sentence": "這把尺剛好是十二英吋長。",
+        "category": "名詞/量詞"
+    }
+];// ===== 遊戲狀態變數 =====
     let gameState = {
       data: [],
       currentIndex: 0,
@@ -1032,46 +1009,32 @@
     };
 
     // ===== 背景音樂控制 =====
+    let bgMusic = null;
     let isMusicPlaying = false;
 
     function initBackgroundMusic() {
-      const backgroundMusic = document.getElementById('backgroundMusic');
-      if (backgroundMusic) {
-        backgroundMusic.loop = true;
-        backgroundMusic.volume = 0.3;
-        
-        // 從localStorage讀取音樂狀態
-        const musicState = localStorage.getItem('bgMusicState');
-        if (musicState === 'playing') {
-          playBackgroundMusic();
-        }
+      bgMusic = new Audio('sound/午後放鬆時光（純音樂）.mp3');
+      bgMusic.loop = true;
+      bgMusic.volume = 0.3;
+      
+      // 從localStorage讀取音樂狀態
+      const musicState = localStorage.getItem('bgMusicState');
+      if (musicState === 'playing') {
+        playBackgroundMusic();
       }
     }
 
     function toggleBackgroundMusic() {
-      const backgroundMusic = document.getElementById('backgroundMusic');
-      if (backgroundMusic) {
-        if (isMusicPlaying) {
-          backgroundMusic.pause();
-          document.getElementById('bgMusicControl').textContent = '🔇';
-          document.getElementById('bgMusicControl').classList.add('paused');
-          localStorage.setItem('bgMusicState', 'paused');
-        } else {
-          backgroundMusic.play().then(() => {
-            document.getElementById('bgMusicControl').textContent = '🔊';
-            document.getElementById('bgMusicControl').classList.remove('paused');
-            localStorage.setItem('bgMusicState', 'playing');
-          }).catch(err => {
-            console.log('背景音樂播放失敗:', err);
-          });
-        }
+      if (isMusicPlaying) {
+        pauseBackgroundMusic();
+      } else {
+        playBackgroundMusic();
       }
     }
 
     function playBackgroundMusic() {
-      const backgroundMusic = document.getElementById('backgroundMusic');
-      if (backgroundMusic) {
-        backgroundMusic.play().then(() => {
+      if (bgMusic) {
+        bgMusic.play().then(() => {
           isMusicPlaying = true;
           document.getElementById('bgMusicControl').textContent = '🔊';
           document.getElementById('bgMusicControl').classList.remove('paused');
@@ -1083,11 +1046,10 @@
     }
 
     function pauseBackgroundMusic() {
-      const backgroundMusic = document.getElementById('backgroundMusic');
-      if (backgroundMusic) {
-        backgroundMusic.pause();
+      if (bgMusic) {
+        bgMusic.pause();
         isMusicPlaying = false;
-        document.getElementById('bgMusicControl').textContent = '��';
+        document.getElementById('bgMusicControl').textContent = '🔇';
         document.getElementById('bgMusicControl').classList.add('paused');
         localStorage.setItem('bgMusicState', 'paused');
       }
@@ -1161,20 +1123,39 @@
     }
 
     // ===== 語音功能 =====
+    function pickVoice() {
+      const voices = window.speechSynthesis.getVoices();
+      const prefer = [
+        'Google US English', 'Microsoft Aria Online', 'Microsoft Jenny Online', 
+        'Samantha', 'Jenny', 'Aria', 'en-US'
+      ];
+      gameState.preferredVoice = voices.find(v => prefer.some(p => v.name.includes(p))) || 
+                                 voices.find(v => v.lang === 'en-US') || voices[0];
+    }
+
     function speak(text, rate = 1.0, callback) {
       if (!window.speechSynthesis) return;
       
-      // 使用新的發音系統
-      if (callback) {
-        SoundSystem.speech.speak(text, { rate: rate, onEnd: callback });
-      } else {
-        SoundSystem.speech.speak(text, { rate: rate });
-      }
+      const utter = new window.SpeechSynthesisUtterance(text);
+      utter.lang = 'en-US';
+      utter.rate = rate;
+      utter.pitch = 1.12;
+      if (gameState.preferredVoice) utter.voice = gameState.preferredVoice;
+      if (callback) utter.onend = callback;
+      
+      window.speechSynthesis.cancel();
+      window.speechSynthesis.speak(utter);
     }
 
     function speakQuestionAndWord(question) {
-      // 使用新的發音系統的連續發音功能
-      SoundSystem.speech.speakSentenceWithGap(question.original, question.answer);
+      window.speechSynthesis.cancel();
+      speak(question.original, 0.97, function() {
+        setTimeout(() => {
+          speak(question.original.replace(new RegExp(escapeRegExp(question.answer), 'i'), '...'), 1.02, function() {
+            setTimeout(() => speak(question.answer, 1.08), 350);
+          });
+        }, 350);
+      });
     }
 
     // ===== 答案處理 =====
@@ -1735,6 +1716,37 @@
       }, 3000);
     }
 
+    // ===== 角色互動系統整合 =====
+    let currentCharacter = localStorage.getItem('characterName') || 'zeus';
+    if (window.GameDialogue) {
+      window.GameDialogue.currentCharacter = currentCharacter;
+    }
+    function showGameStartDialogue() {
+      if (window.GameDialogue) {
+        window.GameDialogue.showGameStartDialogue();
+      }
+    }
+    function showCorrectAnswerDialogue() {
+      if (window.GameDialogue) {
+        window.GameDialogue.showCorrectAnswerDialogue();
+      }
+    }
+    function showWrongAnswerDialogue() {
+      if (window.GameDialogue) {
+        window.GameDialogue.showWrongAnswerDialogue();
+      }
+    }
+    function showGameVictoryDialogue() {
+      if (window.GameDialogue) {
+        window.GameDialogue.showGameVictoryDialogue();
+      }
+    }
+    function showGameDefeatDialogue() {
+      if (window.GameDialogue) {
+        window.GameDialogue.showGameDefeatDialogue();
+      }
+    }
+
     // ===== 初始化 =====
     if (typeof speechSynthesis !== 'undefined') {
       speechSynthesis.onvoiceschanged = pickVoice;
@@ -1755,6 +1767,12 @@
       
       // 初始化時解鎖複習按鈕
       unlockReviewButton();
+
+      // 在遊戲初始化時觸發開始對話
+      if (window.GameDialogue) {
+        window.GameDialogue.init();
+        showGameStartDialogue();
+      }
     });
 
     // 點擊彈窗外也能關閉
