@@ -997,7 +997,7 @@
             <div class="total-stars-header">
                 <h2>⭐ 星星總數統計</h2>
                 <p>所有系統的星星總數</p>
-                <button class="sync-btn" onclick="updateTotalStarsDisplay()" style="margin-top: 10px; font-size: 0.9rem; padding: 8px 16px;">🔄 手動更新</button>
+                <button class="sync-btn" onclick="manualUploadStars()" style="margin-top: 10px; font-size: 0.9rem; padding: 8px 16px;">📤 手動上傳星星</button>
             </div>
             <div class="total-stars-grid">
                 <div class="total-stars-card">
@@ -1054,13 +1054,6 @@
                     <div class="sync-value" id="leaderboardStars">0</div>
                     <div class="sync-desc">排行榜中的星星</div>
                 </div>
-
-            </div>
-            <div class="sync-controls">
-                <button class="sync-btn" onclick="syncAllStars()">🔄 同步所有星星</button>
-                <button class="sync-btn" onclick="readLocalTotalStars()">📖 讀取本地星星</button>
-                <button class="sync-btn" id="autoUploadToggle" onclick="toggleAutoUpload()">🔄 啟用自動上傳</button>
-                <button class="sync-btn" onclick="showSetUserModal()" style="background: linear-gradient(45deg, #9C27B0, #673AB7);">👤 設定用戶</button>
             </div>
         </div>
 
@@ -1083,18 +1076,6 @@
         <!-- 星座排行榜分頁 -->
         <div class="leaderboard-section" id="constellationTab" style="display: none;">
             <div class="section-title">🌟 星座挑戰排行榜</div>
-            
-            <!-- 除錯資訊 -->
-            <div id="debugInfo" style="background: #f8f9fa; padding: 15px; border-radius: 10px; margin-bottom: 20px; border-left: 4px solid #007bff;">
-                <h4 style="margin: 0 0 10px 0; color: #007bff;">🔍 除錯資訊</h4>
-                <div id="debugContent" style="font-family: monospace; font-size: 0.9rem; color: #666;">
-                    <div>📊 API 狀態: <span id="apiStatus">檢查中...</span></div>
-                    <div>📋 資料筆數: <span id="dataCount">-</span></div>
-                    <div>🎯 關卡數量: <span id="categoryCount">-</span></div>
-                    <div>⏰ 最後更新: <span id="lastUpdate">-</span></div>
-                </div>
-                <button class="sync-btn" onclick="refreshDebugInfo()" style="margin-top: 10px; font-size: 0.9rem; padding: 8px 16px;">🔄 重新檢查</button>
-            </div>
             
             <div class="leaderboard-content" id="constellationLeaderboardContent">
                 <div class="loading">載入星座排行榜中...</div>
@@ -1122,100 +1103,28 @@
         </div>
     </div>
 
-    <button class="refresh-button" onclick="refreshData()" title="重新整理">🔄</button>
-    
-    <!-- 寫入星星資料的按鈕 -->
-    <button class="add-stars-button" onclick="showAddStarsForm()" title="新增星星">➕</button>
-
-    <!-- 新增星星的彈窗 -->
-    <div id="addStarsModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <div class="modal-title">⭐ 上傳您的星星</div>
-                <p>輸入用戶名稱，系統會自動使用您的本地星星數上傳</p>
-            </div>
-            
-            <form id="addStarsForm">
-                <div class="form-group">
-                    <label class="form-label" for="userName">用戶名稱</label>
-                    <input type="text" id="userName" class="form-input" placeholder="輸入用戶名稱" required>
-                </div>
-                
-                <div class="form-group">
-                    <label class="form-label">您的星星資料</label>
-                    <div style="background: #f8f9fa; padding: 15px; border-radius: 10px; margin-top: 10px;">
-                        <div style="color: #666; font-size: 0.9rem;">
-                            <div>⭐ 總星星數: <span id="autoStars" style="color: #FFD700; font-weight: bold;">載入中...</span></div>
-                            <div>📊 計算等級: <span id="autoLevel" style="color: #FFD700; font-weight: bold;">載入中...</span></div>
-                            <div>💬 計算訊息: <span id="autoMessages" style="color: #FFD700; font-weight: bold;">載入中...</span></div>
-                        </div>
-                        <div style="margin-top: 10px; padding: 10px; background: #e8f5e8; border-radius: 8px; border-left: 4px solid #4CAF50;">
-                            <div style="color: #2E7D32; font-size: 0.9rem;">
-                                <strong>💡 提示：</strong>系統會自動使用您的本地星星數上傳
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="form-buttons">
-                    <button type="submit" class="btn btn-primary">✅ 上傳我的星星</button>
-                    <button type="button" class="btn btn-secondary" onclick="closeAddStarsForm()">❌ 取消</button>
-                </div>
-            </form>
-            
-            <div id="formMessage"></div>
-        </div>
-    </div>
-
-    <!-- 設定用戶的彈窗 -->
-    <div id="setUserModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <div class="modal-title">👤 設定當前用戶</div>
-                <p>設定您的用戶名稱，用於星星排行榜顯示</p>
-            </div>
-            
-            <form id="setUserForm">
-                <div class="form-group">
-                    <label class="form-label" for="setUserName">用戶名稱</label>
-                    <input type="text" id="setUserName" class="form-input" placeholder="輸入您的用戶名稱" required>
-                </div>
-                
-                <div class="form-group">
-                    <label class="form-label">當前狀態</label>
-                    <div style="background: #f8f9fa; padding: 15px; border-radius: 10px; margin-top: 10px;">
-                        <div style="color: #666; font-size: 0.9rem;">
-                            <div>👤 當前用戶: <span id="currentUserStatus" style="color: #FFD700; font-weight: bold;">未設定</span></div>
-                            <div>🎮 首頁用戶: <span id="homePageUser" style="color: #4CAF50; font-weight: bold;">檢查中...</span></div>
-                            <div>💾 儲存位置: <span id="storageLocation" style="color: #2196F3; font-weight: bold;">檢查中...</span></div>
-                        </div>
-                        <div style="margin-top: 10px; padding: 10px; background: #fff3cd; border-radius: 8px; border-left: 4px solid #ffc107;">
-                            <div style="color: #856404; font-size: 0.9rem;">
-                                <strong>💡 提示：</strong>設定後會自動同步到首頁和其他頁面
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="form-buttons">
-                    <button type="submit" class="btn btn-primary">✅ 設定用戶</button>
-                    <button type="button" class="btn btn-secondary" onclick="closeSetUserModal()">❌ 取消</button>
-                </div>
-            </form>
-            
-            <div id="setUserMessage"></div>
-        </div>
-    </div>
 
     <script>
         // 配置
         const API_BASE_URL = 'https://script.google.com/macros/s/AKfycbxoktND9L-KKwSaih5SNzdJWLhRP9dQdI5oHbUNIE3HJhdLjhLIwnL8xFnNtFfGE-rH9A/exec';
-        const CURRENT_USER = localStorage.getItem('currentUser') || localStorage.getItem('playerName') || '玩家' + Math.floor(Math.random() * 1000);
+        function getHomePlayerName() {
+            const homeName = (localStorage.getItem('playerName') || '').trim();
+            if (homeName) return homeName;
+            const current = (localStorage.getItem('currentUser') || '').trim();
+            return current || '';
+        }
+        let CURRENT_USER = getHomePlayerName() || ('玩家' + Math.floor(Math.random() * 1000));
         let leaderboardData = [];
 
         // 初始化
         document.addEventListener('DOMContentLoaded', function() {
             console.log('🚀 星星排行榜頁面初始化...');
+            // 與首頁名稱同步：若首頁有名稱，優先同步到 currentUser
+            const homeName = getHomePlayerName();
+            if (homeName) {
+                localStorage.setItem('currentUser', homeName);
+                CURRENT_USER = homeName;
+            }
             
             // 初始化資料來源資訊
             updateDataSourceInfo('🔄 正在載入資料...');
@@ -1241,7 +1150,7 @@
 
         // 載入模擬資料（僅在 API 失敗時使用）
         function loadMockData() {
-            console.log('⚠️ 使用模擬資料（API 失敗）');
+            console.log(⚠️ 使用模擬資料（API 失敗）');
             // 模擬星星排行榜資料
             const mockLeaderboard = [
                 { user: '玩家A', stars: 150, level: 5, messages: 25 },
@@ -2757,6 +2666,27 @@
             }
         }
 
+        // 手動上傳星星（使用當前使用者與本地星星數）
+        async function manualUploadStars() {
+            try {
+                const userName = (localStorage.getItem('currentUser') || localStorage.getItem('playerName') || '').trim();
+                if (!userName) {
+                    showCustomMessage('❌ 請先在首頁設定用戶名稱再上傳', 'error');
+                    return;
+                }
+                const totalStars = syncStarsData.localTotalStars || 0;
+                const userLevel = Math.floor(totalStars / 20) + 1;
+                const messageCount = Math.floor(totalStars / 10);
+                showCustomMessage('📤 正在上傳本地星星...', 'success');
+                await addStarsToGoogleSheets(userName, totalStars, userLevel, messageCount);
+                showCustomMessage('✅ 上傳完成！排行榜即將更新', 'success');
+                setTimeout(() => { loadStarsLeaderboard(); }, 1500);
+            } catch (error) {
+                console.error('手動上傳失敗:', error);
+                showCustomMessage('❌ 手動上傳失敗，請稍後再試', 'error');
+            }
+        }
+
 
 
         // 切換自動上傳開關
@@ -3059,29 +2989,29 @@
             document.getElementById('formMessage').innerHTML = '';
         }
 
-        // 處理表單提交
-        document.getElementById('addStarsForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            const userName = document.getElementById('userName').value.trim();
-            
-            if (!userName) {
-                showFormMessage('請輸入用戶名稱', 'error');
-                return;
-            }
-            
-            // 使用本地星星數作為上傳的星星數
-            const totalStars = syncStarsData.localTotalStars || 0;
-            const userLevel = Math.floor(totalStars / 20) + 1; // 根據星星數計算等級
-            const messageCount = Math.floor(totalStars / 10); // 根據星星數計算訊息數
-            
-            try {
-                await addStarsToGoogleSheets(userName, totalStars, userLevel, messageCount);
-            } catch (error) {
-                console.error('新增星星失敗:', error);
-                showFormMessage('新增星星失敗，請稍後再試', 'error');
-            }
-        });
+        // 處理表單提交（已移除 UI，僅保留防呆）
+        (function(){
+            const addStarsForm = document.getElementById('addStarsForm');
+            if (!addStarsForm) return;
+            addStarsForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const userNameInput = document.getElementById('userName');
+                const userName = (userNameInput ? userNameInput.value : '').trim();
+                if (!userName) {
+                    showFormMessage('請輸入用戶名稱', 'error');
+                    return;
+                }
+                const totalStars = syncStarsData.localTotalStars || 0;
+                const userLevel = Math.floor(totalStars / 20) + 1;
+                const messageCount = Math.floor(totalStars / 10);
+                try {
+                    await addStarsToGoogleSheets(userName, totalStars, userLevel, messageCount);
+                } catch (error) {
+                    console.error('新增星星失敗:', error);
+                    showFormMessage('新增星星失敗，請稍後再試', 'error');
+                }
+            });
+        })();
 
         // 新增星星到 Google Sheets
         async function addStarsToGoogleSheets(userName, starsCount, userLevel, messageCount) {
@@ -3154,5 +3084,207 @@
             }
         }
     </script>
+
+<!-- ===== PATCH: Constellation from Google Sheet (auto-import) ===== -->
+<script>
+// ✅ Minimal override: only change data source for "星座挑戰排行榜"
+// Google Sheet: https://docs.google.com/spreadsheets/d/1H9Jc6Up_mBZLEUgcNOkyv3QJOQXDpyRU_NOEFSRkjhU/edit?usp=sharing
+(function(){
+  const SHEET_ID = "1H9Jc6Up_mBZLEUgcNOkyv3QJOQXDpyRU_NOEFSRkjhU";
+  const SHEET_NAME = ""; // 空白=第一個分頁
+  const GVIZ_URL = (id, sheet="") => {
+    const base = `https://docs.google.com/spreadsheets/d/${id}/gviz/tq`;
+    const q = new URLSearchParams({tqx:"out:json"});
+    if(sheet) q.set("sheet", sheet);
+    return `${base}?${q.toString()}`;
+  };
+  const iSafe=(v,d=0)=>Number.isFinite(parseFloat(v))?parseFloat(v):d;
+
+  function parseGVizJSON(text){
+    const m = String(text).match(/setResponse\(([\s\S]*)\);/);
+    if(!m) throw new Error("回傳格式非 GViz JSON");
+    return JSON.parse(m[1]);
+  }
+  function toQuizRows(table){
+    const cols = table.cols.map(c => String(c.label||"").trim());
+
+    function findCol(names){
+      for(const n of names){
+        const i = cols.findIndex(c => c.toLowerCase()===n.toLowerCase());
+        if(i>=0) return i;
+      }
+      for(const n of names){
+        const i = cols.findIndex(c => c.toLowerCase().includes(n.toLowerCase()));
+        if(i>=0) return i;
+      }
+      return -1;
+    }
+    const idxUser = findCol(["玩家名稱","姓名","名稱","user","name","玩家"]);
+    const idxScore = findCol(["分數","score"]);
+    const idxCorrect = findCol(["答對題數","正確數","correct","correctCount","正確"]);
+    const idxCat = findCol(["星座","關卡","category","quiz","類別"]);
+    const idxTime = findCol(["答題時間","時間","秒","time","duration"]);
+    const idxDate = findCol(["時間戳記","日期","date","timestamp"]);
+
+    const rows = [];
+    for(const r of table.rows){
+      const get = (idx)=> (idx>=0 && r.c[idx]) ? r.c[idx].v : null;
+      const user = String(get(idxUser)||"").trim();
+      if(!user) continue;
+      rows.push({
+        playerName: user,
+        score: iSafe(get(idxScore),0),
+        correctCount: iSafe(get(idxCorrect),0),
+        category: String(get(idxCat)||"").trim() || "default",
+        totalTime: iSafe(get(idxTime), 0),
+        date: get(idxDate) ? String(get(idxDate)) : ""
+      });
+    }
+    return rows;
+  }
+
+  async function loadFromSheetAndRender(){
+    try{
+      const url = GVIZ_URL(SHEET_ID, SHEET_NAME);
+      const res = await fetch(url, {cache:"no-store"});
+      const text = await res.text();
+      const json = parseGVizJSON(text);
+      const arr = toQuizRows(json.table);
+
+      // 🔁 呼叫原本頁面內的處理函式（不改任何樣式/排序/互動）
+      const payload = { success:true, leaderboard: arr };
+      if(typeof window.handleConstellationLeaderboard === "function"){
+        window.handleConstellationLeaderboard(payload);
+      }else if(typeof handleConstellationLeaderboard === "function"){
+        handleConstellationLeaderboard(payload);
+      }else{
+        console.warn("handleConstellationLeaderboard() 不存在；僅填入容器簡訊");
+        const box = document.getElementById("constellationLeaderboardContent");
+        if(box){ box.innerHTML = "<div class='error'>已載入 " + arr.length + " 筆資料，但找不到渲染函式。</div>"; }
+      }
+      // 標示資料來源
+      const info = document.getElementById("dataSourceInfo");
+      if(info){ info.textContent = "📊 資料來源：Google 試算表（星座挑戰）"; info.style.color = "#4CAF50"; }
+    }catch(err){
+      console.error(err);
+      const box = document.getElementById("constellationLeaderboardContent");
+      if(box){ box.innerHTML = "<div class='error'>讀取星座挑戰試算表失敗："
+        + String(err?.message||err).slice(0,160) + "</div>"; }
+    }
+  }
+
+  // ↪️ 覆寫原本的載入函式：保持其他行為不變
+  window.loadConstellationLeaderboard = loadFromSheetAndRender;
+
+  // 若一進頁就切到星座分頁，也能正常渲染
+  const tabBtn = Array.from(document.querySelectorAll(".tab-button"))
+    .find(b => /星座排行榜/.test(b.textContent));
+  // 不主動切換分頁，只是當分頁顯示時能正常載入
+})();
+</script>
+
+<!-- ===== PATCH 2: GViz JSONP (CORS-safe) for Constellation ===== -->
+<script>
+(function(){
+  // Override the previously injected loader with a JSONP-based one (avoids CORS / "Failed to fetch")
+  const SHEET_ID = "1H9Jc6Up_mBZLEUgcNOkyv3QJOQXDpyRU_NOEFSRkjhU";
+  const SHEET_NAME = ""; // first sheet
+  const iSafe=(v,d=0)=>Number.isFinite(parseFloat(v))?parseFloat(v):d;
+
+  function buildGVizJSONPUrl(id, sheet, cbName){
+    const base = `https://docs.google.com/spreadsheets/d/${id}/gviz/tq`;
+    // tqx=out:json;responseHandler:cb
+    const qp = new URLSearchParams({ tqx:`out:json;responseHandler:${cbName}` });
+    if(sheet) qp.set('sheet', sheet);
+    return `${base}?${qp.toString()}`;
+  }
+  function toQuizRows(table){
+    const cols = table.cols.map(c => String(c.label||"").trim());
+    const findCol = (names)=>{
+      for(const n of names){
+        const i = cols.findIndex(c => c.toLowerCase()===n.toLowerCase());
+        if(i>=0) return i;
+      }
+      for(const n of names){
+        const i = cols.findIndex(c => c.toLowerCase().includes(n.toLowerCase()));
+        if(i>=0) return i;
+      }
+      return -1;
+    };
+    const idxUser = findCol(["玩家名稱","姓名","名稱","user","name","玩家"]);
+    const idxScore = findCol(["分數","score"]);
+    const idxCorrect = findCol(["答對題數","正確數","correct","correctCount","正確"]);
+    const idxCat = findCol(["星座","關卡","category","quiz","類別"]);
+    const idxTime = findCol(["答題時間","時間","秒","time","duration"]);
+    const idxDate = findCol(["時間戳記","日期","date","timestamp"]);
+
+    const rows = [];
+    for(const r of table.rows){
+      const get = (idx)=> (idx>=0 && r.c[idx]) ? r.c[idx].v : null;
+      const user = String(get(idxUser)||"").trim();
+      if(!user) continue;
+      rows.push({
+        playerName: user,
+        score: iSafe(get(idxScore),0),
+        correctCount: iSafe(get(idxCorrect),0),
+        category: String(get(idxCat)||"").trim() || "default",
+        totalTime: iSafe(get(idxTime), 0),
+        date: get(idxDate) ? String(get(idxDate)) : ""
+      });
+    }
+    return rows;
+  }
+
+  async function loadFromSheetJSONP(){
+    return new Promise((resolve, reject)=>{
+      const cbName = "__gviz_cb_" + Math.random().toString(36).slice(2);
+      const url = buildGVizJSONPUrl(SHEET_ID, SHEET_NAME, cbName);
+      const s = document.createElement("script");
+      const timeout = setTimeout(()=>{
+        cleanup(); reject(new Error("JSONP timeout"));
+      }, 10000);
+      function cleanup(){
+        clearTimeout(timeout);
+        delete window[cbName];
+        if(s && s.parentNode) s.parentNode.removeChild(s);
+      }
+      window[cbName] = (json)=>{ try{
+          cleanup();
+          if(!json || !json.table) throw new Error("Invalid GViz JSON");
+          resolve(json);
+        }catch(e){ reject(e); }
+      };
+      s.src = url;
+      s.onerror = ()=>{ cleanup(); reject(new Error("Script load error")); };
+      document.head.appendChild(s);
+    });
+  }
+
+  async function loadFromSheetAndRender(){
+    try{
+      const json = await loadFromSheetJSONP();
+      const arr = toQuizRows(json.table);
+      const payload = { success:true, leaderboard: arr };
+      if(typeof window.handleConstellationLeaderboard === "function"){
+        window.handleConstellationLeaderboard(payload);
+      }else if(typeof handleConstellationLeaderboard === "function"){
+        handleConstellationLeaderboard(payload);
+      }else{
+        const box = document.getElementById("constellationLeaderboardContent");
+        if(box){ box.innerHTML = "<div class='error'>已載入 " + arr.length + " 筆資料（JSONP），但找不到渲染函式。</div>"; }
+      }
+      const info = document.getElementById("dataSourceInfo");
+      if(info){ info.textContent = "📊 資料來源：Google 試算表（JSONP）"; info.style.color = "#4CAF50"; }
+    }catch(err){
+      const box = document.getElementById("constellationLeaderboardContent");
+      if(box){ box.innerHTML = "<div class='error'>讀取星座挑戰試算表失敗（JSONP）："
+        + String(err?.message||err).slice(0,160) + "</div>"; }
+    }
+  }
+
+  // Override loader
+  window.loadConstellationLeaderboard = loadFromSheetAndRender;
+})();
+</script>
 </body>
 </html>
