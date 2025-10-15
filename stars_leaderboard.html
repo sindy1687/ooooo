@@ -3084,5 +3084,290 @@
             }
         }
     </script>
+
+<!-- ===== PATCH: Constellation from Google Sheet (auto-import) ===== -->
+<script>
+// ✅ Minimal override: only change data source for "星座挑戰排行榜"
+// Google Sheet: https://docs.google.com/spreadsheets/d/1H9Jc6Up_mBZLEUgcNOkyv3QJOQXDpyRU_NOEFSRkjhU/edit?usp=sharing
+(function(){
+  const SHEET_ID = "1H9Jc6Up_mBZLEUgcNOkyv3QJOQXDpyRU_NOEFSRkjhU";
+  const SHEET_NAME = ""; // 空白=第一個分頁
+  const GVIZ_URL = (id, sheet="") => {
+    const base = `https://docs.google.com/spreadsheets/d/${id}/gviz/tq`;
+    const q = new URLSearchParams({tqx:"out:json"});
+    if(sheet) q.set("sheet", sheet);
+    return `${base}?${q.toString()}`;
+  };
+  const iSafe=(v,d=0)=>Number.isFinite(parseFloat(v))?parseFloat(v):d;
+
+  function parseGVizJSON(text){
+    const m = String(text).match(/setResponse\(([\s\S]*)\);/);
+    if(!m) throw new Error("回傳格式非 GViz JSON");
+    return JSON.parse(m[1]);
+  }
+  function toQuizRows(table){
+    const cols = table.cols.map(c => String(c.label||"").trim());
+
+    function findCol(names){
+      for(const n of names){
+        const i = cols.findIndex(c => c.toLowerCase()===n.toLowerCase());
+        if(i>=0) return i;
+      }
+      for(const n of names){
+        const i = cols.findIndex(c => c.toLowerCase().includes(n.toLowerCase()));
+        if(i>=0) return i;
+      }
+      return -1;
+    }
+    const idxUser = findCol(["玩家名稱","姓名","名稱","user","name","玩家"]);
+    const idxScore = findCol(["分數","score"]);
+    const idxCorrect = findCol(["答對題數","正確數","correct","correctCount","正確"]);
+    const idxCat = findCol(["星座","關卡","category","quiz","類別"]);
+    const idxTime = findCol(["答題時間","時間","秒","time","duration"]);
+    const idxDate = findCol(["時間戳記","日期","date","timestamp"]);
+
+    const rows = [];
+    for(const r of table.rows){
+      const get = (idx)=> (idx>=0 && r.c[idx]) ? r.c[idx].v : null;
+      const user = String(get(idxUser)||"").trim();
+      if(!user) continue;
+      rows.push({
+        playerName: user,
+        score: iSafe(get(idxScore),0),
+        correctCount: iSafe(get(idxCorrect),0),
+        category: String(get(idxCat)||"").trim() || "default",
+        totalTime: iSafe(get(idxTime), 0),
+        date: get(idxDate) ? String(get(idxDate)) : ""
+      });
+    }
+    return rows;
+  }
+
+  async function loadFromSheetAndRender(){
+    try{
+      const url = GVIZ_URL(SHEET_ID, SHEET_NAME);
+      const res = await fetch(url, {cache:"no-store"});
+      const text = await res.text();
+      const json = parseGVizJSON(text);
+      const arr = toQuizRows(json.table);
+
+      // 🔁 呼叫原本頁面內的處理函式（不改任何樣式/排序/互動）
+      const payload = { success:true, leaderboard: arr };
+      if(typeof window.handleConstellationLeaderboard === "function"){
+        window.handleConstellationLeaderboard(payload);
+      }else if(typeof handleConstellationLeaderboard === "function"){
+        handleConstellationLeaderboard(payload);
+      }else{
+        console.warn("handleConstellationLeaderboard() 不存在；僅填入容器簡訊");
+        const box = document.getElementById("constellationLeaderboardContent");
+        if(box){ box.innerHTML = "<div class='error'>已載入 " + arr.length + " 筆資料，但找不到渲染函式。</div>"; }
+      }
+      // 標示資料來源
+      const info = document.getElementById("dataSourceInfo");
+      if(info){ info.textContent = "📊 資料來源：Google 試算表（星座挑戰）"; info.style.color = "#4CAF50"; }
+    }catch(err){
+      console.error(err);
+      const box = document.getElementById("constellationLeaderboardContent");
+      if(box){ box.innerHTML = "<div class='error'>讀取星座挑戰試算表失敗："
+        + String(err?.message||err).slice(0,160) + "</div>"; }
+    }
+  }
+
+  // ↪️ 覆寫原本的載入函式：保持其他行為不變
+  window.loadConstellationLeaderboard = loadFromSheetAndRender;
+
+  // 若一進頁就切到星座分頁，也能正常渲染
+  const tabBtn = Array.from(document.querySelectorAll(".tab-button"))
+    .find(b => /星座排行榜/.test(b.textContent));
+  // 不主動切換分頁，只是當分頁顯示時能正常載入
+})();
+</script>
+
+<!-- ===== PATCH 3: GitHub Pages–friendly multi-fallback loader for Constellation ===== -->
+<script>
+(function(){ 
+  const SHEET_ID = "1H9Jc6Up_mBZLEUgcNOkyv3QJOQXDpyRU_NOEFSRkjhU";
+  const SHEET_NAME = ""; // first sheet
+  const iSafe=(v,d=0)=>Number.isFinite(parseFloat(v))?parseFloat(v):d;
+
+  // --- Utils ---
+  function toQuizRowsFromTable(table){
+    const cols = table.cols.map(c => String(c.label||"").trim());
+    const findCol = (names)=>{
+      for(const n of names){
+        const i = cols.findIndex(c => c.toLowerCase()===n.toLowerCase());
+        if(i>=0) return i;
+      }
+      for(const n of names){
+        const i = cols.findIndex(c => c.toLowerCase().includes(n.toLowerCase()));
+        if(i>=0) return i;
+      }
+      return -1;
+    };
+    const idxUser = findCol(["玩家名稱","姓名","名稱","user","name","玩家"]);
+    const idxScore = findCol(["分數","score"]);
+    const idxCorrect = findCol(["答對題數","正確數","correct","correctCount","正確"]);
+    const idxCat = findCol(["星座","關卡","category","quiz","類別"]);
+    const idxTime = findCol(["答題時間","時間","秒","time","duration"]);
+    const idxDate = findCol(["時間戳記","日期","date","timestamp"]);
+
+    const rows = [];
+    for(const r of table.rows){
+      const get = (idx)=> (idx>=0 && r.c[idx]) ? r.c[idx].v : null;
+      const user = String(get(idxUser)||"").trim();
+      if(!user) continue;
+      rows.push({
+        playerName: user,
+        score: iSafe(get(idxScore),0),
+        correctCount: iSafe(get(idxCorrect),0),
+        category: String(get(idxCat)||"").trim() || "default",
+        totalTime: iSafe(get(idxTime), 0),
+        date: get(idxDate) ? String(get(idxDate)) : ""
+      });
+    }
+    return rows;
+  }
+
+  function handleRows(arr){ 
+    const payload = { success:true, leaderboard: arr };
+    if(typeof window.handleConstellationLeaderboard === "function") window.handleConstellationLeaderboard(payload);
+    else if(typeof handleConstellationLeaderboard === "function") handleConstellationLeaderboard(payload);
+    else {
+      const box = document.getElementById("constellationLeaderboardContent");
+      if(box) box.innerHTML = "<div class='error'>已載入 " + arr.length + " 筆資料，但找不到渲染函式。</div>";
+    }
+    const info = document.getElementById("dataSourceInfo");
+    if(info) info.style.color = "#4CAF50";
+  }
+
+  // --- 1) GViz JSONP (no CORS) ---
+  function buildGVizJSONPUrl(id, sheet, cbName){
+    const base = `https://docs.google.com/spreadsheets/d/${id}/gviz/tq`;
+    const qp = new URLSearchParams({ tqx:`out:json;responseHandler:${cbName};reqId=${Date.now()}` });
+    if(sheet) qp.set('sheet', sheet);
+    return `${base}?${qp.toString()}`;
+  }
+  function loadViaJSONP(timeoutMs=12000){
+    return new Promise((resolve,reject)=>{
+      const cbName="__gviz_cb_"+Math.random().toString(36).slice(2);
+      const url=buildGVizJSONPUrl(SHEET_ID,SHEET_NAME,cbName);
+      const s=document.createElement("script"); s.async=true; s.referrerPolicy="no-referrer";
+      let done=false;
+      const timer=setTimeout(()=>{ if(done) return; done=true; cleanup(); reject(new Error("JSONP timeout")); }, timeoutMs);
+      function cleanup(){ clearTimeout(timer); delete window[cbName]; if(s && s.parentNode) s.parentNode.removeChild(s); }
+      window[cbName]=(json)=>{ if(done) return; done=true; cleanup(); try{ if(!json||!json.table) throw new Error("Invalid GViz JSON"); resolve(json); }catch(e){ reject(e); } };
+      s.onerror=()=>{ if(done) return; done=true; cleanup(); reject(new Error("JSONP script error")); };
+      s.src=url; document.head.appendChild(s);
+    });
+  }
+
+  // --- 2) Published CSV (CORS) ---
+  function buildCSVUrl(id, gid="0"){ 
+    // Requires: File -> Publish to the web
+    return `https://docs.google.com/spreadsheets/d/${id}/pub?gid=${gid}&single=true&output=csv`; 
+  }
+  async function loadViaCSV(){ 
+    // Try gid=0 by default
+    const url = buildCSVUrl(SHEET_ID,"0");
+    const res = await fetch(url, { cache:"no-store" });
+    if(!res.ok) throw new Error("CSV HTTP "+res.status);
+    const text = await res.text();
+    // Parse CSV (simple split, handles quoted commas)
+    const rows = [];
+    let i=0, header=[], idxUser=-1, idxScore=-1, idxCorrect=-1, idxCat=-1, idxTime=-1, idxDate=-1;
+    for(const line of parseCSV(text)){
+      if(i++===0){ header=line.map(h=>String(h||"").trim()); const lc=header.map(h=>h.toLowerCase());
+        const find=(names)=>{
+          for(const n of names){ const j=lc.indexOf(n.toLowerCase()); if(j>=0) return j; }
+          for(const n of names){ const j=lc.findIndex(x=>x.includes(n.toLowerCase())); if(j>=0) return j; }
+          return -1;
+        };
+        idxUser=find(["玩家名稱","姓名","名稱","user","name","玩家"]);
+        idxScore=find(["分數","score"]);
+        idxCorrect=find(["答對題數","正確數","correct","correctcount","正確"]);
+        idxCat=find(["星座","關卡","category","quiz","類別"]);
+        idxTime=find(["答題時間","時間","秒","time","duration"]);
+        idxDate=find(["時間戳記","日期","date","timestamp"]);
+        continue;
+      }
+      const get=(idx)=> idx>=0 ? line[idx] : "";
+      const user=String(get(idxUser)||"").trim(); if(!user) continue;
+      rows.push({
+        playerName:user,
+        score:iSafe(get(idxScore),0),
+        correctCount:iSafe(get(idxCorrect),0),
+        category:String(get(idxCat)||"").trim()||"default",
+        totalTime:iSafe(get(idxTime),0),
+        date:String(get(idxDate)||"")
+      });
+    }
+    return rows;
+
+    function parseCSV(text){
+      const out=[]; let row=[]; let cur=""; let inQ=false;
+      for(let i=0;i<text.length;i++){ const ch=text[i]; const nxt=text[i+1];
+        if(inQ){ if(ch=='"' && nxt=='"'){ cur+='"'; i++; } else if(ch=='"'){ inQ=false; } else { cur+=ch; } }
+        else { if(ch=='"') inQ=true; else if(ch==','){ row.push(cur); cur=""; } else if(ch=='\n'){ row.push(cur); out.push(row); row=[]; cur=""; } else if(ch=='\r'){} else cur+=ch; }
+      }
+      if(cur.length>0 || row.length>0){ row.push(cur); out.push(row); }
+      return out;
+    }
+  }
+
+  // --- 3) GViz JSON (CORS; least preferred) ---
+  function buildGVizJSONUrl(id, sheet=""){ 
+    const base = `https://docs.google.com/spreadsheets/d/${id}/gviz/tq`;
+    const qp = new URLSearchParams({ tqx:"out:json" });
+    if(sheet) qp.set('sheet', sheet);
+    return `${base}?${qp.toString()}`; 
+  }
+  async function loadViaGVizJSON(){
+    const res = await fetch(buildGVizJSONUrl(SHEET_ID, SHEET_NAME), { cache:"no-store" });
+    const text = await res.text();
+    const m = String(text).match(/setResponse\(([\s\S]*)\);/);
+    if(!m) throw new Error("非 GViz JSON");
+    return JSON.parse(m[1]);
+  }
+
+  async function loadAndRender(){
+    const box = document.getElementById("constellationLeaderboardContent");
+    const info = document.getElementById("dataSourceInfo");
+    try{ 
+      // 1) JSONP first
+      const j = await loadViaJSONP();
+      const arr = toQuizRowsFromTable(j.table);
+      handleRows(arr);
+      if(info) info.textContent = "📊 來源：Google 試算表（JSONP）";
+      return;
+    }catch(e1){ 
+      console.warn("JSONP failed:", e1);
+      // 2) CSV (requires Publish to web)
+      try{
+        const arr = await loadViaCSV();
+        handleRows(arr);
+        if(info) info.textContent = "📊 來源：Google 試算表（CSV 發佈）";
+        return;
+      }catch(e2){
+        console.warn("CSV failed:", e2);
+        // 3) GViz JSON
+        try{
+          const j = await loadViaGVizJSON();
+          const arr = toQuizRowsFromTable(j.table);
+          handleRows(arr);
+          if(info) info.textContent = "📊 來源：Google 試算表（GViz JSON）";
+          return;
+        }catch(e3){
+          console.error("All loaders failed:", e1, e2, e3);
+          if(box) box.innerHTML = "<div class='error'>讀取星座挑戰試算表失敗："
+            + String(e3?.message||e3).slice(0,180) + "<br>建議：開啟『發佈到網路』以啟用 CSV 後備，或提供 GAS 代理端點。</div>";
+          if(info) info.textContent = "📊 來源：讀取失敗"; if(info) info.style.color = "#E53935";
+        }
+      }
+    }
+  }
+
+  window.loadConstellationLeaderboard = loadAndRender;
+})();
+</script>
 </body>
 </html>
