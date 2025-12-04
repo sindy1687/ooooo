@@ -37,7 +37,7 @@ const vocabData = {
   virgo: [
     { zh: "我們的", en: "our" }, { zh: "他們的", en: "their" }, { zh: "是", en: "is" }, { zh: "不", en: "no" },
     { zh: "不", en: "not" }, { zh: "好", en: "good" }, { zh: "醫生", en: "doctor" }, { zh: "護士", en: "nurse" },
-    { zh: "歌手", en: "singer" }, { zh: "演員", en: "actor" }, { zh: "廚師", en: "cooker" }, { zh: "駕駛員", en: "driver" },
+    { zh: "歌手", en: "singer" }, { zh: "演員", en: "actor" }, { zh: "廚師", en: "cook" }, { zh: "駕駛員", en: "driver" },
     { zh: "工程師", en: "engineer" }, { zh: "農夫", en: "farmer" }, { zh: "工人", en: "worker" }, { zh: "名字", en: "name" },
     { zh: "先生", en: "mr." }, { zh: "太太", en: "mrs." }, { zh: "水果", en: "fruit" }, { zh: "蘋果", en: "apple" }
   ],
