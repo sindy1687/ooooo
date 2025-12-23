@@ -2438,11 +2438,11 @@
         
         // 根據稀有度決定邊框底圖
         if (card.rarity === '普通') {
-          div.style.backgroundImage = "url('img/border/common.jpg')";
+          div.style.backgroundImage = "url('img/border/common.png')";
         } else if (card.rarity === '稀有') {
-          div.style.backgroundImage = "url('img/border/rare.png')";
+          div.style.backgroundImage = "url('img/border/common.png')";
         } else if (card.rarity === '超稀有') {
-          div.style.backgroundImage = "url('img/border/epic.png')";
+          div.style.backgroundImage = "url('img/border/common.png')";
         }
 
         // 星星圖示
@@ -2465,7 +2465,7 @@
         } else {
           // 一般圖片
           mediaContent = `
-            <img class="card-media" src="${imgSrc}" alt="${card.word}" onerror="this.onerror=null;this.src='img/cards/placeholder.jpg'">
+            <img class="card-media" src="${imgSrc}" alt="${card.word}" onerror="this.onerror=null;this.src='img/cards/earth.png'">
           `;
         }
         let cardContent = `
@@ -3270,6 +3270,43 @@
     `;
     document.head.appendChild(style);
 
+    // ---- Fallbacks: avoid runtime crashes if helper functions are missing ----
+    if (typeof window.highlightNewCards !== 'function') {
+      window.highlightNewCards = function highlightNewCards() {
+        try {
+          const list = Array.isArray(window.recentlyObtainedCards)
+            ? window.recentlyObtainedCards
+            : JSON.parse(localStorage.getItem('recentlyObtainedCards') || '[]');
+          if (!Array.isArray(list) || list.length === 0) return;
+          document.querySelectorAll('.card[data-word]').forEach(el => {
+            const w = el.getAttribute('data-word');
+            if (list.includes(w)) {
+              el.style.animation = 'newCardHighlight 1.2s ease-in-out 0s 3';
+            }
+          });
+        } catch (e) {
+          // swallow
+        }
+      };
+    }
+
+    if (typeof window.optimizeVideoPerformance !== 'function') {
+      window.optimizeVideoPerformance = function optimizeVideoPerformance() {
+        try {
+          const videos = document.querySelectorAll('video.card-media');
+          if (!videos || videos.length === 0) return;
+          const vh = window.innerHeight || document.documentElement.clientHeight;
+          videos.forEach(v => {
+            const rect = v.getBoundingClientRect();
+            const inView = rect.bottom >= -40 && rect.top <= vh + 40;
+            if (!inView && !v.paused) v.pause();
+          });
+        } catch (e) {
+          // swallow
+        }
+      };
+    }
+
     // 輔助函數：判斷是否為SSR
     function isSSR(card) {
       return card.rarity === '超稀有' || card.rarity === '節日限定';
@@ -3490,7 +3527,7 @@
           div.setAttribute('data-word', card.word);
           let imgSrc = card.image;
           // 行動裝置只顯示圖片，桌機才支援 hover 載入影片
-          let cardContent = `<img class="card-media" src="${imgSrc}" alt="${card.word}" onerror="this.onerror=null;this.src='img/cards/placeholder.jpg'">`;
+          let cardContent = `<img class="card-media" src="${imgSrc}" alt="${card.word}" onerror="this.onerror=null;this.src='img/cards/earth.png'">`;
           if (recentlyObtainedCards.includes(card.word) && isUnlocked) {
             cardContent = `<div class="new-card-badge">NEW!</div>` + cardContent;
           }
@@ -3540,7 +3577,7 @@
                     img.className = 'card-media';
                     img.src = imgSrc;
                     img.alt = card.word;
-                    img.onerror = function() { this.onerror=null; this.src='img/cards/placeholder.jpg'; };
+                    img.onerror = function() { this.onerror=null; this.src='img/cards/earth.png'; };
                     div.appendChild(img);
                   }
                 }, 100);
