@@ -1059,22 +1059,21 @@
 
         <!-- 分頁切換按鈕 -->
         <div class="tab-container">
-            <button class="tab-button active" onclick="switchTab('stars')">⭐ 星星排行榜</button>
-            <button class="tab-button" onclick="switchTab('constellation')">🌟 星座排行榜</button>
-                            <button class="tab-button" onclick="switchTab('total')">🏆 星座總排行榜</button>
+            <button class="tab-button active" data-tab="constellation" onclick="switchTab('constellation')">🌟 星座排行榜</button>
+            <button class="tab-button" data-tab="stars" onclick="switchTab('stars')">⭐ 星星排行榜</button>
+            <button class="tab-button" data-tab="total" onclick="switchTab('total')">🏆 星座總排行榜</button>
         </div>
 
         <!-- 星星排行榜分頁 -->
-        <div class="leaderboard-section" id="starsTab">
-            <div class="section-title">🏆 星星排行榜</div>
-            
+        <div class="leaderboard-section" id="starsTab" style="display: none;">
+            <div class="section-title">⭐ 星星排行榜</div>
             <div class="leaderboard-content" id="leaderboardContent">
-                <div class="loading">載入中...</div>
+                <div class="loading">載入星星排行榜中...</div>
             </div>
         </div>
 
         <!-- 星座排行榜分頁 -->
-        <div class="leaderboard-section" id="constellationTab" style="display: none;">
+        <div class="leaderboard-section" id="constellationTab">
             <div class="section-title">🌟 星座挑戰排行榜</div>
             
             <div class="leaderboard-content" id="constellationLeaderboardContent">
@@ -1105,22 +1104,72 @@
 
 
     <script>
-        // 配置
+        // ========== 配置和工具函數 ==========
         const API_BASE_URL = 'https://script.google.com/macros/s/AKfycbxoktND9L-KKwSaih5SNzdJWLhRP9dQdI5oHbUNIE3HJhdLjhLIwnL8xFnNtFfGE-rH9A/exec';
-        function getHomePlayerName() {
-            const homeName = (localStorage.getItem('playerName') || '').trim();
-            if (homeName) return homeName;
-            const current = (localStorage.getItem('currentUser') || '').trim();
-            return current || '';
-        }
-        let CURRENT_USER = getHomePlayerName() || ('玩家' + Math.floor(Math.random() * 1000));
+        const QUIZ_API_URL = "https://script.google.com/macros/s/AKfycbyhcoJVk9MVFWqsyee2PeE-vCo3u2p6oyL8HUCaMk0ZeNL0Td9mOBZnMlHNb6mIO5eCHQ/exec";
+        
+        // 工具函數
+        const Utils = {
+            getHomePlayerName() {
+                const homeName = (localStorage.getItem('playerName') || '').trim();
+                if (homeName) return homeName;
+                const current = (localStorage.getItem('currentUser') || '').trim();
+                return current || '';
+            },
+            async fetchAPI(url, options = {}) {
+                try {
+                    const response = await fetch(url, options);
+                    if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    return await response.json();
+                } catch (error) {
+                    console.error('API 調用失敗:', error);
+                    throw error;
+                }
+            },
+            safeParseInt(val, defaultValue = 0) {
+                const parsed = parseInt(val);
+                return isNaN(parsed) ? defaultValue : parsed;
+            },
+            formatTime(seconds) {
+                if (!seconds || isNaN(seconds)) return '0:00';
+                const m = Math.floor(seconds / 60);
+                const s = seconds % 60;
+                return `${m}:${s.toString().padStart(2, '0')}`;
+            },
+            showMessage(message, type = 'success', duration = 3000) {
+                const div = document.createElement('div');
+                div.style.cssText = `position:fixed;top:20px;right:20px;padding:15px 20px;border-radius:10px;color:white;font-weight:bold;z-index:10000;animation:slideIn 0.3s ease;`;
+                div.style.background = type === 'success' ? 'linear-gradient(45deg, #4CAF50, #45a049)' : 'linear-gradient(45deg, #f44336, #d32f2f)';
+                div.textContent = message;
+                document.body.appendChild(div);
+                setTimeout(() => {
+                    div.style.animation = 'slideOut 0.3s ease';
+                    setTimeout(() => div.remove(), 300);
+                }, duration);
+            },
+            // 統一的去重函數
+            deduplicateLeaderboard(data, keyFn = (item) => item.user || item.playerName || '未知用戶') {
+                const unique = [];
+                const seen = new Set();
+                data.forEach((item, index) => {
+                    const key = keyFn(item);
+                    if (!seen.has(key)) {
+                        seen.add(key);
+                        unique.push({ ...item, originalIndex: index });
+                    }
+                });
+                return unique;
+            }
+        };
+        
+        let CURRENT_USER = Utils.getHomePlayerName() || ('玩家' + Math.floor(Math.random() * 1000));
         let leaderboardData = [];
 
         // 初始化
         document.addEventListener('DOMContentLoaded', function() {
             console.log('🚀 星星排行榜頁面初始化...');
             // 與首頁名稱同步：若首頁有名稱，優先同步到 currentUser
-            const homeName = getHomePlayerName();
+            const homeName = Utils.getHomePlayerName();
             if (homeName) {
                 localStorage.setItem('currentUser', homeName);
                 CURRENT_USER = homeName;
@@ -1182,40 +1231,22 @@
             updateDataSourceInfo('⚠️ 使用模擬資料（API 失敗）');
         }
 
-        // 載入星星排行榜
+        // 載入星星排行榜（統一 API 調用邏輯）
         async function loadStarsLeaderboard() {
-            try {
-                console.log('🔄 嘗試從指定的 Google Apps Script API 獲取星星排行榜資料...');
-                
-                // 直接使用指定的 API 獲取星星排行榜資料
-                const starsResponse = await fetch(`${API_BASE_URL}?action=getStarsLeaderboard`);
-                if (!starsResponse.ok) {
-                    throw new Error(`HTTP ${starsResponse.status}: ${starsResponse.statusText}`);
-                }
-                const starsData = await starsResponse.json();
-                console.log('✅ 成功從指定 API 獲取星星排行榜資料:', starsData);
-                handleStarsLeaderboard(starsData);
-                
-            } catch (error) {
-                console.error('載入星星排行榜失敗:', error);
-                
-                // 如果星星排行榜 API 失敗，嘗試使用一般排行榜 API
+            const endpoints = ['getStarsLeaderboard', 'getLeaderboard'];
+            for (const action of endpoints) {
                 try {
-                    console.log('🔄 嘗試使用一般排行榜 API 作為備用...');
-                    const response = await fetch(`${API_BASE_URL}?action=getLeaderboard`);
-                    if (!response.ok) {
-                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-                    }
-                    const data = await response.json();
-                    console.log('✅ 成功從一般排行榜 API 獲取資料:', data);
+                    const data = await Utils.fetchAPI(`${API_BASE_URL}?action=${action}`);
+                    console.log(`✅ 成功從 ${action} API 獲取資料`);
                     handleStarsLeaderboard(data);
-                } catch (fallbackError) {
-                    console.error('載入排行榜失敗:', fallbackError);
-                    // 如果所有 API 都失敗，使用模擬資料
-                    loadMockData();
-                    updateDataSourceInfo('❌ API 失敗，使用模擬資料');
+                    return;
+                } catch (error) {
+                    console.warn(`${action} API 失敗，嘗試下一個...`, error);
                 }
             }
+            // 所有 API 都失敗，使用模擬資料
+            loadMockData();
+            updateDataSourceInfo('❌ API 失敗，使用模擬資料');
         }
 
         // 將 quiz 排行榜資料轉換為星星排行榜格式
@@ -1304,29 +1335,11 @@
                 return;
             }
 
-            // 去重邏輯：相同用戶只保留排名最高的記錄
-            const uniqueLeaderboardData = [];
-            const seenUsers = new Set();
-            
-            leaderboardData.forEach((item, index) => {
-                const userName = item.user || '未知用戶';
-                
-                // 如果這個用戶還沒出現過，則添加到結果中
-                if (!seenUsers.has(userName)) {
-                    seenUsers.add(userName);
-                    uniqueLeaderboardData.push({
-                        ...item,
-                        originalIndex: index // 保留原始排名用於皇冠顯示
-                    });
-                } else {
-                    console.log(`🔄 跳過重複用戶: ${userName} (原始排名: ${index + 1})`);
-                }
-            });
-
+            // 使用統一的去重函數
+            const uniqueLeaderboardData = Utils.deduplicateLeaderboard(leaderboardData);
             console.log(`📊 去重後排行榜: 原始 ${leaderboardData.length} 筆 → 去重後 ${uniqueLeaderboardData.length} 筆`);
 
             let html = '';
-
             uniqueLeaderboardData.forEach((item, displayIndex) => {
                 const rankClass = displayIndex === 0 ? 'gold' : displayIndex === 1 ? 'silver' : displayIndex === 2 ? 'bronze' : '';
                 const rank = displayIndex + 1;
@@ -1379,47 +1392,25 @@
             calculateStarsStatistics();
         }
 
-        // 載入統計資料
+        // 載入統計資料（統一 API 調用邏輯）
         async function loadStats() {
-            try {
-                console.log('📊 嘗試從指定的 Google Apps Script API 獲取統計資料...');
-                
-                // 直接使用指定的 API 獲取星星統計資料
-                const statsResponse = await fetch(`${API_BASE_URL}?action=getStarsStats`);
-                if (!statsResponse.ok) {
-                    throw new Error(`HTTP ${statsResponse.status}: ${statsResponse.statusText}`);
-                }
-                const statsData = await statsResponse.json();
-                console.log('✅ 成功從指定 API 獲取統計資料:', statsData);
-                handleStarsStats(statsData);
-                
-            } catch (error) {
-                console.error('載入星星統計失敗:', error);
-                
-                // 如果星星統計 API 失敗，嘗試使用系統統計 API
+            const endpoints = ['getStarsStats', 'getSystemStats'];
+            for (const action of endpoints) {
                 try {
-                    console.log('🔄 嘗試使用系統統計 API 作為備用...');
-                    const response = await fetch(`${API_BASE_URL}?action=getSystemStats`);
-                    if (!response.ok) {
-                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-                    }
-                    const data = await response.json();
-                    console.log('✅ 成功從系統統計 API 獲取資料:', data);
+                    const data = await Utils.fetchAPI(`${API_BASE_URL}?action=${action}`);
+                    console.log(`✅ 成功從 ${action} API 獲取統計資料`);
                     handleStarsStats(data);
-                } catch (fallbackError) {
-                    console.error('載入統計資料失敗:', fallbackError);
-                    // 如果所有 API 都失敗，使用模擬統計資料
-                    const mockStats = {
-                        totalPlayers: 8,
-                        totalStars: 615,
-                        topStars: 150
-                    };
-                    document.getElementById('totalPlayers').textContent = mockStats.totalPlayers;
-                    document.getElementById('totalStars').textContent = mockStats.totalStars;
-                    document.getElementById('topStars').textContent = mockStats.topStars;
-                    updateDataSourceInfo('❌ API 失敗，使用模擬統計資料');
+                    return;
+                } catch (error) {
+                    console.warn(`${action} API 失敗，嘗試下一個...`, error);
                 }
             }
+            // 所有 API 都失敗，使用模擬統計資料
+            const mockStats = { totalPlayers: 8, totalStars: 615, topStars: 150 };
+            ['totalPlayers', 'totalStars', 'topStars'].forEach(id => {
+                document.getElementById(id).textContent = mockStats[id.replace('total', '').replace('top', '')];
+            });
+            updateDataSourceInfo('❌ API 失敗，使用模擬統計資料');
         }
 
         // 更新資料來源資訊
@@ -1537,13 +1528,16 @@
             }, 1000);
             
             // 根據當前分頁重新載入資料
-            const starsTab = document.getElementById('starsTab');
             const constellationTab = document.getElementById('constellationTab');
+            const starsTab = document.getElementById('starsTab');
+            const totalTab = document.getElementById('totalTab');
             
-            if (starsTab.style.display !== 'none') {
-                loadData();
-            } else if (constellationTab.style.display !== 'none') {
+            if (constellationTab.style.display !== 'none') {
                 loadConstellationLeaderboard();
+            } else if (starsTab.style.display !== 'none') {
+                loadStarsLeaderboard();
+            } else if (totalTab.style.display !== 'none') {
+                loadTotalLeaderboard();
             }
         }
 
@@ -1564,302 +1558,99 @@
         // 分頁切換功能
         function switchTab(tabName) {
             // 隱藏所有分頁
-            document.getElementById('starsTab').style.display = 'none';
             document.getElementById('constellationTab').style.display = 'none';
+            document.getElementById('starsTab').style.display = 'none';
             document.getElementById('totalTab').style.display = 'none';
             
-            // 移除所有按鈕的 active 類別
+            // 更新按鈕 active 狀態
             document.querySelectorAll('.tab-button').forEach(btn => {
-                btn.classList.remove('active');
+                btn.classList.toggle('active', btn.dataset && btn.dataset.tab === tabName);
             });
             
             // 顯示選中的分頁
-            if (tabName === 'stars') {
-                document.getElementById('starsTab').style.display = 'block';
-                document.querySelector('.tab-button:first-child').classList.add('active');
-            } else if (tabName === 'constellation') {
+            if (tabName === 'constellation') {
                 document.getElementById('constellationTab').style.display = 'block';
-                document.querySelector('.tab-button:nth-child(2)').classList.add('active');
                 // 載入星座排行榜資料
                 loadConstellationLeaderboard();
+            } else if (tabName === 'stars') {
+                document.getElementById('starsTab').style.display = 'block';
+                // 載入星星排行榜資料
+                loadStarsLeaderboard();
             } else if (tabName === 'total') {
                 document.getElementById('totalTab').style.display = 'block';
-                document.querySelector('.tab-button:last-child').classList.add('active');
                 // 載入總排行榜資料
                 loadTotalLeaderboard();
             }
         }
 
-        // 載入星座排行榜
+        // 載入星座排行榜（簡化邏輯）
         async function loadConstellationLeaderboard() {
             try {
-                console.log('🌟 載入星座排行榜...');
-                
-                // 嚴格使用指定的 Google Sheets API 獲取星座排行榜資料
-                const QUIZ_API_URL = "https://script.google.com/macros/s/AKfycbyhcoJVk9MVFWqsyee2PeE-vCo3u2p6oyL8HUCaMk0ZeNL0Td9mOBZnMlHNb6mIO5eCHQ/exec";
-                
-                // 嚴格使用指定的 API 動作獲取星座排行榜資料
-                console.log('🔄 使用指定 API 獲取星座排行榜資料...');
-                console.log('🔗 API URL:', QUIZ_API_URL);
-                
-                const formData = new URLSearchParams();
-                formData.append('action', 'getQuizLeaderboard');
-                console.log('📝 發送的參數:', formData.toString());
-                
-                const response = await fetch(QUIZ_API_URL, {
+                const formData = new URLSearchParams({ action: 'getQuizLeaderboard' });
+                const data = await Utils.fetchAPI(QUIZ_API_URL, {
                     method: 'POST',
                     mode: 'cors',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                     body: formData.toString()
                 });
                 
-                console.log('📡 HTTP 回應狀態:', response.status, response.statusText);
-                
-                if (response.ok) {
-                    const data = await response.json();
-                    console.log('📊 API 回應資料:', data);
-                    console.log('📊 API 回應資料類型:', typeof data);
-                    console.log('📊 API 回應資料長度:', Array.isArray(data) ? data.length : '不是陣列');
-                    
-                    // 檢查資料格式
-                    if (data.success && data.leaderboard && Array.isArray(data.leaderboard)) {
-                        console.log('✅ 成功獲取星座排行榜資料');
-                        console.log('📊 leaderboard 資料長度:', data.leaderboard.length);
-                        console.log('📊 leaderboard 資料樣本:', data.leaderboard.slice(0, 3));
-                        handleConstellationLeaderboard(data);
-                    } else if (data.leaderboard && Array.isArray(data.leaderboard)) {
-                        console.log('✅ 成功獲取星座排行榜資料（無 success 欄位）');
-                        console.log('📊 leaderboard 資料長度:', data.leaderboard.length);
-                        console.log('📊 leaderboard 資料樣本:', data.leaderboard.slice(0, 3));
-                        handleConstellationLeaderboard(data);
-                    } else if (Array.isArray(data)) {
-                        console.log('✅ 成功獲取星座排行榜資料（直接陣列格式）');
-                        console.log('📊 直接陣列資料長度:', data.length);
-                        console.log('📊 直接陣列資料樣本:', data.slice(0, 3));
-                        // 將直接陣列格式轉換為標準格式
-                        const convertedData = {
-                            success: true,
-                            leaderboard: data
-                        };
-                        handleConstellationLeaderboard(convertedData);
-                    } else {
-                        console.error('❌ API 回應格式不正確:', data);
-                        console.error('❌ 資料結構:', {
-                            hasSuccess: !!data.success,
-                            hasLeaderboard: !!data.leaderboard,
-                            isLeaderboardArray: Array.isArray(data.leaderboard),
-                            dataType: typeof data,
-                            dataKeys: data && typeof data === 'object' ? Object.keys(data) : 'N/A'
-                        });
-                        // 如果 API 回應格式不正確，使用模擬資料
-                        loadMockConstellationData();
-                    }
+                // 統一資料格式處理
+                const leaderboard = Array.isArray(data) ? data : (data.leaderboard || []);
+                if (leaderboard.length > 0) {
+                    handleConstellationLeaderboard({ success: true, leaderboard });
                 } else {
-                    console.error('❌ API 請求失敗:', response.status, response.statusText);
-                    // 如果 API 請求失敗，使用模擬資料
                     loadMockConstellationData();
                 }
-                
             } catch (error) {
                 console.error('載入星座排行榜失敗:', error);
-                console.error('錯誤詳情:', error.message);
-                console.error('錯誤堆疊:', error.stack);
-                // 如果 API 失敗，使用模擬資料
                 loadMockConstellationData();
             }
         }
 
-        // 處理星座排行榜資料
+        // 處理星座排行榜資料（簡化邏輯）
         function handleConstellationLeaderboard(data) {
-            console.log('🎯 開始處理星座排行榜資料...');
-            console.log('📊 原始資料:', data);
-            
-            if (data.error) {
-                console.error('❌ 載入星座排行榜失敗:', data.error);
+            if (data.error || !data.leaderboard || data.leaderboard.length === 0) {
                 loadMockConstellationData();
                 return;
             }
+            
+            const leaderboardData = data.leaderboard;
 
-            // 檢查資料格式並處理
-            let leaderboardData = [];
-            
-            if (data.success && data.leaderboard && Array.isArray(data.leaderboard)) {
-                leaderboardData = data.leaderboard;
-                console.log('✅ 使用 data.leaderboard 陣列');
-            } else if (data.leaderboard && Array.isArray(data.leaderboard)) {
-                leaderboardData = data.leaderboard;
-                console.log('✅ 使用 data.leaderboard 陣列（無 success 欄位）');
-            } else if (Array.isArray(data)) {
-                leaderboardData = data;
-                console.log('✅ 使用直接陣列格式');
-            } else {
-                console.error('❌ 星座排行榜資料格式錯誤:', data);
-                console.error('❌ 資料結構分析:', {
-                    hasSuccess: !!data.success,
-                    hasLeaderboard: !!data.leaderboard,
-                    isLeaderboardArray: Array.isArray(data.leaderboard),
-                    dataType: typeof data,
-                    dataKeys: data && typeof data === 'object' ? Object.keys(data) : 'N/A',
-                    dataLength: data && Array.isArray(data) ? data.length : '不是陣列'
-                });
-                loadMockConstellationData();
-                return;
-            }
-
-            if (leaderboardData.length === 0) {
-                console.log('⚠️ 星座排行榜資料為空');
-                loadMockConstellationData();
-                return;
-            }
-
-            console.log('📊 原始星座排行榜資料:', leaderboardData);
-            console.log('📊 資料總數:', leaderboardData.length);
-            
-            // 詳細檢查每筆資料的結構
-            console.log('🔍 資料結構分析:');
-            leaderboardData.slice(0, 3).forEach((item, index) => {
-                console.log(`📝 第 ${index + 1} 筆資料結構:`, {
-                    keys: Object.keys(item),
-                    values: item,
-                    type: typeof item
-                });
-            });
-            
-            // 檢查是否包含"有叫餐嗎"的資料
-            const hasJiaoCan = leaderboardData.some(item => {
-                const playerName = item.playerName || item.user || item.name || item.username || item.player || '';
-                return playerName.includes('有叫餐嗎') || playerName.includes('叫餐');
-            });
-            console.log('🔍 是否包含"有叫餐嗎"相關資料:', hasJiaoCan);
-            
-            if (hasJiaoCan) {
-                const jiaoCanItems = leaderboardData.filter(item => {
-                    const playerName = item.playerName || item.user || item.name || item.username || item.player || '';
-                    return playerName.includes('有叫餐嗎') || playerName.includes('叫餐');
-                });
-                console.log('🍽️ "有叫餐嗎"相關資料:', jiaoCanItems);
-            }
-            
-            // 處理分關卡的星座排行榜資料
+            // 標準化資料欄位並按關卡分組
             const processedData = {};
-            let processedCount = 0;
-            let skippedCount = 0;
+            const getField = (item, ...names) => {
+                for (const name of names) if (item[name] !== undefined) return item[name];
+                return null;
+            };
             
-            // 將所有資料按關卡分組
-            leaderboardData.forEach((item, index) => {
-                console.log(`📝 處理第 ${index + 1} 筆資料:`, item);
+            leaderboardData.forEach(item => {
+                const category = getField(item, 'category', 'quizCategory', 'quizType', 'level', 'difficulty', 'stage') || 'default';
+                const playerName = getField(item, 'playerName', 'user', 'name', 'username', 'player', 'nickname');
+                const score = Utils.safeParseInt(getField(item, 'score', 'totalScore', 'points', 'finalScore'));
+                const correctCount = Utils.safeParseInt(getField(item, 'correctCount', 'correctAnswers', 'correct', 'rightAnswers'));
+                const time = Utils.safeParseInt(getField(item, 'totalTime', 'time', 'duration', 'completionTime', 'usedTime'));
                 
-                try {
-                    // 檢查並標準化資料欄位 - 支援更多可能的欄位名稱
-                    const category = item.category || item.quizCategory || item.quizType || item.level || item.difficulty || item.stage || '未知關卡';
-                    const playerName = item.playerName || item.user || item.name || item.username || item.player || item.nickname || '未知用戶';
-                    const score = parseInt(item.score) || parseInt(item.totalScore) || parseInt(item.points) || parseInt(item.finalScore) || 0;
-                    const correctCount = parseInt(item.correctCount) || parseInt(item.correctAnswers) || parseInt(item.correct) || parseInt(item.rightAnswers) || 0;
-                    const time = parseInt(item.totalTime) || parseInt(item.time) || parseInt(item.duration) || parseInt(item.completionTime) || parseInt(item.usedTime) || 0;
-                    const date = item.date || item.completedDate || item.finishDate || item.submitDate || item.timestamp || new Date().toLocaleDateString();
-                    
-                    // 驗證資料有效性
-                    if (!playerName || playerName === '未知用戶') {
-                        console.warn(`⚠️ 第 ${index + 1} 筆資料缺少用戶名稱:`, item);
-                        skippedCount++;
-                        return;
-                    }
-                    
-                    if (isNaN(score) || isNaN(correctCount) || isNaN(time)) {
-                        console.warn(`⚠️ 第 ${index + 1} 筆資料數值無效:`, {
-                            score, correctCount, time, original: item
-                        });
-                        skippedCount++;
-                        return;
-                    }
-                    
-                    console.log(`📝 標準化後的資料:`, {
-                        category,
-                        playerName,
-                        score,
-                        correctCount,
-                        time,
-                        date
-                    });
-                    
-                    // 如果沒有 category，嘗試從其他欄位推斷
-                    let finalCategory = category;
-                    if (category === '未知關卡') {
-                        // 嘗試從其他欄位推斷關卡
-                        if (item.quizType) finalCategory = item.quizType;
-                        else if (item.level) finalCategory = `level_${item.level}`;
-                        else if (item.difficulty) finalCategory = `difficulty_${item.difficulty}`;
-                        else if (item.stage) finalCategory = `stage_${item.stage}`;
-                        else finalCategory = 'default'; // 預設關卡
-                    }
-                    
-                    // 確保關卡名稱是有效的
-                    if (!finalCategory || finalCategory === '未知關卡') {
-                        finalCategory = 'default';
-                    }
-                    
-                    if (!processedData[finalCategory]) {
-                        processedData[finalCategory] = [];
-                    }
-                    
-                    // 處理該關卡的資料，包含時間資訊
-                    const processedItem = {
-                        user: playerName,
-                        score: score,
-                        correctCount: correctCount,
-                        time: time, // 完成時間（秒）
-                        category: finalCategory,
-                        date: date,
-                        // 保留原始資料以供除錯
-                        originalData: item
-                    };
-                    
-                    processedData[finalCategory].push(processedItem);
-                    processedCount++;
-                    console.log(`✅ 已添加到 ${finalCategory} 關卡:`, processedItem);
-                    
-                } catch (error) {
-                    console.error(`❌ 處理第 ${index + 1} 筆資料時發生錯誤:`, error);
-                    console.error(`❌ 問題資料:`, item);
-                    skippedCount++;
-                }
-            });
-            
-            console.log(`📊 資料處理完成: 成功 ${processedCount} 筆，跳過 ${skippedCount} 筆`);
-            
-            // 對每個關卡的資料進行排序
-            Object.keys(processedData).forEach(category => {
-                const categoryData = processedData[category];
-                console.log(`🔄 排序 ${category} 關卡資料，共 ${categoryData.length} 筆`);
+                if (!playerName || playerName === '未知用戶') return;
                 
-                // 按正確題數排序，相同題數按時間排序（時間越短越好）
-                categoryData.sort((a, b) => {
-                    if (a.correctCount !== b.correctCount) {
-                        return b.correctCount - a.correctCount; // 正確題數多的排在前面
-                    } else {
-                        return a.time - b.time; // 相同題數，時間短的排在前面
-                    }
+                if (!processedData[category]) processedData[category] = [];
+                processedData[category].push({
+                    user: playerName,
+                    score,
+                    correctCount,
+                    time,
+                    category,
+                    date: getField(item, 'date', 'completedDate', 'finishDate', 'submitDate', 'timestamp') || new Date().toLocaleDateString()
                 });
-                
-                console.log(`📊 ${category} 關卡排序後資料:`, categoryData.map(item => ({
-                    user: item.user,
-                    correctCount: item.correctCount,
-                    time: item.time,
-                    score: item.score
-                })));
-            });
-
-            console.log('✅ 處理後的分關卡星座資料:', processedData);
-            console.log('📊 關卡數量:', Object.keys(processedData).length);
-            Object.keys(processedData).forEach(category => {
-                console.log(`📊 ${category} 關卡資料數量:`, processedData[category].length);
             });
             
-            // 檢查是否有資料被處理
-            if (processedCount === 0) {
-                console.warn('⚠️ 沒有資料被成功處理，使用模擬資料');
+            // 對每個關卡排序（正確題數優先，時間次之）
+            Object.keys(processedData).forEach(category => {
+                processedData[category].sort((a, b) => 
+                    a.correctCount !== b.correctCount ? b.correctCount - a.correctCount : a.time - b.time
+                );
+            });
+            
+            if (Object.keys(processedData).length === 0) {
                 loadMockConstellationData();
                 return;
             }
@@ -2018,25 +1809,8 @@
                     dataCount: categoryData.length
                 });
                 
-                // 去重邏輯：相同用戶只保留排名最高的記錄
-                const uniqueCategoryData = [];
-                const seenUsers = new Set();
-                
-                categoryData.forEach((item, index) => {
-                    const userName = item.user || '未知用戶';
-                    
-                    // 如果這個用戶還沒出現過，則添加到結果中
-                    if (!seenUsers.has(userName)) {
-                        seenUsers.add(userName);
-                        uniqueCategoryData.push({
-                            ...item,
-                            originalIndex: index // 保留原始排名用於去重提示
-                        });
-                    } else {
-                        console.log(`🔄 跳過重複用戶: ${userName} (關卡: ${category}, 原始排名: ${index + 1})`);
-                    }
-                });
-                
+                // 使用統一的去重函數
+                const uniqueCategoryData = Utils.deduplicateLeaderboard(categoryData);
                 console.log(`📊 ${category} 關卡去重: 原始 ${categoryData.length} 筆 → 去重後 ${uniqueCategoryData.length} 筆`);
                 
                 // 添加關卡標題
@@ -2078,13 +1852,7 @@
                             isCurrentUser: isCurrentUser
                         });
                         
-                        // 格式化時間顯示
-                        const formatTime = (seconds) => {
-                            if (!seconds || isNaN(seconds)) return '0:00';
-                            const minutes = Math.floor(seconds / 60);
-                            const remainingSeconds = seconds % 60;
-                            return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
-                        };
+                        // 使用工具函數格式化時間
                         
                         // 添加去重提示（如果原始排名不是第一）
                         let duplicateInfo = '';
@@ -2101,7 +1869,7 @@
                                     <div class="user-stats">
                                         ${constellationIcon} ${constellationName}
                                         | 正確: ${correctCount} 題
-                                        | 時間: <span class="time-display">${formatTime(time)}</span>
+                                        | 時間: <span class="time-display">${Utils.formatTime(time)}</span>
                                         | 分數: ${score} 分
                                         | 日期: ${date}
                                         ${duplicateInfo}
@@ -2225,24 +1993,8 @@
             
             let html = '';
             
-            // 去重邏輯：相同用戶只保留排名最高的記錄
-            const uniqueLeaderboard = [];
-            const seenUsers = new Set();
-            
-            totalLeaderboard.forEach((item, index) => {
-                const userName = item.userName;
-                
-                if (!seenUsers.has(userName)) {
-                    seenUsers.add(userName);
-                    uniqueLeaderboard.push({
-                        ...item,
-                        originalIndex: index
-                    });
-                } else {
-                    console.log(`🔄 跳過重複用戶: ${userName} (原始排名: ${index + 1})`);
-                }
-            });
-            
+            // 使用統一的去重函數
+            const uniqueLeaderboard = Utils.deduplicateLeaderboard(totalLeaderboard, (item) => item.userName);
             console.log(`📊 總排行榜去重: 原始 ${totalLeaderboard.length} 筆 → 去重後 ${uniqueLeaderboard.length} 筆`);
             
             if (uniqueLeaderboard.length === 0) {
@@ -2781,28 +2533,14 @@
             document.getElementById('lowestStars').textContent = lowestStars;
         }
 
-        // 同步所有星星
+        // 同步所有星星（簡化邏輯）
         async function syncAllStars() {
             try {
-                // 從排行榜獲取星星資料
-                const response = await fetch(`${API_BASE_URL}?action=getStarsStats`);
-                if (response.ok) {
-                    const data = await response.json();
-                    const totalStars = data.totalStars || 0;
-                    
-                    // 更新連動資料
-                    syncStarsData.leaderboardStars = totalStars;
-                    
-                    // 儲存到 localStorage
-                    localStorage.setItem('syncStarsData', JSON.stringify(syncStarsData));
-                    
-                    // 更新顯示
-                    updateSyncDisplay();
-                    
-                    showCustomMessage('✅ 星星同步成功！', 'success');
-                } else {
-                    throw new Error('API 請求失敗');
-                }
+                const data = await Utils.fetchAPI(`${API_BASE_URL}?action=getStarsStats`);
+                syncStarsData.leaderboardStars = data.totalStars || 0;
+                localStorage.setItem('syncStarsData', JSON.stringify(syncStarsData));
+                updateSyncDisplay();
+                showCustomMessage('✅ 星星同步成功！', 'success');
             } catch (error) {
                 console.error('同步星星失敗:', error);
                 showCustomMessage('❌ 同步失敗，請稍後再試', 'error');
@@ -2811,36 +2549,9 @@
 
 
 
-        // 顯示自訂訊息
+        // 顯示自訂訊息（使用工具函數）
         function showCustomMessage(message, type) {
-            const messageDiv = document.createElement('div');
-            messageDiv.style.cssText = `
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                padding: 15px 20px;
-                border-radius: 10px;
-                color: white;
-                font-weight: bold;
-                z-index: 10000;
-                animation: slideIn 0.3s ease;
-            `;
-            
-            if (type === 'success') {
-                messageDiv.style.background = 'linear-gradient(45deg, #4CAF50, #45a049)';
-            } else if (type === 'error') {
-                messageDiv.style.background = 'linear-gradient(45deg, #f44336, #d32f2f)';
-            }
-            
-            messageDiv.textContent = message;
-            document.body.appendChild(messageDiv);
-            
-            setTimeout(() => {
-                messageDiv.style.animation = 'slideOut 0.3s ease';
-                setTimeout(() => {
-                    document.body.removeChild(messageDiv);
-                }, 300);
-            }, 3000);
+            Utils.showMessage(message, type);
         }
 
 
@@ -2922,8 +2633,8 @@
             
             // 初始化分頁系統
             console.log('📋 初始化分頁系統...');
-            // 預設顯示星星排行榜分頁
-            switchTab('stars');
+            // 預設顯示星座排行榜分頁
+            switchTab('constellation');
         });
 
         // 添加音樂按鈕事件監聽器
@@ -2984,9 +2695,12 @@
 
         // 關閉新增星星表單
         function closeAddStarsForm() {
-            document.getElementById('addStarsModal').style.display = 'none';
-            document.getElementById('addStarsForm').reset();
-            document.getElementById('formMessage').innerHTML = '';
+            const modal = document.getElementById('addStarsModal');
+            if (modal) modal.style.display = 'none';
+            const form = document.getElementById('addStarsForm');
+            if (form) form.reset();
+            const messageDiv = document.getElementById('formMessage');
+            if (messageDiv) messageDiv.innerHTML = '';
         }
 
         // 處理表單提交（已移除 UI，僅保留防呆）
@@ -3013,50 +2727,26 @@
             });
         })();
 
-        // 新增星星到 Google Sheets
+        // 新增星星到 Google Sheets（簡化邏輯）
         async function addStarsToGoogleSheets(userName, starsCount, userLevel, messageCount) {
             const messageDiv = document.getElementById('formMessage');
-            messageDiv.innerHTML = '<div class="success-message">正在新增星星資料...</div>';
+            if (messageDiv) messageDiv.innerHTML = '<div class="success-message">正在新增星星資料...</div>';
             
             try {
-                const response = await fetch(`${API_BASE_URL}?action=updateStars`, {
+                const result = await Utils.fetchAPI(`${API_BASE_URL}?action=updateStars`, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    body: new URLSearchParams({
-                        user: userName,
-                        stars: starsCount,
-                        level: userLevel,
-                        messages: messageCount
-                    })
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: new URLSearchParams({ user: userName, stars: starsCount, level: userLevel, messages: messageCount })
                 });
                 
-                if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-                }
-                
-                const result = await response.json();
-                
                 if (result.success) {
-                    showFormMessage(`✅ 成功上傳您的星星！\n用戶: ${userName}\n本地星星: ${starsCount}\n等級: ${userLevel}\n訊息: ${messageCount}`, 'success');
-                    
-                    // 清空表單
-                    document.getElementById('addStarsForm').reset();
-                    
-                    // 重新載入資料
-                    setTimeout(() => {
-                        loadData();
-                    }, 2000);
-                    
-                    // 3秒後關閉彈窗
-                    setTimeout(() => {
-                        closeAddStarsForm();
-                    }, 3000);
+                    showFormMessage(`✅ 成功上傳！\n用戶: ${userName}\n星星: ${starsCount}\n等級: ${userLevel}\n訊息: ${messageCount}`, 'success');
+                    const form = document.getElementById('addStarsForm');
+                    if (form) form.reset();
+                    setTimeout(() => { loadData(); closeAddStarsForm(); }, 2000);
                 } else {
                     showFormMessage(`❌ 新增失敗: ${result.error || '未知錯誤'}`, 'error');
                 }
-                
             } catch (error) {
                 console.error('API 請求失敗:', error);
                 showFormMessage(`❌ 網路錯誤: ${error.message}`, 'error');
@@ -3067,6 +2757,10 @@
         function showFormMessage(message, type) {
             const messageDiv = document.getElementById('formMessage');
             const className = type === 'success' ? 'success-message' : 'error-message';
+            if (!messageDiv) {
+                console.warn('showFormMessage: #formMessage not found');
+                return;
+            }
             messageDiv.innerHTML = `<div class="${className}">${message}</div>`;
         }
 
@@ -3085,105 +2779,7 @@
         }
     </script>
 
-<!-- ===== PATCH: Constellation from Google Sheet (auto-import) ===== -->
-<script>
-// ✅ Minimal override: only change data source for "星座挑戰排行榜"
-// Google Sheet: https://docs.google.com/spreadsheets/d/1H9Jc6Up_mBZLEUgcNOkyv3QJOQXDpyRU_NOEFSRkjhU/edit?usp=sharing
-(function(){
-  const SHEET_ID = "1H9Jc6Up_mBZLEUgcNOkyv3QJOQXDpyRU_NOEFSRkjhU";
-  const SHEET_NAME = ""; // 空白=第一個分頁
-  const GVIZ_URL = (id, sheet="") => {
-    const base = `https://docs.google.com/spreadsheets/d/${id}/gviz/tq`;
-    const q = new URLSearchParams({tqx:"out:json"});
-    if(sheet) q.set("sheet", sheet);
-    return `${base}?${q.toString()}`;
-  };
-  const iSafe=(v,d=0)=>Number.isFinite(parseFloat(v))?parseFloat(v):d;
-
-  function parseGVizJSON(text){
-    const m = String(text).match(/setResponse\(([\s\S]*)\);/);
-    if(!m) throw new Error("回傳格式非 GViz JSON");
-    return JSON.parse(m[1]);
-  }
-  function toQuizRows(table){
-    const cols = table.cols.map(c => String(c.label||"").trim());
-
-    function findCol(names){
-      for(const n of names){
-        const i = cols.findIndex(c => c.toLowerCase()===n.toLowerCase());
-        if(i>=0) return i;
-      }
-      for(const n of names){
-        const i = cols.findIndex(c => c.toLowerCase().includes(n.toLowerCase()));
-        if(i>=0) return i;
-      }
-      return -1;
-    }
-    const idxUser = findCol(["玩家名稱","姓名","名稱","user","name","玩家"]);
-    const idxScore = findCol(["分數","score"]);
-    const idxCorrect = findCol(["答對題數","正確數","correct","correctCount","正確"]);
-    const idxCat = findCol(["星座","關卡","category","quiz","類別"]);
-    const idxTime = findCol(["答題時間","時間","秒","time","duration"]);
-    const idxDate = findCol(["時間戳記","日期","date","timestamp"]);
-
-    const rows = [];
-    for(const r of table.rows){
-      const get = (idx)=> (idx>=0 && r.c[idx]) ? r.c[idx].v : null;
-      const user = String(get(idxUser)||"").trim();
-      if(!user) continue;
-      rows.push({
-        playerName: user,
-        score: iSafe(get(idxScore),0),
-        correctCount: iSafe(get(idxCorrect),0),
-        category: String(get(idxCat)||"").trim() || "default",
-        totalTime: iSafe(get(idxTime), 0),
-        date: get(idxDate) ? String(get(idxDate)) : ""
-      });
-    }
-    return rows;
-  }
-
-  async function loadFromSheetAndRender(){
-    try{
-      const url = GVIZ_URL(SHEET_ID, SHEET_NAME);
-      const res = await fetch(url, {cache:"no-store"});
-      const text = await res.text();
-      const json = parseGVizJSON(text);
-      const arr = toQuizRows(json.table);
-
-      // 🔁 呼叫原本頁面內的處理函式（不改任何樣式/排序/互動）
-      const payload = { success:true, leaderboard: arr };
-      if(typeof window.handleConstellationLeaderboard === "function"){
-        window.handleConstellationLeaderboard(payload);
-      }else if(typeof handleConstellationLeaderboard === "function"){
-        handleConstellationLeaderboard(payload);
-      }else{
-        console.warn("handleConstellationLeaderboard() 不存在；僅填入容器簡訊");
-        const box = document.getElementById("constellationLeaderboardContent");
-        if(box){ box.innerHTML = "<div class='error'>已載入 " + arr.length + " 筆資料，但找不到渲染函式。</div>"; }
-      }
-      // 標示資料來源
-      const info = document.getElementById("dataSourceInfo");
-      if(info){ info.textContent = "📊 資料來源：Google 試算表（星座挑戰）"; info.style.color = "#4CAF50"; }
-    }catch(err){
-      console.error(err);
-      const box = document.getElementById("constellationLeaderboardContent");
-      if(box){ box.innerHTML = "<div class='error'>讀取星座挑戰試算表失敗："
-        + String(err?.message||err).slice(0,160) + "</div>"; }
-    }
-  }
-
-  // ↪️ 覆寫原本的載入函式：保持其他行為不變
-  window.loadConstellationLeaderboard = loadFromSheetAndRender;
-
-  // 若一進頁就切到星座分頁，也能正常渲染
-  const tabBtn = Array.from(document.querySelectorAll(".tab-button"))
-    .find(b => /星座排行榜/.test(b.textContent));
-  // 不主動切換分頁，只是當分頁顯示時能正常載入
-})();
-</script>
-
-<!-- ===== PATCH 3: GitHub Pages–friendly multi-fallback loader for Constellation ===== -->
+<!-- ===== Google Sheets Loader for Constellation Leaderboard (Multi-fallback) ===== -->
 <script>
 (function(){ 
   const SHEET_ID = "1H9Jc6Up_mBZLEUgcNOkyv3QJOQXDpyRU_NOEFSRkjhU";
@@ -3228,16 +2824,17 @@
     return rows;
   }
 
-  function handleRows(arr){ 
-    const payload = { success:true, leaderboard: arr };
-    if(typeof window.handleConstellationLeaderboard === "function") window.handleConstellationLeaderboard(payload);
-    else if(typeof handleConstellationLeaderboard === "function") handleConstellationLeaderboard(payload);
-    else {
+  function handleRows(arr) {
+    const payload = { success: true, leaderboard: arr };
+    const handler = window.handleConstellationLeaderboard || handleConstellationLeaderboard;
+    if (typeof handler === "function") {
+      handler(payload);
+    } else {
       const box = document.getElementById("constellationLeaderboardContent");
-      if(box) box.innerHTML = "<div class='error'>已載入 " + arr.length + " 筆資料，但找不到渲染函式。</div>";
+      if (box) box.innerHTML = `<div class='error'>已載入 ${arr.length} 筆資料，但找不到渲染函式。</div>`;
     }
     const info = document.getElementById("dataSourceInfo");
-    if(info) info.style.color = "#4CAF50";
+    if (info) info.style.color = "#4CAF50";
   }
 
   // --- 1) GViz JSONP (no CORS) ---
@@ -3266,39 +2863,36 @@
     // Requires: File -> Publish to the web
     return `https://docs.google.com/spreadsheets/d/${id}/pub?gid=${gid}&single=true&output=csv`; 
   }
-  async function loadViaCSV(){ 
-    // Try gid=0 by default
-    const url = buildCSVUrl(SHEET_ID,"0");
-    const res = await fetch(url, { cache:"no-store" });
-    if(!res.ok) throw new Error("CSV HTTP "+res.status);
+  async function loadViaCSV() {
+    const url = buildCSVUrl(SHEET_ID, "0");
+    const res = await fetch(url, { cache: "no-store" });
+    if (!res.ok) throw new Error("CSV HTTP " + res.status);
     const text = await res.text();
-    // Parse CSV (simple split, handles quoted commas)
     const rows = [];
-    let i=0, header=[], idxUser=-1, idxScore=-1, idxCorrect=-1, idxCat=-1, idxTime=-1, idxDate=-1;
-    for(const line of parseCSV(text)){
-      if(i++===0){ header=line.map(h=>String(h||"").trim()); const lc=header.map(h=>h.toLowerCase());
-        const find=(names)=>{
-          for(const n of names){ const j=lc.indexOf(n.toLowerCase()); if(j>=0) return j; }
-          for(const n of names){ const j=lc.findIndex(x=>x.includes(n.toLowerCase())); if(j>=0) return j; }
-          return -1;
-        };
-        idxUser=find(["玩家名稱","姓名","名稱","user","name","玩家"]);
-        idxScore=find(["分數","score"]);
-        idxCorrect=find(["答對題數","正確數","correct","correctcount","正確"]);
-        idxCat=find(["星座","關卡","category","quiz","類別"]);
-        idxTime=find(["答題時間","時間","秒","time","duration"]);
-        idxDate=find(["時間戳記","日期","date","timestamp"]);
+    let i = 0, header = [], idxUser = -1, idxScore = -1, idxCorrect = -1, idxCat = -1, idxTime = -1, idxDate = -1;
+    for (const line of parseCSV(text)) {
+      if (i++ === 0) {
+        header = line.map(h => String(h || "").trim());
+        const lc = header.map(h => h.toLowerCase());
+        const find = (names) => SheetUtils.findCol(lc, names);
+        idxUser = find(["玩家名稱", "姓名", "名稱", "user", "name", "玩家"]);
+        idxScore = find(["分數", "score"]);
+        idxCorrect = find(["答對題數", "正確數", "correct", "correctcount", "正確"]);
+        idxCat = find(["星座", "關卡", "category", "quiz", "類別"]);
+        idxTime = find(["答題時間", "時間", "秒", "time", "duration"]);
+        idxDate = find(["時間戳記", "日期", "date", "timestamp"]);
         continue;
       }
-      const get=(idx)=> idx>=0 ? line[idx] : "";
-      const user=String(get(idxUser)||"").trim(); if(!user) continue;
+      const get = (idx) => idx >= 0 ? line[idx] : "";
+      const user = String(get(idxUser) || "").trim();
+      if (!user) continue;
       rows.push({
-        playerName:user,
-        score:iSafe(get(idxScore),0),
-        correctCount:iSafe(get(idxCorrect),0),
-        category:String(get(idxCat)||"").trim()||"default",
-        totalTime:iSafe(get(idxTime),0),
-        date:String(get(idxDate)||"")
+        playerName: user,
+        score: SheetUtils.safeParse(get(idxScore), 0),
+        correctCount: SheetUtils.safeParse(get(idxCorrect), 0),
+        category: String(get(idxCat) || "").trim() || "default",
+        totalTime: SheetUtils.safeParse(get(idxTime), 0),
+        date: String(get(idxDate) || "")
       });
     }
     return rows;
@@ -3321,53 +2915,46 @@
     if(sheet) qp.set('sheet', sheet);
     return `${base}?${qp.toString()}`; 
   }
-  async function loadViaGVizJSON(){
-    const res = await fetch(buildGVizJSONUrl(SHEET_ID, SHEET_NAME), { cache:"no-store" });
+  async function loadViaGVizJSON() {
+    const res = await fetch(buildGVizJSONUrl(SHEET_ID, SHEET_NAME), { cache: "no-store" });
     const text = await res.text();
     const m = String(text).match(/setResponse\(([\s\S]*)\);/);
-    if(!m) throw new Error("非 GViz JSON");
+    if (!m) throw new Error("非 GViz JSON");
     return JSON.parse(m[1]);
   }
 
   async function loadAndRender(){
     const box = document.getElementById("constellationLeaderboardContent");
     const info = document.getElementById("dataSourceInfo");
-    try{ 
-      // 1) JSONP first
-      const j = await loadViaJSONP();
-      const arr = toQuizRowsFromTable(j.table);
-      handleRows(arr);
-      if(info) info.textContent = "📊 來源：Google 試算表（JSONP）";
-      return;
-    }catch(e1){ 
-      console.warn("JSONP failed:", e1);
-      // 2) CSV (requires Publish to web)
-      try{
-        const arr = await loadViaCSV();
+    // 多種載入方式（JSONP > CSV > GViz JSON）
+    const loaders = [
+      { name: "JSONP", fn: () => loadViaJSONP().then(j => SheetUtils.toQuizRows(j.table)) },
+      { name: "GViz JSON", fn: () => loadViaGVizJSON().then(j => SheetUtils.toQuizRows(j.table)) }
+    ];
+    
+    for (const loader of loaders) {
+      try {
+        const arr = await loader.fn();
         handleRows(arr);
-        if(info) info.textContent = "📊 來源：Google 試算表（CSV 發佈）";
+        if (info) info.textContent = `📊 來源：Google 試算表（${loader.name}）`;
         return;
-      }catch(e2){
-        console.warn("CSV failed:", e2);
-        // 3) GViz JSON
-        try{
-          const j = await loadViaGVizJSON();
-          const arr = toQuizRowsFromTable(j.table);
-          handleRows(arr);
-          if(info) info.textContent = "📊 來源：Google 試算表（GViz JSON）";
-          return;
-        }catch(e3){
-          console.error("All loaders failed:", e1, e2, e3);
-          if(box) box.innerHTML = "<div class='error'>讀取星座挑戰試算表失敗："
-            + String(e3?.message||e3).slice(0,180) + "<br>建議：開啟『發佈到網路』以啟用 CSV 後備，或提供 GAS 代理端點。</div>";
-          if(info) info.textContent = "📊 來源：讀取失敗"; if(info) info.style.color = "#E53935";
+      } catch (e) {
+        console.warn(`${loader.name} failed:`, e);
+        if (loader === loaders[loaders.length - 1]) {
+          console.error("All loaders failed");
+          if (box) box.innerHTML = `<div class='error'>讀取失敗：${String(e?.message || e).slice(0, 180)}</div>`;
+          if (info) { info.textContent = "📊 來源：讀取失敗"; info.style.color = "#E53935"; }
         }
       }
     }
   }
 
-  window.loadConstellationLeaderboard = loadAndRender;
+  window.loadConstellationLeaderboardFromSheet = loadAndRender;
+  if (typeof window.loadConstellationLeaderboard !== 'function') {
+    window.loadConstellationLeaderboard = loadAndRender;
+  }
 })();
 </script>
 </body>
 </html>
+
