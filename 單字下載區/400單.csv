@@ -1,4 +1,4 @@
-﻿I,我,I am a student.,我是一名學生。
+I,我,I am a student.,我是一名學生。
 you,你；你們,You are my friend.,你是我的朋友。
 he,他,He has a dog.,他有一隻狗。
 she,她,She is my sister.,她是我姐姐。
@@ -15,10 +15,11 @@ that,那,That is her bag.,那是她的包包。
 these,這些,These are apples.,這些是蘋果。
 those,那些,Those are my shoes.,那些是我的鞋子。
 be,是；成為,Be kind to others.,對別人要友善。
+is,是；成為,He is a teacher.,他是一位老師。
+are,是,They are engineers.,他們是工程師。
 do,助動詞,Do you like music?,你喜歡音樂嗎？
 father,爸爸,My father is a doctor.,我爸爸是醫生。
 mother,媽媽,My mother cooks dinner.,我媽媽煮晚餐。
-英文,中文,英文句子,中文翻譯
 son,兒子,My son plays basketball after school.,我兒子放學後會打籃球。
 daughter,女兒,My daughter loves to draw.,我女兒喜歡畫畫。
 grandmother,(外)祖母,My grandmother makes yummy cookies.,我的祖母會做美味的餅乾。
@@ -53,7 +54,7 @@ box,盒子；箱子,Put your toys in the box.,把你的玩具放進盒子裡。
 desk,書桌,My desk is near the window.,我的書桌靠窗。
 table,桌子,We eat dinner at the table.,我們在桌子上吃晚餐。
 chair,椅子,I sit on a soft chair.,我坐在一張軟椅子上。
-pencil case,鉛筆盒,My pencil case has many colors.,我的鉛筆盒裡有很多顏色的文具。
+pencil box,鉛筆盒,My pencil box has many colors.,我的鉛筆盒裡有很多顏色的文具。
 map,地圖,We looked at the map of Taiwan.,我們看了台灣的地圖。
 color,顏色,What is your favorite color?,你最喜歡的顏色是什麼？
 red,紅色,She wore a red dress today.,她今天穿了紅色洋裝。
@@ -216,6 +217,7 @@ take,拿；搭乘,I take the bus to school.,我搭公車去上學。
 write,寫,He writes in his notebook.,他在筆記本上寫字。
 study,學習；讀書,They study English every night.,他們每天晚上學英文。
 do,做,Let’s do our homework now.,我們現在來寫作業吧。
+does,做,He doesn't go to school.,他沒有去學校。
 make,做；製作,We will make a card for Mom.,我們要做一張卡片送媽媽。
 game,遊戲；比賽,That was a fun game!,那是一個好玩的遊戲！
 computer game,電腦遊戲,I play computer games on weekends.,我週末玩電腦遊戲。
@@ -231,7 +233,7 @@ kite,風箏,She is flying a kite in the park.,她正在公園放風箏。
 doll,娃娃,The girl has a new doll.,那個女孩有一個新娃娃。
 spring,春天,Spring is a season of flowers.,春天是開花的季節。
 summer,夏天,Summer is hot and sunny.,夏天很熱而且很晴朗。
-autumn,秋天,Leaves fall in autumn.,秋天樹葉會落下。
+fall,秋天,Leaves fall in autumn.,秋天樹葉會落下。
 winter,冬天,Winter is cold and snowy.,冬天很冷又常下雪。
 sun,太陽,The sun is shining today.,今天陽光普照。
 moon,月亮,The moon looks big tonight.,今晚的月亮看起來好大。
