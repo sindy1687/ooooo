@@ -133,6 +133,9 @@ const SoundSystem = {
   // 發音系統
   speech: {
     preferredVoice: null,
+    _speakSeq: 0,
+    _activeSeq: 0,
+
     isInitialized: false,
 
     // 初始化發音系統
@@ -309,8 +312,14 @@ const SoundSystem = {
         return;
       }
 
-      // 停止之前的發音
-      window.speechSynthesis.cancel();
+      // 產生此次發音序號，用於忽略「被新一次 speak() 取消」的舊事件
+      const seq = ++this._speakSeq;
+      this._activeSeq = seq;
+
+      // 停止之前的發音（會觸發上一段的 interrupted/canceled）
+      if (window.speechSynthesis.speaking || window.speechSynthesis.pending) {
+        window.speechSynthesis.cancel();
+      }
 
       // 清理文本，移除下劃線
       const cleanText = text.replace(/_/g, '');
@@ -344,12 +353,25 @@ const SoundSystem = {
       }
 
       // 回調函數
-      if (options.onStart) utter.onstart = options.onStart;
-      if (options.onEnd) utter.onend = options.onEnd;
-      if (options.onError) utter.onerror = options.onError;
-
-      // 添加額外的錯誤處理
+      utter.onstart = () => {
+        if (seq !== this._activeSeq) return;
+        if (options.onStart) options.onStart();
+      };
+      utter.onend = () => {
+        if (seq !== this._activeSeq) return;
+        if (options.onEnd) options.onEnd();
+      };
       utter.onerror = (event) => {
+        // 若不是當前這一次 speak，忽略（通常是被 cancel 的舊 utterance）
+        if (seq !== this._activeSeq) return;
+
+        const err = String(event?.error || '').toLowerCase();
+        // interrupted/canceled 通常代表「被新一次 speak() 取消」，不視為錯誤
+        if (err === 'interrupted' || err === 'canceled' || err === 'cancelled') {
+          if (options.onEnd) options.onEnd();
+          return;
+        }
+
         console.error('語音合成錯誤:', event);
         if (options.onError) options.onError(event);
       };
@@ -416,6 +438,13 @@ const SoundSystem = {
               if (callback) callback();
             },
             onError: (error) => {
+              const err = String(error?.error || error?.name || '').toLowerCase();
+              // interrupted/canceled 不當作錯誤（多為快速連點或系統 cancel）
+              if (err === 'interrupted' || err === 'canceled' || err === 'cancelled') {
+                if (callback) callback();
+                return;
+              }
+
               console.error(`❌ 發音錯誤: "${cleanWord}"`, error);
               
               // 重試機制（最多重試2次）
