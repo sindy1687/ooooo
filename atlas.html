@@ -5,8 +5,8 @@
   <title>星座圖鑑 - 英打小英雄</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/shared.css">
-  <link rel="stylesheet" href="responsive_enhanced.css">
+  <link rel="stylesheet" id="sharedCss" href="css/shared.css">
+  <link rel="stylesheet" id="responsiveCss" href="responsive_enhanced.css">
   <style>
     /* 防止水平滾動 */
     html {
@@ -746,8 +746,29 @@
 
   <script src="js/sound.js"></script>
   <script src="js/achievementSystem.js"></script>
-  <script src="js/utils.js"></script>
-  <script src="js/greekScoreUpload.js"></script>
+  <script>
+    (function() {
+      const needsSubdir = location.hostname.endsWith('github.io') && !location.pathname.includes('/ooooo-main/');
+      const base = needsSubdir ? 'ooooo-main/' : '';
+
+      const sharedCss = document.getElementById('sharedCss');
+      if (sharedCss) sharedCss.href = base + 'css/shared.css';
+
+      const responsiveCss = document.getElementById('responsiveCss');
+      if (responsiveCss) responsiveCss.href = base + 'responsive_enhanced.css';
+
+      function loadScript(src, onload) {
+        const s = document.createElement('script');
+        s.src = base + src;
+        s.onload = onload;
+        document.body.appendChild(s);
+      }
+
+      loadScript('js/utils.js', function() {
+        loadScript('js/greekScoreUpload.js');
+      });
+    })();
+  </script>
   <script>
   document.addEventListener('DOMContentLoaded', () => {
     // ----- 開發者模式：輸入 "open" + Enter 解鎖所有關卡 -----
@@ -796,19 +817,27 @@
     });
 
     // ----- 星星顯示 -----
-    let totalStars = Storage.getTotalStars();
+    let totalStars = 0;
     function updateDisplayStars() {
       const displayEl = document.getElementById('displayStars');
       if (displayEl) {
         displayEl.textContent = totalStars;
       }
     }
-    updateDisplayStars();
-    // 監聽星星更新事件
-    window.addEventListener('starsUpdated', (e) => {
-      totalStars = e.detail.totalStars;
+    function initStarsDisplay() {
+      if (typeof Storage === 'undefined' || typeof Storage.getTotalStars !== 'function') {
+        setTimeout(initStarsDisplay, 50);
+        return;
+      }
+      totalStars = Storage.getTotalStars();
       updateDisplayStars();
-    });
+      // 監聽星星更新事件
+      window.addEventListener('starsUpdated', (e) => {
+        totalStars = e.detail.totalStars;
+        updateDisplayStars();
+      });
+    }
+    initStarsDisplay();
 
     // ----- 分頁切換 -----
     document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -1087,6 +1116,11 @@
     async function loadRanking() {
       const box = document.getElementById('rankingContainer');
       if (!box) return;
+
+      if (!window.API || typeof window.API.getQuizLeaderboard !== 'function' || !window.LeaderboardUtils) {
+        setTimeout(loadRanking, 50);
+        return;
+      }
       
       box.innerHTML = `<p style="text-align:center;color:#aaa;">正在載入排行榜…</p>`;
       
@@ -1109,7 +1143,16 @@
       if (!box) return;
       
       try {
-        const local = Storage.get('quizLeaderboard', []);
+        if (!window.LeaderboardUtils) {
+          setTimeout(renderLocalRanking, 50);
+          return;
+        }
+        let local;
+        if (window.Storage && typeof window.Storage.get === 'function') {
+          local = Storage.get('quizLeaderboard', []);
+        } else {
+          local = JSON.parse(localStorage.getItem('quizLeaderboard') || '[]');
+        }
         if (!local.length) {
           box.innerHTML = LeaderboardUtils.renderEmptyState('目前沒有排行榜資料');
           return;
@@ -1208,6 +1251,11 @@
     async function loadGreekRanking(force = false) {
       const box = document.getElementById('greekRankingContainer');
       if (!box) return;
+
+      if (!window.LeaderboardUtils || typeof window.getGreekLeaderboard !== 'function') {
+        setTimeout(() => loadGreekRanking(force), 50);
+        return;
+      }
 
       box.innerHTML = `<p style="text-align:center;color:#aaa;">正在載入希臘神祇排行榜…</p>`;
 
