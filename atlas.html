@@ -748,25 +748,49 @@
   <script src="js/achievementSystem.js"></script>
   <script>
     (function() {
-      const needsSubdir = location.hostname.endsWith('github.io') && !location.pathname.includes('/ooooo-main/');
-      const base = needsSubdir ? 'ooooo-main/' : '';
+      const isGitHubPages = location.hostname.endsWith('github.io');
+      const candidates = isGitHubPages
+        ? ['', 'ooooo-main/', 'ooooo-main/ooooo-main/']
+        : [''];
 
-      const sharedCss = document.getElementById('sharedCss');
-      if (sharedCss) sharedCss.href = base + 'css/shared.css';
+      function setStylesWithBase(base) {
+        const sharedCss = document.getElementById('sharedCss');
+        if (sharedCss) sharedCss.href = base + 'css/shared.css';
+        const responsiveCss = document.getElementById('responsiveCss');
+        if (responsiveCss) responsiveCss.href = base + 'responsive_enhanced.css';
+      }
 
-      const responsiveCss = document.getElementById('responsiveCss');
-      if (responsiveCss) responsiveCss.href = base + 'responsive_enhanced.css';
-
-      function loadScript(src, onload) {
+      function tryLoadScript(base, src, onload, onerror) {
         const s = document.createElement('script');
         s.src = base + src;
         s.onload = onload;
+        s.onerror = onerror;
         document.body.appendChild(s);
       }
 
-      loadScript('js/utils.js', function() {
-        loadScript('js/greekScoreUpload.js');
-      });
+      function bootWithBaseIndex(i) {
+        const base = candidates[i];
+        if (base === undefined) {
+          console.error('❌ 無法載入必要資源：請確認 GitHub Pages 有部署 css/shared.css、js/utils.js');
+          return;
+        }
+
+        setStylesWithBase(base);
+
+        tryLoadScript(
+          base,
+          'js/utils.js',
+          function() {
+            window.__assetBase = base;
+            tryLoadScript(base, 'js/greekScoreUpload.js', function() {}, function() {});
+          },
+          function() {
+            bootWithBaseIndex(i + 1);
+          }
+        );
+      }
+
+      bootWithBaseIndex(0);
     })();
   </script>
   <script>
