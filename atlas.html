@@ -750,7 +750,7 @@
     (function() {
       const isGitHubPages = location.hostname.endsWith('github.io');
       const candidates = isGitHubPages
-        ? ['', 'ooooo-main/', 'ooooo-main/ooooo-main/']
+        ? ['', './', 'ooooo-main/', 'ooooo-main/ooooo-main/']
         : [''];
 
       function setStylesWithBase(base) {
@@ -782,7 +782,11 @@
           'js/utils.js',
           function() {
             window.__assetBase = base;
+            // greekScoreUpload.js 非必要：若 404 不要中斷頁面
             tryLoadScript(base, 'js/greekScoreUpload.js', function() {}, function() {});
+
+            // 節慶活動系統（通用）：若載不到不影響主功能
+            tryLoadScript(base, 'js/seasonalEventSystem.js', function() {}, function() {});
           },
           function() {
             bootWithBaseIndex(i + 1);
@@ -863,18 +867,37 @@
     }
     initStarsDisplay();
 
+    // 節慶活動：輸入 sindy + Enter 開啟設定（平常不顯示入口）
+    try {
+      if (window.SeasonalEventSystem) {
+        window.SeasonalEventSystem.registerSecretCode('sindy');
+        window.SeasonalEventSystem.renderBanner(document.body);
+      }
+    } catch (e) {
+      // ignore
+    }
+
     // ----- 分頁切換 -----
     document.querySelectorAll('.tab-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
         btn.classList.add('active');
-        document.getElementById(btn.dataset.target).classList.add('active');
+        const targetId = btn.dataset.target;
+        const targetEl = targetId ? document.getElementById(targetId) : null;
+        if (targetEl) {
+          targetEl.classList.add('active');
+        } else {
+          console.warn('⚠️ 找不到 tab-content:', targetId);
+        }
         // 控制練習關卡按鈕顯示
-        if(btn.dataset.target === 'tab1'){
-          document.getElementById('practiceBtn').style.display = 'inline-block';
-        }else{
-          document.getElementById('practiceBtn').style.display = 'none';
+        const practiceBtn = document.getElementById('practiceBtn');
+        if (practiceBtn) {
+          if(btn.dataset.target === 'tab1'){
+            practiceBtn.style.display = 'inline-block';
+          }else{
+            practiceBtn.style.display = 'none';
+          }
         }
         // 進入排行榜分頁時才載入資料
         if (btn.dataset.target === 'tab4') {
@@ -883,7 +906,8 @@
       });
     });
     // 頁面載入時只在tab1顯示
-    document.getElementById('practiceBtn').style.display = 'inline-block';
+    const practiceBtnInit = document.getElementById('practiceBtn');
+    if (practiceBtnInit) practiceBtnInit.style.display = 'inline-block';
 
     // ----- 音樂 播放 & 靜音 -----
     const bgm = document.getElementById('bgm');
@@ -953,7 +977,7 @@
         costData[key] = Math.floor(Math.random()*21)+10;
         localStorage.setItem('unlockCosts', JSON.stringify(costData));
       }
-      const WORDS_PER_LEVEL = 20;
+      const WORDS_PER_LEVEL = 40;
       const levelIndex = atlasCategories.indexOf(key);
       const levelNumber = levelIndex + 1;
       const rangeStart = levelIndex * WORDS_PER_LEVEL + 1;
@@ -1056,12 +1080,12 @@
         card.className = 'card' + (unlocked ? '' : ' locked');
         if (!unlocked) card.dataset.locktext = `${cost}⭐解鎖`;
         const shortDesc = simplifyGreekDesc(d.desc);
-        const WORDS_PER_LEVEL = 20;
+        const WORDS_PER_LEVEL = 40;
         const levelNumber = index + 1;
         const rangeStart = index * WORDS_PER_LEVEL + 1;
         const rangeEnd = (index + 1) * WORDS_PER_LEVEL;
         card.innerHTML = `
-          <img src="${d.img}" alt="${d.name}"/>
+          <img src="${d.img}" alt="${d.name}">
           <div class="card-title">${d.name}</div>
           <div class="card-desc" title="${d.desc}">${shortDesc}</div>
           <div class="card-range">第${levelNumber}關 ${rangeStart}-${rangeEnd}</div>
