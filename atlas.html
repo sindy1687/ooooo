@@ -703,9 +703,69 @@
   </div>
 <div id="tab4" class="tab-content">
   <h2 style="text-align:center;color:#00ffff;margin-top:10px;">⭐ 星座分數排行榜 ⭐</h2>
+  <div style="text-align:center;margin:10px auto 0;max-width:960px;">
+    <label for="rankingCategorySelect" style="color:#00ffff;font-weight:bold;margin-right:8px;">選擇關卡：</label>
+    <select id="rankingCategorySelect" style="padding:8px 12px;border-radius:10px;border:2px solid #00ffff;background:#111;color:#fff;font-family:'Orbitron',sans-serif;">
+      <option value="all">全部</option>
+      <option value="aries">牡羊座</option>
+      <option value="taurus">金牛座</option>
+      <option value="gemini">雙子座</option>
+      <option value="cancer">巨蟹座</option>
+      <option value="leo">獅子座</option>
+      <option value="virgo">處女座</option>
+      <option value="libra">天秤座</option>
+      <option value="scorpio">天蠍座</option>
+      <option value="sagittarius">射手座</option>
+      <option value="capricorn">摩羯座</option>
+      <option value="aquarius">水瓶座</option>
+      <option value="pisces">雙魚座</option>
+      <option value="andromeda">仙女座</option>
+      <option value="cygnus">天鵝座</option>
+      <option value="orion">獵戶座</option>
+      <option value="pegasus">飛馬座</option>
+      <option value="cassiopeia">仙后座</option>
+      <option value="phoenix">鳳凰座</option>
+      <option value="vela">船帆座</option>
+    </select>
+  </div>
   <div id="rankingContainer"
        style="max-width:960px;margin:16px auto 28px;padding:26px;background:#111;
               border-radius:16px;box-shadow:0 0 16px #00ffff55;">
+      <p style="text-align:center;color:#aaa;">正在載入排行榜…</p>
+  </div>
+
+  <h2 style="text-align:center;color:#ffd700;margin-top:10px;">🏛️ 希臘神祉分數排行榜 🏛️</h2>
+  <div style="text-align:center;margin:10px auto 0;max-width:960px;">
+    <label for="greekRankingCategorySelect" style="color:#ffd700;font-weight:bold;margin-right:8px;">選擇神祉：</label>
+    <select id="greekRankingCategorySelect" style="padding:8px 12px;border-radius:10px;border:2px solid #ffd700;background:#111;color:#fff;font-family:'Orbitron',sans-serif;">
+      <option value="all">全部</option>
+      <option value="宙斯">宙斯</option>
+      <option value="赫拉">赫拉</option>
+      <option value="波塞頓">波塞頓</option>
+      <option value="得墨忒耳">得墨忒耳</option>
+      <option value="雅典娜">雅典娜</option>
+      <option value="阿波羅">阿波羅</option>
+      <option value="阿爾忒彌斯">阿爾忒彌斯</option>
+      <option value="阿瑞斯">阿瑞斯</option>
+      <option value="阿芙蘿黛蒂">阿芙蘿黛蒂</option>
+      <option value="赫菲斯托斯">赫菲斯托斯</option>
+      <option value="赫耳墨斯">赫耳墨斯</option>
+      <option value="赫斯提亞">赫斯提亞</option>
+      <option value="狄俄尼索斯">狄俄尼索斯</option>
+      <option value="哈迪斯">哈迪斯</option>
+      <option value="珀爾塞福涅">珀爾塞福涅</option>
+      <option value="厄洛斯">厄洛斯</option>
+      <option value="尼刻">尼刻</option>
+      <option value="蓋婭">蓋婭</option>
+      <option value="阿特拉斯">阿特拉斯</option>
+      <option value="克洛諾斯">克洛諾斯</option>
+      <option value="瑞亞">瑞亞</option>
+      <option value="普羅米修斯">普羅米修斯</option>
+    </select>
+  </div>
+  <div id="greekRankingContainer"
+       style="max-width:960px;margin:16px auto 28px;padding:26px;background:#111;
+              border-radius:16px;box-shadow:0 0 16px #ffd70055;">
       <p style="text-align:center;color:#aaa;">正在載入排行榜…</p>
   </div>
 </div>
@@ -1029,7 +1089,7 @@
     updateProgress1();
 
     // ----- 星座排行榜（Tab4） -----
-    let currentRankingCategory = 'all'; // 固定顯示全部
+    let currentRankingCategory = 'all';
 
     async function loadRanking() {
       const box = document.getElementById('rankingContainer');
@@ -1038,9 +1098,12 @@
       box.innerHTML = `<p style="text-align:center;color:#aaa;">正在載入排行榜…</p>`;
       
       try {
-        const data = await API.getQuizLeaderboard();
+        const data = await API.getQuizLeaderboard(currentRankingCategory === 'all' ? null : currentRankingCategory);
         if (data.success && Array.isArray(data.leaderboard)) {
-          const processed = LeaderboardUtils.processLeaderboardData(data.leaderboard, true);
+          const raw = currentRankingCategory === 'all'
+            ? data.leaderboard
+            : data.leaderboard.filter(item => LeaderboardUtils.normalizeCategory(item.category) === currentRankingCategory);
+          const processed = LeaderboardUtils.processLeaderboardData(raw, true);
           renderRanking(processed);
         } else {
           renderLocalRanking();
@@ -1061,7 +1124,10 @@
           box.innerHTML = LeaderboardUtils.renderEmptyState('目前沒有排行榜資料');
           return;
         }
-        const processed = LeaderboardUtils.processLeaderboardData(local, true);
+        const filtered = currentRankingCategory === 'all'
+          ? local
+          : local.filter(item => LeaderboardUtils.normalizeCategory(item.category) === currentRankingCategory);
+        const processed = LeaderboardUtils.processLeaderboardData(filtered, true);
         renderRanking(processed);
       } catch (e) {
         console.error('載入本地排行榜失敗:', e);
@@ -1082,7 +1148,7 @@
       const title = `<div style="margin-bottom:12px;text-align:center;color:#00ffff;font-weight:bold;">🌟 ${categoryName} 排行榜</div>`;
       
       LeaderboardUtils.renderTable(data, 'rankingContainer', {
-        showCategory: true,
+        showCategory: currentRankingCategory === 'all',
         showOriginalRank: true,
         deduplicate: true,
         emptyMessage: '目前沒有排行榜資料'
@@ -1098,8 +1164,97 @@
     // 初始化：先檢查成就並即時載入排行榜（每次進入都會重載）
     achievementSystem.triggerAchievementCheck();  // ←←← 維持原樣
     loadRanking();
+
+    // 星座排行榜下拉選單
+    const rankingCategorySelect = document.getElementById('rankingCategorySelect');
+    if (rankingCategorySelect) {
+      rankingCategorySelect.value = currentRankingCategory;
+      rankingCategorySelect.addEventListener('change', () => {
+        currentRankingCategory = rankingCategorySelect.value;
+        loadRanking();
+      });
+    }
+
+    // ----- 希臘神祉排行榜（Tab4）-----
+    let currentGreekRankingCategory = 'all';
+    const GREEK_SCORE_API = "https://script.google.com/macros/s/AKfycbzJWy7h__cMAyijHgeUGCEiCKSyysLfNRvzYYYnMH5sjSqfrMNyNZnmSi8hOXvVSo6c/exec";
+
+    async function loadGreekRanking() {
+      const box = document.getElementById('greekRankingContainer');
+      if (!box) return;
+
+      box.innerHTML = `<p style="text-align:center;color:#aaa;">正在載入排行榜…</p>`;
+
+      try {
+        const formData = new URLSearchParams();
+        formData.append('action', 'getGreekLeaderboard');
+        formData.append('category', currentGreekRankingCategory);
+
+        const response = await fetch(GREEK_SCORE_API, {
+          method: 'POST',
+          mode: 'cors',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: formData.toString()
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        const list = Array.isArray(data?.leaderboard)
+          ? data.leaderboard
+          : (Array.isArray(data?.data) ? data.data : []);
+
+        const filtered = currentGreekRankingCategory === 'all'
+          ? list
+          : list.filter(item => String(item.category || '').trim() === currentGreekRankingCategory);
+        const processed = LeaderboardUtils.processLeaderboardData(filtered, true);
+        renderGreekRanking(processed);
+      } catch (err) {
+        console.warn('希臘神祉排行榜載入失敗:', err);
+        const box = document.getElementById('greekRankingContainer');
+        if (box) box.innerHTML = LeaderboardUtils.renderEmptyState('目前沒有希臘神祉排行榜資料');
+      }
+    }
+
+    function renderGreekRanking(data) {
+      const box = document.getElementById('greekRankingContainer');
+      if (!box) return;
+
+      if (!data || !data.length) {
+        box.innerHTML = LeaderboardUtils.renderEmptyState('目前沒有希臘神祉排行榜資料');
+        return;
+      }
+
+      const titleText = currentGreekRankingCategory === 'all' ? '希臘神祉' : currentGreekRankingCategory;
+      const title = `<div style="margin-bottom:12px;text-align:center;color:#ffd700;font-weight:bold;">🏛️ ${titleText} 排行榜</div>`;
+
+      LeaderboardUtils.renderTable(data, 'greekRankingContainer', {
+        showCategory: currentGreekRankingCategory === 'all',
+        showOriginalRank: true,
+        deduplicate: true,
+        emptyMessage: '目前沒有希臘神祉排行榜資料'
+      });
+
+      const tableDiv = box.querySelector('div[style*="overflow-x:auto"]');
+      if (tableDiv) {
+        box.insertAdjacentHTML('afterbegin', title);
+      }
+    }
+
+    // 希臘排行榜下拉選單
+    const greekRankingCategorySelect = document.getElementById('greekRankingCategorySelect');
+    if (greekRankingCategorySelect) {
+      greekRankingCategorySelect.value = currentGreekRankingCategory;
+      greekRankingCategorySelect.addEventListener('change', () => {
+        currentGreekRankingCategory = greekRankingCategorySelect.value;
+        loadGreekRanking();
+      });
+    }
+
+    loadGreekRanking();
   });
   </script>
 </body>
-</html>
 </html>
