@@ -198,6 +198,22 @@
       z-index: 10;
     }
 
+    #lives {
+      position: fixed;
+      top: 76px;
+      right: 20px;
+      padding: 8px 14px;
+      border-radius: 10px;
+      box-shadow: 0 0 12px #ffd700, 0 0 32px #00ffff;
+      border: 2px solid #00ffff;
+      color: #ffd700;
+      font-size: 1.2rem;
+      font-weight: bold;
+      z-index: 10;
+      background: rgba(10,20,40,0.85);
+      font-family: 'Orbitron', Arial, sans-serif;
+    }
+
     #timer {
       font-size: 1.1rem;
       margin-bottom: 16px;
@@ -378,6 +394,13 @@
       #starsDisplay {
         top: 10px;
         left: 10px;
+        padding: 6px 10px;
+        font-size: 1rem;
+      }
+
+      #lives {
+        top: 62px;
+        right: 10px;
         padding: 6px 10px;
         font-size: 1rem;
       }
@@ -585,6 +608,9 @@
     ⭐<span id="totalStarsCount">0</span>
   </div>
 
+  <!-- 生命值顯示區塊 -->
+  <div id="lives">❤️❤️❤️❤️❤️</div>
+
   <!-- 頂部按鈕 -->
   <div class="top-btns">
     <button onclick="location.href='atlas.html?tab=greek'" aria-label="回首頁">🏠 回首頁</button>
@@ -649,19 +675,19 @@
           cursor: pointer;
         ">
           <option value="all">全部單字</option>
-          <option value="日常生活用品">日常生活用品</option>
-          <option value="電子設備">電子設備</option>
           <option value="動作動詞">動作動詞</option>
-          <option value="金錢相關">金錢相關</option>
-          <option value="方向位置">方向位置</option>
-          <option value="情感態度">情感態度</option>
-          <option value="環境保護">環境保護</option>
-          <option value="食物飲料">食物飲料</option>
+          <option value="學術教育">學術教育</option>
+          <option value="時間日期">時間日期</option>
+          <option value="節日慶祝">節日慶祝</option>
+          <option value="數量分數">數量分數</option>
+          <option value="聲音表演">聲音表演</option>
+          <option value="稱謂人際">稱謂人際</option>
+          <option value="交通工具">交通工具</option>
+          <option value="運動娛樂">運動娛樂</option>
+          <option value="身體健康">身體健康</option>
           <option value="形容詞">形容詞</option>
-          <option value="介系詞連接詞">介系詞連接詞</option>
-          <option value="自然環境">自然環境</option>
-          <option value="助動詞">助動詞</option>
-          <option value="反身代名詞">反身代名詞</option>
+          <option value="抽象概念">抽象概念</option>
+          <option value="場所位置">場所位置</option>
         </select>
       </div>
       
@@ -724,286 +750,48 @@
     // ===== 題庫資料 =====
    // ===== 題庫資料 (已更新為新的單字列表 P73 並增加分類) =====
 const VOCAB_DATA = [
-    {
-        "word": "stay",
-        "zh": "停留；保持",
-        "en_sentence": "Please stay home and rest today.",
-        "zh_sentence": "請待在家裡休息。",
-        "category": "動詞/動作"
-    },
-    {
-        "word": "Ms.",
-        "zh": "小姐；女士",
-        "en_sentence": "Ms. Lin is our new math teacher.",
-        "zh_sentence": "林女士是我們新的數學老師。",
-        "category": "稱謂"
-    },
-    {
-        "word": "kid",
-        "zh": "小孩",
-        "en_sentence": "The kid lost his way in the mall.",
-        "zh_sentence": "那個小孩在商場迷路了。",
-        "category": "人/身份"
-    },
-    {
-        "word": "child",
-        "zh": "孩童 (單數)",
-        "en_sentence": "A child needs love and care.",
-        "zh_sentence": "一個孩童需要愛與關懷。",
-        "category": "人/身份"
-    },
-    {
-        "word": "boat",
-        "zh": "船",
-        "en_sentence": "They sailed a small boat on the lake.",
-        "zh_sentence": "他們在湖上駕駛一艘小船。",
-        "category": "交通/物品"
-    },
-    {
-        "word": "floor",
-        "zh": "地板；樓層",
-        "en_sentence": "The keys dropped onto the floor.",
-        "zh_sentence": "鑰匙掉到地板上了。",
-        "category": "地點/場所"
-    },
-    {
-        "word": "frisbee",
-        "zh": "飛盤",
-        "en_sentence": "We played frisbee on the beach.",
-        "zh_sentence": "我們在海灘上玩飛盤。",
-        "category": "休閒/運動"
-    },
-    {
-        "word": "hurt",
-        "zh": "疼痛；傷害",
-        "en_sentence": "Be careful, don't hurt yourself.",
-        "zh_sentence": "小心，不要傷到自己。",
-        "category": "動詞/狀態"
-    },
-    {
-        "word": "begin",
-        "zh": "開始",
-        "en_sentence": "The concert will begin at eight.",
-        "zh_sentence": "音樂會將在八點開始。",
-        "category": "動詞/動作"
-    },
-    {
-        "word": "finish",
-        "zh": "完成；結束",
-        "en_sentence": "I need one more hour to finish this book.",
-        "zh_sentence": "我還需要一個小時才能完成這本書。",
-        "category": "動詞/動作"
-    },
-    {
-        "word": "happen",
-        "zh": "發生",
-        "en_sentence": "What will happen next in the story?",
-        "zh_sentence": "故事接下來會發生什麼事？",
-        "category": "動詞/狀態"
-    },
-    {
-        "word": "jog",
-        "zh": "慢跑",
-        "en_sentence": "I usually go for a jog in the morning.",
-        "zh_sentence": "我通常在早上慢跑。",
-        "category": "動詞/動作"
-    },
-    {
-        "word": "hop",
-        "zh": "單腳跳",
-        "en_sentence": "The bunny can hop very fast.",
-        "zh_sentence": "那隻兔子可以跳得很快。",
-        "category": "動詞/動作"
-    },
-    {
-        "word": "teach",
-        "zh": "教；教導",
-        "en_sentence": "My dad taught me how to swim.",
-        "zh_sentence": "我爸爸教我如何游泳。",
-        "category": "動詞/動作"
-    },
-    {
-        "word": "important",
-        "zh": "重要的",
-        "en_sentence": "It is important to be on time.",
-        "zh_sentence": "準時是很重要的。",
-        "category": "形容詞"
-    },
-    {
-        "word": "health",
-        "zh": "健康",
-        "en_sentence": "We should take care of our health.",
-        "zh_sentence": "我們應該照顧好我們的健康。",
-        "category": "狀態/概念"
-    },
-    {
-        "word": "healthy",
-        "zh": "健康的",
-        "en_sentence": "Eating fruits is part of a healthy diet.",
-        "zh_sentence": "吃水果是健康飲食的一部分。",
-        "category": "形容詞"
-    },
-    {
-        "word": "weak",
-        "zh": "虛弱的",
-        "en_sentence": "He felt too weak to walk after the flu.",
-        "zh_sentence": "流感過後他感到太虛弱，無法行走。",
-        "category": "形容詞"
-    },
-    {
-        "word": "terrible",
-        "zh": "糟糕的；可怕的",
-        "en_sentence": "I made a terrible mistake on the test.",
-        "zh_sentence": "我在考試中犯了一個嚴重的錯誤。",
-        "category": "形容詞"
-    },
-    {
-        "word": "funny",
-        "zh": "好笑的；有趣的",
-        "en_sentence": "She told a very funny joke.",
-        "zh_sentence": "她講了一個非常有趣的笑話。",
-        "category": "形容詞"
-    },
-    {
-        "word": "lot",
-        "zh": "很多 (常搭配 a lot of)",
-        "en_sentence": "There are a lot of cars on the road.",
-        "zh_sentence": "馬路上有許多的車子。",
-        "category": "數量詞"
-    },
-    {
-        "word": "already",
-        "zh": "已經",
-        "en_sentence": "The train has already left the station.",
-        "zh_sentence": "火車已經離開車站了。",
-        "category": "副詞"
-    },
-    {
-        "word": "just",
-        "zh": "剛才；僅僅",
-        "en_sentence": "I just saw him a minute ago.",
-        "zh_sentence": "我剛才一分鐘前才看到他。",
-        "category": "副詞"
-    },
-    {
-        "word": "why",
-        "zh": "為什麼",
-        "en_sentence": "Why did you choose to study English?",
-        "zh_sentence": "你為什麼選擇學英文？",
-        "category": "疑問詞"
-    },
-    {
-        "word": "couch",
-        "zh": "沙發",
-        "en_sentence": "I fell asleep on the couch last night.",
-        "zh_sentence": "我昨晚在沙發上睡著了。",
-        "category": "傢俱/物品"
-    },
-    {
-        "word": "give",
-        "zh": "給予",
-        "en_sentence": "Could you please give me a glass of water?",
-        "zh_sentence": "你可以給我一杯水嗎？",
-        "category": "動詞/動作"
-    },
-    {
-        "word": "garden",
-        "zh": "花園",
-        "en_sentence": "There are beautiful roses in the garden.",
-        "zh_sentence": "花園裡有美麗的玫瑰花。",
-        "category": "地點/場所"
-    },
-    {
-        "word": "grass",
-        "zh": "草；草地",
-        "en_sentence": "The grass is green after the rain.",
-        "zh_sentence": "雨後的草地是綠色的。",
-        "category": "自然/景觀"
-    },
-    {
-        "word": "refrigerator",
-        "zh": "冰箱",
-        "en_sentence": "The milk is kept fresh in the refrigerator.",
-        "zh_sentence": "牛奶放在冰箱裡保鮮。",
-        "category": "傢俱/物品"
-    },
-    {
-        "word": "police",
-        "zh": "警察（集體名詞）",
-        "en_sentence": "The police are looking for the missing cat.",
-        "zh_sentence": "警方正在尋找失蹤的貓。",
-        "category": "職業/身份"
-    },
-    {
-        "word": "officer",
-        "zh": "官員；警官",
-        "en_sentence": "A police officer stopped the speeding car.",
-        "zh_sentence": "一位警官攔下那輛超速的車子。",
-        "category": "職業/身份"
-    },
-    {
-        "word": "actress",
-        "zh": "女演員",
-        "en_sentence": "She dreams of becoming a famous actress.",
-        "zh_sentence": "她夢想成為一名著名的女演員。",
-        "category": "職業/身份"
-    },
-    {
-        "word": "writer",
-        "zh": "作家",
-        "en_sentence": "The writer finished his new novel.",
-        "zh_sentence": "那位作家完成了他的新小說。",
-        "category": "職業/身份"
-    },
-    {
-        "word": "reporter",
-        "zh": "記者",
-        "en_sentence": "A TV reporter interviewed the winner.",
-        "zh_sentence": "一位電視記者採訪了獲勝者。",
-        "category": "職業/身份"
-    },
-    {
-        "word": "fisherman",
-        "zh": "漁夫",
-        "en_sentence": "The old fisherman caught a big fish.",
-        "zh_sentence": "那位老漁夫捕到了一條大魚。",
-        "category": "職業/身份"
-    },
-    {
-        "word": "factory",
-        "zh": "工廠",
-        "en_sentence": "My uncle works in a car factory.",
-        "zh_sentence": "我叔叔在一間汽車工廠工作。",
-        "category": "地點/場所"
-    },
-    {
-        "word": "again",
-        "zh": "再一次",
-        "en_sentence": "Can you say that again, please?",
-        "zh_sentence": "你可以請再說一次嗎？",
-        "category": "副詞"
-    },
-    {
-        "word": "mail",
-        "zh": "郵件；郵寄",
-        "en_sentence": "I received a lot of mail today.",
-        "zh_sentence": "我今天收到了很多郵件。",
-        "category": "物品/動作"
-    },
-    {
-        "word": "mailman",
-        "zh": "郵差",
-        "en_sentence": "The mailman delivered a package this morning.",
-        "zh_sentence": "郵差今天早上送來了一個包裹。",
-        "category": "職業/身份"
-    },
-    {
-        "word": "glove",
-        "zh": "手套",
-        "en_sentence": "She wore a white glove to the party.",
-        "zh_sentence": "她戴著白色手套參加派對。",
-        "category": "衣物/用品"
-    }
+   
+  {"word":"stay","zh":"停留；待在","en_sentence":"I stay at home.","zh_sentence":"我待在家。","category":"動詞"},
+  {"word":"Ms.","zh":"女士","en_sentence":"Ms. Lee is my teacher.","zh_sentence":"李女士是我的老師。","category":"稱謂"},
+  {"word":"kid","zh":"小孩","en_sentence":"The kid is playing.","zh_sentence":"小孩在玩。","category":"名詞"},
+  {"word":"child","zh":"孩子","en_sentence":"The child is happy.","zh_sentence":"這個孩子很開心。","category":"名詞"},
+  {"word":"boat","zh":"船","en_sentence":"The boat is on the river.","zh_sentence":"船在河上。","category":"名詞"},
+  {"word":"floor","zh":"地板；樓層","en_sentence":"The floor is clean.","zh_sentence":"地板很乾淨。","category":"名詞"},
+  {"word":"frisbee","zh":"飛盤","en_sentence":"We throw a frisbee.","zh_sentence":"我們丟飛盤。","category":"名詞"},
+  {"word":"hurt","zh":"受傷；疼痛","en_sentence":"My leg hurts.","zh_sentence":"我的腿受傷了。","category":"動詞"},
+  {"word":"begin","zh":"開始","en_sentence":"The show begins now.","zh_sentence":"表演現在開始。","category":"動詞"},
+  {"word":"finish","zh":"完成；結束","en_sentence":"I finish my homework.","zh_sentence":"我完成作業。","category":"動詞"},
+  {"word":"happen","zh":"發生","en_sentence":"What happened?","zh_sentence":"發生了什麼事？","category":"動詞"},
+  {"word":"jog","zh":"慢跑","en_sentence":"They jog every morning.","zh_sentence":"他們每天早上慢跑。","category":"動詞"},
+  {"word":"hop","zh":"跳","en_sentence":"The rabbit hops.","zh_sentence":"兔子在跳。","category":"動詞"},
+  {"word":"teach","zh":"教","en_sentence":"She teaches English.","zh_sentence":"她教英文。","category":"動詞"},
+  {"word":"important","zh":"重要的","en_sentence":"Health is important.","zh_sentence":"健康很重要。","category":"形容詞"},
+  {"word":"health","zh":"健康","en_sentence":"Good health matters.","zh_sentence":"健康很重要。","category":"名詞"},
+  {"word":"healthy","zh":"健康的","en_sentence":"He is healthy.","zh_sentence":"他很健康。","category":"形容詞"},
+  {"word":"weak","zh":"虛弱的","en_sentence":"The kitten is weak.","zh_sentence":"小貓很虛弱。","category":"形容詞"},
+  {"word":"terrible","zh":"糟糕的","en_sentence":"The weather is terrible.","zh_sentence":"天氣很糟。","category":"形容詞"},
+  {"word":"funny","zh":"有趣的","en_sentence":"The story is funny.","zh_sentence":"這個故事很好笑。","category":"形容詞"},
+
+  {"word":"lot","zh":"很多","en_sentence":"I have a lot of books.","zh_sentence":"我有很多書。","category":"名詞"},
+  {"word":"already","zh":"已經","en_sentence":"I already ate.","zh_sentence":"我已經吃過了。","category":"副詞"},
+  {"word":"just","zh":"剛剛；只是","en_sentence":"I just arrived.","zh_sentence":"我剛到。","category":"副詞"},
+  {"word":"why","zh":"為什麼","en_sentence":"Why are you late?","zh_sentence":"你為什麼遲到？","category":"疑問詞"},
+  {"word":"couch","zh":"沙發","en_sentence":"Sit on the couch.","zh_sentence":"坐在沙發上。","category":"名詞"},
+  {"word":"give","zh":"給","en_sentence":"Give me the book.","zh_sentence":"把書給我。","category":"動詞"},
+  {"word":"garden","zh":"花園","en_sentence":"Flowers grow in the garden.","zh_sentence":"花在花園裡生長。","category":"名詞"},
+  {"word":"grass","zh":"草","en_sentence":"The grass is green.","zh_sentence":"草是綠色的。","category":"名詞"},
+  {"word":"refrigerator","zh":"冰箱","en_sentence":"Milk is in the refrigerator.","zh_sentence":"牛奶在冰箱裡。","category":"名詞"},
+  {"word":"police","zh":"警察","en_sentence":"The police help people.","zh_sentence":"警察幫助人們。","category":"名詞"},
+  {"word":"officer","zh":"警官；官員","en_sentence":"The officer is kind.","zh_sentence":"那位警官很親切。","category":"名詞"},
+  {"word":"actress","zh":"女演員","en_sentence":"She is an actress.","zh_sentence":"她是一名女演員。","category":"名詞"},
+  {"word":"writer","zh":"作家","en_sentence":"He is a writer.","zh_sentence":"他是一位作家。","category":"名詞"},
+  {"word":"reporter","zh":"記者","en_sentence":"The reporter asks questions.","zh_sentence":"記者提問。","category":"名詞"},
+  {"word":"fisherman","zh":"漁夫","en_sentence":"The fisherman catches fish.","zh_sentence":"漁夫抓魚。","category":"名詞"},
+  {"word":"factory","zh":"工廠","en_sentence":"He works in a factory.","zh_sentence":"他在工廠工作。","category":"名詞"},
+  {"word":"again","zh":"再一次","en_sentence":"Try again.","zh_sentence":"再試一次。","category":"副詞"},
+  {"word":"mail","zh":"郵件","en_sentence":"I got some mail.","zh_sentence":"我收到一些郵件。","category":"名詞"},
+  {"word":"mailman","zh":"郵差","en_sentence":"The mailman comes daily.","zh_sentence":"郵差每天來。","category":"名詞"},
+  {"word":"glove","zh":"手套","en_sentence":"Wear a glove.","zh_sentence":"戴上手套。","category":"名詞"}
 ];
 
     // ===== 將重複單字以較新的定義覆蓋舊的（依 word 去重，保留最後出現者） =====
@@ -1033,14 +821,26 @@ const VOCAB_DATA = [
       timerInterval: null,
       preferredVoice: null,
       answerLog: [],
-      sessionStars: 0
+      sessionStars: 0,
+      totalTimeUsed: 0,
+      questionStartTs: null
     };
+
+    window.gameState = gameState;
+
+    let lives = 5;
+
+    function updateLives() {
+      const el = document.getElementById('lives');
+      if (!el) return;
+      el.innerHTML = '❤️'.repeat(Math.max(0, lives)) + '🤍'.repeat(Math.max(0, 5 - lives));
+    }
 
     // ===== 音效資源 =====
     const SOUNDS = {
-      correct: new Audio('audio/correct.mp3'),
-      wrong: new Audio('audio/wrong.mp3'),
-      type: new Audio('audio/type.mp3')
+      correct: new Audio('sound/correct.mp3'),
+      wrong: new Audio('sound/wrong.mp3'),
+      type: new Audio('sound/type.mp3')
     };
 
     // ===== 背景音樂控制 =====
@@ -1141,6 +941,8 @@ const VOCAB_DATA = [
       let timeLeft = GAME_CONFIG.TIME_LIMIT;
       document.getElementById('time-left').textContent = timeLeft;
       document.getElementById('timer').classList.remove('hidden');
+
+      gameState.questionStartTs = Date.now();
       
       gameState.timerInterval = setInterval(() => {
         timeLeft--;
@@ -1154,6 +956,12 @@ const VOCAB_DATA = [
 
     function stopTimer() {
       clearInterval(gameState.timerInterval);
+
+      if (gameState.questionStartTs) {
+        const deltaSec = Math.max(0, Math.round((Date.now() - gameState.questionStartTs) / 1000));
+        gameState.totalTimeUsed = (Number(gameState.totalTimeUsed) || 0) + deltaSec;
+        gameState.questionStartTs = null;
+      }
     }
 
     // ===== 語音功能 =====
@@ -1204,6 +1012,12 @@ const VOCAB_DATA = [
       
       if (autoNext) {
         setTimeout(() => {
+          lives--;
+          updateLives();
+          if (lives <= 0) {
+            showGameEndScreen();
+            return;
+          }
           gameState.currentIndex++;
           showQuestion();
         }, 500);
@@ -1307,6 +1121,16 @@ const VOCAB_DATA = [
         SOUNDS.correct.currentTime = 0;
         SOUNDS.correct.play();
       } catch (e) {}
+
+      if (window.GameDialogue) {
+        setTimeout(() => {
+          if (correctCount > wrongCount) {
+            window.GameDialogue.showGameVictoryDialogue();
+          } else {
+            window.GameDialogue.showGameDefeatDialogue();
+          }
+        }, 2000);
+      }
     }
 
     function restartGame() {
@@ -1317,6 +1141,13 @@ const VOCAB_DATA = [
       gameState.currentIndex = 0;
       gameState.sessionStars = 0;
       gameState.answerLog = [];
+      gameState.totalTimeUsed = 0;
+      gameState.questionStartTs = null;
+
+      window.gameState = gameState;
+
+      lives = 5;
+      updateLives();
       
       // 重新初始化數據
       initData();
@@ -1330,10 +1161,18 @@ const VOCAB_DATA = [
     // ===== 問題操作 =====
     function skipQuestion() {
       stopTimer();
-      logAnswer(null, '');
+      if (!gameState.answerLog[gameState.currentIndex]) {
+        logAnswer(false, '');
+      }
       const feedback = document.getElementById('feedback');
       if (feedback) feedback.innerHTML = '<span style="color:#bbb;">已跳過本題</span>';
       setTimeout(() => {
+        lives--;
+        updateLives();
+        if (lives <= 0) {
+          showGameEndScreen();
+          return;
+        }
         gameState.currentIndex++;
         showQuestion();
       }, 400);
@@ -1347,6 +1186,12 @@ const VOCAB_DATA = [
         if (feedback) feedback.innerHTML = '<span style="color:#bbb;">未作答</span>';
       }
       setTimeout(() => {
+        lives--;
+        updateLives();
+        if (lives <= 0) {
+          showGameEndScreen();
+          return;
+        }
         gameState.currentIndex++;
         showQuestion();
       }, 400);
@@ -1394,6 +1239,10 @@ const VOCAB_DATA = [
           SOUNDS.correct.currentTime = 0;
           SOUNDS.correct.play();
         } catch (e) {}
+
+        if (window.GameDialogue) {
+          window.GameDialogue.showCorrectAnswerDialogue();
+        }
         
         setTimeout(() => {
           gameState.currentIndex++;
@@ -1417,8 +1266,18 @@ const VOCAB_DATA = [
             SOUNDS.wrong.currentTime = 0;
             SOUNDS.wrong.play();
           } catch (e) {}
+
+          if (window.GameDialogue) {
+            window.GameDialogue.showWrongAnswerDialogue();
+          }
           
           setTimeout(() => {
+            lives--;
+            updateLives();
+            if (lives <= 0) {
+              showGameEndScreen();
+              return;
+            }
             gameState.currentIndex++;
             showQuestion();
           }, 1300);
@@ -1428,11 +1287,27 @@ const VOCAB_DATA = [
 
     // ===== 星星系統 =====
     function loadTotalStars() {
+      if (typeof LinkageSystem !== 'undefined' && LinkageSystem?.stars?.get) {
+        return Number(LinkageSystem.stars.get()) || 0;
+      }
+      if (typeof StarRewardSystem !== 'undefined' && typeof StarRewardSystem.getTotalStars === 'function') {
+        return Number(StarRewardSystem.getTotalStars()) || 0;
+      }
       const stars = localStorage.getItem('totalStars');
       return stars !== null ? parseInt(stars, 10) : 0;
     }
 
     function addStarsToTotal(stars) {
+      if (typeof StarRewardSystem !== 'undefined' && typeof StarRewardSystem.addStars === 'function') {
+        StarRewardSystem.addStars(stars);
+        updateStarsDisplay();
+        return;
+      }
+      if (typeof LinkageSystem !== 'undefined' && LinkageSystem?.stars?.add) {
+        LinkageSystem.stars.add(stars);
+        updateStarsDisplay();
+        return;
+      }
       const currentStars = loadTotalStars();
       const newTotal = currentStars + stars;
       localStorage.setItem('totalStars', newTotal);
@@ -1758,17 +1633,20 @@ const VOCAB_DATA = [
     document.addEventListener('DOMContentLoaded', () => {
       updateStarsDisplay();
       document.getElementById('sessionStarsDisplay').textContent = '本次已獲得 0 顆星星';
+      updateLives();
       initData();
-      gameState.currentIndex = 0;
+      loadProgress();
       updateCounter();
       showQuestion();
-      localStorage.removeItem('fillIndex');
-      
-      // 初始化背景音樂
       initBackgroundMusic();
-      
-      // 初始化時解鎖複習按鈕
       unlockReviewButton();
+
+      if (window.GameDialogue) {
+        window.GameDialogue.init();
+        setTimeout(() => {
+          window.GameDialogue.showGameStartDialogue();
+        }, 2000);
+      }
     });
 
     // 點擊彈窗外也能關閉
@@ -1793,75 +1671,6 @@ const VOCAB_DATA = [
       }
     });
 
-    // 角色互動系統整合
-    let currentCharacter = localStorage.getItem('characterName') || 'zeus';
-    if (window.GameDialogue) {
-      window.GameDialogue.currentCharacter = currentCharacter;
-    }
-    function showGameStartDialogue() {
-      if (window.GameDialogue) {
-        window.GameDialogue.showGameStartDialogue();
-      }
-    }
-    function showCorrectAnswerDialogue() {
-      if (window.GameDialogue) {
-        window.GameDialogue.showCorrectAnswerDialogue();
-      }
-    }
-    function showWrongAnswerDialogue() {
-      if (window.GameDialogue) {
-        window.GameDialogue.showWrongAnswerDialogue();
-      }
-    }
-    function showGameVictoryDialogue() {
-      if (window.GameDialogue) {
-        window.GameDialogue.showGameVictoryDialogue();
-      }
-    }
-    function showGameDefeatDialogue() {
-      if (window.GameDialogue) {
-        window.GameDialogue.showGameDefeatDialogue();
-      }
-    }
-
-    // 頁面載入時初始化
-    document.addEventListener('DOMContentLoaded', function() {
-      setTimeout(() => {
-        if (window.GameDialogue) {
-          window.GameDialogue.init();
-        }
-      }, 1000);
-    });
-
-    // 在遊戲開始時觸發
-    function startGame() {
-      // ... existing code ...
-      showGameStartDialogue();
-    }
-
-    // 在答對時觸發
-    function handleCorrectAnswer() {
-      // ... existing code ...
-      showCorrectAnswerDialogue();
-    }
-
-    // 在答錯時觸發
-    function handleWrongAnswer() {
-      // ... existing code ...
-      showWrongAnswerDialogue();
-    }
-
-    // 在遊戲勝利時觸發
-    function handleGameVictory() {
-      // ... existing code ...
-      showGameVictoryDialogue();
-    }
-
-    // 在遊戲失敗時觸發
-    function handleGameDefeat() {
-      // ... existing code ...
-      showGameDefeatDialogue();
-    }
   </script>
 </body>
 </html>
