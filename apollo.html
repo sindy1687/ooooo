@@ -198,6 +198,22 @@
       z-index: 10;
     }
 
+    #lives {
+      position: fixed;
+      top: 76px;
+      right: 20px;
+      padding: 8px 14px;
+      border-radius: 10px;
+      box-shadow: 0 0 12px #ffd700, 0 0 32px #00ffff;
+      border: 2px solid #00ffff;
+      color: #ffd700;
+      font-size: 1.2rem;
+      font-weight: bold;
+      z-index: 10;
+      background: rgba(10,20,40,0.85);
+      font-family: 'Orbitron', Arial, sans-serif;
+    }
+
     #timer {
       font-size: 1.1rem;
       margin-bottom: 16px;
@@ -378,6 +394,13 @@
       #starsDisplay {
         top: 10px;
         left: 10px;
+        padding: 6px 10px;
+        font-size: 1rem;
+      }
+
+      #lives {
+        top: 62px;
+        right: 10px;
         padding: 6px 10px;
         font-size: 1rem;
       }
@@ -585,6 +608,9 @@
     ⭐<span id="totalStarsCount">0</span>
   </div>
 
+  <!-- 生命值顯示區塊 -->
+  <div id="lives">❤️❤️❤️❤️❤️</div>
+
   <!-- 頂部按鈕 -->
   <div class="top-btns">
     <button onclick="location.href='atlas.html?tab=greek'" aria-label="回首頁">🏠 回首頁</button>
@@ -635,6 +661,67 @@
     <div class="modal-content">
       <div class="end-icon">📚</div>
       <h2>單字複習</h2>
+
+      <div style="margin-bottom: 20px;">
+        <label for="categoryFilter" style="color: #ffd700; font-weight: bold; margin-right: 10px;">選擇分類：</label>
+        <select id="categoryFilter" style="
+          background: #222;
+          color: #fff;
+          border: 2px solid #ffd700;
+          border-radius: 8px;
+          padding: 8px 12px;
+          font-size: 1rem;
+          cursor: pointer;
+        ">
+          <option value="all">全部單字</option>
+          <option value="動作動詞">動作動詞</option>
+          <option value="學術教育">學術教育</option>
+          <option value="時間日期">時間日期</option>
+          <option value="節日慶祝">節日慶祝</option>
+          <option value="數量分數">數量分數</option>
+          <option value="聲音表演">聲音表演</option>
+          <option value="稱謂人際">稱謂人際</option>
+          <option value="交通工具">交通工具</option>
+          <option value="運動娛樂">運動娛樂</option>
+          <option value="身體健康">身體健康</option>
+          <option value="形容詞">形容詞</option>
+          <option value="抽象概念">抽象概念</option>
+          <option value="場所位置">場所位置</option>
+        </select>
+      </div>
+
+      <div id="vocabStats" style="
+        background: rgba(255, 215, 0, 0.1);
+        border: 1px solid #ffd700;
+        border-radius: 8px;
+        padding: 10px;
+        margin-bottom: 15px;
+        color: #ffd700;
+        font-size: 0.9rem;
+      ">
+        總共 <span id="totalVocabCount">0</span> 個單字
+        <button onclick="showVocabStats()" style="
+          background: #0ff;
+          color: #000;
+          border: none;
+          border-radius: 6px;
+          padding: 4px 8px;
+          font-size: 0.8rem;
+          margin-left: 10px;
+          cursor: pointer;
+        ">📊 詳細統計</button>
+        <button onclick="exportVocabData()" style="
+          background: #4caf50;
+          color: #fff;
+          border: none;
+          border-radius: 6px;
+          padding: 4px 8px;
+          font-size: 0.8rem;
+          margin-left: 5px;
+          cursor: pointer;
+        ">📥 匯出字庫</button>
+      </div>
+
       <div id="reviewWordsContainer" style="max-height: 400px; overflow-y: auto; margin: 20px 0;">
         <!-- 單字列表將在這裡動態生成 -->
       </div>
@@ -644,6 +731,20 @@
     </div>
   </div>
 
+  <div id="achievementNotifyModal" style="display:none;position:fixed;z-index:2000;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.7);justify-content:center;align-items:center;">
+    <div style="background:linear-gradient(135deg,#232526 0%,#414345 100%);border-radius:18px;padding:36px 28px;box-shadow:0 0 32px #ffd700,0 0 80px #00ffff22 inset;max-width:90vw;width:350px;text-align:center;position:relative;">
+      <div style="font-size:2.5rem;margin-bottom:12px;">🎉</div>
+      <div id="achievementNotifyTitle" style="font-size:1.3rem;font-weight:bold;color:#ffd700;margin-bottom:8px;"></div>
+      <div id="achievementNotifyDesc" style="font-size:1rem;color:#fff;margin-bottom:18px;"></div>
+      <button onclick="window.location.href='achievement.html'" style="background:linear-gradient(90deg,#00ffff,#ffd700);color:#000;font-weight:bold;padding:10px 28px;border:none;border-radius:10px;font-size:1.1rem;box-shadow:0 0 12px #ffd700;cursor:pointer;margin-bottom:10px;">前往成就頁</button><br>
+      <button onclick="document.getElementById('achievementNotifyModal').style.display='none'" style="background:#bbb;color:#222;padding:6px 18px;border:none;border-radius:8px;font-size:1rem;cursor:pointer;">關閉</button>
+    </div>
+  </div>
+
+  <script src="js/utils.js"></script>
+  <script src="js/bgmController.js"></script>
+  <script src="js/userData.js"></script>
+  <script src="js/characterDialogue.js"></script>
   <script src="js/gameDialogue.js"></script>
   <script src="js/greekScoreUpload.js"></script>
   <script>
@@ -656,258 +757,49 @@
 
     // ===== 題庫資料 =====
     const VOCAB_DATA = [
-    {
-    "word": "soon",
-    "zh": "很快地",
-    "en_sentence": "Dinner will be ready soon.",
-    "zh_sentence": "晚餐很快就做好了。"
-  },
-  {
-    "word": "me",
-    "zh": "我(受格)",
-    "en_sentence": "Please give that book to me.",
-    "zh_sentence": "請把那本書給我。"
-  },
-  {
-    "word": "him",
-    "zh": "他(受格)",
-    "en_sentence": "I saw him at the park yesterday.",
-    "zh_sentence": "昨天我在公園看到他。"
-  },
-  {
-    "word": "often",
-    "zh": "常常",
-    "en_sentence": "We often play basketball after school.",
-    "zh_sentence": "放學後我們常常打籃球。"
-  },
-  {
-    "word": "us",
-    "zh": "我們(受格)",
-    "en_sentence": "They gave us new textbooks.",
-    "zh_sentence": "他們給我們新的課本。"
-  },
-  {
-    "word": "them",
-    "zh": "他們(受格)",
-    "en_sentence": "I invited them to dinner.",
-    "zh_sentence": "我邀請他們吃晚餐。"
-  },
-  {
-    "word": "mine",
-    "zh": "我的…",
-    "en_sentence": "This pencil is mine.",
-    "zh_sentence": "這支鉛筆是我的。"
-  },
-  {
-    "word": "yours",
-    "zh": "你(們)的…",
-    "en_sentence": "Is this pen yours?",
-    "zh_sentence": "這支筆是你（們）的嗎？"
-  },
-  {
-    "word": "hers",
-    "zh": "她的…",
-    "en_sentence": "That book is hers.",
-    "zh_sentence": "那本書是她的。"
-  },
-  {
-    "word": "birthday",
-    "zh": "生日",
-    "en_sentence": "My birthday is in July.",
-    "zh_sentence": "我的生日在七月。"
-  },
-  {
-    "word": "ours",
-    "zh": "我們的…",
-    "en_sentence": "This house is ours.",
-    "zh_sentence": "這間房子是我們的。"
-  },
-  {
-    "word": "theirs",
-    "zh": "他們的…",
-    "en_sentence": "Those shoes are theirs.",
-    "zh_sentence": "那些鞋子是他們的。"
-  },
-  {
-    "word": "cap",
-    "zh": "帽子",
-    "en_sentence": "He wears a cap when he plays baseball.",
-    "zh_sentence": "他打棒球時戴帽子。"
-  },
-  {
-    "word": "jeans",
-    "zh": "牛仔褲",
-    "en_sentence": "She wears jeans to school.",
-    "zh_sentence": "她穿牛仔褲上學。"
-  },
-  {
-    "word": "sweater",
-    "zh": "毛衣",
-    "en_sentence": "I put on a sweater because it is cold.",
-    "zh_sentence": "因為天冷我穿了毛衣。"
-  },
-  {
-    "word": "American",
-    "zh": "美國人",
-    "en_sentence": "My teacher is an American.",
-    "zh_sentence": "我的老師是一位美國人。"
-  },
-  {
-    "word": "waiter",
-    "zh": "服務生",
-    "en_sentence": "The waiter brings our food quickly.",
-    "zh_sentence": "服務生很快就把我們的食物端來。"
-  },
-  {
-    "word": "clerk",
-    "zh": "店員",
-    "en_sentence": "The clerk at the store is friendly.",
-    "zh_sentence": "店裡的店員很友善。"
-  },
-  {
-    "word": "job",
-    "zh": "工作",
-    "en_sentence": "My dad has a job at the bank.",
-    "zh_sentence": "我爸爸在銀行有份工作。"
-  },
-  {
-    "word": "gray",
-    "zh": "灰色的",
-    "en_sentence": "The sky is gray today.",
-    "zh_sentence": "今天的天空是灰色的。"
-  },
-  {
-    "word": "purple",
-    "zh": "紫色的",
-    "en_sentence": "She bought a purple backpack.",
-    "zh_sentence": "她買了一個紫色的書包。"
-  },
-  {
-    "word": "airplane",
-    "zh": "飛機",
-    "en_sentence": "The airplane flies above the clouds.",
-    "zh_sentence": "飛機飛在雲上。"
-  },
-  {
-    "word": "motorcycle",
-    "zh": "機車",
-    "en_sentence": "He rides his motorcycle to school.",
-    "zh_sentence": "他騎機車去學校。"
-  },
-  {
-    "word": "street",
-    "zh": "街道",
-    "en_sentence": "The street near my house is busy.",
-    "zh_sentence": "我家附近的街道很繁忙。"
-  },
-  {
-    "word": "town",
-    "zh": "城鎮",
-    "en_sentence": "Our town has a beautiful park.",
-    "zh_sentence": "我們的城鎮有一座漂亮的公園。"
-  },
-  {
-    "word": "block",
-    "zh": "街區",
-    "en_sentence": "The school is two blocks away.",
-    "zh_sentence": "學校在兩個街區外。"
-  },
-  {
-    "word": "city",
-    "zh": "城市",
-    "en_sentence": "New York City is very large.",
-    "zh_sentence": "紐約城市非常大。"
-  },
-  {
-    "word": "corner",
-    "zh": "轉角；角落",
-    "en_sentence": "Turn left at the corner.",
-    "zh_sentence": "在轉角處向左轉。"
-  },
-  {
-    "word": "department store",
-    "zh": "百貨公司",
-    "en_sentence": "We buy clothes at the department store.",
-    "zh_sentence": "我們在百貨公司買衣服。"
-  },
-  {
-    "word": "theater",
-    "zh": "劇院",
-    "en_sentence": "We watch plays at the theater.",
-    "zh_sentence": "我們在劇院看戲。"
-  },
-  {
-    "word": "movie theater",
-    "zh": "電影院",
-    "en_sentence": "They go to the movie theater on Friday.",
-    "zh_sentence": "他們星期五去電影院。"
-  },
-  {
-    "word": "crazy",
-    "zh": "著迷的",
-    "en_sentence": "He is crazy about basketball.",
-    "zh_sentence": "他對籃球很著迷。"
-  },
-  {
-    "word": "shop",
-    "zh": "商店",
-    "en_sentence": "We buy snacks at the shop.",
-    "zh_sentence": "我們在商店買零食。"
-  },
-  {
-    "word": "flower shop",
-    "zh": "花店",
-    "en_sentence": "She buys roses at the flower shop.",
-    "zh_sentence": "她在花店買玫瑰。"
-  },
-  {
-    "word": "station",
-    "zh": "車站",
-    "en_sentence": "We wait for the train at the station.",
-    "zh_sentence": "我們在車站等火車。"
-  },
-  {
-    "word": "police station",
-    "zh": "警察局",
-    "en_sentence": "The police station is near the park.",
-    "zh_sentence": "警察局在公園附近。"
-  },
-  {
-    "word": "railway",
-    "zh": "鐵路",
-    "en_sentence": "The train runs on the railway every hour.",
-    "zh_sentence": "火車每小時在鐵路上行駛。"
-  },
-  {
-    "word": "turn",
-    "zh": "轉彎",
-    "en_sentence": "Turn the wheel to the right.",
-    "zh_sentence": "把方向盤向右轉。"
-  },
-  {
-    "word": "left",
-    "zh": "左方；向左方",
-    "en_sentence": "Keep left on the road.",
-    "zh_sentence": "在道路上保持靠左。"
-  },
-  {
-    "word": "right",
-    "zh": "右方；向右方",
-    "en_sentence": "Turn right at the traffic light.",
-    "zh_sentence": "在紅綠燈處向右轉。"
-  },
-  {
-    "word": "stamp",
-    "zh": "郵票",
-    "en_sentence": "Put a stamp on the envelope.",
-    "zh_sentence": "在信封上貼郵票。"
-  },
-  {
-    "word": "news",
-    "zh": "消息；新聞",
-    "en_sentence": "He reads the news every morning.",
-    "zh_sentence": "他每天早上看新聞。"
-  }
+    
+  {"word":"learn","zh":"學習","en_sentence":"Students learn English at school.","zh_sentence":"學生在學校學英文。","category":"動詞"},
+  {"word":"climb","zh":"爬；攀登","en_sentence":"They climb the mountain.","zh_sentence":"他們爬山。","category":"動詞"},
+  {"word":"hike","zh":"健行","en_sentence":"We hike in the park.","zh_sentence":"我們在公園健行。","category":"動詞"},
+  {"word":"camp","zh":"露營","en_sentence":"They camp by the lake.","zh_sentence":"他們在湖邊露營。","category":"動詞"},
+  {"word":"everyone","zh":"每個人","en_sentence":"Everyone is here.","zh_sentence":"每個人都到了。","category":"代名詞"},
+  {"word":"together","zh":"一起","en_sentence":"We eat together.","zh_sentence":"我們一起吃飯。","category":"副詞"},
+  {"word":"ago","zh":"以前","en_sentence":"I met him two years ago.","zh_sentence":"我兩年前見過他。","category":"副詞"},
+  {"word":"never","zh":"從不","en_sentence":"She never lies.","zh_sentence":"她從不說謊。","category":"副詞"},
+  {"word":"always","zh":"總是","en_sentence":"He always helps others.","zh_sentence":"他總是幫助別人。","category":"副詞"},
+  {"word":"usually","zh":"通常","en_sentence":"I usually get up early.","zh_sentence":"我通常早起。","category":"副詞"},
+  {"word":"sometimes","zh":"有時候","en_sentence":"I sometimes watch TV.","zh_sentence":"我有時候看電視。","category":"副詞"},
+  {"word":"seldom","zh":"很少","en_sentence":"He seldom eats fast food.","zh_sentence":"他很少吃速食。","category":"副詞"},
+  {"word":"was","zh":"是（過去式）","en_sentence":"She was happy yesterday.","zh_sentence":"她昨天很開心。","category":"動詞"},
+  {"word":"were","zh":"是（過去式）","en_sentence":"They were at home.","zh_sentence":"他們在家。","category":"動詞"},
+  {"word":"insect","zh":"昆蟲","en_sentence":"An insect is on the leaf.","zh_sentence":"葉子上有一隻昆蟲。","category":"名詞"},
+  {"word":"bat","zh":"蝙蝠","en_sentence":"A bat flies at night.","zh_sentence":"蝙蝠在晚上飛。","category":"名詞"},
+  {"word":"butterfly","zh":"蝴蝶","en_sentence":"The butterfly is beautiful.","zh_sentence":"這隻蝴蝶很漂亮。","category":"名詞"},
+  {"word":"spider","zh":"蜘蛛","en_sentence":"The spider is small.","zh_sentence":"那隻蜘蛛很小。","category":"名詞"},
+  {"word":"whale","zh":"鯨魚","en_sentence":"The whale is very big.","zh_sentence":"鯨魚非常大。","category":"名詞"},
+  {"word":"hill","zh":"小山","en_sentence":"The house is on a hill.","zh_sentence":"房子在小山上。","category":"名詞"},
+
+  {"word":"island","zh":"島嶼","en_sentence":"They live on an island.","zh_sentence":"他們住在一座島上。","category":"名詞"},
+  {"word":"present","zh":"禮物","en_sentence":"She gets a present.","zh_sentence":"她得到一個禮物。","category":"名詞"},
+  {"word":"junior high school","zh":"國中","en_sentence":"He studies at a junior high school.","zh_sentence":"他在國中讀書。","category":"名詞"},
+  {"word":"course","zh":"課程","en_sentence":"This course is interesting.","zh_sentence":"這門課很有趣。","category":"名詞"},
+  {"word":"art","zh":"美術","en_sentence":"I like art class.","zh_sentence":"我喜歡美術課。","category":"名詞"},
+  {"word":"history","zh":"歷史","en_sentence":"History is my favorite subject.","zh_sentence":"歷史是我最喜歡的科目。","category":"名詞"},
+  {"word":"science","zh":"科學","en_sentence":"We study science today.","zh_sentence":"我們今天上自然課。","category":"名詞"},
+  {"word":"lesson","zh":"課；課堂","en_sentence":"The lesson is easy.","zh_sentence":"這堂課很簡單。","category":"名詞"},
+  {"word":"subject","zh":"科目","en_sentence":"Math is a subject.","zh_sentence":"數學是一門科目。","category":"名詞"},
+  {"word":"test","zh":"考試","en_sentence":"We have a test tomorrow.","zh_sentence":"我們明天要考試。","category":"名詞"},
+  {"word":"vacation","zh":"假期","en_sentence":"Winter vacation is long.","zh_sentence":"寒假很長。","category":"名詞"},
+  {"word":"holiday","zh":"假日","en_sentence":"Today is a holiday.","zh_sentence":"今天是假日。","category":"名詞"},
+  {"word":"Teacher's Day","zh":"教師節","en_sentence":"We celebrate Teacher’s Day.","zh_sentence":"我們慶祝教師節。","category":"節日"},
+  {"word":"festival","zh":"節日","en_sentence":"This festival is fun.","zh_sentence":"這個節日很有趣。","category":"名詞"},
+  {"word":"Moon Festival","zh":"中秋節","en_sentence":"We eat mooncakes at Moon Festival.","zh_sentence":"中秋節我們吃月餅。","category":"節日"},
+  {"word":"half","zh":"一半","en_sentence":"I eat half of the cake.","zh_sentence":"我吃了蛋糕的一半。","category":"名詞"},
+  {"word":"quarter","zh":"四分之一","en_sentence":"A quarter of the class is absent.","zh_sentence":"班上有四分之一缺席。","category":"名詞"},
+  {"word":"noise","zh":"噪音","en_sentence":"The noise is loud.","zh_sentence":"噪音很大。","category":"名詞"},
+  {"word":"show","zh":"表演","en_sentence":"The show is great.","zh_sentence":"表演很精彩。","category":"名詞"},
+  {"word":"start","zh":"開始","en_sentence":"The class starts at eight.","zh_sentence":"課程八點開始。","category":"動詞"}
+
     ];
 
     // ===== 遊戲狀態變數 =====
@@ -919,14 +811,26 @@
       timerInterval: null,
       preferredVoice: null,
       answerLog: [],
-      sessionStars: 0
+      sessionStars: 0,
+      totalTimeUsed: 0,
+      questionStartTs: null
     };
+
+    window.gameState = gameState;
+
+    let lives = 5;
+
+    function updateLives() {
+      const el = document.getElementById('lives');
+      if (!el) return;
+      el.innerHTML = '❤️'.repeat(Math.max(0, lives)) + '🤍'.repeat(Math.max(0, 5 - lives));
+    }
 
     // ===== 音效資源 =====
     const SOUNDS = {
-      correct: new Audio('audio/correct.mp3'),
-      wrong: new Audio('audio/wrong.mp3'),
-      type: new Audio('audio/type.mp3')
+      correct: new Audio('sound/correct.mp3'),
+      wrong: new Audio('sound/wrong.mp3'),
+      type: new Audio('sound/type.mp3')
     };
 
     // ===== 背景音樂控制 =====
@@ -1027,6 +931,8 @@
       let timeLeft = GAME_CONFIG.TIME_LIMIT;
       document.getElementById('time-left').textContent = timeLeft;
       document.getElementById('timer').classList.remove('hidden');
+
+      gameState.questionStartTs = Date.now();
       
       gameState.timerInterval = setInterval(() => {
         timeLeft--;
@@ -1040,6 +946,12 @@
 
     function stopTimer() {
       clearInterval(gameState.timerInterval);
+
+      if (gameState.questionStartTs) {
+        const deltaSec = Math.max(0, Math.round((Date.now() - gameState.questionStartTs) / 1000));
+        gameState.totalTimeUsed = (Number(gameState.totalTimeUsed) || 0) + deltaSec;
+        gameState.questionStartTs = null;
+      }
     }
 
     // ===== 語音功能 =====
@@ -1090,6 +1002,12 @@
       
       if (autoNext) {
         setTimeout(() => {
+          lives--;
+          updateLives();
+          if (lives <= 0) {
+            showGameEndScreen();
+            return;
+          }
           gameState.currentIndex++;
           showQuestion();
         }, 500);
@@ -1193,6 +1111,16 @@
         SOUNDS.correct.currentTime = 0;
         SOUNDS.correct.play();
       } catch (e) {}
+
+      if (window.GameDialogue) {
+        setTimeout(() => {
+          if (correctCount > wrongCount) {
+            window.GameDialogue.showGameVictoryDialogue();
+          } else {
+            window.GameDialogue.showGameDefeatDialogue();
+          }
+        }, 2000);
+      }
     }
 
     function restartGame() {
@@ -1203,6 +1131,13 @@
       gameState.currentIndex = 0;
       gameState.sessionStars = 0;
       gameState.answerLog = [];
+      gameState.totalTimeUsed = 0;
+      gameState.questionStartTs = null;
+
+      window.gameState = gameState;
+
+      lives = 5;
+      updateLives();
       
       // 重新初始化數據
       initData();
@@ -1216,10 +1151,18 @@
     // ===== 問題操作 =====
     function skipQuestion() {
       stopTimer();
-      logAnswer(null, '');
+      if (!gameState.answerLog[gameState.currentIndex]) {
+        logAnswer(false, '');
+      }
       const feedback = document.getElementById('feedback');
       if (feedback) feedback.innerHTML = '<span style="color:#bbb;">已跳過本題</span>';
       setTimeout(() => {
+        lives--;
+        updateLives();
+        if (lives <= 0) {
+          showGameEndScreen();
+          return;
+        }
         gameState.currentIndex++;
         showQuestion();
       }, 400);
@@ -1233,6 +1176,12 @@
         if (feedback) feedback.innerHTML = '<span style="color:#bbb;">未作答</span>';
       }
       setTimeout(() => {
+        lives--;
+        updateLives();
+        if (lives <= 0) {
+          showGameEndScreen();
+          return;
+        }
         gameState.currentIndex++;
         showQuestion();
       }, 400);
@@ -1280,6 +1229,10 @@
           SOUNDS.correct.currentTime = 0;
           SOUNDS.correct.play();
         } catch (e) {}
+
+        if (window.GameDialogue) {
+          window.GameDialogue.showCorrectAnswerDialogue();
+        }
         
         setTimeout(() => {
           gameState.currentIndex++;
@@ -1303,8 +1256,18 @@
             SOUNDS.wrong.currentTime = 0;
             SOUNDS.wrong.play();
           } catch (e) {}
+
+          if (window.GameDialogue) {
+            window.GameDialogue.showWrongAnswerDialogue();
+          }
           
           setTimeout(() => {
+            lives--;
+            updateLives();
+            if (lives <= 0) {
+              showGameEndScreen();
+              return;
+            }
             gameState.currentIndex++;
             showQuestion();
           }, 1300);
@@ -1314,11 +1277,27 @@
 
     // ===== 星星系統 =====
     function loadTotalStars() {
+      if (typeof LinkageSystem !== 'undefined' && LinkageSystem?.stars?.get) {
+        return Number(LinkageSystem.stars.get()) || 0;
+      }
+      if (typeof StarRewardSystem !== 'undefined' && typeof StarRewardSystem.getTotalStars === 'function') {
+        return Number(StarRewardSystem.getTotalStars()) || 0;
+      }
       const stars = localStorage.getItem('totalStars');
       return stars !== null ? parseInt(stars, 10) : 0;
     }
 
     function addStarsToTotal(stars) {
+      if (typeof StarRewardSystem !== 'undefined' && typeof StarRewardSystem.addStars === 'function') {
+        StarRewardSystem.addStars(stars);
+        updateStarsDisplay();
+        return;
+      }
+      if (typeof LinkageSystem !== 'undefined' && LinkageSystem?.stars?.add) {
+        LinkageSystem.stars.add(stars);
+        updateStarsDisplay();
+        return;
+      }
       const currentStars = loadTotalStars();
       const newTotal = currentStars + stars;
       localStorage.setItem('totalStars', newTotal);
@@ -1334,10 +1313,50 @@
       // 暫停遊戲計時器
       stopTimer();
       
+      const categoryFilter = document.getElementById('categoryFilter');
+      const totalVocabCount = document.getElementById('totalVocabCount');
+
+      totalVocabCount.textContent = VOCAB_DATA.length;
+
+      displayVocabByCategory('all');
+
+      categoryFilter.onchange = function() {
+        displayVocabByCategory(this.value);
+      };
+
+      document.getElementById('reviewModal').style.display = 'flex';
+    }
+
+    function displayVocabByCategory(category) {
       const container = document.getElementById('reviewWordsContainer');
+      const totalVocabCount = document.getElementById('totalVocabCount');
+
       container.innerHTML = '';
-      // 顯示所有單字
-      VOCAB_DATA.forEach((item, index) => {
+
+      let filteredVocab = VOCAB_DATA;
+      if (category !== 'all') {
+        filteredVocab = VOCAB_DATA.filter(item => item.category === category);
+      }
+
+      totalVocabCount.textContent = filteredVocab.length;
+
+      if (category !== 'all') {
+        const categoryTitle = document.createElement('div');
+        categoryTitle.style.cssText = `
+          color: #0ff;
+          font-size: 1.3rem;
+          font-weight: bold;
+          margin: 15px 0 10px 0;
+          padding: 10px;
+          background: rgba(0, 255, 255, 0.1);
+          border-radius: 8px;
+          text-align: center;
+        `;
+        categoryTitle.textContent = `📂 ${category} (${filteredVocab.length}個單字)`;
+        container.appendChild(categoryTitle);
+      }
+
+      filteredVocab.forEach((item, index) => {
         const wordDiv = document.createElement('div');
         wordDiv.style.cssText = `
           background: rgba(255, 255, 255, 0.1);
@@ -1349,11 +1368,14 @@
           cursor: pointer;
           transition: all 0.3s;
         `;
+
+        const categoryLabel = category === 'all' ? `<span style="color: #0ff; font-size: 0.8rem; background: rgba(0,255,255,0.2); padding: 2px 6px; border-radius: 4px; margin-left: 8px;">${item.category}</span>` : '';
+
         wordDiv.innerHTML = `
           <div style="display: flex; align-items: flex-start; gap: 15px;">
             <div style="flex: 1; min-width: 0;">
               <div style="color: #ffd700; font-size: 1.2rem; font-weight: bold; margin-bottom: 8px; word-break: break-word;">
-                ${index+1}. ${item.word}
+                ${index+1}. ${item.word}${categoryLabel}
               </div>
               <div style="color: #fff; font-size: 1rem; margin-bottom: 8px; word-break: break-word;">
                 ${item.zh}
@@ -1379,12 +1401,152 @@
               box-shadow: 0 2px 8px rgba(0,255,255,0.3);">🔊</button>
           </div>
         `;
+
+        wordDiv.addEventListener('mouseenter', () => {
+          wordDiv.style.background = 'rgba(255, 215, 0, 0.2)';
+          wordDiv.style.transform = 'scale(1.02)';
+        });
+
+        wordDiv.addEventListener('mouseleave', () => {
+          wordDiv.style.background = 'rgba(255, 255, 255, 0.1)';
+          wordDiv.style.transform = 'scale(1)';
+        });
+
         wordDiv.addEventListener('click', () => {
           speakWord(item.word);
         });
+
         container.appendChild(wordDiv);
       });
-      document.getElementById('reviewModal').style.display = 'flex';
+
+      if (filteredVocab.length === 0) {
+        const noWordsDiv = document.createElement('div');
+        noWordsDiv.style.cssText = `
+          text-align: center;
+          color: #888;
+          font-size: 1.1rem;
+          padding: 40px;
+          font-style: italic;
+        `;
+        noWordsDiv.textContent = '此分類暫無單字';
+        container.appendChild(noWordsDiv);
+      }
+    }
+
+    function showVocabStats() {
+      const categoryStats = {};
+      VOCAB_DATA.forEach(item => {
+        categoryStats[item.category] = (categoryStats[item.category] || 0) + 1;
+      });
+
+      const statsModal = document.createElement('div');
+      statsModal.className = 'modal';
+      statsModal.style.display = 'flex';
+      statsModal.innerHTML = `
+        <div class="modal-content" style="max-width: 600px;">
+          <div class="end-icon">📊</div>
+          <h2>字庫統計</h2>
+          <div style="text-align: left; margin: 20px 0;">
+            ${Object.entries(categoryStats).map(([category, count]) => `
+              <div style="
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 8px 0;
+                border-bottom: 1px solid rgba(255, 215, 0, 0.3);
+              ">
+                <span style="color: #fff;">${category}</span>
+                <span style="color: #0ff; font-weight: bold;">${count} 個單字</span>
+              </div>
+            `).join('')}
+            <div style="
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              padding: 12px 0;
+              border-top: 2px solid #ffd700;
+              margin-top: 10px;
+              font-weight: bold;
+            ">
+              <span style="color: #ffd700;">總計</span>
+              <span style="color: #ffd700;">${VOCAB_DATA.length} 個單字</span>
+            </div>
+          </div>
+          <div class="end-buttons">
+            <button onclick="this.closest('.modal').remove()">關閉</button>
+          </div>
+        </div>
+      `;
+
+      statsModal.addEventListener('click', function(e) {
+        if (e.target === statsModal) {
+          statsModal.remove();
+        }
+      });
+
+      document.body.appendChild(statsModal);
+    }
+
+    function exportVocabData() {
+      const csvContent = [
+        ['單字', '中文', '英文例句', '中文例句', '分類'],
+        ...VOCAB_DATA.map(item => [
+          item.word,
+          item.zh,
+          item.en_sentence,
+          item.zh_sentence,
+          item.category
+        ])
+      ].map(row => row.map(cell => `"${cell}"`).join(',')).join('\n');
+
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      const url = URL.createObjectURL(blob);
+      link.setAttribute('href', url);
+      link.setAttribute('download', `apollo_vocabulary_${new Date().toISOString().split('T')[0]}.csv`);
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      showNotification('✅ 字庫已成功匯出！', 'success');
+    }
+
+    function showNotification(message, type = 'info') {
+      const notification = document.createElement('div');
+      notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: ${type === 'success' ? '#4caf50' : '#2196f3'};
+        color: white;
+        padding: 12px 24px;
+        border-radius: 8px;
+        font-weight: bold;
+        z-index: 10000;
+        animation: slideDown 0.3s ease-out;
+      `;
+      notification.textContent = message;
+
+      const style = document.createElement('style');
+      style.textContent = `
+        @keyframes slideDown {
+          from { transform: translateX(-50%) translateY(-100%); opacity: 0; }
+          to { transform: translateX(-50%) translateY(0); opacity: 1; }
+        }
+      `;
+      document.head.appendChild(style);
+      document.body.appendChild(notification);
+
+      setTimeout(() => {
+        notification.remove();
+        style.remove();
+      }, 3000);
+    }
+
+    function showAchievementNotify(title, desc) {
+      document.getElementById('achievementNotifyTitle').textContent = title;
     }
 
     function closeReviewModal() {
@@ -1431,35 +1593,25 @@
       }
     }
 
-    // ===== 角色互動系統整合 =====
-    setTimeout(() => {
+    document.addEventListener('DOMContentLoaded', () => {
+      updateStarsDisplay();
+      document.getElementById('sessionStarsDisplay').textContent = '本次已獲得 0 顆星星';
+      updateLives();
+
+      initData();
+      loadProgress();
+      updateCounter();
+      showQuestion();
+
+      initBackgroundMusic();
+      unlockReviewButton();
+
       if (window.GameDialogue) {
         window.GameDialogue.init();
+        setTimeout(() => {
+          window.GameDialogue.showGameStartDialogue();
+        }, 2000);
       }
-    }, 1000);
-
-    // ===== 頁面載入初始化 =====
-    window.addEventListener('DOMContentLoaded', function() {
-      // 初始化背景音樂
-      initBackgroundMusic();
-      
-      // 初始化語音
-      if (window.speechSynthesis) {
-        window.speechSynthesis.onvoiceschanged = pickVoice;
-        pickVoice();
-      }
-      
-      // 初始化遊戲數據
-      initData();
-      
-      // 載入進度
-      loadProgress();
-      
-      // 更新星星顯示
-      updateStarsDisplay();
-      
-      // 顯示第一題
-      showQuestion();
     });
   </script>
 </body>
