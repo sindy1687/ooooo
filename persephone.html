@@ -184,6 +184,21 @@
       z-index: 10;
     }
 
+    #lives {
+      position: fixed;
+      top: 76px;
+      right: 20px;
+      background: rgba(10, 20, 40, 0.85);
+      padding: 8px 14px;
+      border-radius: 10px;
+      color: #ff6b6b;
+      font-weight: bold;
+      box-shadow: 0 0 12px #ff6b6b;
+      border: 2px solid #ff6b6b;
+      font-size: 1.2rem;
+      z-index: 10;
+    }
+
     #timer {
       font-size: 1.1rem;
       margin-bottom: 16px;
@@ -367,6 +382,13 @@
         padding: 6px 10px;
         font-size: 1rem;
       }
+
+      #lives {
+        top: 62px;
+        right: 10px;
+        padding: 6px 10px;
+        font-size: 1rem;
+      }
       
       h1 {
         font-size: 1.8rem;
@@ -418,6 +440,14 @@
         position: relative;
         top: auto;
         left: auto;
+        display: inline-block;
+        margin-bottom: 10px;
+      }
+
+      #lives {
+        position: relative;
+        top: auto;
+        right: auto;
         display: inline-block;
         margin-bottom: 10px;
       }
@@ -571,6 +601,9 @@
     ⭐<span id="totalStarsCount">0</span>
   </div>
 
+  <!-- 生命值顯示區塊 -->
+  <div id="lives">❤️❤️❤️❤️❤️</div>
+
   <!-- 頂部按鈕 -->
   <div class="top-btns">
     <button onclick="location.href='atlas.html?tab=greek'" aria-label="回首頁">🏠 回首頁</button>
@@ -578,7 +611,7 @@
     <button onclick="showReviewModal()" aria-label="複習單字">📚 複習單字</button>
   </div>
 
-  <h1>哈迪斯 Hades - 填空挑戰</h1>
+  <h1>珀爾塞福涅 Persephone - 填空挑戰</h1>
 
   <!-- 本次星星顯示 -->
   <div id="sessionStarsDisplay" style="margin-bottom:10px;color:#ffd700;font-weight:bold;font-size:1.08rem;">
@@ -693,11 +726,12 @@
     </div>
   </div>
 
-  <audio id="backgroundMusic" loop autoplay>
-    <source src="sound/午後放鬆時光（純音樂）.mp3" type="audio/mpeg">
-  </audio>
-
+  <script src="js/utils.js"></script>
+  <script src="js/bgmController.js"></script>
+  <script src="js/userData.js"></script>
+  <script src="js/characterDialogue.js"></script>
   <script src="js/gameDialogue.js"></script>
+  <script src="js/greekScoreUpload.js"></script>
   <script>
     // ===== 遊戲配置 =====
     const GAME_CONFIG = {
@@ -989,7 +1023,9 @@ const VOCAB_DATA = [
         "zh_sentence": "這把尺剛好是十二英吋長。",
         "category": "名詞/量詞"
     }
-];// ===== 遊戲狀態變數 =====
+];
+
+    // ===== 遊戲狀態變數 =====
     let gameState = {
       data: [],
       currentIndex: 0,
@@ -998,8 +1034,21 @@ const VOCAB_DATA = [
       timerInterval: null,
       preferredVoice: null,
       answerLog: [],
-      sessionStars: 0
+      sessionStars: 0,
+      totalTimeUsed: 0,
+      questionStartTs: null
     };
+
+    window.gameState = gameState;
+
+    // ===== 生命值系統 =====
+    let lives = 5;
+
+    function updateLives() {
+      const el = document.getElementById('lives');
+      if (!el) return;
+      el.innerHTML = '❤️'.repeat(Math.max(0, lives)) + '🤍'.repeat(Math.max(0, 5 - lives));
+    }
 
     // ===== 音效資源 =====
     const SOUNDS = {
@@ -1021,6 +1070,12 @@ const VOCAB_DATA = [
       const musicState = localStorage.getItem('bgMusicState');
       if (musicState === 'playing') {
         playBackgroundMusic();
+      } else {
+        const btn = document.getElementById('bgMusicControl');
+        if (btn) {
+          btn.textContent = '🔇';
+          btn.classList.add('paused');
+        }
       }
     }
 
@@ -1107,6 +1162,8 @@ const VOCAB_DATA = [
       let timeLeft = GAME_CONFIG.TIME_LIMIT;
       document.getElementById('time-left').textContent = timeLeft;
       document.getElementById('timer').classList.remove('hidden');
+
+      gameState.questionStartTs = Date.now();
       
       gameState.timerInterval = setInterval(() => {
         timeLeft--;
@@ -1120,6 +1177,12 @@ const VOCAB_DATA = [
 
     function stopTimer() {
       clearInterval(gameState.timerInterval);
+
+      if (gameState.questionStartTs) {
+        const deltaSec = Math.max(0, Math.round((Date.now() - gameState.questionStartTs) / 1000));
+        gameState.totalTimeUsed = (Number(gameState.totalTimeUsed) || 0) + deltaSec;
+        gameState.questionStartTs = null;
+      }
     }
 
     // ===== 語音功能 =====
@@ -1167,13 +1230,19 @@ const VOCAB_DATA = [
       document.getElementById('user-input').disabled = true;
       
       logAnswer(false);
-      
-      if (autoNext) {
-        setTimeout(() => {
+
+      setTimeout(() => {
+        lives--;
+        updateLives();
+        if (lives <= 0) {
+          showGameEndScreen();
+          return;
+        }
+        if (autoNext) {
           gameState.currentIndex++;
           showQuestion();
-        }, 500);
-      }
+        }
+      }, 500);
     }
 
     function logAnswer(correct, userAnswer = '') {
@@ -1274,6 +1343,16 @@ const VOCAB_DATA = [
         SOUNDS.correct.currentTime = 0;
         SOUNDS.correct.play();
       } catch (e) {}
+
+      if (window.GameDialogue) {
+        setTimeout(() => {
+          if (correctCount > wrongCount) {
+            window.GameDialogue.showGameVictoryDialogue();
+          } else {
+            window.GameDialogue.showGameDefeatDialogue();
+          }
+        }, 2000);
+      }
     }
 
     function restartGame() {
@@ -1284,6 +1363,13 @@ const VOCAB_DATA = [
       gameState.currentIndex = 0;
       gameState.sessionStars = 0;
       gameState.answerLog = [];
+      gameState.totalTimeUsed = 0;
+      gameState.questionStartTs = null;
+
+      window.gameState = gameState;
+
+      lives = 5;
+      updateLives();
       
       // 重新初始化數據
       initData();
@@ -1301,6 +1387,12 @@ const VOCAB_DATA = [
       const feedback = document.getElementById('feedback');
       if (feedback) feedback.innerHTML = '<span style="color:#bbb;">已跳過本題</span>';
       setTimeout(() => {
+        lives--;
+        updateLives();
+        if (lives <= 0) {
+          showGameEndScreen();
+          return;
+        }
         gameState.currentIndex++;
         showQuestion();
       }, 400);
@@ -1314,6 +1406,12 @@ const VOCAB_DATA = [
         if (feedback) feedback.innerHTML = '<span style="color:#bbb;">未作答</span>';
       }
       setTimeout(() => {
+        lives--;
+        updateLives();
+        if (lives <= 0) {
+          showGameEndScreen();
+          return;
+        }
         gameState.currentIndex++;
         showQuestion();
       }, 400);
@@ -1386,6 +1484,12 @@ const VOCAB_DATA = [
           } catch (e) {}
           
           setTimeout(() => {
+            lives--;
+            updateLives();
+            if (lives <= 0) {
+              showGameEndScreen();
+              return;
+            }
             gameState.currentIndex++;
             showQuestion();
           }, 1300);
@@ -1395,11 +1499,27 @@ const VOCAB_DATA = [
 
     // ===== 星星系統 =====
     function loadTotalStars() {
+      if (typeof LinkageSystem !== 'undefined' && LinkageSystem?.stars?.get) {
+        return Number(LinkageSystem.stars.get()) || 0;
+      }
+      if (typeof StarRewardSystem !== 'undefined' && typeof StarRewardSystem.getTotalStars === 'function') {
+        return Number(StarRewardSystem.getTotalStars()) || 0;
+      }
       const stars = localStorage.getItem('totalStars');
       return stars !== null ? parseInt(stars, 10) : 0;
     }
 
     function addStarsToTotal(stars) {
+      if (typeof StarRewardSystem !== 'undefined' && typeof StarRewardSystem.addStars === 'function') {
+        StarRewardSystem.addStars(stars);
+        updateStarsDisplay();
+        return;
+      }
+      if (typeof LinkageSystem !== 'undefined' && LinkageSystem?.stars?.add) {
+        LinkageSystem.stars.add(stars);
+        updateStarsDisplay();
+        return;
+      }
       const currentStars = loadTotalStars();
       const newTotal = currentStars + stars;
       localStorage.setItem('totalStars', newTotal);
@@ -1716,37 +1836,6 @@ const VOCAB_DATA = [
       }, 3000);
     }
 
-    // ===== 角色互動系統整合 =====
-    let currentCharacter = localStorage.getItem('characterName') || 'zeus';
-    if (window.GameDialogue) {
-      window.GameDialogue.currentCharacter = currentCharacter;
-    }
-    function showGameStartDialogue() {
-      if (window.GameDialogue) {
-        window.GameDialogue.showGameStartDialogue();
-      }
-    }
-    function showCorrectAnswerDialogue() {
-      if (window.GameDialogue) {
-        window.GameDialogue.showCorrectAnswerDialogue();
-      }
-    }
-    function showWrongAnswerDialogue() {
-      if (window.GameDialogue) {
-        window.GameDialogue.showWrongAnswerDialogue();
-      }
-    }
-    function showGameVictoryDialogue() {
-      if (window.GameDialogue) {
-        window.GameDialogue.showGameVictoryDialogue();
-      }
-    }
-    function showGameDefeatDialogue() {
-      if (window.GameDialogue) {
-        window.GameDialogue.showGameDefeatDialogue();
-      }
-    }
-
     // ===== 初始化 =====
     if (typeof speechSynthesis !== 'undefined') {
       speechSynthesis.onvoiceschanged = pickVoice;
@@ -1756,6 +1845,7 @@ const VOCAB_DATA = [
     document.addEventListener('DOMContentLoaded', () => {
       updateStarsDisplay();
       document.getElementById('sessionStarsDisplay').textContent = '本次已獲得 0 顆星星';
+      updateLives();
       initData();
       gameState.currentIndex = 0;
       updateCounter();
@@ -1768,10 +1858,13 @@ const VOCAB_DATA = [
       // 初始化時解鎖複習按鈕
       unlockReviewButton();
 
-      // 在遊戲初始化時觸發開始對話
+      // 初始化遊戲對話系統
       if (window.GameDialogue) {
         window.GameDialogue.init();
-        showGameStartDialogue();
+        // 遊戲開始時顯示角色鼓勵
+        setTimeout(() => {
+          window.GameDialogue.showGameStartDialogue();
+        }, 2000);
       }
     });
 
