@@ -10,6 +10,84 @@ function getGreekPlayerName() {
   return playerName && playerName.trim() ? playerName.trim() : '匿名玩家';
 }
 
+function ensureGreekSettlementContainer(gameEndModal) {
+  if (!gameEndModal) return null;
+  const content = gameEndModal.querySelector('.modal-content') || gameEndModal;
+
+  let container = content.querySelector('#greekSettlement');
+  if (!container) {
+    container = document.createElement('div');
+    container.id = 'greekSettlement';
+    container.style.cssText = [
+      'margin-top: 14px;',
+      'padding-top: 14px;',
+      'border-top: 1px solid rgba(255,215,0,0.20);',
+      'text-align: left;'
+    ].join('');
+    content.appendChild(container);
+  }
+  return container;
+}
+
+function buildGreekSettlementDetails(answerLog) {
+  const list = Array.isArray(answerLog) ? answerLog : [];
+  return list
+    .filter(item => item && (item.correct === true || item.correct === false))
+    .map((item, idx) => ({
+      n: idx + 1,
+      correct: item.correct === true,
+      word: item.word || '',
+      user: item.user || '',
+      category: item.category || '',
+      zh: item.zh || ''
+    }));
+}
+
+function renderGreekSettlementList(container, answerLog) {
+  if (!container) return;
+  const details = buildGreekSettlementDetails(answerLog);
+
+  const title = document.createElement('div');
+  title.textContent = '📋 本次結算清單';
+  title.style.cssText = 'color:#00ffff;font-weight:bold;margin-bottom:10px;font-size:1.02rem;text-align:center;';
+
+  const listWrap = document.createElement('div');
+  listWrap.style.cssText = [
+    'max-height: 220px;',
+    'overflow: auto;',
+    'padding: 10px;',
+    'border-radius: 12px;',
+    'background: rgba(0,0,0,0.22);',
+    'border: 1px solid rgba(255,255,255,0.10);'
+  ].join('');
+
+  if (!details.length) {
+    listWrap.innerHTML = '<div style="color:#bbb;text-align:center;padding:6px 0;">目前沒有可顯示的結算紀錄</div>';
+  } else {
+    const rows = details.map(item => {
+      const badge = item.correct ? '<span style="color:#0f0;font-weight:bold;">✅</span>' : '<span style="color:#ff6b6b;font-weight:bold;">❌</span>';
+      const word = String(item.word || '').trim();
+      const user = String(item.user || '').trim();
+      const zh = String(item.zh || '').trim();
+      return `
+        <div style="display:grid;grid-template-columns:40px 22px 1fr;gap:10px;align-items:start;padding:8px 6px;border-bottom:1px solid rgba(255,255,255,0.07);">
+          <div style="color:#ffd700;font-weight:bold;">#${item.n}</div>
+          <div>${badge}</div>
+          <div style="min-width:0;">
+            <div style="color:#fff;word-break:break-word;">${word || '-'} <span style="color:#aaa;">(${zh || '-'})</span></div>
+            <div style="color:#00ffff;opacity:0.95;word-break:break-word;">你的答案：${user || '-'}</div>
+          </div>
+        </div>
+      `;
+    }).join('');
+    listWrap.innerHTML = rows;
+  }
+
+  container.innerHTML = '';
+  container.appendChild(title);
+  container.appendChild(listWrap);
+}
+
 // 希臘神祇名稱對應
 const GREEK_DEITY_NAMES = {
   'zeus.html': '宙斯',
@@ -57,6 +135,7 @@ async function submitGreekScore(gameData) {
   const wrongCount = gameData.wrongCount || 0;
   const totalTime = gameData.totalTime || 0;
   const averageTime = gameData.averageTime || 0;
+  const details = typeof gameData.details === 'string' ? gameData.details : '';
   const date = new Date().toLocaleDateString('zh-TW');
   
   try {
@@ -70,6 +149,9 @@ async function submitGreekScore(gameData) {
     formData.append('date', date);
     formData.append('totalTime', totalTime.toString());
     formData.append('averageTime', averageTime.toString());
+    if (details) {
+      formData.append('details', details);
+    }
     
     const response = await fetch(GREEK_SCORE_API, {
       method: 'POST',
@@ -236,7 +318,8 @@ function renderGreekLeaderboard(container, leaderboard, currentPlayerName) {
 
     const name = document.createElement('div');
     name.textContent = (item && item.playerName) ? item.playerName : '匿名玩家';
-    name.style.cssText = 'color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;';
+    name.title = name.textContent;
+    name.style.cssText = 'color:#fff;word-break:break-word;white-space:normal;line-height:1.25;';
 
     const correct = document.createElement('div');
     const correctCount = safeNumber(item && item.correctCount);
@@ -275,7 +358,7 @@ function detectGreekGameStatsFromGlobals() {
   const correctCount = log.filter(l => l && l.correct === true).length;
   const wrongCount = log.filter(l => l && l.correct === false).length;
   const totalTime = (gs && typeof gs.totalTimeUsed === 'number') ? gs.totalTimeUsed : (typeof window.totalTimeUsed === 'number' ? window.totalTimeUsed : 0);
-  return { score, correctCount, wrongCount, totalTime };
+  return { score, correctCount, wrongCount, totalTime, answerLog: log };
 }
 
 function initGreekEndModalAutoHook() {
@@ -295,7 +378,10 @@ function initGreekEndModalAutoHook() {
     const deityName = GREEK_DEITY_NAMES[currentPage] || '未知神祇';
     const playerName = getGreekPlayerName();
 
-    const { score, correctCount, wrongCount, totalTime } = detectGreekGameStatsFromGlobals();
+    const { score, correctCount, wrongCount, totalTime, answerLog } = detectGreekGameStatsFromGlobals();
+
+    const settlementContainer = ensureGreekSettlementContainer(gameEndModal);
+    renderGreekSettlementList(settlementContainer, answerLog);
 
     const lbContainer = ensureGreekLeaderboardContainer(gameEndModal);
     if (lbContainer) {
@@ -309,6 +395,7 @@ function initGreekEndModalAutoHook() {
       totalTime,
       averageTime: correctCount > 0 ? Math.round(totalTime / correctCount) : 0,
       deityName,
+      details: JSON.stringify(buildGreekSettlementDetails(answerLog))
     });
 
     const lbResult = await fetchGreekLeaderboard(deityName);
