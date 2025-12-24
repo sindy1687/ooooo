@@ -5,8 +5,8 @@
   <title>星座圖鑑 - 英打小英雄</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" id="sharedCss" href="css/shared.css">
-  <link rel="stylesheet" id="responsiveCss" href="responsive_enhanced.css">
+  <link rel="stylesheet" href="css/shared.css">
+  <link rel="stylesheet" href="responsive_enhanced.css">
   <style>
     /* 防止水平滾動 */
     html {
@@ -108,8 +108,8 @@
     /* 卡片網格 */
     .grid { 
       display: grid; 
-      grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
-      gap: 14px; 
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 24px; 
       max-width: 1200px;
       width: 95%;
       margin: 0 auto 40px;
@@ -157,42 +157,19 @@
       text-align: center;
       text-shadow: 0 0 4px #ffd700;
     }
-
-    #tab3 .card-title {
-      line-height: 1.25;
-    }
-
-    #tab3 .card {
-      justify-content: flex-start;
-      padding-top: 14px;
-      padding-bottom: 60px;
-    }
-
-    #tab3 .card-desc {
-      line-height: 1.35;
-      word-break: break-word;
-    }
-
-    #tab3 .card-info {
-      line-height: 1.25;
+    .stage-chip {
       position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
-      bottom: 10px;
-      width: calc(100% - 16px);
-    }
-
-    .card-range {
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
-      bottom: 34px;
-      width: calc(100% - 16px);
-      font-size: 0.8rem;
-      color: #ffd700;
-      text-align: center;
-      text-shadow: 0 0 6px rgba(255, 215, 0, 0.6);
-      pointer-events: none;
+      top: 10px;
+      left: 10px;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 0.65rem;
+      letter-spacing: 0.5px;
+      color: #00ffff;
+      border: 1px solid rgba(0, 255, 255, 0.4);
+      background: rgba(0, 0, 0, 0.5);
+      text-transform: uppercase;
+      box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
     }
 
     /* 返回按鈕與星星 */
@@ -299,8 +276,8 @@
     @media (min-width: 1200px) {
       .grid {
         max-width: 1400px;
-        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-        gap: 16px;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 28px;
         padding: 25px;
       }
       
@@ -332,8 +309,8 @@
     @media (max-width: 1024px) {
       .grid {
         width: 98%;
-        grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
-        gap: 14px;
+        grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+        gap: 20px;
         padding: 18px;
       }
       
@@ -397,8 +374,8 @@
     @media (max-width: 768px) {
       .grid {
         width: 100%;
-        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-        gap: 12px;
+        grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+        gap: 16px;
         padding: 15px;
       }
       
@@ -476,7 +453,7 @@
     @media (max-width: 600px) {
       .grid {
         grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-        gap: 10px;
+        gap: 12px;
         padding: 12px;
       }
       
@@ -497,7 +474,7 @@
       
       .card-desc {
         font-size: 0.65rem;
-        line-height: 1.25;
+        line-height: 1.2;
       }
       
       .card-info {
@@ -541,7 +518,7 @@
     @media (max-width: 480px) {
       .grid {
         grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
-        gap: 8px;
+        gap: 10px;
         padding: 10px;
       }
       
@@ -562,7 +539,7 @@
       
       .card-desc {
         font-size: 0.6rem;
-        line-height: 1.2;
+        line-height: 1.1;
       }
       
       .card-info {
@@ -616,7 +593,7 @@
     @media (max-width: 360px) {
       .grid {
         grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
-        gap: 6px;
+        gap: 8px;
         padding: 8px;
       }
       
@@ -637,7 +614,7 @@
       
       .card-desc {
         font-size: 0.55rem;
-        line-height: 1.15;
+        line-height: 1;
       }
       
       .card-info {
@@ -722,81 +699,11 @@
               border-radius:16px;box-shadow:0 0 16px #00ffff55;">
       <p style="text-align:center;color:#aaa;">正在載入排行榜…</p>
   </div>
-
-  <h2 style="text-align:center;color:#ffd700;margin-top:10px;">🏛️ 希臘神祇分數排行榜 🏛️</h2>
-  <div id="greekRankingControls" style="max-width:960px;margin:12px auto 10px;padding:14px 16px;background:#0b0b0b;border-radius:14px;box-shadow:0 0 14px #ffd70033;border:1px solid rgba(255,215,0,0.25);">
-    <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;align-items:center;">
-      <div style="color:#ffd700;font-weight:bold;">榜單：</div>
-      <button id="greekModeBest" class="tab-btn active" type="button" style="padding:8px 12px;">最佳成績</button>
-      <button id="greekModeLatest" class="tab-btn" type="button" style="padding:8px 12px;">最新成績</button>
-      <div style="color:#ffd700;font-weight:bold;margin-left:8px;">神祇：</div>
-      <select id="greekCategorySelect" style="background:#111;color:#fff;border:1px solid rgba(255,215,0,0.35);border-radius:10px;padding:8px 10px;min-width:160px;">
-        <option value="all">全部神祇</option>
-      </select>
-      <button id="greekReloadBtn" type="button" style="padding:8px 12px;border:none;border-radius:10px;background:linear-gradient(90deg,#ffd700,#00ffff);color:#000;font-weight:bold;cursor:pointer;">重新載入</button>
-    </div>
-  </div>
-
-  <div id="greekRankingContainer"
-       style="max-width:960px;margin:0 auto 28px;padding:26px;background:#111;
-              border-radius:16px;box-shadow:0 0 16px #ffd70055;">
-      <p style="text-align:center;color:#aaa;">正在載入希臘神祇排行榜…</p>
-  </div>
 </div>
 
   <script src="js/sound.js"></script>
   <script src="js/achievementSystem.js"></script>
-  <script>
-    (function() {
-      const isGitHubPages = location.hostname.endsWith('github.io');
-      const candidates = isGitHubPages
-        ? ['', './', 'ooooo-main/', 'ooooo-main/ooooo-main/']
-        : [''];
-
-      function setStylesWithBase(base) {
-        const sharedCss = document.getElementById('sharedCss');
-        if (sharedCss) sharedCss.href = base + 'css/shared.css';
-        const responsiveCss = document.getElementById('responsiveCss');
-        if (responsiveCss) responsiveCss.href = base + 'responsive_enhanced.css';
-      }
-
-      function tryLoadScript(base, src, onload, onerror) {
-        const s = document.createElement('script');
-        s.src = base + src;
-        s.onload = onload;
-        s.onerror = onerror;
-        document.body.appendChild(s);
-      }
-
-      function bootWithBaseIndex(i) {
-        const base = candidates[i];
-        if (base === undefined) {
-          console.error('❌ 無法載入必要資源：請確認 GitHub Pages 有部署 css/shared.css、js/utils.js');
-          return;
-        }
-
-        setStylesWithBase(base);
-
-        tryLoadScript(
-          base,
-          'js/utils.js',
-          function() {
-            window.__assetBase = base;
-            // greekScoreUpload.js 非必要：若 404 不要中斷頁面
-            tryLoadScript(base, 'js/greekScoreUpload.js', function() {}, function() {});
-
-            // 節慶活動系統（通用）：若載不到不影響主功能
-            tryLoadScript(base, 'js/seasonalEventSystem.js', function() {}, function() {});
-          },
-          function() {
-            bootWithBaseIndex(i + 1);
-          }
-        );
-      }
-
-      bootWithBaseIndex(0);
-    })();
-  </script>
+  <script src="js/utils.js"></script>
   <script>
   document.addEventListener('DOMContentLoaded', () => {
     // ----- 開發者模式：輸入 "open" + Enter 解鎖所有關卡 -----
@@ -845,37 +752,19 @@
     });
 
     // ----- 星星顯示 -----
-    let totalStars = 0;
+    let totalStars = Storage.getTotalStars();
     function updateDisplayStars() {
       const displayEl = document.getElementById('displayStars');
       if (displayEl) {
         displayEl.textContent = totalStars;
       }
     }
-    function initStarsDisplay() {
-      if (typeof Storage === 'undefined' || typeof Storage.getTotalStars !== 'function') {
-        setTimeout(initStarsDisplay, 50);
-        return;
-      }
-      totalStars = Storage.getTotalStars();
+    updateDisplayStars();
+    // 監聽星星更新事件
+    window.addEventListener('starsUpdated', (e) => {
+      totalStars = e.detail.totalStars;
       updateDisplayStars();
-      // 監聽星星更新事件
-      window.addEventListener('starsUpdated', (e) => {
-        totalStars = e.detail.totalStars;
-        updateDisplayStars();
-      });
-    }
-    initStarsDisplay();
-
-    // 節慶活動：輸入 sindy + Enter 開啟設定（平常不顯示入口）
-    try {
-      if (window.SeasonalEventSystem) {
-        window.SeasonalEventSystem.registerSecretCode('sindy');
-        window.SeasonalEventSystem.renderBanner(document.body);
-      }
-    } catch (e) {
-      // ignore
-    }
+    });
 
     // ----- 分頁切換 -----
     document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -883,21 +772,12 @@
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
         btn.classList.add('active');
-        const targetId = btn.dataset.target;
-        const targetEl = targetId ? document.getElementById(targetId) : null;
-        if (targetEl) {
-          targetEl.classList.add('active');
-        } else {
-          console.warn('⚠️ 找不到 tab-content:', targetId);
-        }
+        document.getElementById(btn.dataset.target).classList.add('active');
         // 控制練習關卡按鈕顯示
-        const practiceBtn = document.getElementById('practiceBtn');
-        if (practiceBtn) {
-          if(btn.dataset.target === 'tab1'){
-            practiceBtn.style.display = 'inline-block';
-          }else{
-            practiceBtn.style.display = 'none';
-          }
+        if(btn.dataset.target === 'tab1'){
+          document.getElementById('practiceBtn').style.display = 'inline-block';
+        }else{
+          document.getElementById('practiceBtn').style.display = 'none';
         }
         // 進入排行榜分頁時才載入資料
         if (btn.dataset.target === 'tab4') {
@@ -906,8 +786,7 @@
       });
     });
     // 頁面載入時只在tab1顯示
-    const practiceBtnInit = document.getElementById('practiceBtn');
-    if (practiceBtnInit) practiceBtnInit.style.display = 'inline-block';
+    document.getElementById('practiceBtn').style.display = 'inline-block';
 
     // ----- 音樂 播放 & 靜音 -----
     const bgm = document.getElementById('bgm');
@@ -971,17 +850,16 @@
       vela:         '船帆座，以其散開的帆布狀星群聞名，原屬大船座的一部分。'
     };
     let passedAtlas = JSON.parse(localStorage.getItem('passed_atlas')||'[]');
-    atlasCategories.forEach(key => {
+    atlasCategories.forEach((key, index) => {
       // 確保每個星座都有成本設定
+      const stageNumber = Math.floor(index / 20) + 1;
+      const stageStart = (stageNumber - 1) * 20 + 1;
+      const stageEnd = Math.min(stageNumber * 20, atlasCategories.length);
+      const stageLabel = `第${stageNumber}關 • ${stageStart}-${stageEnd}`;
       if (!costData[key]) {
         costData[key] = Math.floor(Math.random()*21)+10;
         localStorage.setItem('unlockCosts', JSON.stringify(costData));
       }
-      const WORDS_PER_LEVEL = 40;
-      const levelIndex = atlasCategories.indexOf(key);
-      const levelNumber = levelIndex + 1;
-      const rangeStart = levelIndex * WORDS_PER_LEVEL + 1;
-      const rangeEnd = (levelIndex + 1) * WORDS_PER_LEVEL;
       const cost = costData[key], unlocked = unlockedList.includes(key);
       const isCustom = false;
       const title = key.toUpperCase();
@@ -989,9 +867,9 @@
       card.className = 'card' + (unlocked ? '' : ' locked');
       if (!unlocked) card.dataset.locktext = `${cost}⭐解鎖`;
       card.innerHTML = `
+        <div class="stage-chip">${stageLabel}</div>
         <div class="card-title">${title}</div>
         <div class="card-desc">${descMap[key]||''}</div>
-        <div class="card-range">第${levelNumber}關 ${rangeStart}-${rangeEnd}</div>
         <div class="card-info">${unlocked ? '已解鎖' : cost+'⭐解鎖'}</div>
         ${passedAtlas.includes(key) ? '<div style="position:absolute;top:8px;right:10px;font-size:1.3em;color:#ffd700;">✔ 已通關</div>' : ''}
       `;
@@ -1024,28 +902,28 @@
     // Tab3: 希臘神祇
     (function() {
       const deities = [
-        { name: '宙斯', url: 'zeus.html', img: 'https://i.pinimg.com/736x/f7/44/dc/f744dc2cd9f052369f1eda963bf3b547.jpg', desc: '天空與雷電之神，奧林匹斯眾神的首領，掌握閃電與風暴的威力' },
-        { name: '赫拉', url: 'hera.html', img: 'https://images.nightcafe.studio/jobs/jrtc05QrGWfgcL9U7oQ5/jrtc05QrGWfgcL9U7oQ5--1--0kpbz.jpg?tr=w-1600,c-at_max', desc: '婚姻與家庭女神，眾神之母，保護婚姻誓約和婦女' },
-        { name: '波塞頓', url: 'poseidon.html', img: 'https://th.bing.com/th/id/OIP.ds9l0HmwcwlBZUt1_SOAUQHaLF?r=0&rs=1&pid=ImgDetMain&cb=idpwebpc2', desc: '海洋之神，掌控海浪、地震與馬匹，被稱為「震海者」' },
-        { name: '得墨忒耳', url: 'demeter.html', img: 'https://i.pinimg.com/736x/5e/55/f3/5e55f31c21d96c2055d39d07fa72eea2.jpg', desc: '農業與豐饒女神，掌管五穀生長與大地的豐饒' },
-        { name: '雅典娜', url: 'athena.html', img: 'https://i.pinimg.com/originals/45/09/04/45090436c02480c7d472774ba38bf682.jpg', desc: '智慧與戰略女神，以機智與正義著稱，也是工藝與城市守護者' },
-        { name: '阿波羅', url: 'apollo.html', img: 'https://th.bing.com/th/id/OIP.nST24oXU5QbHwyzkNIDI0QHaHa?r=0&w=736&h=736&rs=1&pid=ImgDetMain&cb=idpwebpc2', desc: '光明與預言之神，音樂、醫療與詩歌的保護者，能預見未來' },
-        { name: '阿爾忒彌斯', url: 'artemis.html', img: 'https://as2.ftcdn.net/v2/jpg/07/11/84/53/1000_F_711845312_FrFR9WTehywtZl3bO20csc48OSmqKRcU.jpg', desc: '狩獵與月亮女神，野生動物守護者，也是女性與生育之護衛' },
-        { name: '阿瑞斯', url: 'ares.html', img: 'https://i.pinimg.com/originals/e6/bc/f7/e6bcf7f460a50f2c2700122554c4386e.png', desc: '戰爭之神，化身戰場上的狂暴與勇氣，喜愛戰鬥的混亂' },
-        { name: '阿芙蘿黛蒂', url: 'aphrodite.html', img: 'https://img.freepik.com/premium-photo/timeless-beauty-capturing-ancient-greek-goddess-athena-ultrarealistic-splendor_960911-22038.jpg?w=2000', desc: '愛與美之神，掌控愛情、欲望與美的力量，迷人而充滿魅力' },
-        { name: '赫菲斯托斯', url: 'hephaestus.html', img: 'https://th.bing.com/th/id/OIP.c9pf5fdxkTIC4f58Wwk7SQHaHa?r=0&w=1024&h=1024&rs=1&pid=ImgDetMain&cb=idpwebpc2', desc: '火與鍛造之神，巧手匠師，打造神兵利器與無比精巧的工藝品' },
-        { name: '赫耳墨斯', url: 'hermes.html', img: 'https://substackcdn.com/image/fetch/f_auto,q_auto:good,fl_progressive:steep/https://substack-post-media.s3.amazonaws.com/public/images/49e898d3-33e8-4355-8049-5b32b6fa2695_1024x1024.png', desc: '信使與旅者之神，聰明狡黠，穿梭神界與人間的使者' },
-        { name: '赫斯提亞', url: 'hestia.html', img: 'https://i.etsystatic.com/10441898/c/2143/2143/0/0/il/b01774/5669551924/il_600x600.5669551924_g09a.jpg', desc: '爐灶與家庭女神，守護家園與聖火，象徵溫暖與團聚' },
-        { name: '狄俄尼索斯', url: 'dionysus.html', img: 'https://i.pinimg.com/1200x/d3/27/97/d327972a87a915c1cbd9fefe868307d1.jpg', desc: '象徵狂歡與葡萄酒之神，掌管慶典、狂歡與藝術創造力' },
-        { name: '哈迪斯', url: 'hades.html', img: 'https://th.bing.com/th/id/OIP.jh5PoCyBjLDW-PQlC9_1dAHaHa?r=0&w=1024&h=1024&rs=1&pid=ImgDetMain&cb=idpwebpc2', desc: '掌管亡靈與冥界之神，冷酷且神秘，守護靈魂的終極歸宿' },
-        { name: '珀爾塞福涅', url: 'persephone.html', img: 'https://cdn.openart.ai/stable_diffusion/af3394f52d952263c6c773045bcc5391f6702033_2000x2000.webp', desc: '新生象徵，春天女王，冥界與大地的雙重身份' },
-        { name: '厄洛斯', url: 'eros.html', img: 'https://i.pinimg.com/736x/ad/63/63/ad6363477e4266b39aaf86e058facfb6.jpg', desc: '情感與愛欲之神，以金箭撩動人心，象徵激情與吸引力' },
-        { name: '尼刻', url: 'nike.html', img: 'https://i.pinimg.com/736x/d8/b4/51/d8b4515f750e0f8106ba69a91ff05679.jpg', desc: '勝利女神，賦予勝利之翼，守護競賽與勝利的榮耀' },
-        { name: '蓋婭', url: 'gaia.html', img: 'https://i.pinimg.com/1200x/4e/ac/31/4eac313f814d9044877241e163a43585.jpg', desc: '萬物之母，地球與生命的化身，孕育萬物的源泉' },
-        { name: '阿特拉斯', url: 'atlas_god.html', img: 'https://i.pinimg.com/736x/02/e2/14/02e214b507e55f3dddb673c7acdc25f7.jpg', desc: '扛起天空的泰坦神，象徵力量與支撐，承載世界的重量' },
-        { name: '克洛諾斯', url: 'cronus.html', img: 'https://i.pinimg.com/1200x/89/24/bc/8924bcdf6c9734a961ef956a8e8fbf79.jpg', desc: '時間之神，掌控歲月流逝與命運輪迴，象徵永恆的時間' },
-        { name: '瑞亞', url: 'rhea.html', img: 'https://i.pinimg.com/1200x/44/0e/e8/440ee8571b581d7ae728d2c9c765cb74.jpg', desc: '大地之母，家庭與母愛的化身，守護家庭和諧與溫暖' },
-        { name: '普羅米修斯', url: 'prometheus.html', img: 'https://i.pinimg.com/736x/2d/b4/24/2db4245bd440fa993e2e1ac1904800c6.jpg', desc: '智慧與創造之神，為人類帶來火種與知識，象徵智慧與進步' }
+        { name: '宙斯', url: 'greek_fill_blank.html?god=zeus', img: 'https://i.pinimg.com/736x/f7/44/dc/f744dc2cd9f052369f1eda963bf3b547.jpg', desc: '雷電之王' },
+        { name: '赫拉', url: 'greek_fill_blank.html?god=hera', img: 'https://images.nightcafe.studio/jobs/jrtc05QrGWfgcL9U7oQ5/jrtc05QrGWfgcL9U7oQ5--1--0kpbz.jpg?tr=w-1600,c-at_max', desc: '婚姻守護' },
+        { name: '波塞頓', url: 'greek_fill_blank.html?god=poseidon', img: 'https://th.bing.com/th/id/OIP.ds9l0HmwcwlBZUt1_SOAUQHaLF?r=0&rs=1&pid=ImgDetMain&cb=idpwebpc2', desc: '震海之神' },
+        { name: '得墨忒耳', url: 'greek_fill_blank.html?god=demeter', img: 'https://i.pinimg.com/736x/5e/55/f3/5e55f31c21d96c2055d39d07fa72ea2.jpg', desc: '豐饒女神' },
+        { name: '雅典娜', url: 'greek_fill_blank.html?god=athena', img: 'https://i.pinimg.com/originals/45/09/04/45090436c02480c7d472774ba38bf682.jpg', desc: '智慧戰略' },
+        { name: '阿波羅', url: 'greek_fill_blank.html?god=apollo', img: 'https://th.bing.com/th/id/OIP.nST24oXU5QbHwyzkNIDI0QHaHa?r=0&w=736&h=736&rs=1&pid=ImgDetMain&cb=idpwebpc2', desc: '光與預言' },
+        { name: '阿爾忒彌斯', url: 'greek_fill_blank.html?god=artemis', img: 'https://as2.ftcdn.net/v2/jpg/07/11/84/53/1000_F_711845312_FrFR9WTehywtZl3bO20csc48OSmqKRcU.jpg', desc: '月狩獵女神' },
+        { name: '阿瑞斯', url: 'greek_fill_blank.html?god=ares', img: 'https://i.pinimg.com/originals/e6/bc/f7/e6bcf7f460a50f2c2700122554c4386e.png', desc: '戰場狂熱' },
+        { name: '阿芙蘿黛蒂', url: 'greek_fill_blank.html?god=aphrodite', img: 'https://img.freepik.com/premium-photo/timeless-beauty-capturing-ancient-greek-goddess-athena-ultrarealistic-splendor_960911-22038.jpg?w=2000', desc: '愛與美' },
+        { name: '赫菲斯托斯', url: 'greek_fill_blank.html?god=hephaestus', img: 'https://th.bing.com/th/id/OIP.c9pf5fdxkTIC4f58Wwk7SQHaHa?r=0&w=1024&h=1024&rs=1&pid=ImgDetMain&cb=idpwebpc2', desc: '鍛造工匠' },
+        { name: '赫耳墨斯', url: 'greek_fill_blank.html?god=hermes', img: 'https://substackcdn.com/image/fetch/f_auto,q_auto:good,fl_progressive:steep/https://substack-post-media.s3.amazonaws.com/public/images/49e898d3-33e8-4355-8049-5b32b6fa2695_1024x1024.png', desc: '狡黠信使' },
+        { name: '赫斯提亞', url: 'greek_fill_blank.html?god=hestia', img: 'https://i.etsystatic.com/10441898/c/2143/2143/0/0/il/b01774/5669551924/il_600x600.5669551924_g09a.jpg', desc: '家園聖火' },
+        { name: '狄俄尼索斯', url: 'greek_fill_blank.html?god=dionysus', img: 'https://i.pinimg.com/1200x/d3/27/97/d327972a87a915c1cbd9fefe868307d1.jpg', desc: '狂歡酒神' },
+        { name: '哈迪斯', url: 'greek_fill_blank.html?god=hades', img: 'https://th.bing.com/th/id/OIP.jh5PoCyBjLDW-PQlC9_1dAHaHa?r=0&w=1024&h=1024&rs=1&pid=ImgDetMain&cb=idpwebpc2', desc: '冥界君主' },
+        { name: '珀爾塞福涅', url: 'greek_fill_blank.html?god=persephone', img: 'https://cdn.openart.ai/stable_diffusion/af3394f52d952263c6c773045bcc5391f6702033_2000x2000.webp', desc: '春天冥后' },
+        { name: '厄洛斯', url: 'greek_fill_blank.html?god=eros', img: 'https://i.pinimg.com/736x/ad/63/63/ad6363477e4266b39aaf86e058facfb6.jpg', desc: '愛之箭' },
+        { name: '尼刻', url: 'greek_fill_blank.html?god=nike', img: 'https://i.pinimg.com/736x/d8/b4/51/d8b4515f750e0f8106ba69a91ff05679.jpg', desc: '勝利女神' },
+        { name: '蓋婭', url: 'greek_fill_blank.html?god=gaia', img: 'https://i.pinimg.com/1200x/4e/ac/31/4eac313f814d9044877241e163a43585.jpg', desc: '萬物之母' },
+        { name: '阿特拉斯', url: 'greek_fill_blank.html?god=atlas_god', img: 'https://i.pinimg.com/736x/02/e2/14/02e214b507e55f3dddb673c7acdc25f7.jpg', desc: '天空支柱' },
+        { name: '克洛諾斯', url: 'greek_fill_blank.html?god=cronus', img: 'https://i.pinimg.com/1200x/89/24/bc/8924bcdf6c9734a961ef956a8e8fbf79.jpg', desc: '時間之王' },
+        { name: '瑞亞', url: 'greek_fill_blank.html?god=rhea', img: 'https://i.pinimg.com/1200x/44/0e/e8/440ee8571b581d7ae728d2c9c765cb74.jpg', desc: '母性守護' },
+        { name: '普羅米修斯', url: 'greek_fill_blank.html?god=prometheus', img: 'https://i.pinimg.com/736x/2d/b4/24/2db4245bd440fa993e2e1ac1904800c6.jpg', desc: '火種使者' }
       ];
 
       let unlockedGreek = JSON.parse(localStorage.getItem('unlockedGreek') || '[]');
@@ -1058,15 +936,6 @@
       }
 
       let passedFlipcard = JSON.parse(localStorage.getItem('passed_flipcard')||'[]');
-
-      function simplifyGreekDesc(desc) {
-        const raw = String(desc || '').trim();
-        if (!raw) return '';
-        const firstPart = raw.split('。')[0].split('，')[0].trim();
-        const shortened = firstPart.length > 18 ? firstPart.slice(0, 18) + '…' : firstPart;
-        return shortened;
-      }
-
       deities.forEach((d, index) => {
         // 確保每個神祇都有成本設定
         if (!greekCosts[d.name]) {
@@ -1074,21 +943,20 @@
           // 保存更新後的成本到 localStorage
           localStorage.setItem('unlockGreekCosts', JSON.stringify(greekCosts));
         }
+        const stageNumber = Math.floor(index / 40) + 1;
+        const stageStart = (stageNumber - 1) * 40 + 1;
+        const stageEnd = Math.min(stageNumber * 40, deities.length);
+        const stageLabel = `第${stageNumber}關 • ${stageStart}-${stageEnd}`;
         const cost = greekCosts[d.name];
         const unlocked = unlockedGreek.includes(d.name);
         const card = document.createElement('div');
         card.className = 'card' + (unlocked ? '' : ' locked');
         if (!unlocked) card.dataset.locktext = `${cost}⭐解鎖`;
-        const shortDesc = simplifyGreekDesc(d.desc);
-        const WORDS_PER_LEVEL = 40;
-        const levelNumber = index + 1;
-        const rangeStart = index * WORDS_PER_LEVEL + 1;
-        const rangeEnd = (index + 1) * WORDS_PER_LEVEL;
         card.innerHTML = `
-          <img src="${d.img}" alt="${d.name}">
+          <div class="stage-chip">${stageLabel}</div>
+          <img src="${d.img}" alt="${d.name}"/>
           <div class="card-title">${d.name}</div>
-          <div class="card-desc" title="${d.desc}">${shortDesc}</div>
-          <div class="card-range">第${levelNumber}關 ${rangeStart}-${rangeEnd}</div>
+          <div class="card-desc">${d.desc}</div>
           <div class="card-info">${unlocked ? '已解鎖' : cost + '⭐解鎖'}</div>
           ${passedFlipcard.includes(d.name) ? '<div style=\'position:absolute;top:8px;right:10px;font-size:1.3em;color:#ffd700;\'>✔ 已通關</div>' : ''}
         `;
@@ -1153,22 +1021,10 @@
 
     // ----- 星座排行榜（Tab4） -----
     let currentRankingCategory = 'all'; // 固定顯示全部
-    let __rankingLoadedOnce = false;
-
-    function loadRankingOnce() {
-      if (__rankingLoadedOnce) return;
-      __rankingLoadedOnce = true;
-      loadRanking();
-    }
 
     async function loadRanking() {
       const box = document.getElementById('rankingContainer');
       if (!box) return;
-
-      if (!window.API || typeof window.API.getQuizLeaderboard !== 'function' || !window.LeaderboardUtils) {
-        setTimeout(loadRanking, 50);
-        return;
-      }
       
       box.innerHTML = `<p style="text-align:center;color:#aaa;">正在載入排行榜…</p>`;
       
@@ -1191,16 +1047,7 @@
       if (!box) return;
       
       try {
-        if (!window.LeaderboardUtils) {
-          setTimeout(renderLocalRanking, 50);
-          return;
-        }
-        let local;
-        if (window.Storage && typeof window.Storage.get === 'function') {
-          local = Storage.get('quizLeaderboard', []);
-        } else {
-          local = JSON.parse(localStorage.getItem('quizLeaderboard') || '[]');
-        }
+        const local = Storage.get('quizLeaderboard', []);
         if (!local.length) {
           box.innerHTML = LeaderboardUtils.renderEmptyState('目前沒有排行榜資料');
           return;
@@ -1242,111 +1089,8 @@
     // 初始化：先檢查成就並即時載入排行榜（每次進入都會重載）
     achievementSystem.triggerAchievementCheck();  // ←←← 維持原樣
     loadRanking();
-
-    // ----- 希臘神祇排行榜（Tab4） -----
-    const greekDeities = [
-      '宙斯','赫拉','波塞頓','得墨忒耳','雅典娜','阿波羅','阿爾忒彌斯','阿瑞斯','阿芙蘿黛蒂','赫菲斯托斯','赫耳墨斯','赫斯提亞','狄俄尼索斯','哈迪斯','珀爾塞福涅','厄洛斯','尼刻','蓋婭','阿特拉斯','克洛諾斯','瑞亞','普羅米修斯'
-    ];
-
-    let greekRankingMode = 'best';
-    let greekRankingCategory = 'all';
-
-    function initGreekRankingControls() {
-      const select = document.getElementById('greekCategorySelect');
-      if (select && select.options.length <= 1) {
-        greekDeities.forEach(name => {
-          const opt = document.createElement('option');
-          opt.value = name;
-          opt.textContent = name;
-          select.appendChild(opt);
-        });
-      }
-
-      const btnBest = document.getElementById('greekModeBest');
-      const btnLatest = document.getElementById('greekModeLatest');
-      const reloadBtn = document.getElementById('greekReloadBtn');
-
-      if (btnBest) {
-        btnBest.addEventListener('click', () => {
-          greekRankingMode = 'best';
-          btnBest.classList.add('active');
-          if (btnLatest) btnLatest.classList.remove('active');
-          loadGreekRanking();
-        });
-      }
-
-      if (btnLatest) {
-        btnLatest.addEventListener('click', () => {
-          greekRankingMode = 'latest';
-          btnLatest.classList.add('active');
-          if (btnBest) btnBest.classList.remove('active');
-          loadGreekRanking();
-        });
-      }
-
-      if (select) {
-        select.addEventListener('change', () => {
-          greekRankingCategory = select.value;
-          loadGreekRanking();
-        });
-      }
-
-      if (reloadBtn) {
-        reloadBtn.addEventListener('click', () => loadGreekRanking(true));
-      }
-    }
-
-    async function loadGreekRanking(force = false) {
-      const box = document.getElementById('greekRankingContainer');
-      if (!box) return;
-
-      if (!window.LeaderboardUtils || typeof window.getGreekLeaderboard !== 'function') {
-        setTimeout(() => loadGreekRanking(force), 50);
-        return;
-      }
-
-      box.innerHTML = `<p style="text-align:center;color:#aaa;">正在載入希臘神祇排行榜…</p>`;
-
-      try {
-        if (typeof getGreekLeaderboard !== 'function') {
-          box.innerHTML = LeaderboardUtils.renderErrorState(new Error('希臘排行榜模組未載入'));
-          return;
-        }
-
-        const data = await getGreekLeaderboard(greekRankingCategory || 'all');
-        if (!data || !data.success || !Array.isArray(data.leaderboard)) {
-          box.innerHTML = LeaderboardUtils.renderEmptyState('目前沒有希臘神祇排行榜資料');
-          return;
-        }
-
-        const deduplicate = greekRankingMode === 'best';
-        const processed = LeaderboardUtils.processLeaderboardData(data.leaderboard, deduplicate);
-
-        const catLabel = (greekRankingCategory && greekRankingCategory !== 'all') ? greekRankingCategory : '全部神祇';
-        const modeLabel = greekRankingMode === 'best' ? '最佳成績榜' : '最新成績榜';
-        const title = `<div style="margin-bottom:12px;text-align:center;color:#ffd700;font-weight:bold;">🏛️ ${catLabel}｜${modeLabel}</div>`;
-
-        if (!processed.length) {
-          box.innerHTML = title + LeaderboardUtils.renderEmptyState('目前沒有希臘神祇排行榜資料');
-          return;
-        }
-
-        box.innerHTML = title + '<div id="__greekTable"></div>';
-        LeaderboardUtils.renderTable(processed, '__greekTable', {
-          showCategory: true,
-          showOriginalRank: greekRankingMode !== 'best',
-          deduplicate: deduplicate,
-          emptyMessage: '目前沒有希臘神祇排行榜資料'
-        });
-      } catch (err) {
-        console.warn('希臘排行榜載入失敗:', err);
-        box.innerHTML = LeaderboardUtils.renderErrorState(err);
-      }
-    }
-
-    initGreekRankingControls();
-    loadGreekRanking();
   });
   </script>
 </body>
+</html>
 </html>
