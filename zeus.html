@@ -5,7 +5,6 @@
   <title>填空挑戰 - 英打小英雄</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/shared.css">
   <link rel="stylesheet" href="responsive_enhanced.css">
   <style>
     /* 防止水平滾動 */
@@ -47,15 +46,124 @@
     }
 
     /* ===== 背景音樂控制按鈕樣式 ===== */
-    /* 已移至 css/shared.css，此處僅保留頁面特定樣式 */
     #bgMusicControl {
-      bottom: 20px; /* 覆蓋 shared.css 的 top 位置 */
-      top: auto;
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: rgba(255, 215, 0, 0.9);
+      color: #000;
+      border: none;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      font-size: 1.5rem;
+      cursor: pointer;
+      z-index: 12;
+      box-shadow: 0 0 12px rgba(255, 215, 0, 0.4);
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #bgMusicControl:hover {
+      background: rgba(255, 215, 0, 1);
+      transform: scale(1.1);
+      box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
+    }
+
+    #bgMusicControl.paused {
+      background: rgba(255, 255, 255, 0.3);
+      color: #fff;
+    }
+
+    #bgMusicControl.paused:hover {
+      background: rgba(255, 255, 255, 0.5);
     }
 
     /* ===== 按鈕樣式 ===== */
-    /* 通用按鈕樣式已移至 css/shared.css */
-    /* 此處僅保留頁面特定樣式 */
+    .top-btns {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      left: auto;
+      display: flex;
+      gap: 8px;
+      z-index: 11;
+    }
+
+    .top-btns button {
+      padding: 6px 12px;
+      font-size: 1rem;
+      background: #ffd700;
+      color: #000;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      box-shadow: 0 0 6px rgba(255, 215, 0, 0.2);
+      font-family: 'Orbitron', Arial, sans-serif;
+      transition: background 0.2s;
+    }
+
+    .top-btns button:hover {
+      background: #ffe54f;
+    }
+
+    button {
+      font-size: 1rem;
+      padding: 10px 26px;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background 0.2s;
+      box-shadow: 0 2px 8px #0003;
+      font-family: 'Orbitron', Arial, sans-serif;
+    }
+
+    #submit-btn {
+      background: #ffd700;
+      color: #111;
+    }
+
+    #submit-btn:disabled {
+      background: #ccc;
+      color: #888;
+      cursor: not-allowed;
+    }
+
+    #skip-btn {
+      background: #bbb;
+      color: #222;
+    }
+
+    #skip-btn:hover {
+      background: #ccc;
+    }
+
+    #speak-btn {
+      background: #0ff;
+      color: #111;
+      margin-top: 10px;
+    }
+
+    #speak-btn:disabled {
+      background: #555;
+      color: #888;
+    }
+
+    #speak-btn:hover {
+      background: #7ff;
+    }
+
+    #next-btn {
+      background: #4caf50;
+      color: #fff;
+      margin-top: 10px;
+    }
+
+    #next-btn:hover {
+      background: #6fdc7f;
+    }
 
     /* ===== 顯示區塊樣式 ===== */
     #star-counter {
@@ -79,7 +187,6 @@
       position: fixed;
       top: 20px;
       left: 20px;
-      background: rgba(10, 20, 40, 0.85);
       padding: 8px 14px;
       border-radius: 10px;
       color: #ffd700;
@@ -88,6 +195,22 @@
       border: 2px solid #00ffff;
       font-size: 1.2rem;
       z-index: 10;
+    }
+
+    #lives {
+      position: fixed;
+      top: 76px;
+      right: 20px;
+      padding: 8px 14px;
+      border-radius: 10px;
+      box-shadow: 0 0 12px #ffd700, 0 0 32px #00ffff;
+      border: 2px solid #00ffff;
+      color: #ffd700;
+      font-size: 1.2rem;
+      font-weight: bold;
+      z-index: 10;
+      background: rgba(10,20,40,0.85);
+      font-family: 'Orbitron', Arial, sans-serif;
     }
 
     #timer {
@@ -273,6 +396,13 @@
         padding: 6px 10px;
         font-size: 1rem;
       }
+
+      #lives {
+        top: 62px;
+        right: 10px;
+        padding: 6px 10px;
+        font-size: 1rem;
+      }
       
       h1 {
         font-size: 1.8rem;
@@ -324,6 +454,14 @@
         position: relative;
         top: auto;
         left: auto;
+        display: inline-block;
+        margin-bottom: 10px;
+      }
+
+      #lives {
+        position: relative;
+        top: auto;
+        right: auto;
         display: inline-block;
         margin-bottom: 10px;
       }
@@ -470,12 +608,15 @@
 </head>
 <body>
   <!-- 背景音樂控制按鈕 -->
-  <button id="bgMusicControl" title="背景音樂控制">🔇</button>
+  <button id="bgMusicControl" onclick="toggleBackgroundMusic()" title="背景音樂控制">🎵</button>
 
   <!-- 星星數顯示區塊 -->
   <div id="starsDisplay">
     ⭐<span id="totalStarsCount">0</span>
   </div>
+
+  <!-- 生命值顯示區塊 -->
+  <div id="lives">❤️❤️❤️❤️❤️</div>
 
   <!-- 頂部按鈕 -->
   <div class="top-btns">
@@ -485,32 +626,6 @@
   </div>
 
   <h1>宙斯 Zeus - 填空挑戰</h1>
-
-  <!-- 玩家名稱輸入 -->
-  <div id="playerNameSection" style="margin-bottom:15px;background:rgba(255,215,0,0.1);border:1px solid #ffd700;border-radius:10px;padding:15px;max-width:400px;margin-left:auto;margin-right:auto;">
-    <label for="playerNameInput" style="color:#ffd700;font-weight:bold;margin-right:10px;">玩家名稱：</label>
-    <input type="text" id="playerNameInput" placeholder="請輸入你的名字" style="
-      background: #222;
-      color: #fff;
-      border: 2px solid #ffd700;
-      border-radius: 8px;
-      padding: 8px 12px;
-      font-size: 1rem;
-      width: 200px;
-      margin-right: 10px;
-    " />
-    <button onclick="savePlayerName()" style="
-      background: #0ff;
-      color: #000;
-      border: none;
-      border-radius: 8px;
-      padding: 8px 16px;
-      font-size: 1rem;
-      cursor: pointer;
-      font-weight: bold;
-    ">💾 儲存</button>
-    <div id="currentPlayerName" style="margin-top:8px;color:#0ff;font-size:0.9rem;"></div>
-  </div>
 
   <!-- 本次星星顯示 -->
   <div id="sessionStarsDisplay" style="margin-bottom:10px;color:#ffd700;font-weight:bold;font-size:1.08rem;">
@@ -651,7 +766,7 @@
     };
 
     // ===== 題庫資料 =====
-    const VOCAB_DATA = [
+   const VOCAB_DATA = [
   { "word": "husband", "zh": "丈夫", "en_sentence": "My husband works in the city.", "zh_sentence": "我的丈夫在城裡工作。", "category": "稱謂人際" },
   { "word": "wife", "zh": "妻子", "en_sentence": "His wife is a teacher.", "zh_sentence": "他的妻子是一位老師。", "category": "稱謂人際" },
   { "word": "housewife", "zh": "家庭主婦", "en_sentence": "She is a housewife who takes care of the family.", "zh_sentence": "她是一位照顧家庭的家庭主婦。", "category": "稱謂人際" },
@@ -698,7 +813,8 @@
   { "word": "dining room", "zh": "飯廳", "en_sentence": "We eat dinner in the dining room.", "zh_sentence": "我們在飯廳吃晚餐。", "category": "場所位置" }
 ];
 
-       // ===== 遊戲狀態變數 =====
+
+    // ===== 遊戲狀態變數 =====
     let gameState = {
       data: [],
       currentIndex: 0,
@@ -707,8 +823,20 @@
       timerInterval: null,
       preferredVoice: null,
       answerLog: [],
-      sessionStars: 0
+      sessionStars: 0,
+      totalTimeUsed: 0,
+      questionStartTs: null
     };
+
+    window.gameState = gameState;
+
+    let lives = 5;
+
+    function updateLives() {
+      const el = document.getElementById('lives');
+      if (!el) return;
+      el.innerHTML = '❤️'.repeat(Math.max(0, lives)) + '🤍'.repeat(Math.max(0, 5 - lives));
+    }
 
     // ===== 音效資源 =====
     const SOUNDS = {
@@ -718,7 +846,51 @@
     };
 
     // ===== 背景音樂控制 =====
-    // 已移至 js/bgmController.js，使用 BGMController 統一管理
+    let bgMusic = null;
+    let isMusicPlaying = false;
+
+    function initBackgroundMusic() {
+      bgMusic = new Audio('sound/午後放鬆時光（純音樂）.mp3');
+      bgMusic.loop = true;
+      bgMusic.volume = 0.3;
+      
+      // 從localStorage讀取音樂狀態
+      const musicState = localStorage.getItem('bgMusicState');
+      if (musicState === 'playing') {
+        playBackgroundMusic();
+      }
+    }
+
+    function toggleBackgroundMusic() {
+      if (isMusicPlaying) {
+        pauseBackgroundMusic();
+      } else {
+        playBackgroundMusic();
+      }
+    }
+
+    function playBackgroundMusic() {
+      if (bgMusic) {
+        bgMusic.play().then(() => {
+          isMusicPlaying = true;
+          document.getElementById('bgMusicControl').textContent = '🔊';
+          document.getElementById('bgMusicControl').classList.remove('paused');
+          localStorage.setItem('bgMusicState', 'playing');
+        }).catch(err => {
+          console.log('背景音樂播放失敗:', err);
+        });
+      }
+    }
+
+    function pauseBackgroundMusic() {
+      if (bgMusic) {
+        bgMusic.pause();
+        isMusicPlaying = false;
+        document.getElementById('bgMusicControl').textContent = '🔇';
+        document.getElementById('bgMusicControl').classList.add('paused');
+        localStorage.setItem('bgMusicState', 'paused');
+      }
+    }
 
     // ===== 工具函數 =====
     function escapeRegExp(s) {
@@ -772,6 +944,8 @@
       let timeLeft = GAME_CONFIG.TIME_LIMIT;
       document.getElementById('time-left').textContent = timeLeft;
       document.getElementById('timer').classList.remove('hidden');
+
+      gameState.questionStartTs = Date.now();
       
       gameState.timerInterval = setInterval(() => {
         timeLeft--;
@@ -785,6 +959,12 @@
 
     function stopTimer() {
       clearInterval(gameState.timerInterval);
+
+      if (gameState.questionStartTs) {
+        const deltaSec = Math.max(0, Math.round((Date.now() - gameState.questionStartTs) / 1000));
+        gameState.totalTimeUsed = (Number(gameState.totalTimeUsed) || 0) + deltaSec;
+        gameState.questionStartTs = null;
+      }
     }
 
     // ===== 語音功能 =====
@@ -825,6 +1005,7 @@
 
     // ===== 答案處理 =====
     function revealAnswer(autoNext = false) {
+      stopTimer();
       gameState.attemptCount = Infinity;
       document.getElementById('feedback').innerHTML = 
         '<span style="color:#f66;">⏰ 時間到！正確答案：<b>' + gameState.data[gameState.currentIndex].answer + '</b></span>';
@@ -925,9 +1106,6 @@
       document.getElementById('endWrongCount').textContent = wrongCount;
       document.getElementById('endTotalStars').textContent = totalStars;
 
-      // 上傳分數到 Google Sheets
-      submitGreekScoreToGoogleSheets();
-
       // 顯示結束畫面
       document.getElementById('gameEndModal').style.display = 'flex';
       
@@ -963,6 +1141,13 @@
       gameState.currentIndex = 0;
       gameState.sessionStars = 0;
       gameState.answerLog = [];
+      gameState.totalTimeUsed = 0;
+      gameState.questionStartTs = null;
+
+      window.gameState = gameState;
+
+      lives = 5;
+      updateLives();
       
       // 重新初始化數據
       initData();
@@ -976,10 +1161,18 @@
     // ===== 問題操作 =====
     function skipQuestion() {
       stopTimer();
-      logAnswer(null, '');
+      if (!gameState.answerLog[gameState.currentIndex]) {
+        logAnswer(false, '');
+      }
       const feedback = document.getElementById('feedback');
       if (feedback) feedback.innerHTML = '<span style="color:#bbb;">已跳過本題</span>';
       setTimeout(() => {
+        lives--;
+        updateLives();
+        if (lives <= 0) {
+          showGameEndScreen();
+          return;
+        }
         gameState.currentIndex++;
         showQuestion();
       }, 400);
@@ -993,6 +1186,12 @@
         if (feedback) feedback.innerHTML = '<span style="color:#bbb;">未作答</span>';
       }
       setTimeout(() => {
+        lives--;
+        updateLives();
+        if (lives <= 0) {
+          showGameEndScreen();
+          return;
+        }
         gameState.currentIndex++;
         showQuestion();
       }, 400);
@@ -1084,11 +1283,27 @@
 
     // ===== 星星系統 =====
     function loadTotalStars() {
+      if (typeof LinkageSystem !== 'undefined' && LinkageSystem?.stars?.get) {
+        return Number(LinkageSystem.stars.get()) || 0;
+      }
+      if (typeof StarRewardSystem !== 'undefined' && typeof StarRewardSystem.getTotalStars === 'function') {
+        return Number(StarRewardSystem.getTotalStars()) || 0;
+      }
       const stars = localStorage.getItem('totalStars');
       return stars !== null ? parseInt(stars, 10) : 0;
     }
 
     function addStarsToTotal(stars) {
+      if (typeof StarRewardSystem !== 'undefined' && typeof StarRewardSystem.addStars === 'function') {
+        StarRewardSystem.addStars(stars);
+        updateStarsDisplay();
+        return;
+      }
+      if (typeof LinkageSystem !== 'undefined' && LinkageSystem?.stars?.add) {
+        LinkageSystem.stars.add(stars);
+        updateStarsDisplay();
+        return;
+      }
       const currentStars = loadTotalStars();
       const newTotal = currentStars + stars;
       localStorage.setItem('totalStars', newTotal);
@@ -1368,47 +1583,6 @@
       showNotification('✅ 字庫已成功匯出！', 'success');
     }
 
-    // ===== 分數上傳到 Google Sheets =====
-    async function submitGreekScoreToGoogleSheets() {
-      try {
-        // 檢查玩家名稱是否已設定
-        if (!checkPlayerName()) {
-          return;
-        }
-        
-        // 計算統計數據
-        const correctCount = gameState.answerLog.filter(log => log && log.correct === true).length;
-        const wrongCount = gameState.answerLog.filter(log => log && log.correct === false).length;
-        
-        console.log('準備上傳分數:', {
-          playerName: localStorage.getItem('playerName'),
-          score: gameState.sessionStars,
-          correctCount: correctCount,
-          wrongCount: wrongCount,
-          totalTime: gameState.totalTimeUsed || 0
-        });
-        
-        // 使用通用分數上傳函數
-        const result = await submitGreekScoreSimple(
-          gameState.sessionStars,
-          correctCount,
-          wrongCount,
-          gameState.totalTimeUsed || 0
-        );
-        
-        console.log('分數上傳結果:', result);
-        
-        if (result.success) {
-          showNotification('✅ ' + result.message, 'success');
-        } else {
-          showNotification('⚠️ ' + result.message, 'info');
-        }
-      } catch (error) {
-        console.error('分數上傳過程中發生錯誤:', error);
-        showNotification('⚠️ 分數上傳失敗: ' + error.message, 'info');
-      }
-    }
-
     // ===== 通知功能 =====
     function showNotification(message, type = 'info') {
       const notification = document.createElement('div');
@@ -1451,51 +1625,6 @@
       document.getElementById('achievementNotifyTitle').textContent = title;
     }
 
-    // ===== 玩家名稱管理 =====
-    function savePlayerName() {
-      const input = document.getElementById('playerNameInput');
-      const playerName = input.value.trim();
-      
-      if (playerName === '') {
-        showNotification('⚠️ 請輸入玩家名稱！', 'info');
-        return;
-      }
-      
-      // 儲存到 localStorage
-      localStorage.setItem('playerName', playerName);
-      
-      // 更新顯示
-      updatePlayerNameDisplay();
-      
-      // 清空輸入框
-      input.value = '';
-      
-      // 顯示成功訊息
-      showNotification('✅ 玩家名稱已儲存！', 'success');
-    }
-    
-    function updatePlayerNameDisplay() {
-      const currentPlayerName = document.getElementById('currentPlayerName');
-      const playerName = localStorage.getItem('playerName');
-      
-      if (playerName) {
-        currentPlayerName.innerHTML = `👤 當前玩家：<strong>${playerName}</strong>`;
-        currentPlayerName.style.display = 'block';
-      } else {
-        currentPlayerName.innerHTML = '⚠️ 請先設定玩家名稱';
-        currentPlayerName.style.display = 'block';
-      }
-    }
-    
-    function checkPlayerName() {
-      const playerName = localStorage.getItem('playerName');
-      if (!playerName || playerName.trim() === '') {
-        showNotification('⚠️ 請先設定玩家名稱！', 'info');
-        return false;
-      }
-      return true;
-    }
-
     // ===== 初始化 =====
     if (typeof speechSynthesis !== 'undefined') {
       speechSynthesis.onvoiceschanged = pickVoice;
@@ -1505,17 +1634,15 @@
     document.addEventListener('DOMContentLoaded', () => {
       updateStarsDisplay();
       document.getElementById('sessionStarsDisplay').textContent = '本次已獲得 0 顆星星';
-      
-      // 初始化玩家名稱顯示
-      updatePlayerNameDisplay();
-      
+      updateLives();
       initData();
       gameState.currentIndex = 0;
       updateCounter();
       showQuestion();
       localStorage.removeItem('fillIndex');
       
-      // 背景音樂由 js/bgmController.js 自動初始化
+      // 初始化背景音樂
+      initBackgroundMusic();
       
       // 初始化時解鎖複習按鈕
       unlockReviewButton();
