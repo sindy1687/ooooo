@@ -198,6 +198,22 @@
       z-index: 10;
     }
 
+    #lives {
+      position: fixed;
+      top: 76px;
+      right: 20px;
+      padding: 8px 14px;
+      border-radius: 10px;
+      box-shadow: 0 0 12px #ffd700, 0 0 32px #00ffff;
+      border: 2px solid #00ffff;
+      color: #ffd700;
+      font-size: 1.2rem;
+      font-weight: bold;
+      z-index: 10;
+      background: rgba(10,20,40,0.85);
+      font-family: 'Orbitron', Arial, sans-serif;
+    }
+
     #timer {
       font-size: 1.1rem;
       margin-bottom: 16px;
@@ -378,6 +394,13 @@
       #starsDisplay {
         top: 10px;
         left: 10px;
+        padding: 6px 10px;
+        font-size: 1rem;
+      }
+
+      #lives {
+        top: 62px;
+        right: 10px;
         padding: 6px 10px;
         font-size: 1rem;
       }
@@ -585,6 +608,9 @@
     ⭐<span id="totalStarsCount">0</span>
   </div>
 
+  <!-- 生命值顯示區塊 -->
+  <div id="lives">❤️❤️❤️❤️❤️</div>
+
   <!-- 頂部按鈕 -->
   <div class="top-btns">
     <button onclick="location.href='atlas.html?tab=greek'" aria-label="回首頁">🏠 回首頁</button>
@@ -649,22 +675,19 @@
           cursor: pointer;
         ">
           <option value="all">全部單字</option>
-          <option value="自然環境">自然環境</option>
-          <option value="日常生活用品">日常生活用品</option>
-          <option value="職業">職業</option>
-          <option value="場所建築">場所建築</option>
-          <option value="時間頻率">時間頻率</option>
-          <option value="通訊">通訊</option>
-          <option value="服飾配件">服飾配件</option>
-          <option value="醫療健康">醫療健康</option>
-          <option value="語言文化">語言文化</option>
-          <option value="娛樂活動">娛樂活動</option>
-          <option value="動物植物">動物植物</option>
-          <option value="食物飲料">食物飲料</option>
-          <option value="形容詞">形容詞</option>
           <option value="動作動詞">動作動詞</option>
-          <option value="理解表達">理解表達</option>
-          <option value="助動詞">助動詞</option>
+          <option value="學術教育">學術教育</option>
+          <option value="時間日期">時間日期</option>
+          <option value="節日慶祝">節日慶祝</option>
+          <option value="數量分數">數量分數</option>
+          <option value="聲音表演">聲音表演</option>
+          <option value="稱謂人際">稱謂人際</option>
+          <option value="交通工具">交通工具</option>
+          <option value="運動娛樂">運動娛樂</option>
+          <option value="身體健康">身體健康</option>
+          <option value="形容詞">形容詞</option>
+          <option value="抽象概念">抽象概念</option>
+          <option value="場所位置">場所位置</option>
         </select>
       </div>
       
@@ -726,286 +749,46 @@
 
     // ===== 題庫資料 =====
     const VOCAB_DATA = [
-      {
-        "word": "learn",
-        "zh": "學習",
-        "en_sentence": "I want to learn English.",
-        "zh_sentence": "我想要學習英語。",
-        "category": "動作動詞"
-      },
-      {
-        "word": "climb",
-        "zh": "攀爬",
-        "en_sentence": "We climb the mountain together.",
-        "zh_sentence": "我們一起爬那座山。",
-        "category": "動作動詞"
-      },
-      {
-        "word": "hike",
-        "zh": "徒步健行",
-        "en_sentence": "They go hiking in the forest.",
-        "zh_sentence": "他們去森林裡徒步健行。",
-        "category": "動作動詞"
-      },
-      {
-        "word": "camp",
-        "zh": "露營",
-        "en_sentence": "We camp near the lake.",
-        "zh_sentence": "我們在湖邊露營。",
-        "category": "動作動詞"
-      },
-      {
-        "word": "everyone",
-        "zh": "每個人",
-        "en_sentence": "Everyone is welcome to join.",
-        "zh_sentence": "每個人都歡迎參加。",
-        "category": "代名詞"
-      },
-      {
-        "word": "together",
-        "zh": "一起",
-        "en_sentence": "Let's work together on this project.",
-        "zh_sentence": "讓我們一起做這個專案。",
-        "category": "副詞"
-      },
-      {
-        "word": "ago",
-        "zh": "在…之前",
-        "en_sentence": "I saw him two days ago.",
-        "zh_sentence": "我兩天前見過他。",
-        "category": "副詞"
-      },
-      {
-        "word": "never",
-        "zh": "從不",
-        "en_sentence": "I never eat spicy food.",
-        "zh_sentence": "我從不吃辣的食物。",
-        "category": "副詞"
-      },
-      {
-        "word": "always",
-        "zh": "總是",
-        "en_sentence": "She always arrives on time.",
-        "zh_sentence": "她總是準時到達。",
-        "category": "副詞"
-      },
-      {
-        "word": "usually",
-        "zh": "通常",
-        "en_sentence": "I usually go to bed at 10 PM.",
-        "zh_sentence": "我通常晚上10點睡覺。",
-        "category": "副詞"
-      },
-      {
-        "word": "sometimes",
-        "zh": "有時候",
-        "en_sentence": "Sometimes I like to read books.",
-        "zh_sentence": "有時候我喜歡看書。",
-        "category": "副詞"
-      },
-      {
-        "word": "seldom",
-        "zh": "不常；很少",
-        "en_sentence": "He seldom watches TV.",
-        "zh_sentence": "他很少看電視。",
-        "category": "副詞"
-      },
-      {
-        "word": "was",
-        "zh": "是(am / is 過去式)",
-        "en_sentence": "I was happy yesterday.",
-        "zh_sentence": "我昨天很開心。",
-        "category": "動詞"
-      },
-      {
-        "word": "were",
-        "zh": "是(are過去式)",
-        "en_sentence": "They were at school last week.",
-        "zh_sentence": "他們上週在學校。",
-        "category": "動詞"
-      },
-      {
-        "word": "insect",
-        "zh": "昆蟲",
-        "en_sentence": "The insect is flying around the flower.",
-        "zh_sentence": "那隻昆蟲在花周圍飛舞。",
-        "category": "名詞"
-      },
-      {
-        "word": "bat",
-        "zh": "蝙蝠",
-        "en_sentence": "Bats sleep during the day.",
-        "zh_sentence": "蝙蝠在白天睡覺。",
-        "category": "名詞"
-      },
-      {
-        "word": "butterfly",
-        "zh": "蝴蝶",
-        "en_sentence": "A beautiful butterfly landed on the flower.",
-        "zh_sentence": "一隻美麗的蝴蝶停在花上。",
-        "category": "名詞"
-      },
-      {
-        "word": "spider",
-        "zh": "蜘蛛",
-        "en_sentence": "The spider is spinning its web.",
-        "zh_sentence": "那隻蜘蛛正在織網。",
-        "category": "名詞"
-      },
-      {
-        "word": "whale",
-        "zh": "鯨",
-        "en_sentence": "We saw a whale in the ocean.",
-        "zh_sentence": "我們在海洋裡看到了一條鯨。",
-        "category": "名詞"
-      },
-      {
-        "word": "hill",
-        "zh": "丘陵；小山",
-        "en_sentence": "The house is on top of the hill.",
-        "zh_sentence": "那棟房子在山頂上。",
-        "category": "名詞"
-      },
-      {
-        "word": "island",
-        "zh": "島嶼",
-        "en_sentence": "They live on a small island.",
-        "zh_sentence": "他們住在一個小島上。",
-        "category": "名詞"
-      },
-      {
-        "word": "present",
-        "zh": "禮物",
-        "en_sentence": "I gave her a birthday present.",
-        "zh_sentence": "我給了她一個生日禮物。",
-        "category": "名詞"
-      },
-      {
-        "word": "junior high school",
-        "zh": "國中",
-        "en_sentence": "My brother goes to junior high school.",
-        "zh_sentence": "我弟弟上國中。",
-        "category": "名詞"
-      },
-      {
-        "word": "course",
-        "zh": "課程",
-        "en_sentence": "This course is very interesting.",
-        "zh_sentence": "這門課程很有趣。",
-        "category": "名詞"
-      },
-      {
-        "word": "art",
-        "zh": "藝術；美術",
-        "en_sentence": "I love studying art in school.",
-        "zh_sentence": "我喜歡在學校學習美術。",
-        "category": "名詞"
-      },
-      {
-        "word": "history",
-        "zh": "歷史",
-        "en_sentence": "History is my favorite subject.",
-        "zh_sentence": "歷史是我最喜歡的科目。",
-        "category": "名詞"
-      },
-      {
-        "word": "science",
-        "zh": "科學",
-        "en_sentence": "We do experiments in science class.",
-        "zh_sentence": "我們在科學課上做實驗。",
-        "category": "名詞"
-      },
-      {
-        "word": "lesson",
-        "zh": "課",
-        "en_sentence": "Today's lesson is about animals.",
-        "zh_sentence": "今天的課是關於動物的。",
-        "category": "名詞"
-      },
-      {
-        "word": "subject",
-        "zh": "學科；科目",
-        "en_sentence": "Math is a difficult subject for me.",
-        "zh_sentence": "數學對我來說是一門困難的科目。",
-        "category": "名詞"
-      },
-      {
-        "word": "test",
-        "zh": "測驗",
-        "en_sentence": "We have a test tomorrow.",
-        "zh_sentence": "我們明天有測驗。",
-        "category": "名詞"
-      },
-      {
-        "word": "vacation",
-        "zh": "假期",
-        "en_sentence": "We go on vacation in summer.",
-        "zh_sentence": "我們在夏天去度假。",
-        "category": "名詞"
-      },
-      {
-        "word": "holiday",
-        "zh": "假日",
-        "en_sentence": "Tomorrow is a holiday.",
-        "zh_sentence": "明天是假日。",
-        "category": "名詞"
-      },
-      {
-        "word": "Teacher's Day",
-        "zh": "教師節",
-        "en_sentence": "We celebrate Teacher's Day on September 28th.",
-        "zh_sentence": "我們在9月28日慶祝教師節。",
-        "category": "名詞"
-      },
-      {
-        "word": "festival",
-        "zh": "節日",
-        "en_sentence": "The festival is very exciting.",
-        "zh_sentence": "這個節日很令人興奮。",
-        "category": "名詞"
-      },
-      {
-        "word": "Moon Festival",
-        "zh": "中秋節",
-        "en_sentence": "We eat mooncakes during Moon Festival.",
-        "zh_sentence": "我們在中秋節吃月餅。",
-        "category": "名詞"
-      },
-      {
-        "word": "half",
-        "zh": "一半；二分之一",
-        "en_sentence": "I ate half of the pizza.",
-        "zh_sentence": "我吃了半個披薩。",
-        "category": "名詞"
-      },
-      {
-        "word": "quarter",
-        "zh": "四分之一；十五分鐘",
-        "en_sentence": "It's a quarter past three.",
-        "zh_sentence": "現在是3點15分。",
-        "category": "名詞"
-      },
-      {
-        "word": "noise",
-        "zh": "聲音；噪音",
-        "en_sentence": "The noise is too loud.",
-        "zh_sentence": "這個噪音太大了。",
-        "category": "名詞"
-      },
-      {
-        "word": "show",
-        "zh": "表演",
-        "en_sentence": "The show starts at 8 PM.",
-        "zh_sentence": "表演在晚上8點開始。",
-        "category": "名詞"
-      },
-      {
-        "word": "start",
-        "zh": "開始",
-        "en_sentence": "The movie starts at 7 PM.",
-        "zh_sentence": "電影在晚上7點開始。",
-        "category": "動詞"
-      }
+  {"word":"hotel","zh":"旅館","en_sentence":"We stayed at a hotel.","zh_sentence":"我們住在一家旅館。","category":"名詞"},
+  {"word":"season","zh":"季節","en_sentence":"Spring is my favorite season.","zh_sentence":"春天是我最喜歡的季節。","category":"名詞"},
+  {"word":"high","zh":"高的","en_sentence":"The mountain is high.","zh_sentence":"這座山很高。","category":"形容詞"},
+  {"word":"autumn","zh":"秋天","en_sentence":"Autumn is cool and nice.","zh_sentence":"秋天涼爽又舒服。","category":"名詞"},
+  {"word":"snow","zh":"雪","en_sentence":"Snow falls in winter.","zh_sentence":"冬天會下雪。","category":"名詞"},
+  {"word":"snowman","zh":"雪人","en_sentence":"The kids made a snowman.","zh_sentence":"孩子們堆了一個雪人。","category":"名詞"},
+  {"word":"plan","zh":"計畫","en_sentence":"We have a travel plan.","zh_sentence":"我們有一個旅行計畫。","category":"名詞"},
+  {"word":"date","zh":"日期；約會","en_sentence":"What is today’s date?","zh_sentence":"今天是幾號？","category":"名詞"},
+  {"word":"Father's Day","zh":"父親節","en_sentence":"We celebrate Father’s Day in June.","zh_sentence":"我們在六月慶祝父親節。","category":"節日"},
+  {"word":"USA","zh":"美國","en_sentence":"She lives in the USA.","zh_sentence":"她住在美國。","category":"國名"},
+  {"word":"photo","zh":"照片","en_sentence":"I took a photo.","zh_sentence":"我拍了一張照片。","category":"名詞"},
+  {"word":"mind","zh":"心；介意","en_sentence":"Do you mind if I sit here?","zh_sentence":"你介意我坐這裡嗎？","category":"名詞"},
+  {"word":"work","zh":"工作","en_sentence":"My father goes to work early.","zh_sentence":"我爸爸很早去上班。","category":"名詞"},
+  {"word":"exercise","zh":"運動","en_sentence":"She does exercise every day.","zh_sentence":"她每天運動。","category":"名詞"},
+  {"word":"turtle","zh":"烏龜","en_sentence":"The turtle is slow.","zh_sentence":"烏龜很慢。","category":"名詞"},
+  {"word":"practice","zh":"練習","en_sentence":"He practices the piano.","zh_sentence":"他練習彈鋼琴。","category":"動詞"},
+  {"word":"race","zh":"比賽","en_sentence":"They run in a race.","zh_sentence":"他們參加跑步比賽。","category":"名詞"},
+  {"word":"team","zh":"隊伍","en_sentence":"Our team won the game.","zh_sentence":"我們的隊伍贏了比賽。","category":"名詞"},
+  {"word":"problem","zh":"問題","en_sentence":"I have a problem.","zh_sentence":"我有一個問題。","category":"名詞"},
+  {"word":"toe","zh":"腳趾","en_sentence":"He hurt his toe.","zh_sentence":"他傷到腳趾。","category":"名詞"},
+  {"word":"kind","zh":"善良的；種類","en_sentence":"She is kind to everyone.","zh_sentence":"她對每個人都很善良。","category":"形容詞"},
+  {"word":"violin","zh":"小提琴","en_sentence":"She plays the violin.","zh_sentence":"她拉小提琴。","category":"名詞"},
+  {"word":"flute","zh":"長笛","en_sentence":"He plays the flute.","zh_sentence":"他吹長笛。","category":"名詞"},
+  {"word":"special","zh":"特別的","en_sentence":"Today is a special day.","zh_sentence":"今天是特別的一天。","category":"形容詞"},
+  {"word":"afraid","zh":"害怕的","en_sentence":"I am afraid of dogs.","zh_sentence":"我怕狗。","category":"形容詞"},
+  {"word":"same","zh":"相同的","en_sentence":"We wear the same shirt.","zh_sentence":"我們穿一樣的衣服。","category":"形容詞"},
+  {"word":"different","zh":"不同的","en_sentence":"They have different ideas.","zh_sentence":"他們有不同的想法。","category":"形容詞"},
+  {"word":"snowy","zh":"下雪的","en_sentence":"It is a snowy day.","zh_sentence":"今天是下雪的日子。","category":"形容詞"},
+  {"word":"dry","zh":"乾的","en_sentence":"The clothes are dry.","zh_sentence":"衣服乾了。","category":"形容詞"},
+  {"word":"wet","zh":"濕的","en_sentence":"My shoes are wet.","zh_sentence":"我的鞋子濕了。","category":"形容詞"},
+  {"word":"popular","zh":"受歡迎的","en_sentence":"This song is popular.","zh_sentence":"這首歌很受歡迎。","category":"形容詞"},
+  {"word":"dark","zh":"黑暗的","en_sentence":"The room is dark.","zh_sentence":"房間很暗。","category":"形容詞"},
+  {"word":"know","zh":"知道","en_sentence":"I know the answer.","zh_sentence":"我知道答案。","category":"動詞"},
+  {"word":"keep","zh":"保持；保留","en_sentence":"Keep the door closed.","zh_sentence":"把門關著。","category":"動詞"},
+  {"word":"join","zh":"加入","en_sentence":"She joins the team.","zh_sentence":"她加入隊伍。","category":"動詞"},
+  {"word":"throw","zh":"丟；投","en_sentence":"Throw the ball.","zh_sentence":"把球丟出去。","category":"動詞"},
+  {"word":"hit","zh":"打；擊中","en_sentence":"He hit the ball.","zh_sentence":"他打到球。","category":"動詞"},
+  {"word":"enjoy","zh":"享受；喜歡","en_sentence":"I enjoy the game.","zh_sentence":"我喜歡這個遊戲。","category":"動詞"},
+  {"word":"bow","zh":"弓；鞠躬","en_sentence":"The boy bows to the teacher.","zh_sentence":"男孩向老師鞠躬。","category":"名詞"},
+  {"word":"win","zh":"贏","en_sentence":"They win the match.","zh_sentence":"他們贏了比賽。","category":"動詞"}
     ];
 
     // ===== 遊戲狀態變數 =====
@@ -1017,66 +800,67 @@
       timerInterval: null,
       preferredVoice: null,
       answerLog: [],
-      sessionStars: 0
+      sessionStars: 0,
+      totalTimeUsed: 0,
+      questionStartTs: null
     };
+
+    window.gameState = gameState;
+
+    let lives = 5;
+
+    function updateLives() {
+      const el = document.getElementById('lives');
+      if (!el) return;
+      el.innerHTML = '❤️'.repeat(Math.max(0, lives)) + '🤍'.repeat(Math.max(0, 5 - lives));
+    }
 
     // ===== 音效資源 =====
     const SOUNDS = {
-      correct: new Audio('audio/correct.mp3'),
-      wrong: new Audio('audio/wrong.mp3'),
-      type: new Audio('audio/type.mp3')
+      correct: new Audio('sound/correct.mp3'),
+      wrong: new Audio('sound/wrong.mp3'),
+      type: new Audio('sound/type.mp3')
     };
 
     // ===== 背景音樂控制 =====
+    let bgMusic = null;
     let isMusicPlaying = false;
 
     function initBackgroundMusic() {
-      const backgroundMusic = document.getElementById('backgroundMusic');
-      if (backgroundMusic) {
-        backgroundMusic.volume = 0.3;
-        
-        // 從localStorage讀取音樂狀態
-        const musicState = localStorage.getItem('bgMusicState');
-        if (musicState === 'playing') {
-          playBackgroundMusic();
-        }
+      bgMusic = new Audio('sound/午後放鬆時光（純音樂）.mp3');
+      bgMusic.loop = true;
+      bgMusic.volume = 0.3;
+      const musicState = localStorage.getItem('bgMusicState');
+      if (musicState === 'playing') {
+        playBackgroundMusic();
       }
     }
 
     function toggleBackgroundMusic() {
-      const backgroundMusic = document.getElementById('backgroundMusic');
-      if (backgroundMusic) {
-        if (isMusicPlaying) {
-          pauseBackgroundMusic();
-        } else {
-          playBackgroundMusic();
-        }
+      if (isMusicPlaying) {
+        pauseBackgroundMusic();
+      } else {
+        playBackgroundMusic();
       }
     }
 
     function playBackgroundMusic() {
-      const backgroundMusic = document.getElementById('backgroundMusic');
-      if (backgroundMusic) {
-        backgroundMusic.play().then(() => {
-          isMusicPlaying = true;
-          document.getElementById('bgMusicControl').textContent = '🔊';
-          document.getElementById('bgMusicControl').classList.remove('paused');
-          localStorage.setItem('bgMusicState', 'playing');
-        }).catch(err => {
-          console.log('背景音樂播放失敗:', err);
-        });
-      }
+      if (!bgMusic) return;
+      bgMusic.play().then(() => {
+        isMusicPlaying = true;
+        document.getElementById('bgMusicControl').textContent = '🔊';
+        document.getElementById('bgMusicControl').classList.remove('paused');
+        localStorage.setItem('bgMusicState', 'playing');
+      }).catch(() => {});
     }
 
     function pauseBackgroundMusic() {
-      const backgroundMusic = document.getElementById('backgroundMusic');
-      if (backgroundMusic) {
-        backgroundMusic.pause();
-        isMusicPlaying = false;
-        document.getElementById('bgMusicControl').textContent = '🔇';
-        document.getElementById('bgMusicControl').classList.add('paused');
-        localStorage.setItem('bgMusicState', 'paused');
-      }
+      if (!bgMusic) return;
+      bgMusic.pause();
+      isMusicPlaying = false;
+      document.getElementById('bgMusicControl').textContent = '🔇';
+      document.getElementById('bgMusicControl').classList.add('paused');
+      localStorage.setItem('bgMusicState', 'paused');
     }
 
     // ===== 工具函數 =====
@@ -1131,6 +915,8 @@
       let timeLeft = GAME_CONFIG.TIME_LIMIT;
       document.getElementById('time-left').textContent = timeLeft;
       document.getElementById('timer').classList.remove('hidden');
+
+      gameState.questionStartTs = Date.now();
       
       gameState.timerInterval = setInterval(() => {
         timeLeft--;
@@ -1144,6 +930,12 @@
 
     function stopTimer() {
       clearInterval(gameState.timerInterval);
+
+      if (gameState.questionStartTs) {
+        const deltaSec = Math.max(0, Math.round((Date.now() - gameState.questionStartTs) / 1000));
+        gameState.totalTimeUsed = (Number(gameState.totalTimeUsed) || 0) + deltaSec;
+        gameState.questionStartTs = null;
+      }
     }
 
     // ===== 語音功能 =====
@@ -1181,6 +973,12 @@
       
       if (autoNext) {
         setTimeout(() => {
+          lives--;
+          updateLives();
+          if (lives <= 0) {
+            showGameEndScreen();
+            return;
+          }
           gameState.currentIndex++;
           showQuestion();
         }, 500);
@@ -1285,6 +1083,16 @@
         SOUNDS.correct.currentTime = 0;
         SOUNDS.correct.play();
       } catch (e) {}
+
+      if (window.GameDialogue) {
+        setTimeout(() => {
+          if (correctCount > wrongCount) {
+            window.GameDialogue.showGameVictoryDialogue();
+          } else {
+            window.GameDialogue.showGameDefeatDialogue();
+          }
+        }, 2000);
+      }
     }
 
     function restartGame() {
@@ -1295,6 +1103,13 @@
       gameState.currentIndex = 0;
       gameState.sessionStars = 0;
       gameState.answerLog = [];
+      gameState.totalTimeUsed = 0;
+      gameState.questionStartTs = null;
+
+      window.gameState = gameState;
+
+      lives = 5;
+      updateLives();
       
       // 重新初始化數據
       initData();
@@ -1308,10 +1123,18 @@
     // ===== 問題操作 =====
     function skipQuestion() {
       stopTimer();
-      logAnswer(null, '');
+      if (!gameState.answerLog[gameState.currentIndex]) {
+        logAnswer(false, '');
+      }
       const feedback = document.getElementById('feedback');
       if (feedback) feedback.innerHTML = '<span style="color:#bbb;">已跳過本題</span>';
       setTimeout(() => {
+        lives--;
+        updateLives();
+        if (lives <= 0) {
+          showGameEndScreen();
+          return;
+        }
         gameState.currentIndex++;
         showQuestion();
       }, 400);
@@ -1325,6 +1148,12 @@
         if (feedback) feedback.innerHTML = '<span style="color:#bbb;">未作答</span>';
       }
       setTimeout(() => {
+        lives--;
+        updateLives();
+        if (lives <= 0) {
+          showGameEndScreen();
+          return;
+        }
         gameState.currentIndex++;
         showQuestion();
       }, 400);
@@ -1372,6 +1201,10 @@
           SOUNDS.correct.currentTime = 0;
           SOUNDS.correct.play();
         } catch (e) {}
+
+        if (window.GameDialogue) {
+          window.GameDialogue.showCorrectAnswerDialogue();
+        }
         
         setTimeout(() => {
           gameState.currentIndex++;
@@ -1395,8 +1228,18 @@
             SOUNDS.wrong.currentTime = 0;
             SOUNDS.wrong.play();
           } catch (e) {}
+
+          if (window.GameDialogue) {
+            window.GameDialogue.showWrongAnswerDialogue();
+          }
           
           setTimeout(() => {
+            lives--;
+            updateLives();
+            if (lives <= 0) {
+              showGameEndScreen();
+              return;
+            }
             gameState.currentIndex++;
             showQuestion();
           }, 1300);
@@ -1406,11 +1249,27 @@
 
     // ===== 星星系統 =====
     function loadTotalStars() {
+      if (typeof LinkageSystem !== 'undefined' && LinkageSystem?.stars?.get) {
+        return Number(LinkageSystem.stars.get()) || 0;
+      }
+      if (typeof StarRewardSystem !== 'undefined' && typeof StarRewardSystem.getTotalStars === 'function') {
+        return Number(StarRewardSystem.getTotalStars()) || 0;
+      }
       const stars = localStorage.getItem('totalStars');
       return stars !== null ? parseInt(stars, 10) : 0;
     }
 
     function addStarsToTotal(stars) {
+      if (typeof StarRewardSystem !== 'undefined' && typeof StarRewardSystem.addStars === 'function') {
+        StarRewardSystem.addStars(stars);
+        updateStarsDisplay();
+        return;
+      }
+      if (typeof LinkageSystem !== 'undefined' && LinkageSystem?.stars?.add) {
+        LinkageSystem.stars.add(stars);
+        updateStarsDisplay();
+        return;
+      }
       const currentStars = loadTotalStars();
       const newTotal = currentStars + stars;
       localStorage.setItem('totalStars', newTotal);
@@ -1752,17 +1611,20 @@
     document.addEventListener('DOMContentLoaded', () => {
       updateStarsDisplay();
       document.getElementById('sessionStarsDisplay').textContent = '本次已獲得 0 顆星星';
+      updateLives();
       initData();
-      gameState.currentIndex = 0;
+      loadProgress();
       updateCounter();
       showQuestion();
-      localStorage.removeItem('fillIndex');
-      
-      // 初始化背景音樂
       initBackgroundMusic();
-      
-      // 初始化時解鎖複習按鈕
       unlockReviewButton();
+
+      if (window.GameDialogue) {
+        window.GameDialogue.init();
+        setTimeout(() => {
+          window.GameDialogue.showGameStartDialogue();
+        }, 2000);
+      }
     });
 
     // 點擊彈窗外也能關閉
@@ -1787,75 +1649,6 @@
       }
     });
 
-    // 角色互動系統整合
-    let currentCharacter = localStorage.getItem('characterName') || 'zeus';
-    if (window.GameDialogue) {
-      window.GameDialogue.currentCharacter = currentCharacter;
-    }
-    function showGameStartDialogue() {
-      if (window.GameDialogue) {
-        window.GameDialogue.showGameStartDialogue();
-      }
-    }
-    function showCorrectAnswerDialogue() {
-      if (window.GameDialogue) {
-        window.GameDialogue.showCorrectAnswerDialogue();
-      }
-    }
-    function showWrongAnswerDialogue() {
-      if (window.GameDialogue) {
-        window.GameDialogue.showWrongAnswerDialogue();
-      }
-    }
-    function showGameVictoryDialogue() {
-      if (window.GameDialogue) {
-        window.GameDialogue.showGameVictoryDialogue();
-      }
-    }
-    function showGameDefeatDialogue() {
-      if (window.GameDialogue) {
-        window.GameDialogue.showGameDefeatDialogue();
-      }
-    }
-
-    // 頁面載入時初始化
-    document.addEventListener('DOMContentLoaded', function() {
-      setTimeout(() => {
-        if (window.GameDialogue) {
-          window.GameDialogue.init();
-        }
-      }, 1000);
-    });
-
-    // 在遊戲開始時觸發
-    function startGame() {
-      // ... existing code ...
-      showGameStartDialogue();
-    }
-
-    // 在答對時觸發
-    function handleCorrectAnswer() {
-      // ... existing code ...
-      showCorrectAnswerDialogue();
-    }
-
-    // 在答錯時觸發
-    function handleWrongAnswer() {
-      // ... existing code ...
-      showWrongAnswerDialogue();
-    }
-
-    // 在遊戲勝利時觸發
-    function handleGameVictory() {
-      // ... existing code ...
-      showGameVictoryDialogue();
-    }
-
-    // 在遊戲失敗時觸發
-    function handleGameDefeat() {
-      // ... existing code ...
-      showGameDefeatDialogue();
-    }
   </script>
 </body>
 </html>
