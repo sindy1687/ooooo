@@ -968,31 +968,31 @@
       document.getElementById('atlasGrid').appendChild(card);
     });
 
-    // Tab3: 希臘神祇
+      // Tab3: 希臘神祇
     (function() {
       const deities = [
-        { name: '宙斯', url: 'greek_fill_blank.html?god=zeus', img: 'https://i.pinimg.com/736x/f7/44/dc/f744dc2cd9f052369f1eda963bf3b547.jpg', desc: '雷電之王' },
-        { name: '赫拉', url: 'greek_fill_blank.html?god=hera', img: 'https://images.nightcafe.studio/jobs/jrtc05QrGWfgcL9U7oQ5/jrtc05QrGWfgcL9U7oQ5--1--0kpbz.jpg?tr=w-1600,c-at_max', desc: '婚姻守護' },
-        { name: '波塞頓', url: 'greek_fill_blank.html?god=poseidon', img: 'https://th.bing.com/th/id/OIP.ds9l0HmwcwlBZUt1_SOAUQHaLF?r=0&rs=1&pid=ImgDetMain&cb=idpwebpc2', desc: '震海之神' },
-        { name: '得墨忒耳', url: 'greek_fill_blank.html?god=demeter', img: 'https://i.pinimg.com/736x/5e/55/f3/5e55f31c21d96c2055d39d07fa72ea2.jpg', desc: '豐饒女神' },
-        { name: '雅典娜', url: 'greek_fill_blank.html?god=athena', img: 'https://i.pinimg.com/originals/45/09/04/45090436c02480c7d472774ba38bf682.jpg', desc: '智慧戰略' },
-        { name: '阿波羅', url: 'greek_fill_blank.html?god=apollo', img: 'https://th.bing.com/th/id/OIP.nST24oXU5QbHwyzkNIDI0QHaHa?r=0&w=736&h=736&rs=1&pid=ImgDetMain&cb=idpwebpc2', desc: '光與預言' },
-        { name: '阿爾忒彌斯', url: 'greek_fill_blank.html?god=artemis', img: 'https://as2.ftcdn.net/v2/jpg/07/11/84/53/1000_F_711845312_FrFR9WTehywtZl3bO20csc48OSmqKRcU.jpg', desc: '月狩獵女神' },
-        { name: '阿瑞斯', url: 'greek_fill_blank.html?god=ares', img: 'https://i.pinimg.com/originals/e6/bc/f7/e6bcf7f460a50f2c2700122554c4386e.png', desc: '戰場狂熱' },
-        { name: '阿芙蘿黛蒂', url: 'greek_fill_blank.html?god=aphrodite', img: 'https://img.freepik.com/premium-photo/timeless-beauty-capturing-ancient-greek-goddess-athena-ultrarealistic-splendor_960911-22038.jpg?w=2000', desc: '愛與美' },
-        { name: '赫菲斯托斯', url: 'greek_fill_blank.html?god=hephaestus', img: 'https://th.bing.com/th/id/OIP.c9pf5fdxkTIC4f58Wwk7SQHaHa?r=0&w=1024&h=1024&rs=1&pid=ImgDetMain&cb=idpwebpc2', desc: '鍛造工匠' },
-        { name: '赫耳墨斯', url: 'greek_fill_blank.html?god=hermes', img: 'https://substackcdn.com/image/fetch/f_auto,q_auto:good,fl_progressive:steep/https://substack-post-media.s3.amazonaws.com/public/images/49e898d3-33e8-4355-8049-5b32b6fa2695_1024x1024.png', desc: '狡黠信使' },
-        { name: '赫斯提亞', url: 'greek_fill_blank.html?god=hestia', img: 'https://i.etsystatic.com/10441898/c/2143/2143/0/0/il/b01774/5669551924/il_600x600.5669551924_g09a.jpg', desc: '家園聖火' },
-        { name: '狄俄尼索斯', url: 'greek_fill_blank.html?god=dionysus', img: 'https://i.pinimg.com/1200x/d3/27/97/d327972a87a915c1cbd9fefe868307d1.jpg', desc: '狂歡酒神' },
-        { name: '哈迪斯', url: 'greek_fill_blank.html?god=hades', img: 'https://th.bing.com/th/id/OIP.jh5PoCyBjLDW-PQlC9_1dAHaHa?r=0&w=1024&h=1024&rs=1&pid=ImgDetMain&cb=idpwebpc2', desc: '冥界君主' },
-        { name: '珀爾塞福涅', url: 'greek_fill_blank.html?god=persephone', img: 'https://cdn.openart.ai/stable_diffusion/af3394f52d952263c6c773045bcc5391f6702033_2000x2000.webp', desc: '春天冥后' },
-        { name: '厄洛斯', url: 'greek_fill_blank.html?god=eros', img: 'https://i.pinimg.com/736x/ad/63/63/ad6363477e4266b39aaf86e058facfb6.jpg', desc: '愛之箭' },
-        { name: '尼刻', url: 'greek_fill_blank.html?god=nike', img: 'https://i.pinimg.com/736x/d8/b4/51/d8b4515f750e0f8106ba69a91ff05679.jpg', desc: '勝利女神' },
-        { name: '蓋婭', url: 'greek_fill_blank.html?god=gaia', img: 'https://i.pinimg.com/1200x/4e/ac/31/4eac313f814d9044877241e163a43585.jpg', desc: '萬物之母' },
-        { name: '阿特拉斯', url: 'greek_fill_blank.html?god=atlas_god', img: 'https://i.pinimg.com/736x/02/e2/14/02e214b507e55f3dddb673c7acdc25f7.jpg', desc: '天空支柱' },
-        { name: '克洛諾斯', url: 'greek_fill_blank.html?god=cronus', img: 'https://i.pinimg.com/1200x/89/24/bc/8924bcdf6c9734a961ef956a8e8fbf79.jpg', desc: '時間之王' },
-        { name: '瑞亞', url: 'greek_fill_blank.html?god=rhea', img: 'https://i.pinimg.com/1200x/44/0e/e8/440ee8571b581d7ae728d2c9c765cb74.jpg', desc: '母性守護' },
-        { name: '普羅米修斯', url: 'greek_fill_blank.html?god=prometheus', img: 'https://i.pinimg.com/736x/2d/b4/24/2db4245bd440fa993e2e1ac1904800c6.jpg', desc: '火種使者' }
+        { name: '宙斯', url: 'zeus.html', img: 'https://i.pinimg.com/736x/f7/44/dc/f744dc2cd9f052369f1eda963bf3b547.jpg', desc: '雷電之王' },
+        { name: '赫拉', url: 'hera.html', img: 'https://images.nightcafe.studio/jobs/jrtc05QrGWfgcL9U7oQ5/jrtc05QrGWfgcL9U7oQ5--1--0kpbz.jpg?tr=w-1600,c-at_max', desc: '婚姻守護' },
+        { name: '波塞頓', url: 'poseidon.html', img: 'https://th.bing.com/th/id/OIP.ds9l0HmwcwlBZUt1_SOAUQHaLF?r=0&rs=1&pid=ImgDetMain&cb=idpwebpc2', desc: '震海之神' },
+        { name: '得墨忒耳', url: 'demeter.html', img: 'https://i.pinimg.com/736x/5e/55/f3/5e55f31c21d96c2055d39d07fa72ea2.jpg', desc: '豐饒女神' },
+        { name: '雅典娜', url: 'athena.html', img: 'https://i.pinimg.com/originals/45/09/04/45090436c02480c7d472774ba38bf682.jpg', desc: '智慧戰略' },
+        { name: '阿波羅', url: 'apollo.html', img: 'https://th.bing.com/th/id/OIP.nST24oXU5QbHwyzkNIDI0QHaHa?r=0&w=736&h=736&rs=1&pid=ImgDetMain&cb=idpwebpc2', desc: '光與預言' },
+        { name: '阿爾忒彌斯', url: 'artemis.html', img: 'https://as2.ftcdn.net/v2/jpg/07/11/84/53/1000_F_711845312_FrFR9WTehywtZl3bO20csc48OSmqKRcU.jpg', desc: '月狩獵女神' },
+        { name: '阿瑞斯', url: 'ares.html', img: 'https://i.pinimg.com/originals/e6/bc/f7/e6bcf7f460a50f2c2700122554c4386e.png', desc: '戰場狂熱' },
+        { name: '阿芙蘿黛蒂', url: 'aphrodite.html', img: 'https://img.freepik.com/premium-photo/timeless-beauty-capturing-ancient-greek-goddess-athena-ultrarealistic-splendor_960911-22038.jpg?w=2000', desc: '愛與美' },
+        { name: '赫菲斯托斯', url: 'hephaestus.html', img: 'https://th.bing.com/th/id/OIP.c9pf5fdxkTIC4f58Wwk7SQHaHa?r=0&w=1024&h=1024&rs=1&pid=ImgDetMain&cb=idpwebpc2', desc: '鍛造工匠' },
+        { name: '赫耳墨斯', url: 'hermes.html', img: 'https://substackcdn.com/image/fetch/f_auto,q_auto:good,fl_progressive:steep/https://substack-post-media.s3.amazonaws.com/public/images/49e898d3-33e8-4355-8049-5b32b6fa2695_1024x1024.png', desc: '狡黠信使' },
+        { name: '赫斯提亞', url: 'hestia.html', img: 'https://i.etsystatic.com/10441898/c/2143/2143/0/0/il/b01774/5669551924/il_600x600.5669551924_g09a.jpg', desc: '家園聖火' },
+        { name: '狄俄尼索斯', url: 'dionysus.html', img: 'https://i.pinimg.com/1200x/d3/27/97/d327972a87a915c1cbd9fefe868307d1.jpg', desc: '狂歡酒神' },
+        { name: '哈迪斯', url: 'hades.html', img: 'https://th.bing.com/th/id/OIP.jh5PoCyBjLDW-PQlC9_1dAHaHa?r=0&w=1024&h=1024&rs=1&pid=ImgDetMain&cb=idpwebpc2', desc: '冥界君主' },
+        { name: '珀爾塞福涅', url: 'persephone.html', img: 'https://cdn.openart.ai/stable_diffusion/af3394f52d952263c6c773045bcc5391f6702033_2000x2000.webp', desc: '春天冥后' },
+        { name: '厄洛斯', url: 'eros.html', img: 'https://i.pinimg.com/736x/ad/63/63/ad6363477e4266b39aaf86e058facfb6.jpg', desc: '愛之箭' },
+        { name: '尼刻', url: 'nike.html', img: 'https://i.pinimg.com/736x/d8/b4/51/d8b4515f750e0f8106ba69a91ff05679.jpg', desc: '勝利女神' },
+        { name: '蓋婭', url: 'gaia.html', img: 'https://i.pinimg.com/1200x/4e/ac/31/4eac313f814d9044877241e163a43585.jpg', desc: '萬物之母' },
+        { name: '阿特拉斯', url: 'atlas_god.html', img: 'https://i.pinimg.com/736x/02/e2/14/02e214b507e55f3dddb673c7acdc25f7.jpg', desc: '天空支柱' },
+        { name: '克洛諾斯', url: 'cronus.html', img: 'https://i.pinimg.com/1200x/89/24/bc/8924bcdf6c9734a961ef956a8e8fbf79.jpg', desc: '時間之王' },
+        { name: '瑞亞', url: 'rhea.html', img: 'https://i.pinimg.com/1200x/44/0e/e8/440ee8571b581d7ae728d2c9c765cb74.jpg', desc: '母性守護' },
+        { name: '普羅米修斯', url: 'prometheus.html', img: 'https://i.pinimg.com/736x/2d/b4/24/2db4245bd440fa993e2e1ac1904800c6.jpg', desc: '火種使者' }
       ];
 
       let unlockedGreek = JSON.parse(localStorage.getItem('unlockedGreek') || '[]');
