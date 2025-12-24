@@ -710,7 +710,12 @@
     </div>
   </div>
 
+  <script src="js/utils.js"></script>
+  <script src="js/bgmController.js"></script>
+  <script src="js/userData.js"></script>
+  <script src="js/characterDialogue.js"></script>
   <script src="js/gameDialogue.js"></script>
+  <script src="js/greekScoreUpload.js"></script>
   <script>
     // ===== 遊戲配置 =====
     const GAME_CONFIG = {
@@ -720,51 +725,288 @@
     };
 
     // ===== 題庫資料 =====
-   // ===== 題庫資料（第二批單字） =====
-const VOCAB_DATA = [
-  { word: "hotel", zh: "旅館", en_sentence: "We stayed at a nice hotel near the beach.", zh_sentence: "我們住在海邊附近的一家不錯的旅館。", category: "場所建築" },
-  { word: "season", zh: "季節", en_sentence: "Spring is my favorite season.", zh_sentence: "春天是我最喜歡的季節。", category: "時間頻率" },
-  { word: "high", zh: "高的", en_sentence: "That mountain is very high.", zh_sentence: "那座山很高。", category: "形容詞" },
-  { word: "autumn", zh: "秋天", en_sentence: "The leaves turn yellow in autumn.", zh_sentence: "秋天時樹葉會變黃。", category: "時間頻率" },
-  { word: "snow", zh: "雪", en_sentence: "It may snow tomorrow.", zh_sentence: "明天可能會下雪。", category: "自然環境" },
-  { word: "snowman", zh: "雪人", en_sentence: "The children made a snowman in the yard.", zh_sentence: "孩子們在院子裡堆雪人。", category: "自然環境" },
-  { word: "plan", zh: "計畫", en_sentence: "I have a plan to travel next summer.", zh_sentence: "我計畫明年夏天去旅行。", category: "動作動詞" },
-  { word: "date", zh: "日期", en_sentence: "What is the date today?", zh_sentence: "今天是幾號？", category: "時間頻率" },
-  { word: "Father's Day", zh: "父親節", en_sentence: "We give gifts on Father's Day.", zh_sentence: "我們在父親節送禮物。", category: "語言文化" },
-  { word: "USA", zh: "美國", en_sentence: "My cousin lives in the USA.", zh_sentence: "我的表弟住在美國。", category: "語言文化" },
-  { word: "photo", zh: "照片", en_sentence: "She took a photo of the sunset.", zh_sentence: "她拍了一張日落的照片。", category: "日常生活用品" },
-  { word: "mind", zh: "心智；介意", en_sentence: "Do you mind if I open the window?", zh_sentence: "你介意我開窗嗎？", category: "理解表達" },
-  { word: "work", zh: "工作；作品", en_sentence: "He goes to work by bus every day.", zh_sentence: "他每天搭公車上班。", category: "動作動詞" },
-  { word: "exercise", zh: "運動", en_sentence: "We should exercise every morning.", zh_sentence: "我們應該每天早上運動。", category: "娛樂活動" },
-  { word: "turtle", zh: "烏龜", en_sentence: "The turtle moves slowly.", zh_sentence: "烏龜動得很慢。", category: "動物植物" },
-  { word: "practice", zh: "練習", en_sentence: "You need to practice speaking English.", zh_sentence: "你需要練習說英語。", category: "動作動詞" },
-  { word: "race", zh: "比賽；賽跑", en_sentence: "He joined the 100-meter race.", zh_sentence: "他參加了一百公尺賽跑。", category: "娛樂活動" },
-  { word: "team", zh: "隊伍", en_sentence: "Our basketball team won the game.", zh_sentence: "我們的籃球隊贏了比賽。", category: "娛樂活動" },
-  { word: "problem", zh: "問題", en_sentence: "I have a problem with my computer.", zh_sentence: "我的電腦有問題。", category: "理解表達" },
-  { word: "toe", zh: "腳趾", en_sentence: "I hurt my toe while running.", zh_sentence: "我跑步時扭傷了腳趾。", category: "醫療健康" },
-  { word: "kind", zh: "親切的；種類", en_sentence: "She is a kind person.", zh_sentence: "她是一個親切的人。", category: "形容詞" },
-  { word: "violin", zh: "小提琴", en_sentence: "He plays the violin beautifully.", zh_sentence: "他的小提琴拉得很動聽。", category: "語言文化" },
-  { word: "flute", zh: "長笛", en_sentence: "She can play the flute well.", zh_sentence: "她長笛吹得很好。", category: "語言文化" },
-  { word: "special", zh: "特別的", en_sentence: "Today is a special day for us.", zh_sentence: "今天對我們來說是特別的一天。", category: "形容詞" },
-  { word: "afraid", zh: "害怕的", en_sentence: "She is afraid of snakes.", zh_sentence: "她害怕蛇。", category: "形容詞" },
-  { word: "same", zh: "相同的", en_sentence: "We are in the same class.", zh_sentence: "我們在同一個班。", category: "形容詞" },
-  { word: "different", zh: "不同的", en_sentence: "Dogs and cats are different animals.", zh_sentence: "狗和貓是不同的動物。", category: "形容詞" },
-  { word: "snowy", zh: "下雪的", en_sentence: "It’s a snowy day today.", zh_sentence: "今天是個下雪天。", category: "形容詞" },
-  { word: "dry", zh: "乾的", en_sentence: "The clothes are dry now.", zh_sentence: "衣服現在乾了。", category: "形容詞" },
-  { word: "wet", zh: "濕的", en_sentence: "My shoes are wet from the rain.", zh_sentence: "我的鞋子被雨淋濕了。", category: "形容詞" },
-  { word: "popular", zh: "受歡迎的", en_sentence: "That singer is very popular.", zh_sentence: "那位歌手非常受歡迎。", category: "形容詞" },
-  { word: "dark", zh: "黑暗的", en_sentence: "It gets dark early in winter.", zh_sentence: "冬天天黑得很早。", category: "自然環境" },
-  { word: "know", zh: "知道；認識", en_sentence: "Do you know the answer?", zh_sentence: "你知道答案嗎？", category: "理解表達" },
-  { word: "keep", zh: "保持", en_sentence: "Please keep quiet in class.", zh_sentence: "上課時請保持安靜。", category: "動作動詞" },
-  { word: "join", zh: "加入", en_sentence: "I want to join the music club.", zh_sentence: "我想加入音樂社。", category: "動作動詞" },
-  { word: "throw", zh: "丟", en_sentence: "Throw the ball to me!", zh_sentence: "把球丟給我！", category: "動作動詞" },
-  { word: "hit", zh: "打擊；碰撞", en_sentence: "He hit the ball very hard.", zh_sentence: "他用力打球。", category: "動作動詞" },
-  { word: "enjoy", zh: "享受", en_sentence: "I enjoy listening to music.", zh_sentence: "我喜歡聽音樂。", category: "動作動詞" },
-  { word: "bow", zh: "鞠躬；弓", en_sentence: "The actors bow at the end of the show.", zh_sentence: "演員在表演結束時鞠躬。", category: "動作動詞" },
-  { word: "win", zh: "贏", en_sentence: "We will win the game together.", zh_sentence: "我們會一起贏得比賽。", category: "娛樂活動" }
-];
-
-
+    const VOCAB_DATA = [
+      {
+        "word": "learn",
+        "zh": "學習",
+        "en_sentence": "I want to learn English.",
+        "zh_sentence": "我想要學習英語。",
+        "category": "動作動詞"
+      },
+      {
+        "word": "climb",
+        "zh": "攀爬",
+        "en_sentence": "We climb the mountain together.",
+        "zh_sentence": "我們一起爬那座山。",
+        "category": "動作動詞"
+      },
+      {
+        "word": "hike",
+        "zh": "徒步健行",
+        "en_sentence": "They go hiking in the forest.",
+        "zh_sentence": "他們去森林裡徒步健行。",
+        "category": "動作動詞"
+      },
+      {
+        "word": "camp",
+        "zh": "露營",
+        "en_sentence": "We camp near the lake.",
+        "zh_sentence": "我們在湖邊露營。",
+        "category": "動作動詞"
+      },
+      {
+        "word": "everyone",
+        "zh": "每個人",
+        "en_sentence": "Everyone is welcome to join.",
+        "zh_sentence": "每個人都歡迎參加。",
+        "category": "代名詞"
+      },
+      {
+        "word": "together",
+        "zh": "一起",
+        "en_sentence": "Let's work together on this project.",
+        "zh_sentence": "讓我們一起做這個專案。",
+        "category": "副詞"
+      },
+      {
+        "word": "ago",
+        "zh": "在…之前",
+        "en_sentence": "I saw him two days ago.",
+        "zh_sentence": "我兩天前見過他。",
+        "category": "副詞"
+      },
+      {
+        "word": "never",
+        "zh": "從不",
+        "en_sentence": "I never eat spicy food.",
+        "zh_sentence": "我從不吃辣的食物。",
+        "category": "副詞"
+      },
+      {
+        "word": "always",
+        "zh": "總是",
+        "en_sentence": "She always arrives on time.",
+        "zh_sentence": "她總是準時到達。",
+        "category": "副詞"
+      },
+      {
+        "word": "usually",
+        "zh": "通常",
+        "en_sentence": "I usually go to bed at 10 PM.",
+        "zh_sentence": "我通常晚上10點睡覺。",
+        "category": "副詞"
+      },
+      {
+        "word": "sometimes",
+        "zh": "有時候",
+        "en_sentence": "Sometimes I like to read books.",
+        "zh_sentence": "有時候我喜歡看書。",
+        "category": "副詞"
+      },
+      {
+        "word": "seldom",
+        "zh": "不常；很少",
+        "en_sentence": "He seldom watches TV.",
+        "zh_sentence": "他很少看電視。",
+        "category": "副詞"
+      },
+      {
+        "word": "was",
+        "zh": "是(am / is 過去式)",
+        "en_sentence": "I was happy yesterday.",
+        "zh_sentence": "我昨天很開心。",
+        "category": "動詞"
+      },
+      {
+        "word": "were",
+        "zh": "是(are過去式)",
+        "en_sentence": "They were at school last week.",
+        "zh_sentence": "他們上週在學校。",
+        "category": "動詞"
+      },
+      {
+        "word": "insect",
+        "zh": "昆蟲",
+        "en_sentence": "The insect is flying around the flower.",
+        "zh_sentence": "那隻昆蟲在花周圍飛舞。",
+        "category": "名詞"
+      },
+      {
+        "word": "bat",
+        "zh": "蝙蝠",
+        "en_sentence": "Bats sleep during the day.",
+        "zh_sentence": "蝙蝠在白天睡覺。",
+        "category": "名詞"
+      },
+      {
+        "word": "butterfly",
+        "zh": "蝴蝶",
+        "en_sentence": "A beautiful butterfly landed on the flower.",
+        "zh_sentence": "一隻美麗的蝴蝶停在花上。",
+        "category": "名詞"
+      },
+      {
+        "word": "spider",
+        "zh": "蜘蛛",
+        "en_sentence": "The spider is spinning its web.",
+        "zh_sentence": "那隻蜘蛛正在織網。",
+        "category": "名詞"
+      },
+      {
+        "word": "whale",
+        "zh": "鯨",
+        "en_sentence": "We saw a whale in the ocean.",
+        "zh_sentence": "我們在海洋裡看到了一條鯨。",
+        "category": "名詞"
+      },
+      {
+        "word": "hill",
+        "zh": "丘陵；小山",
+        "en_sentence": "The house is on top of the hill.",
+        "zh_sentence": "那棟房子在山頂上。",
+        "category": "名詞"
+      },
+      {
+        "word": "island",
+        "zh": "島嶼",
+        "en_sentence": "They live on a small island.",
+        "zh_sentence": "他們住在一個小島上。",
+        "category": "名詞"
+      },
+      {
+        "word": "present",
+        "zh": "禮物",
+        "en_sentence": "I gave her a birthday present.",
+        "zh_sentence": "我給了她一個生日禮物。",
+        "category": "名詞"
+      },
+      {
+        "word": "junior high school",
+        "zh": "國中",
+        "en_sentence": "My brother goes to junior high school.",
+        "zh_sentence": "我弟弟上國中。",
+        "category": "名詞"
+      },
+      {
+        "word": "course",
+        "zh": "課程",
+        "en_sentence": "This course is very interesting.",
+        "zh_sentence": "這門課程很有趣。",
+        "category": "名詞"
+      },
+      {
+        "word": "art",
+        "zh": "藝術；美術",
+        "en_sentence": "I love studying art in school.",
+        "zh_sentence": "我喜歡在學校學習美術。",
+        "category": "名詞"
+      },
+      {
+        "word": "history",
+        "zh": "歷史",
+        "en_sentence": "History is my favorite subject.",
+        "zh_sentence": "歷史是我最喜歡的科目。",
+        "category": "名詞"
+      },
+      {
+        "word": "science",
+        "zh": "科學",
+        "en_sentence": "We do experiments in science class.",
+        "zh_sentence": "我們在科學課上做實驗。",
+        "category": "名詞"
+      },
+      {
+        "word": "lesson",
+        "zh": "課",
+        "en_sentence": "Today's lesson is about animals.",
+        "zh_sentence": "今天的課是關於動物的。",
+        "category": "名詞"
+      },
+      {
+        "word": "subject",
+        "zh": "學科；科目",
+        "en_sentence": "Math is a difficult subject for me.",
+        "zh_sentence": "數學對我來說是一門困難的科目。",
+        "category": "名詞"
+      },
+      {
+        "word": "test",
+        "zh": "測驗",
+        "en_sentence": "We have a test tomorrow.",
+        "zh_sentence": "我們明天有測驗。",
+        "category": "名詞"
+      },
+      {
+        "word": "vacation",
+        "zh": "假期",
+        "en_sentence": "We go on vacation in summer.",
+        "zh_sentence": "我們在夏天去度假。",
+        "category": "名詞"
+      },
+      {
+        "word": "holiday",
+        "zh": "假日",
+        "en_sentence": "Tomorrow is a holiday.",
+        "zh_sentence": "明天是假日。",
+        "category": "名詞"
+      },
+      {
+        "word": "Teacher's Day",
+        "zh": "教師節",
+        "en_sentence": "We celebrate Teacher's Day on September 28th.",
+        "zh_sentence": "我們在9月28日慶祝教師節。",
+        "category": "名詞"
+      },
+      {
+        "word": "festival",
+        "zh": "節日",
+        "en_sentence": "The festival is very exciting.",
+        "zh_sentence": "這個節日很令人興奮。",
+        "category": "名詞"
+      },
+      {
+        "word": "Moon Festival",
+        "zh": "中秋節",
+        "en_sentence": "We eat mooncakes during Moon Festival.",
+        "zh_sentence": "我們在中秋節吃月餅。",
+        "category": "名詞"
+      },
+      {
+        "word": "half",
+        "zh": "一半；二分之一",
+        "en_sentence": "I ate half of the pizza.",
+        "zh_sentence": "我吃了半個披薩。",
+        "category": "名詞"
+      },
+      {
+        "word": "quarter",
+        "zh": "四分之一；十五分鐘",
+        "en_sentence": "It's a quarter past three.",
+        "zh_sentence": "現在是3點15分。",
+        "category": "名詞"
+      },
+      {
+        "word": "noise",
+        "zh": "聲音；噪音",
+        "en_sentence": "The noise is too loud.",
+        "zh_sentence": "這個噪音太大了。",
+        "category": "名詞"
+      },
+      {
+        "word": "show",
+        "zh": "表演",
+        "en_sentence": "The show starts at 8 PM.",
+        "zh_sentence": "表演在晚上8點開始。",
+        "category": "名詞"
+      },
+      {
+        "word": "start",
+        "zh": "開始",
+        "en_sentence": "The movie starts at 7 PM.",
+        "zh_sentence": "電影在晚上7點開始。",
+        "category": "動詞"
+      }
+    ];
 
     // ===== 遊戲狀態變數 =====
     let gameState = {
@@ -839,7 +1081,7 @@ const VOCAB_DATA = [
 
     // ===== 工具函數 =====
     function escapeRegExp(s) {
-      return s.replace(/[.*+?^${}()|[\\]\\]/g, '\\$&');
+      return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     }
 
     function getRandomQuestions(arr, n) {
@@ -1617,5 +1859,3 @@ const VOCAB_DATA = [
   </script>
 </body>
 </html>
-
-
