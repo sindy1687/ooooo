@@ -198,6 +198,22 @@
       z-index: 10;
     }
 
+    #lives {
+      position: fixed;
+      top: 76px;
+      right: 20px;
+      padding: 8px 14px;
+      border-radius: 10px;
+      box-shadow: 0 0 12px #ffd700, 0 0 32px #00ffff;
+      border: 2px solid #00ffff;
+      color: #ffd700;
+      font-size: 1.2rem;
+      font-weight: bold;
+      z-index: 10;
+      background: rgba(10,20,40,0.85);
+      font-family: 'Orbitron', Arial, sans-serif;
+    }
+
     #timer {
       font-size: 1.1rem;
       margin-bottom: 16px;
@@ -381,6 +397,13 @@
         padding: 6px 10px;
         font-size: 1rem;
       }
+
+      #lives {
+        top: 62px;
+        right: 10px;
+        padding: 6px 10px;
+        font-size: 1rem;
+      }
       
       h1 {
         font-size: 1.8rem;
@@ -486,6 +509,10 @@
       z-index: 1000;
       backdrop-filter: blur(12px);
       animation: modalFadeIn 0.4s ease-out;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      padding: 20px;
+      box-sizing: border-box;
     }
     
     @keyframes modalFadeIn {
@@ -507,10 +534,12 @@
       text-align: center;
       max-width: 550px;
       width: 90%;
+      max-height: 90vh;
       box-shadow: 0 0 50px #ffd70044, 0 0 100px #00ffff22 inset, 0 0 150px rgba(255, 215, 0, 0.3);
       animation: modalPop 0.6s cubic-bezier(.68, -0.55, .27, 1.55);
       position: relative;
-      overflow: hidden;
+      overflow-y: auto;
+      overflow-x: hidden;
     }
     
     .modal-content::before {
@@ -884,7 +913,6 @@
       border: 1px solid rgba(255, 255, 255, 0.1);
     }
   </style>
-  <script src="js/gameDialogue.js"></script>
 </head>
 <body>
   <!-- 背景音樂控制按鈕 -->
@@ -895,12 +923,14 @@
     ⭐<span id="totalStarsCount">0</span>
   </div>
 
+  <!-- 生命值顯示區塊 -->
+  <div id="lives">❤️❤️❤️❤️❤️</div>
+
   <!-- 頂部按鈕 -->
   <div class="top-btns">
     <button onclick="location.href='atlas.html?tab=greek'" aria-label="回首頁">🏠 回首頁</button>
     <button onclick="resetProgress()" aria-label="重新開始">🔄 重新開始</button>
     <button onclick="showReviewModal()" aria-label="複習單字">📚 複習單字</button>
-    <button onclick="location.href='achievement.html'" aria-label="成就徽章">🏆 成就徽章</button>
   </div>
 
   <h1>阿瑞斯 Ares - 填空挑戰</h1>
@@ -961,15 +991,18 @@
         ">
           <option value="all">全部單字</option>
           <option value="動作動詞">動作動詞</option>
-          <option value="形容詞">形容詞</option>
-          <option value="食物水果">食物水果</option>
-          <option value="稱謂人際">稱謂人際</option>
+          <option value="學術教育">學術教育</option>
+          <option value="時間日期">時間日期</option>
           <option value="節日慶祝">節日慶祝</option>
-          <option value="日常用品">日常用品</option>
-          <option value="場所位置">場所位置</option>
-          <option value="抽象概念">抽象概念</option>
-          <option value="自然環境">自然環境</option>
+          <option value="數量分數">數量分數</option>
+          <option value="聲音表演">聲音表演</option>
+          <option value="稱謂人際">稱謂人際</option>
+          <option value="交通工具">交通工具</option>
+          <option value="運動娛樂">運動娛樂</option>
           <option value="身體健康">身體健康</option>
+          <option value="形容詞">形容詞</option>
+          <option value="抽象概念">抽象概念</option>
+          <option value="場所位置">場所位置</option>
         </select>
       </div>
       
@@ -1015,6 +1048,11 @@
     </div>
   </div>
 
+  <script src="js/utils.js"></script>
+  <script src="js/bgmController.js"></script>
+  <script src="js/userData.js"></script>
+  <script src="js/characterDialogue.js"></script>
+  <script src="js/gameDialogue.js"></script>
   <script src="js/greekScoreUpload.js"></script>
   <script>
     // ===== 遊戲配置 =====
@@ -1318,14 +1356,26 @@ const VOCAB_DATA = [
       timerInterval: null,
       preferredVoice: null,
       answerLog: [],
-      sessionStars: 0
+      sessionStars: 0,
+      totalTimeUsed: 0,
+      questionStartTs: null
     };
+
+    window.gameState = gameState;
+
+    let lives = 5;
+
+    function updateLives() {
+      const el = document.getElementById('lives');
+      if (!el) return;
+      el.innerHTML = '❤️'.repeat(Math.max(0, lives)) + '🤍'.repeat(Math.max(0, 5 - lives));
+    }
 
     // ===== 音效資源 =====
     const SOUNDS = {
-      correct: new Audio('audio/correct.mp3'),
-      wrong: new Audio('audio/wrong.mp3'),
-      type: new Audio('audio/type.mp3')
+      correct: new Audio('sound/correct.mp3'),
+      wrong: new Audio('sound/wrong.mp3'),
+      type: new Audio('sound/type.mp3')
     };
 
     // ===== 背景音樂控制 =====
@@ -1427,6 +1477,8 @@ const VOCAB_DATA = [
       let timeLeft = GAME_CONFIG.TIME_LIMIT;
       document.getElementById('time-left').textContent = timeLeft;
       document.getElementById('timer').classList.remove('hidden');
+
+      gameState.questionStartTs = Date.now();
       
       gameState.timerInterval = setInterval(() => {
         timeLeft--;
@@ -1440,6 +1492,12 @@ const VOCAB_DATA = [
 
     function stopTimer() {
       clearInterval(gameState.timerInterval);
+
+      if (gameState.questionStartTs) {
+        const deltaSec = Math.max(0, Math.round((Date.now() - gameState.questionStartTs) / 1000));
+        gameState.totalTimeUsed = (Number(gameState.totalTimeUsed) || 0) + deltaSec;
+        gameState.questionStartTs = null;
+      }
     }
 
     // ===== 語音功能 =====
@@ -1490,6 +1548,12 @@ const VOCAB_DATA = [
       
       if (autoNext) {
         setTimeout(() => {
+          lives--;
+          updateLives();
+          if (lives <= 0) {
+            showGameEndScreen();
+            return;
+          }
           gameState.currentIndex++;
           showQuestion();
         }, 500);
@@ -1616,6 +1680,16 @@ const VOCAB_DATA = [
         SOUNDS.correct.currentTime = 0;
         SOUNDS.correct.play();
       } catch (e) {}
+
+      if (window.GameDialogue) {
+        setTimeout(() => {
+          if (correctCount > wrongCount) {
+            window.GameDialogue.showGameVictoryDialogue();
+          } else {
+            window.GameDialogue.showGameDefeatDialogue();
+          }
+        }, 2000);
+      }
     }
 
     function restartGame() {
@@ -1626,6 +1700,13 @@ const VOCAB_DATA = [
       gameState.currentIndex = 0;
       gameState.sessionStars = 0;
       gameState.answerLog = [];
+      gameState.totalTimeUsed = 0;
+      gameState.questionStartTs = null;
+
+      window.gameState = gameState;
+
+      lives = 5;
+      updateLives();
       
       // 重新初始化數據
       initData();
@@ -1639,10 +1720,18 @@ const VOCAB_DATA = [
     // ===== 問題操作 =====
     function skipQuestion() {
       stopTimer();
-      logAnswer(null, '');
+      if (!gameState.answerLog[gameState.currentIndex]) {
+        logAnswer(false, '');
+      }
       const feedback = document.getElementById('feedback');
       if (feedback) feedback.innerHTML = '<span style="color:#bbb;">已跳過本題</span>';
       setTimeout(() => {
+        lives--;
+        updateLives();
+        if (lives <= 0) {
+          showGameEndScreen();
+          return;
+        }
         gameState.currentIndex++;
         showQuestion();
       }, 400);
@@ -1656,6 +1745,12 @@ const VOCAB_DATA = [
         if (feedback) feedback.innerHTML = '<span style="color:#bbb;">未作答</span>';
       }
       setTimeout(() => {
+        lives--;
+        updateLives();
+        if (lives <= 0) {
+          showGameEndScreen();
+          return;
+        }
         gameState.currentIndex++;
         showQuestion();
       }, 400);
@@ -1703,6 +1798,10 @@ const VOCAB_DATA = [
           SOUNDS.correct.currentTime = 0;
           SOUNDS.correct.play();
         } catch (e) {}
+
+        if (window.GameDialogue) {
+          window.GameDialogue.showCorrectAnswerDialogue();
+        }
         
         setTimeout(() => {
           gameState.currentIndex++;
@@ -1726,8 +1825,18 @@ const VOCAB_DATA = [
             SOUNDS.wrong.currentTime = 0;
             SOUNDS.wrong.play();
           } catch (e) {}
+
+          if (window.GameDialogue) {
+            window.GameDialogue.showWrongAnswerDialogue();
+          }
           
           setTimeout(() => {
+            lives--;
+            updateLives();
+            if (lives <= 0) {
+              showGameEndScreen();
+              return;
+            }
             gameState.currentIndex++;
             showQuestion();
           }, 1300);
@@ -1737,11 +1846,27 @@ const VOCAB_DATA = [
 
     // ===== 星星系統 =====
     function loadTotalStars() {
+      if (typeof LinkageSystem !== 'undefined' && LinkageSystem?.stars?.get) {
+        return Number(LinkageSystem.stars.get()) || 0;
+      }
+      if (typeof StarRewardSystem !== 'undefined' && typeof StarRewardSystem.getTotalStars === 'function') {
+        return Number(StarRewardSystem.getTotalStars()) || 0;
+      }
       const stars = localStorage.getItem('totalStars');
       return stars !== null ? parseInt(stars, 10) : 0;
     }
 
     function addStarsToTotal(stars) {
+      if (typeof StarRewardSystem !== 'undefined' && typeof StarRewardSystem.addStars === 'function') {
+        StarRewardSystem.addStars(stars);
+        updateStarsDisplay();
+        return;
+      }
+      if (typeof LinkageSystem !== 'undefined' && LinkageSystem?.stars?.add) {
+        LinkageSystem.stars.add(stars);
+        updateStarsDisplay();
+        return;
+      }
       const currentStars = loadTotalStars();
       const newTotal = currentStars + stars;
       localStorage.setItem('totalStars', newTotal);
@@ -2249,90 +2374,43 @@ const VOCAB_DATA = [
     document.addEventListener('DOMContentLoaded', () => {
       updateStarsDisplay();
       document.getElementById('sessionStarsDisplay').textContent = '本次已獲得 0 顆星星';
+      updateLives();
       initData();
-      gameState.currentIndex = 0;
+      loadProgress();
       updateCounter();
       showQuestion();
-      localStorage.removeItem('fillIndex');
-      
-      // 初始化背景音樂
       initBackgroundMusic();
-      
-      // 初始化時解鎖複習按鈕
       unlockReviewButton();
+
+      if (window.GameDialogue) {
+        window.GameDialogue.init();
+        setTimeout(() => {
+          window.GameDialogue.showGameStartDialogue();
+        }, 2000);
+      }
     });
 
-    // 點擊彈窗外也能關閉
     document.addEventListener('DOMContentLoaded', function() {
       const reviewModal = document.getElementById('reviewModal');
       const gameEndModal = document.getElementById('gameEndModal');
       
-      if(reviewModal){
-        reviewModal.addEventListener('click', function(e){
-          if(e.target === reviewModal){
+      if (reviewModal) {
+        reviewModal.addEventListener('click', function(e) {
+          if (e.target === reviewModal) {
             closeReviewModal();
           }
         });
       }
       
-      if(gameEndModal){
-        gameEndModal.addEventListener('click', function(e){
-          if(e.target === gameEndModal){
+      if (gameEndModal) {
+        gameEndModal.addEventListener('click', function(e) {
+          if (e.target === gameEndModal) {
             document.getElementById('gameEndModal').style.display = 'none';
           }
         });
       }
     });
 
-    // 取得主頁選擇的角色（假設存在 localStorage.characterName）
-    let currentCharacter = localStorage.getItem('characterName') || 'zeus';
-    if (window.GameDialogue) {
-      window.GameDialogue.currentCharacter = currentCharacter;
-    }
-
-    function showGameStartDialogue() {
-      if (window.GameDialogue) {
-        window.GameDialogue.showGameStartDialogue();
-      }
-    }
-    function showCorrectAnswerDialogue() {
-      if (window.GameDialogue) {
-        window.GameDialogue.showCorrectAnswerDialogue();
-      }
-    }
-    function showWrongAnswerDialogue() {
-      if (window.GameDialogue) {
-        window.GameDialogue.showWrongAnswerDialogue();
-      }
-    }
-    function showGameVictoryDialogue() {
-      if (window.GameDialogue) {
-        window.GameDialogue.showGameVictoryDialogue();
-      }
-    }
-    function showGameDefeatDialogue() {
-      if (window.GameDialogue) {
-        window.GameDialogue.showGameDefeatDialogue();
-      }
-    }
-    // 在遊戲初始化時觸發開始對話
-    window.addEventListener('DOMContentLoaded', function() {
-      if (window.GameDialogue) {
-        window.GameDialogue.init();
-        showGameStartDialogue();
-      }
-    });
-    // ... existing code ...
-    // 在答對時呼叫 showCorrectAnswerDialogue()
-    // 在答錯時呼叫 showWrongAnswerDialogue()
-    // 在遊戲勝利時呼叫 showGameVictoryDialogue()
-    // 在遊戲失敗時呼叫 showGameDefeatDialogue()
-    // 請將這些呼叫插入到原本的遊戲流程對應位置
-    // ... existing code ...
   </script>
-  <script src="js/achievementSystem.js"></script>
-  <audio id="backgroundMusic" loop>
-    <source src="sound/午後放鬆時光（純音樂）.mp3" type="audio/mpeg">
-  </audio>
 </body>
 </html>
