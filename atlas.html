@@ -157,6 +157,13 @@
       text-align: center;
       text-shadow: 0 0 4px #ffd700;
     }
+    .stage-info {
+      font-size: 0.7rem;
+      color: #00ffff;
+      text-align: center;
+      margin-top: 6px;
+      text-shadow: 0 0 6px rgba(0, 255, 255, 0.7);
+    }
     .stage-chip {
       position: absolute;
       top: 10px;
@@ -170,6 +177,8 @@
       background: rgba(0, 0, 0, 0.5);
       text-transform: uppercase;
       box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+      z-index: 5;
+      pointer-events: none;
     }
 
     /* 返回按鈕與星星 */
@@ -852,10 +861,10 @@
     let passedAtlas = JSON.parse(localStorage.getItem('passed_atlas')||'[]');
     atlasCategories.forEach((key, index) => {
       // 確保每個星座都有成本設定
-      const stageNumber = Math.floor(index / 20) + 1;
-      const stageStart = (stageNumber - 1) * 20 + 1;
-      const stageEnd = Math.min(stageNumber * 20, atlasCategories.length);
-      const stageLabel = `第${stageNumber}關 • ${stageStart}-${stageEnd}`;
+      const stageNumber = index + 1;
+      const stageStart = index * 20 + 1;
+      const stageEnd = (index + 1) * 20;
+      const stageLabel = `第${stageNumber}關 ${stageStart}-${stageEnd}`;
       if (!costData[key]) {
         costData[key] = Math.floor(Math.random()*21)+10;
         localStorage.setItem('unlockCosts', JSON.stringify(costData));
@@ -867,10 +876,10 @@
       card.className = 'card' + (unlocked ? '' : ' locked');
       if (!unlocked) card.dataset.locktext = `${cost}⭐解鎖`;
       card.innerHTML = `
-        <div class="stage-chip">${stageLabel}</div>
         <div class="card-title">${title}</div>
         <div class="card-desc">${descMap[key]||''}</div>
         <div class="card-info">${unlocked ? '已解鎖' : cost+'⭐解鎖'}</div>
+        <div class="stage-info">${stageLabel}</div>
         ${passedAtlas.includes(key) ? '<div style="position:absolute;top:8px;right:10px;font-size:1.3em;color:#ffd700;">✔ 已通關</div>' : ''}
       `;
       card.addEventListener('click', () => {
@@ -943,21 +952,21 @@
           // 保存更新後的成本到 localStorage
           localStorage.setItem('unlockGreekCosts', JSON.stringify(greekCosts));
         }
-        const stageNumber = Math.floor(index / 40) + 1;
-        const stageStart = (stageNumber - 1) * 40 + 1;
-        const stageEnd = Math.min(stageNumber * 40, deities.length);
-        const stageLabel = `第${stageNumber}關 • ${stageStart}-${stageEnd}`;
+        const stageNumber = index + 1;
+        const stageStart = index * 40 + 1;
+        const stageEnd = (index + 1) * 40;
+        const stageLabel = `第${stageNumber}關 ${stageStart}-${stageEnd}`;
         const cost = greekCosts[d.name];
         const unlocked = unlockedGreek.includes(d.name);
         const card = document.createElement('div');
         card.className = 'card' + (unlocked ? '' : ' locked');
         if (!unlocked) card.dataset.locktext = `${cost}⭐解鎖`;
         card.innerHTML = `
-          <div class="stage-chip">${stageLabel}</div>
           <img src="${d.img}" alt="${d.name}"/>
           <div class="card-title">${d.name}</div>
           <div class="card-desc">${d.desc}</div>
           <div class="card-info">${unlocked ? '已解鎖' : cost + '⭐解鎖'}</div>
+          <div class="stage-info">${stageLabel}</div>
           ${passedFlipcard.includes(d.name) ? '<div style=\'position:absolute;top:8px;right:10px;font-size:1.3em;color:#ffd700;\'>✔ 已通關</div>' : ''}
         `;
         card.addEventListener('click', () => {
