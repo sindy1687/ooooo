@@ -198,6 +198,22 @@
       z-index: 10;
     }
 
+    #lives {
+      position: fixed;
+      top: 76px;
+      right: 20px;
+      padding: 8px 14px;
+      border-radius: 10px;
+      box-shadow: 0 0 12px #ffd700, 0 0 32px #00ffff;
+      border: 2px solid #00ffff;
+      color: #ffd700;
+      font-size: 1.2rem;
+      font-weight: bold;
+      z-index: 10;
+      background: rgba(10,20,40,0.85);
+      font-family: 'Orbitron', Arial, sans-serif;
+    }
+
     #timer {
       font-size: 1.1rem;
       margin-bottom: 16px;
@@ -381,6 +397,13 @@
         padding: 6px 10px;
         font-size: 1rem;
       }
+
+      #lives {
+        top: 62px;
+        right: 10px;
+        padding: 6px 10px;
+        font-size: 1rem;
+      }
       
       h1 {
         font-size: 1.8rem;
@@ -432,6 +455,14 @@
         position: relative;
         top: auto;
         left: auto;
+        display: inline-block;
+        margin-bottom: 10px;
+      }
+
+      #lives {
+        position: relative;
+        top: auto;
+        right: auto;
         display: inline-block;
         margin-bottom: 10px;
       }
@@ -585,6 +616,8 @@
     ⭐<span id="totalStarsCount">0</span>
   </div>
 
+  <div id="lives">❤️❤️❤️❤️❤️</div>
+
   <!-- 頂部按鈕 -->
   <div class="top-btns">
     <button onclick="location.href='atlas.html?tab=greek'" aria-label="回首頁">🏠 回首頁</button>
@@ -721,6 +754,8 @@
   <script src="js/userData.js"></script>
   <script src="js/characterDialogue.js"></script>
   <script src="js/gameDialogue.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/greekScoreUpload.js"></script>
   <script>
     // ===== 遊戲配置 =====
     const GAME_CONFIG = {
@@ -731,216 +766,48 @@
 
     // ===== 題庫資料 =====
     const VOCAB_DATA = [
-      {
-        "word": "wisdom",
-        "zh": "智慧",
-        "en_sentence": "Wisdom comes from experience.",
-        "zh_sentence": "智慧來自經驗。",
-        "category": "知識智慧"
-      },
-      {
-        "word": "knowledge",
-        "zh": "知識",
-        "en_sentence": "Knowledge is power.",
-        "zh_sentence": "知識就是力量。",
-        "category": "知識智慧"
-      },
-      {
-        "word": "learn",
-        "zh": "學習",
-        "en_sentence": "I learn new things every day.",
-        "zh_sentence": "我每天學習新事物。",
-        "category": "知識智慧"
-      },
-      {
-        "word": "teach",
-        "zh": "教導",
-        "en_sentence": "Teachers teach students.",
-        "zh_sentence": "老師教導學生。",
-        "category": "知識智慧"
-      },
-      {
-        "word": "study",
-        "zh": "研究",
-        "en_sentence": "Scientists study nature.",
-        "zh_sentence": "科學家研究自然。",
-        "category": "知識智慧"
-      },
-      {
-        "word": "understand",
-        "zh": "理解",
-        "en_sentence": "I understand the problem.",
-        "zh_sentence": "我理解這個問題。",
-        "category": "知識智慧"
-      },
-      {
-        "word": "think",
-        "zh": "思考",
-        "en_sentence": "Think before you act.",
-        "zh_sentence": "行動前先思考。",
-        "category": "知識智慧"
-      },
-      {
-        "word": "create",
-        "zh": "創造",
-        "en_sentence": "Artists create beautiful works.",
-        "zh_sentence": "藝術家創造美麗的作品。",
-        "category": "知識智慧"
-      },
-      {
-        "word": "invent",
-        "zh": "發明",
-        "en_sentence": "Thomas Edison invented the light bulb.",
-        "zh_sentence": "愛迪生發明了電燈泡。",
-        "category": "知識智慧"
-      },
-      {
-        "word": "discover",
-        "zh": "發現",
-        "en_sentence": "Scientists discover new things.",
-        "zh_sentence": "科學家發現新事物。",
-        "category": "知識智慧"
-      },
-      {
-        "word": "fire",
-        "zh": "火",
-        "en_sentence": "Fire gives us light and warmth.",
-        "zh_sentence": "火給我們光明和溫暖。",
-        "category": "自然元素"
-      },
-      {
-        "word": "light",
-        "zh": "光",
-        "en_sentence": "The sun gives us light.",
-        "zh_sentence": "太陽給我們光明。",
-        "category": "自然元素"
-      },
-      {
-        "word": "heat",
-        "zh": "熱",
-        "en_sentence": "The fire gives us heat.",
-        "zh_sentence": "火給我們熱量。",
-        "category": "自然元素"
-      },
-      {
-        "word": "warm",
-        "zh": "溫暖的",
-        "en_sentence": "The fire keeps us warm.",
-        "zh_sentence": "火讓我們保持溫暖。",
-        "category": "自然元素"
-      },
-      {
-        "word": "tool",
-        "zh": "工具",
-        "en_sentence": "We use tools to work.",
-        "zh_sentence": "我們使用工具工作。",
-        "category": "知識智慧"
-      },
-      {
-        "word": "skill",
-        "zh": "技能",
-        "en_sentence": "Practice helps improve skills.",
-        "zh_sentence": "練習幫助提高技能。",
-        "category": "知識智慧"
-      },
-      {
-        "word": "ability",
-        "zh": "能力",
-        "en_sentence": "Everyone has different abilities.",
-        "zh_sentence": "每個人都有不同的能力。",
-        "category": "知識智慧"
-      },
-      {
-        "word": "talent",
-        "zh": "天賦",
-        "en_sentence": "She has a talent for music.",
-        "zh_sentence": "她有音樂天賦。",
-        "category": "知識智慧"
-      },
-      {
-        "word": "gift",
-        "zh": "禮物；天賦",
-        "en_sentence": "Knowledge is a precious gift.",
-        "zh_sentence": "知識是珍貴的禮物。",
-        "category": "知識智慧"
-      },
-      {
-        "word": "help",
-        "zh": "幫助",
-        "en_sentence": "I help others when I can.",
-        "zh_sentence": "我能幫助別人時就幫助。",
-        "category": "知識智慧"
-      },
-      {
-        "word": "share",
-        "zh": "分享",
-        "en_sentence": "I share my knowledge with others.",
-        "zh_sentence": "我與他人分享我的知識。",
-        "category": "知識智慧"
-      },
-      {
-        "word": "brave",
-        "zh": "勇敢的",
-        "en_sentence": "He is brave to face challenges.",
-        "zh_sentence": "他勇敢面對挑戰。",
-        "category": "知識智慧"
-      },
-      {
-        "word": "strong",
-        "zh": "強壯的",
-        "en_sentence": "Knowledge makes us strong.",
-        "zh_sentence": "知識使我們強壯。",
-        "category": "知識智慧"
-      },
-      {
-        "word": "smart",
-        "zh": "聰明的",
-        "en_sentence": "She is very smart.",
-        "zh_sentence": "她很聰明。",
-        "category": "知識智慧"
-      },
-      {
-        "word": "clever",
-        "zh": "機智的",
-        "en_sentence": "The clever student solves problems quickly.",
-        "zh_sentence": "機智的學生快速解決問題。",
-        "category": "知識智慧"
-      },
-      {
-        "word": "bright",
-        "zh": "明亮的；聰明的",
-        "en_sentence": "The bright student learns quickly.",
-        "zh_sentence": "聰明的學生學得很快。",
-        "category": "知識智慧"
-      },
-      {
-        "word": "wise",
-        "zh": "明智的",
-        "en_sentence": "The wise person makes good decisions.",
-        "zh_sentence": "明智的人做出好決定。",
-        "category": "知識智慧"
-      },
-      {
-        "word": "intelligent",
-        "zh": "聰明的",
-        "en_sentence": "Intelligent people solve problems.",
-        "zh_sentence": "聰明的人解決問題。",
-        "category": "知識智慧"
-      },
-      {
-        "word": "genius",
-        "zh": "天才",
-        "en_sentence": "Einstein was a genius.",
-        "zh_sentence": "愛因斯坦是個天才。",
-        "category": "知識智慧"
-      },
-      {
-        "word": "brilliant",
-        "zh": "傑出的",
-        "en_sentence": "She has a brilliant mind.",
-        "zh_sentence": "她有傑出的頭腦。",
-        "category": "知識智慧"
-      }
+  {"word":"basket","zh":"籃子","en_sentence":"Put it in the basket.","zh_sentence":"把它放進籃子。","category":"名詞"},
+  {"word":"church","zh":"教堂","en_sentence":"They go to church.","zh_sentence":"他們去教堂。","category":"名詞"},
+  {"word":"hunt","zh":"打獵；尋找","en_sentence":"They hunt for food.","zh_sentence":"他們尋找食物。","category":"動詞"},
+  {"word":"roll","zh":"滾動","en_sentence":"The ball rolls.","zh_sentence":"球在滾動。","category":"動詞"},
+  {"word":"hang","zh":"掛","en_sentence":"Hang your bag here.","zh_sentence":"把包包掛在這裡。","category":"動詞"},
+  {"word":"snack","zh":"點心","en_sentence":"I eat a snack.","zh_sentence":"我吃點心。","category":"名詞"},
+  {"word":"tool","zh":"工具","en_sentence":"This tool is useful.","zh_sentence":"這個工具很有用。","category":"名詞"},
+  {"word":"letter","zh":"信","en_sentence":"I write a letter.","zh_sentence":"我寫一封信。","category":"名詞"},
+  {"word":"envelope","zh":"信封","en_sentence":"Put it in the envelope.","zh_sentence":"把它放進信封。","category":"名詞"},
+  {"word":"ground","zh":"地面","en_sentence":"Sit on the ground.","zh_sentence":"坐在地上。","category":"名詞"},
+  {"word":"R.O.C.","zh":"中華民國","en_sentence":"Taiwan is the R.O.C.","zh_sentence":"臺灣是中華民國。","category":"國名"},
+  {"word":"world","zh":"世界","en_sentence":"Travel the world.","zh_sentence":"環遊世界。","category":"名詞"},
+  {"word":"seed","zh":"種子","en_sentence":"Plant the seed.","zh_sentence":"種下種子。","category":"名詞"},
+  {"word":"other","zh":"其他的","en_sentence":"Other people agree.","zh_sentence":"其他人同意。","category":"形容詞"},
+  {"word":"taste","zh":"嚐；味道","en_sentence":"Taste the soup.","zh_sentence":"嚐湯。","category":"動詞"},
+  {"word":"smell","zh":"聞；氣味","en_sentence":"Smell the flower.","zh_sentence":"聞花香。","category":"動詞"},
+  {"word":"sound","zh":"聲音","en_sentence":"The sound is loud.","zh_sentence":"聲音很大。","category":"名詞"},
+  {"word":"feel","zh":"感覺","en_sentence":"I feel happy.","zh_sentence":"我感覺快樂。","category":"動詞"},
+  {"word":"large","zh":"大的","en_sentence":"A large room.","zh_sentence":"一個大房間。","category":"形容詞"},
+  {"word":"heavy","zh":"重的","en_sentence":"The bag is heavy.","zh_sentence":"包包很重。","category":"形容詞"},
+  {"word":"most","zh":"最多的","en_sentence":"Most students agree.","zh_sentence":"大多數學生同意。","category":"限定詞"},
+  {"word":"whose","zh":"誰的","en_sentence":"Whose bag is this?","zh_sentence":"這是誰的包？","category":"疑問詞"},
+  {"word":"than","zh":"比","en_sentence":"She is taller than me.","zh_sentence":"她比我高。","category":"介系詞"},
+  {"word":"heart","zh":"心臟","en_sentence":"My heart beats fast.","zh_sentence":"我的心跳很快。","category":"名詞"},
+  {"word":"arm","zh":"手臂","en_sentence":"Raise your arm.","zh_sentence":"舉起你的手臂。","category":"名詞"},
+  {"word":"nail","zh":"指甲","en_sentence":"Cut your nails.","zh_sentence":"剪指甲。","category":"名詞"},
+  {"word":"knee","zh":"膝蓋","en_sentence":"My knee hurts.","zh_sentence":"我膝蓋痛。","category":"名詞"},
+  {"word":"shoulder","zh":"肩膀","en_sentence":"Touch your shoulder.","zh_sentence":"摸你的肩膀。","category":"名詞"},
+  {"word":"part","zh":"部分","en_sentence":"This is a part.","zh_sentence":"這是一部分。","category":"名詞"},
+  {"word":"rest","zh":"休息","en_sentence":"Take a rest.","zh_sentence":"休息一下。","category":"動詞"},
+  {"word":"cut","zh":"切","en_sentence":"Cut the paper.","zh_sentence":"剪紙。","category":"動詞"},
+  {"word":"fill","zh":"裝滿","en_sentence":"Fill the bottle.","zh_sentence":"裝滿瓶子。","category":"動詞"},
+  {"word":"pack","zh":"打包","en_sentence":"Pack your bag.","zh_sentence":"整理你的包包。","category":"動詞"},
+  {"word":"package","zh":"包裹","en_sentence":"Send a package.","zh_sentence":"寄包裹。","category":"名詞"},
+  {"word":"air","zh":"空氣","en_sentence":"Fresh air.","zh_sentence":"新鮮空氣。","category":"名詞"},
+  {"word":"smoke","zh":"煙","en_sentence":"Smoke is bad.","zh_sentence":"煙不好。","category":"名詞"},
+  {"word":"earth","zh":"地球","en_sentence":"Protect the earth.","zh_sentence":"保護地球。","category":"名詞"},
+  {"word":"plant","zh":"植物","en_sentence":"Water the plant.","zh_sentence":"澆植物。","category":"名詞"},
+  {"word":"life","zh":"生命","en_sentence":"Life is important.","zh_sentence":"生命很重要。","category":"名詞"},
+  {"word":"light","zh":"光","en_sentence":"Turn on the light.","zh_sentence":"開燈。","category":"名詞"}
+
+
     ];
 
     // ===== 遊戲狀態變數 =====
@@ -952,8 +819,20 @@
       timerInterval: null,
       preferredVoice: null,
       answerLog: [],
-      sessionStars: 0
+      sessionStars: 0,
+      totalTimeUsed: 0,
+      questionStartTs: null
     };
+
+    window.gameState = gameState;
+
+    let lives = 5;
+
+    function updateLives() {
+      const el = document.getElementById('lives');
+      if (!el) return;
+      el.innerHTML = '❤️'.repeat(Math.max(0, lives)) + '🤍'.repeat(Math.max(0, 5 - lives));
+    }
 
     // ===== 音效資源 =====
     const SOUNDS = {
@@ -1061,6 +940,8 @@
       let timeLeft = GAME_CONFIG.TIME_LIMIT;
       document.getElementById('time-left').textContent = timeLeft;
       document.getElementById('timer').classList.remove('hidden');
+
+      gameState.questionStartTs = Date.now();
       
       gameState.timerInterval = setInterval(() => {
         timeLeft--;
@@ -1074,6 +955,12 @@
 
     function stopTimer() {
       clearInterval(gameState.timerInterval);
+
+      if (gameState.questionStartTs) {
+        const deltaSec = Math.max(0, Math.round((Date.now() - gameState.questionStartTs) / 1000));
+        gameState.totalTimeUsed = (Number(gameState.totalTimeUsed) || 0) + deltaSec;
+        gameState.questionStartTs = null;
+      }
     }
 
     // ===== 語音功能 =====
@@ -1114,6 +1001,7 @@
 
     // ===== 答案處理 =====
     function revealAnswer(autoNext = false) {
+      stopTimer();
       gameState.attemptCount = Infinity;
       document.getElementById('feedback').innerHTML = 
         '<span style="color:#f66;">⏰ 時間到！正確答案：<b>' + gameState.data[gameState.currentIndex].answer + '</b></span>';
@@ -1249,6 +1137,14 @@
       gameState.currentIndex = 0;
       gameState.sessionStars = 0;
       gameState.answerLog = [];
+
+      gameState.totalTimeUsed = 0;
+      gameState.questionStartTs = null;
+
+      window.gameState = gameState;
+
+      lives = 5;
+      updateLives();
       
       // 重新初始化數據
       initData();
@@ -1262,10 +1158,18 @@
     // ===== 問題操作 =====
     function skipQuestion() {
       stopTimer();
-      logAnswer(null, '');
+      if (!gameState.answerLog[gameState.currentIndex]) {
+        logAnswer(false, '');
+      }
       const feedback = document.getElementById('feedback');
       if (feedback) feedback.innerHTML = '<span style="color:#bbb;">已跳過本題</span>';
       setTimeout(() => {
+        lives--;
+        updateLives();
+        if (lives <= 0) {
+          showGameEndScreen();
+          return;
+        }
         gameState.currentIndex++;
         showQuestion();
       }, 400);
@@ -1279,6 +1183,12 @@
         if (feedback) feedback.innerHTML = '<span style="color:#bbb;">未作答</span>';
       }
       setTimeout(() => {
+        lives--;
+        updateLives();
+        if (lives <= 0) {
+          showGameEndScreen();
+          return;
+        }
         gameState.currentIndex++;
         showQuestion();
       }, 400);
@@ -1370,11 +1280,27 @@
 
     // ===== 星星系統 =====
     function loadTotalStars() {
+      if (typeof LinkageSystem !== 'undefined' && LinkageSystem?.stars?.get) {
+        return Number(LinkageSystem.stars.get()) || 0;
+      }
+      if (typeof StarRewardSystem !== 'undefined' && typeof StarRewardSystem.getTotalStars === 'function') {
+        return Number(StarRewardSystem.getTotalStars()) || 0;
+      }
       const stars = localStorage.getItem('totalStars');
       return stars !== null ? parseInt(stars, 10) : 0;
     }
 
     function addStarsToTotal(stars) {
+      if (typeof StarRewardSystem !== 'undefined' && typeof StarRewardSystem.addStars === 'function') {
+        StarRewardSystem.addStars(stars);
+        updateStarsDisplay();
+        return;
+      }
+      if (typeof LinkageSystem !== 'undefined' && LinkageSystem?.stars?.add) {
+        LinkageSystem.stars.add(stars);
+        updateStarsDisplay();
+        return;
+      }
       const currentStars = loadTotalStars();
       const newTotal = currentStars + stars;
       localStorage.setItem('totalStars', newTotal);
@@ -1644,7 +1570,7 @@
       const link = document.createElement('a');
       const url = URL.createObjectURL(blob);
       link.setAttribute('href', url);
-      link.setAttribute('download', `zeus_vocabulary_${new Date().toISOString().split('T')[0]}.csv`);
+      link.setAttribute('download', `prometheus_vocabulary_${new Date().toISOString().split('T')[0]}.csv`);
       link.style.visibility = 'hidden';
       document.body.appendChild(link);
       link.click();
@@ -1705,6 +1631,7 @@
     document.addEventListener('DOMContentLoaded', () => {
       updateStarsDisplay();
       document.getElementById('sessionStarsDisplay').textContent = '本次已獲得 0 顆星星';
+      updateLives();
       initData();
       gameState.currentIndex = 0;
       updateCounter();
