@@ -184,6 +184,21 @@
       z-index: 10;
     }
 
+    #lives {
+      position: fixed;
+      top: 76px;
+      right: 20px;
+      background: rgba(10, 20, 40, 0.85);
+      padding: 8px 14px;
+      border-radius: 10px;
+      color: #ff6b6b;
+      font-weight: bold;
+      box-shadow: 0 0 12px #ff6b6b;
+      border: 2px solid #ff6b6b;
+      font-size: 1.2rem;
+      z-index: 10;
+    }
+
     #timer {
       font-size: 1.1rem;
       margin-bottom: 16px;
@@ -326,7 +341,19 @@
     @media (max-width: 768px) {
       .top-btns { position: fixed; top: 10px; right: 10px; left: auto; display: flex; gap: 6px; z-index: 11; flex-wrap: wrap; justify-content: flex-end; }
       .top-btns button { padding: 4px 8px; font-size: 0.9rem; }
-      #starsDisplay { top: 10px; left: 10px; padding: 6px 10px; font-size: 1rem; }
+      #starsDisplay {
+        top: 10px;
+        left: 10px;
+        padding: 6px 10px;
+        font-size: 1rem;
+      }
+
+      #lives {
+        top: 62px;
+        right: 10px;
+        padding: 6px 10px;
+        font-size: 1rem;
+      }
       h1 { font-size: 1.8rem; margin-top: 60px; }
       #question-container { max-width: 95vw; padding: 20px 15px; margin: 10px auto; }
       .question-sentence { font-size: 1.3rem; }
@@ -338,7 +365,21 @@
     @media (max-width: 480px) {
       body { padding: 10px; }
       .top-btns { position: relative; top: auto; right: auto; left: auto; justify-content: center; margin-bottom: 15px; }
-      #starsDisplay { position: relative; top: auto; left: auto; display: inline-block; margin-bottom: 10px; }
+      #starsDisplay {
+        position: relative;
+        top: auto;
+        left: auto;
+        display: inline-block;
+        margin-bottom: 10px;
+      }
+
+      #lives {
+        position: relative;
+        top: auto;
+        right: auto;
+        display: inline-block;
+        margin-bottom: 10px;
+      }
       h1 { font-size: 1.5rem; margin-top: 10px; }
       #sessionStarsDisplay { font-size: 1rem; margin-bottom: 8px; }
       #star-counter { font-size: 1rem; padding: 10px 20px; min-width: 200px; }
@@ -407,6 +448,9 @@
     ⭐<span id="totalStarsCount">0</span>
   </div>
 
+  <!-- 生命值顯示區塊 -->
+  <div id="lives">❤️❤️❤️❤️❤️</div>
+
   <!-- 頂部按鈕 -->
   <div class="top-btns">
     <button onclick="location.href='atlas.html?tab=greek'" aria-label="回首頁">🏠 回首頁</button>
@@ -414,7 +458,7 @@
     <button onclick="showReviewModal()" aria-label="複習單字">📚 複習單字</button>
   </div>
 
-  <h1> nike - 填空挑戰</h1>
+  <h1>勝利女神 耐姬 Nike - 填空挑戰</h1>
 
   <!-- 本次星星顯示 -->
   <div id="sessionStarsDisplay" style="margin-bottom:10px;color:#ffd700;font-weight:bold;font-size:1.08rem;">
@@ -507,11 +551,12 @@
     </div>
   </div>
 
-  <audio id="backgroundMusic" loop autoplay>
-    <source src="sound/午後放鬆時光（純音樂）.mp3" type="audio/mpeg">
-  </audio>
-
+  <script src="js/utils.js"></script>
+  <script src="js/bgmController.js"></script>
+  <script src="js/userData.js"></script>
+  <script src="js/characterDialogue.js"></script>
   <script src="js/gameDialogue.js"></script>
+  <script src="js/greekScoreUpload.js"></script>
   <script>
     // ===== 遊戲配置 =====
     const GAME_CONFIG = { QUESTIONS_COUNT: 20, TIME_LIMIT: 30, MAX_ATTEMPTS: 3 };
@@ -810,8 +855,21 @@ const VOCAB_DATA = [
       timerInterval: null,
       preferredVoice: null,
       answerLog: [],
-      sessionStars: 0
+      sessionStars: 0,
+      totalTimeUsed: 0,
+      questionStartTs: null
     };
+
+    window.gameState = gameState;
+
+    // ===== 生命值系統 =====
+    let lives = 5;
+
+    function updateLives() {
+      const el = document.getElementById('lives');
+      if (!el) return;
+      el.innerHTML = '❤️'.repeat(Math.max(0, lives)) + '🤍'.repeat(Math.max(0, 5 - lives));
+    }
 
     // ===== 音效資源 =====
     const SOUNDS = {
@@ -829,7 +887,15 @@ const VOCAB_DATA = [
       bgMusic.loop = true;
       bgMusic.volume = 0.3;
       const musicState = localStorage.getItem('bgMusicState');
-      if (musicState === 'playing') playBackgroundMusic();
+      if (musicState === 'playing') {
+        playBackgroundMusic();
+      } else {
+        const btn = document.getElementById('bgMusicControl');
+        if (btn) {
+          btn.textContent = '🔇';
+          btn.classList.add('paused');
+        }
+      }
     }
 
     function toggleBackgroundMusic() {
@@ -924,6 +990,8 @@ const VOCAB_DATA = [
       document.getElementById('time-left').textContent = timeLeft;
       document.getElementById('timer').classList.remove('hidden');
 
+      gameState.questionStartTs = Date.now();
+
       gameState.timerInterval = setInterval(() => {
         timeLeft--;
         document.getElementById('time-left').textContent = timeLeft;
@@ -934,7 +1002,15 @@ const VOCAB_DATA = [
       }, 1000);
     }
 
-    function stopTimer() { clearInterval(gameState.timerInterval); }
+    function stopTimer() {
+      clearInterval(gameState.timerInterval);
+
+      if (gameState.questionStartTs) {
+        const deltaSec = Math.max(0, Math.round((Date.now() - gameState.questionStartTs) / 1000));
+        gameState.totalTimeUsed = (Number(gameState.totalTimeUsed) || 0) + deltaSec;
+        gameState.questionStartTs = null;
+      }
+    }
 
     // ===== 語音功能 =====
     function pickVoice() {
@@ -977,9 +1053,18 @@ const VOCAB_DATA = [
 
       logAnswer(false);
 
-      if (autoNext) {
-        setTimeout(() => { gameState.currentIndex++; showQuestion(); }, 500);
-      }
+      setTimeout(() => {
+        lives--;
+        updateLives();
+        if (lives <= 0) {
+          showGameEndScreen();
+          return;
+        }
+        if (autoNext) {
+          gameState.currentIndex++;
+          showQuestion();
+        }
+      }, 500);
     }
 
     function logAnswer(correct, userAnswer = '') {
@@ -1064,6 +1149,16 @@ const VOCAB_DATA = [
       unlockReviewButton();
 
       try { SOUNDS.correct.currentTime = 0; SOUNDS.correct.play(); } catch (e) {}
+
+      if (window.GameDialogue) {
+        setTimeout(() => {
+          if (correctCount > wrongCount) {
+            window.GameDialogue.showGameVictoryDialogue();
+          } else {
+            window.GameDialogue.showGameDefeatDialogue();
+          }
+        }, 2000);
+      }
     }
 
     function restartGame() {
@@ -1071,6 +1166,13 @@ const VOCAB_DATA = [
       gameState.currentIndex = 0;
       gameState.sessionStars = 0;
       gameState.answerLog = [];
+      gameState.totalTimeUsed = 0;
+      gameState.questionStartTs = null;
+
+      window.gameState = gameState;
+
+      lives = 5;
+      updateLives();
       initData();
       updateCounter();
       showQuestion();
@@ -1083,7 +1185,16 @@ const VOCAB_DATA = [
       logAnswer(null, '');
       const feedback = document.getElementById('feedback');
       if (feedback) feedback.innerHTML = '<span style="color:#bbb;">已跳過本題</span>';
-      setTimeout(() => { gameState.currentIndex++; showQuestion(); }, 400);
+      setTimeout(() => {
+        lives--;
+        updateLives();
+        if (lives <= 0) {
+          showGameEndScreen();
+          return;
+        }
+        gameState.currentIndex++;
+        showQuestion();
+      }, 400);
     }
 
     function nextQuestion() {
@@ -1093,7 +1204,16 @@ const VOCAB_DATA = [
         const feedback = document.getElementById('feedback');
         if (feedback) feedback.innerHTML = '<span style="color:#bbb;">未作答</span>';
       }
-      setTimeout(() => { gameState.currentIndex++; showQuestion(); }, 400);
+      setTimeout(() => {
+        lives--;
+        updateLives();
+        if (lives <= 0) {
+          showGameEndScreen();
+          return;
+        }
+        gameState.currentIndex++;
+        showQuestion();
+      }, 400);
     }
 
     function checkAnswer() {
@@ -1150,18 +1270,43 @@ const VOCAB_DATA = [
 
           try { SOUNDS.wrong.currentTime = 0; SOUNDS.wrong.play(); } catch (e) {}
 
-          setTimeout(() => { gameState.currentIndex++; showQuestion(); }, 1300);
+          setTimeout(() => {
+            lives--;
+            updateLives();
+            if (lives <= 0) {
+              showGameEndScreen();
+              return;
+            }
+            gameState.currentIndex++;
+            showQuestion();
+          }, 1300);
         }
       }
     }
 
     // ===== 星星系統 =====
     function loadTotalStars() {
+      if (typeof LinkageSystem !== 'undefined' && LinkageSystem?.stars?.get) {
+        return Number(LinkageSystem.stars.get()) || 0;
+      }
+      if (typeof StarRewardSystem !== 'undefined' && typeof StarRewardSystem.getTotalStars === 'function') {
+        return Number(StarRewardSystem.getTotalStars()) || 0;
+      }
       const stars = localStorage.getItem('totalStars');
       return stars !== null ? parseInt(stars, 10) : 0;
     }
 
     function addStarsToTotal(stars) {
+      if (typeof StarRewardSystem !== 'undefined' && typeof StarRewardSystem.addStars === 'function') {
+        StarRewardSystem.addStars(stars);
+        updateStarsDisplay();
+        return;
+      }
+      if (typeof LinkageSystem !== 'undefined' && LinkageSystem?.stars?.add) {
+        LinkageSystem.stars.add(stars);
+        updateStarsDisplay();
+        return;
+      }
       const currentStars = loadTotalStars();
       const newTotal = currentStars + stars;
       localStorage.setItem('totalStars', newTotal);
@@ -1371,15 +1516,6 @@ const VOCAB_DATA = [
       setTimeout(() => { notification.remove(); style.remove(); }, 3000);
     }
 
-    // ===== 角色互動系統整合 =====
-    let currentCharacter = localStorage.getItem('characterName') || 'zeus';
-    if (window.GameDialogue) window.GameDialogue.currentCharacter = currentCharacter;
-    function showGameStartDialogue(){ if (window.GameDialogue) window.GameDialogue.showGameStartDialogue(); }
-    function showCorrectAnswerDialogue(){ if (window.GameDialogue) window.GameDialogue.showCorrectAnswerDialogue(); }
-    function showWrongAnswerDialogue(){ if (window.GameDialogue) window.GameDialogue.showWrongAnswerDialogue(); }
-    function showGameVictoryDialogue(){ if (window.GameDialogue) window.GameDialogue.showGameVictoryDialogue(); }
-    function showGameDefeatDialogue(){ if (window.GameDialogue) window.GameDialogue.showGameDefeatDialogue(); }
-
     // ===== 初始化 =====
     if (typeof speechSynthesis !== 'undefined') {
       speechSynthesis.onvoiceschanged = pickVoice;
@@ -1389,6 +1525,7 @@ const VOCAB_DATA = [
     document.addEventListener('DOMContentLoaded', () => {
       updateStarsDisplay();
       document.getElementById('sessionStarsDisplay').textContent = '本次已獲得 0 顆星星';
+      updateLives();
       initData();
       gameState.currentIndex = 0;
       updateCounter();
@@ -1401,8 +1538,14 @@ const VOCAB_DATA = [
       // 初始化時解鎖複習按鈕
       unlockReviewButton();
 
-      // 開始對話（若外掛存在）
-      if (window.GameDialogue) { window.GameDialogue.init(); showGameStartDialogue(); }
+      // 初始化遊戲對話系統
+      if (window.GameDialogue) {
+        window.GameDialogue.init();
+        // 遊戲開始時顯示角色鼓勵
+        setTimeout(() => {
+          window.GameDialogue.showGameStartDialogue();
+        }, 2000);
+      }
     });
 
     // 點擊彈窗外也能關閉
