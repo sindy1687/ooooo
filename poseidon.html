@@ -101,7 +101,22 @@
       <h2>單字複習</h2>
       <div style="margin-bottom:20px;">
         <label for="categoryFilter" style="color:var(--gold);font-weight:700;margin-right:10px;">選擇分類：</label>
-        <select id="categoryFilter" style="background:#222;color:#fff;border:2px solid var(--gold);border-radius:8px;padding:8px 12px;font-size:1rem;cursor:pointer"></select>
+        <select id="categoryFilter" style="background:#222;color:#fff;border:2px solid var(--gold);border-radius:8px;padding:8px 12px;font-size:1rem;cursor:pointer">
+          <option value="all">全部單字</option>
+          <option value="動作動詞">動作動詞</option>
+          <option value="學術教育">學術教育</option>
+          <option value="時間日期">時間日期</option>
+          <option value="節日慶祝">節日慶祝</option>
+          <option value="數量分數">數量分數</option>
+          <option value="聲音表演">聲音表演</option>
+          <option value="稱謂人際">稱謂人際</option>
+          <option value="交通工具">交通工具</option>
+          <option value="運動娛樂">運動娛樂</option>
+          <option value="身體健康">身體健康</option>
+          <option value="形容詞">形容詞</option>
+          <option value="抽象概念">抽象概念</option>
+          <option value="場所位置">場所位置</option>
+        </select>
       </div>
       <div id="vocabStats" style="background:rgba(255,215,0,.1);border:1px solid var(--gold);border-radius:8px;padding:10px;margin-bottom:15px;color:var(--gold);font-size:.9rem;">
         總共 <span id="totalVocabCount">0</span> 個單字
@@ -122,10 +137,6 @@
       <button onclick="document.getElementById('achievementNotifyModal').style.display='none'" style="background:#bbb;color:#222;padding:6px 18px;border:none;border-radius:8px;font-size:1rem;cursor:pointer;">關閉</button>
     </div>
   </div>
-
-  <audio id="backgroundMusic" loop>
-    <source src="sound/午後放鬆時光（純音樂）.mp3" type="audio/mpeg" />
-  </audio>
 
   <script src="js/utils.js"></script>
   <script src="js/bgmController.js"></script>
@@ -454,18 +465,13 @@
     let isMusicPlaying = false;
 
     function initBackgroundMusic() {
-      bgMusic = document.getElementById('backgroundMusic');
-      if (!bgMusic) return;
+      bgMusic = new Audio('sound/午後放鬆時光（純音樂）.mp3');
+      bgMusic.loop = true;
       bgMusic.volume = 0.3;
+
       const musicState = localStorage.getItem('bgMusicState');
       if (musicState === 'playing') {
         playBackgroundMusic();
-      } else {
-        const btn = document.getElementById('bgMusicControl');
-        if (btn) {
-          btn.textContent = '🔇';
-          btn.classList.add('paused');
-        }
       }
     }
 
@@ -891,8 +897,6 @@
 
     function buildCategoryFilter() {
       const categoryFilter = document.getElementById('categoryFilter');
-      const categories = ['all', ...new Set(VOCAB_DATA.map(v => v.category))];
-      categoryFilter.innerHTML = categories.map(c => `<option value="${c}">${c === 'all' ? '全部單字' : c}</option>`).join('');
       categoryFilter.onchange = function() {
         displayVocabByCategory(this.value);
       };
@@ -1057,8 +1061,6 @@
 
     function showAchievementNotify(title, desc) {
       document.getElementById('achievementNotifyTitle').textContent = title;
-      document.getElementById('achievementNotifyDesc').textContent = desc;
-      document.getElementById('achievementNotifyModal').style.display = 'flex';
     }
 
     if (typeof speechSynthesis !== 'undefined') {
