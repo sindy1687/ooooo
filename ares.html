@@ -885,7 +885,6 @@
     }
   </style>
   <script src="js/gameDialogue.js"></script>
-  <script src="js/greekScoreUpload.js"></script>
 </head>
 <body>
   <!-- 背景音樂控制按鈕 -->
@@ -1016,6 +1015,7 @@
     </div>
   </div>
 
+  <script src="js/greekScoreUpload.js"></script>
   <script>
     // ===== 遊戲配置 =====
     const GAME_CONFIG = {
@@ -1377,7 +1377,7 @@ const VOCAB_DATA = [
 
     // ===== 工具函數 =====
     function escapeRegExp(s) {
-      return s.replace(/[.*+?^${}()|[\\]\\]/g, '\\$&');
+      return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     }
 
     function getRandomQuestions(arr, n) {
@@ -2336,4 +2336,3 @@ const VOCAB_DATA = [
   </audio>
 </body>
 </html>
-
