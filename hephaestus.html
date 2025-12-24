@@ -184,6 +184,21 @@
       z-index: 10;
     }
 
+    #lives {
+      position: fixed;
+      top: 76px;
+      right: 20px;
+      background: rgba(10, 20, 40, 0.85);
+      padding: 8px 14px;
+      border-radius: 10px;
+      color: #ff6b6b;
+      font-weight: bold;
+      box-shadow: 0 0 12px #ff6b6b;
+      border: 2px solid #ff6b6b;
+      font-size: 1.2rem;
+      z-index: 10;
+    }
+
     #timer {
       font-size: 1.1rem;
       margin-bottom: 16px;
@@ -367,6 +382,13 @@
         padding: 6px 10px;
         font-size: 1rem;
       }
+
+      #lives {
+        top: 62px;
+        right: 10px;
+        padding: 6px 10px;
+        font-size: 1rem;
+      }
       
       h1 {
         font-size: 1.8rem;
@@ -418,6 +440,14 @@
         position: relative;
         top: auto;
         left: auto;
+        display: inline-block;
+        margin-bottom: 10px;
+      }
+
+      #lives {
+        position: relative;
+        top: auto;
+        right: auto;
         display: inline-block;
         margin-bottom: 10px;
       }
@@ -571,6 +601,9 @@
     ⭐<span id="totalStarsCount">0</span>
   </div>
 
+  <!-- 生命值顯示區塊 -->
+  <div id="lives">❤️❤️❤️❤️❤️</div>
+
   <!-- 頂部按鈕 -->
   <div class="top-btns">
     <button onclick="location.href='atlas.html?tab=greek'" aria-label="回首頁">🏠 回首頁</button>
@@ -693,11 +726,12 @@
     </div>
   </div>
 
-  <audio id="backgroundMusic" loop autoplay>
-    <source src="sound/午後放鬆時光（純音樂）.mp3" type="audio/mpeg">
-  </audio>
-
+  <script src="js/utils.js"></script>
+  <script src="js/bgmController.js"></script>
+  <script src="js/userData.js"></script>
+  <script src="js/characterDialogue.js"></script>
   <script src="js/gameDialogue.js"></script>
+  <script src="js/greekScoreUpload.js"></script>
 
   <script>
     // ===== 遊戲配置 =====
@@ -1002,8 +1036,12 @@ const VOCAB_DATA = [
       timerInterval: null,
       preferredVoice: null,
       answerLog: [],
-      sessionStars: 0
+      sessionStars: 0,
+      totalTimeUsed: 0,
+      questionStartTs: null
     };
+
+    window.gameState = gameState;
 
     // ===== 音效資源 =====
     const SOUNDS = {
@@ -1012,57 +1050,69 @@ const VOCAB_DATA = [
       type: new Audio('sound/type.mp3')
     };
 
+    // ===== 生命值系統 =====
+    let lives = 5;
+
+    function updateLives() {
+      const el = document.getElementById('lives');
+      if (!el) return;
+      el.innerHTML = '❤️'.repeat(Math.max(0, lives)) + '🤍'.repeat(Math.max(0, 5 - lives));
+    }
+
     // ===== 背景音樂控制 =====
+    let bgMusic = null;
     let isMusicPlaying = false;
 
     function initBackgroundMusic() {
-      const bgMusic = document.getElementById('backgroundMusic');
-      if (bgMusic) {
-        bgMusic.loop = true;
-        bgMusic.volume = 0.3;
-        
-        // 從localStorage讀取音樂狀態
-        const musicState = localStorage.getItem('bgMusicState');
-        if (musicState === 'playing') {
-          playBackgroundMusic();
+      bgMusic = new Audio('sound/午後放鬆時光（純音樂）.mp3');
+      bgMusic.loop = true;
+      bgMusic.volume = 0.3;
+
+      const musicState = localStorage.getItem('bgMusicState');
+      if (musicState === 'playing') {
+        playBackgroundMusic();
+      } else {
+        const btn = document.getElementById('bgMusicControl');
+        if (btn) {
+          btn.textContent = '🔇';
+          btn.classList.add('paused');
         }
       }
     }
 
     function toggleBackgroundMusic() {
-      const bgMusic = document.getElementById('backgroundMusic');
-      if (bgMusic) {
-        if (isMusicPlaying) {
-          pauseBackgroundMusic();
-        } else {
-          playBackgroundMusic();
-        }
+      if (isMusicPlaying) {
+        pauseBackgroundMusic();
+      } else {
+        playBackgroundMusic();
       }
     }
 
     function playBackgroundMusic() {
-      const bgMusic = document.getElementById('backgroundMusic');
-      if (bgMusic) {
-        bgMusic.play().then(() => {
-          isMusicPlaying = true;
-          document.getElementById('bgMusicControl').textContent = '🔊';
-          document.getElementById('bgMusicControl').classList.remove('paused');
-          localStorage.setItem('bgMusicState', 'playing');
-        }).catch(err => {
-          console.log('背景音樂播放失敗:', err);
-        });
-      }
+      if (!bgMusic) return;
+      bgMusic.play().then(() => {
+        isMusicPlaying = true;
+        const btn = document.getElementById('bgMusicControl');
+        if (btn) {
+          btn.textContent = '🔊';
+          btn.classList.remove('paused');
+        }
+        localStorage.setItem('bgMusicState', 'playing');
+      }).catch(err => {
+        console.log('背景音樂播放失敗:', err);
+      });
     }
 
     function pauseBackgroundMusic() {
-      const bgMusic = document.getElementById('backgroundMusic');
-      if (bgMusic) {
-        bgMusic.pause();
-        isMusicPlaying = false;
-        document.getElementById('bgMusicControl').textContent = '🔇';
-        document.getElementById('bgMusicControl').classList.add('paused');
-        localStorage.setItem('bgMusicState', 'paused');
+      if (!bgMusic) return;
+      bgMusic.pause();
+      isMusicPlaying = false;
+      const btn = document.getElementById('bgMusicControl');
+      if (btn) {
+        btn.textContent = '🔇';
+        btn.classList.add('paused');
       }
+      localStorage.setItem('bgMusicState', 'paused');
     }
 
     // ===== 工具函數 =====
@@ -1117,6 +1167,8 @@ const VOCAB_DATA = [
       let timeLeft = GAME_CONFIG.TIME_LIMIT;
       document.getElementById('time-left').textContent = timeLeft;
       document.getElementById('timer').classList.remove('hidden');
+
+      gameState.questionStartTs = Date.now();
       
       gameState.timerInterval = setInterval(() => {
         timeLeft--;
@@ -1130,6 +1182,12 @@ const VOCAB_DATA = [
 
     function stopTimer() {
       clearInterval(gameState.timerInterval);
+
+      if (gameState.questionStartTs) {
+        const deltaSec = Math.max(0, Math.round((Date.now() - gameState.questionStartTs) / 1000));
+        gameState.totalTimeUsed = (Number(gameState.totalTimeUsed) || 0) + deltaSec;
+        gameState.questionStartTs = null;
+      }
     }
 
     // ===== 語音功能 =====
@@ -1177,13 +1235,19 @@ const VOCAB_DATA = [
       document.getElementById('user-input').disabled = true;
       
       logAnswer(false);
-      
-      if (autoNext) {
-        setTimeout(() => {
+
+      setTimeout(() => {
+        lives--;
+        updateLives();
+        if (lives <= 0) {
+          showGameEndScreen();
+          return;
+        }
+        if (autoNext) {
           gameState.currentIndex++;
           showQuestion();
-        }, 500);
-      }
+        }
+      }, 500);
     }
 
     function logAnswer(correct, userAnswer = '') {
@@ -1284,6 +1348,14 @@ const VOCAB_DATA = [
         SOUNDS.correct.currentTime = 0;
         SOUNDS.correct.play();
       } catch (e) {}
+
+      if (window.GameDialogue) {
+        if (lives <= 0) {
+          showGameDefeatDialogue();
+        } else {
+          showGameVictoryDialogue();
+        }
+      }
     }
 
     function restartGame() {
@@ -1294,6 +1366,10 @@ const VOCAB_DATA = [
       gameState.currentIndex = 0;
       gameState.sessionStars = 0;
       gameState.answerLog = [];
+      gameState.totalTimeUsed = 0;
+      gameState.questionStartTs = null;
+
+      window.gameState = gameState;
       
       // 重新初始化數據
       initData();
@@ -1311,6 +1387,12 @@ const VOCAB_DATA = [
       const feedback = document.getElementById('feedback');
       if (feedback) feedback.innerHTML = '<span style="color:#bbb;">已跳過本題</span>';
       setTimeout(() => {
+        lives--;
+        updateLives();
+        if (lives <= 0) {
+          showGameEndScreen();
+          return;
+        }
         gameState.currentIndex++;
         showQuestion();
       }, 400);
@@ -1324,6 +1406,12 @@ const VOCAB_DATA = [
         if (feedback) feedback.innerHTML = '<span style="color:#bbb;">未作答</span>';
       }
       setTimeout(() => {
+        lives--;
+        updateLives();
+        if (lives <= 0) {
+          showGameEndScreen();
+          return;
+        }
         gameState.currentIndex++;
         showQuestion();
       }, 400);
@@ -1396,6 +1484,12 @@ const VOCAB_DATA = [
           } catch (e) {}
           
           setTimeout(() => {
+            lives--;
+            updateLives();
+            if (lives <= 0) {
+              showGameEndScreen();
+              return;
+            }
             gameState.currentIndex++;
             showQuestion();
           }, 1300);
@@ -1405,11 +1499,27 @@ const VOCAB_DATA = [
 
     // ===== 星星系統 =====
     function loadTotalStars() {
+      if (typeof LinkageSystem !== 'undefined' && LinkageSystem?.stars?.get) {
+        return Number(LinkageSystem.stars.get()) || 0;
+      }
+      if (typeof StarRewardSystem !== 'undefined' && typeof StarRewardSystem.getTotalStars === 'function') {
+        return Number(StarRewardSystem.getTotalStars()) || 0;
+      }
       const stars = localStorage.getItem('totalStars');
       return stars !== null ? parseInt(stars, 10) : 0;
     }
 
     function addStarsToTotal(stars) {
+      if (typeof StarRewardSystem !== 'undefined' && typeof StarRewardSystem.addStars === 'function') {
+        StarRewardSystem.addStars(stars);
+        updateStarsDisplay();
+        return;
+      }
+      if (typeof LinkageSystem !== 'undefined' && LinkageSystem?.stars?.add) {
+        LinkageSystem.stars.add(stars);
+        updateStarsDisplay();
+        return;
+      }
       const currentStars = loadTotalStars();
       const newTotal = currentStars + stars;
       localStorage.setItem('totalStars', newTotal);
@@ -1766,6 +1876,7 @@ const VOCAB_DATA = [
     document.addEventListener('DOMContentLoaded', () => {
       updateStarsDisplay();
       document.getElementById('sessionStarsDisplay').textContent = '本次已獲得 0 顆星星';
+      updateLives();
       initData();
       gameState.currentIndex = 0;
       updateCounter();
