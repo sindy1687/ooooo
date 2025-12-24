@@ -168,6 +168,19 @@ function renderGreekLeaderboard(container, leaderboard, currentPlayerName) {
 
   container.innerHTML = '';
 
+  const formatTime = (seconds) => {
+    const s = Number(seconds);
+    if (!Number.isFinite(s) || s < 0) return '-';
+    const mm = Math.floor(s / 60);
+    const ss = Math.floor(s % 60);
+    return `${String(mm).padStart(2, '0')}:${String(ss).padStart(2, '0')}`;
+  };
+
+  const safeNumber = (value) => {
+    const n = Number(value);
+    return Number.isFinite(n) ? n : null;
+  };
+
   const title = document.createElement('div');
   title.textContent = '🏆 排行榜（前 10 名）';
   title.style.cssText = 'color:#ffd700;font-weight:bold;margin-bottom:10px;font-size:1.05rem;text-align:center;';
@@ -184,30 +197,65 @@ function renderGreekLeaderboard(container, leaderboard, currentPlayerName) {
   const table = document.createElement('div');
   table.style.cssText = 'display:flex;flex-direction:column;gap:6px;';
 
+  const header = document.createElement('div');
+  header.style.cssText = [
+    'display:grid;',
+    'grid-template-columns:52px 1fr 88px 88px 88px;',
+    'gap:10px;',
+    'padding:8px 10px;',
+    'border-radius:10px;',
+    'background:rgba(255,255,255,0.04);',
+    'border:1px solid rgba(255,255,255,0.10);',
+    'color:#bbb;',
+    'font-size:0.92rem;',
+    'font-weight:bold;'
+  ].join('');
+  header.innerHTML = [
+    '<div>名次</div>',
+    '<div>玩家</div>',
+    '<div style="text-align:right;">答對</div>',
+    '<div style="text-align:right;">時間</div>',
+    '<div style="text-align:right;">星星</div>'
+  ].join('');
+  table.appendChild(header);
+
   rows.forEach((item) => {
     const row = document.createElement('div');
     const isMe = currentPlayerName && item && item.playerName === currentPlayerName;
     row.style.cssText = [
-      'display:flex;align-items:center;gap:10px;',
+      'display:grid;align-items:center;gap:10px;',
+      'grid-template-columns:52px 1fr 88px 88px 88px;',
       'padding:8px 10px;',
       'border-radius:10px;',
       isMe ? 'background:rgba(0,255,255,0.12);border:1px solid rgba(0,255,255,0.35);' : 'background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.08);'
     ].join('');
 
     const rank = document.createElement('div');
-    rank.textContent = `#${item.rank}`;
-    rank.style.cssText = 'min-width:44px;color:#ffd700;font-weight:bold;';
+    rank.textContent = `#${item && item.rank ? item.rank : '-'}`;
+    rank.style.cssText = 'color:#ffd700;font-weight:bold;';
 
     const name = document.createElement('div');
-    name.textContent = item.playerName || '匿名玩家';
-    name.style.cssText = 'flex:1;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;';
+    name.textContent = (item && item.playerName) ? item.playerName : '匿名玩家';
+    name.style.cssText = 'color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;';
+
+    const correct = document.createElement('div');
+    const correctCount = safeNumber(item && item.correctCount);
+    correct.textContent = correctCount === null ? '-' : String(correctCount);
+    correct.style.cssText = 'color:#fff;text-align:right;';
+
+    const time = document.createElement('div');
+    time.textContent = formatTime(item && item.totalTime);
+    time.style.cssText = 'color:#fff;text-align:right;';
 
     const score = document.createElement('div');
-    score.textContent = `⭐ ${item.score || 0}`;
-    score.style.cssText = 'color:#ffd700;font-weight:bold;';
+    const stars = safeNumber(item && item.score);
+    score.textContent = stars === null ? '-' : `⭐ ${stars}`;
+    score.style.cssText = 'color:#ffd700;font-weight:bold;text-align:right;';
 
     row.appendChild(rank);
     row.appendChild(name);
+    row.appendChild(correct);
+    row.appendChild(time);
     row.appendChild(score);
     table.appendChild(row);
   });
