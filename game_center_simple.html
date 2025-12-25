@@ -92,6 +92,690 @@
       gap: 15px;
     }
 
+    .lobby-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .lobby-card {
+      background: rgba(10, 20, 40, 0.9);
+      border: 2px solid var(--glow-cyan);
+      border-radius: 15px;
+      padding: 20px;
+      box-shadow: 0 0 22px rgba(0, 255, 255, 0.18);
+    }
+
+    .lobby-card h3 {
+      margin: 0 0 12px;
+      color: var(--glow-cyan);
+      font-size: 1.3rem;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      align-items: center;
+      margin-top: 10px;
+    }
+
+    .input {
+      width: 100%;
+      padding: 12px 12px;
+      border-radius: 10px;
+      border: 2px solid rgba(0, 255, 255, 0.35);
+      background: rgba(0, 0, 0, 0.25);
+      color: #fff;
+      outline: none;
+      font-family: 'Roboto Mono', monospace;
+      font-weight: 700;
+    }
+
+    .mini-btn {
+      border: none;
+      border-radius: 10px;
+      padding: 12px 14px;
+      cursor: pointer;
+      font-weight: 900;
+      background: linear-gradient(45deg, var(--glow-cyan), var(--glow-magenta));
+      color: #000;
+      transition: transform 0.2s, box-shadow 0.2s;
+      white-space: nowrap;
+    }
+
+    .mini-btn:hover {
+      transform: scale(1.03);
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.35);
+    }
+
+    .mini-btn[disabled] {
+      opacity: 0.55;
+      cursor: not-allowed;
+      filter: grayscale(1);
+      box-shadow: none;
+      transform: none;
+    }
+
+    .hint {
+      color: #cbd5e1;
+      font-size: 0.95rem;
+      line-height: 1.55;
+    }
+
+    .history {
+      margin: 12px 0 0;
+      padding: 0;
+      list-style: none;
+      max-height: 220px;
+      overflow: auto;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,.08);
+      background: rgba(0,0,0,.18);
+    }
+
+    .history li {
+      padding: 10px 12px;
+      border-bottom: 1px solid rgba(255,255,255,.06);
+      color: #e5e7eb;
+      font-family: 'Roboto Mono', monospace;
+      font-size: 0.9rem;
+    }
+
+    .history li:last-child { border-bottom: none; }
+
+    .gacha-machine {
+      position: relative;
+      width: 100%;
+      max-width: 520px;
+      margin: 12px auto 0;
+      border-radius: 18px;
+      border: 1px solid rgba(0,255,255,.22);
+      background: linear-gradient(180deg, rgba(225, 245, 252, 0.22), rgba(10,20,40,.25));
+      box-shadow: 0 0 22px rgba(0,255,255,.14);
+      overflow: hidden;
+      cursor: pointer;
+      user-select: none;
+      transform: translateZ(0);
+    }
+
+    .gacha-machine::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 18px;
+      pointer-events: none;
+      background: linear-gradient(180deg, rgba(255,255,255,.16), rgba(255,255,255,0));
+    }
+
+    .gacha-machine.locked {
+      opacity: 0.6;
+      cursor: not-allowed;
+      filter: grayscale(0.35);
+    }
+
+    .gacha-machine:focus-visible {
+      outline: 2px solid rgba(0,255,255,.55);
+      outline-offset: 3px;
+    }
+
+    .gacha-top {
+      padding: 14px 14px 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .gacha-cabinet {
+      margin: 0 14px 12px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(10, 20, 40, 0.20);
+      display: grid;
+      grid-template-columns: 1fr 155px;
+      gap: 12px;
+      padding: 12px;
+    }
+
+    .gacha-panel {
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.12);
+      padding: 10px;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 10px;
+      align-content: start;
+    }
+
+    .gacha-slot {
+      position: relative;
+      height: 34px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(0,0,0,.10));
+      overflow: hidden;
+    }
+
+    .gacha-slot::after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 72px;
+      height: 10px;
+      transform: translate(-50%, -50%);
+      border-radius: 999px;
+      background: rgba(0,0,0,.30);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.08);
+    }
+
+    .gacha-knob {
+      width: 86px;
+      height: 86px;
+      border-radius: 999px;
+      margin: 0 auto;
+      border: 1px solid rgba(255,255,255,.16);
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.55), rgba(120, 220, 235, .22));
+      box-shadow: 0 0 18px rgba(0,255,255,.10);
+      position: relative;
+      transform: translateZ(0);
+    }
+
+    .gacha-knob::after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 12px;
+      width: 8px;
+      height: 18px;
+      transform: translateX(-50%);
+      border-radius: 999px;
+      background: rgba(0,0,0,.28);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.10);
+    }
+
+    .gacha-machine.phase-spin .gacha-knob {
+      animation: gachaKnobTurn 1.05s ease-in-out 1;
+    }
+
+    @keyframes gachaKnobTurn {
+      0% { transform: rotate(0deg); }
+      40% { transform: rotate(70deg); }
+      100% { transform: rotate(0deg); }
+    }
+
+    .gacha-base {
+      margin: 0 14px 14px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(10, 20, 40, 0.22);
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .gacha-base-left {
+      color: #cbd5e1;
+      font-size: 0.9rem;
+    }
+
+    .gacha-stars {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      opacity: 0.8;
+    }
+
+    .gacha-star {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.60);
+      box-shadow: 0 0 10px rgba(255,255,255,.22);
+    }
+
+    .gacha-title {
+      font-weight: 900;
+      letter-spacing: 0.4px;
+      color: #fff;
+      text-shadow: 0 0 14px rgba(0,255,255,.18);
+    }
+
+    .gacha-sub {
+      font-size: 0.88rem;
+      color: #cbd5e1;
+      margin-top: 2px;
+    }
+
+    .gacha-badge {
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.18);
+      font-family: 'Roboto Mono', monospace;
+      color: #e5e7eb;
+      white-space: nowrap;
+    }
+
+    .gacha-window {
+      position: relative;
+      height: 150px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,.10);
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.22), rgba(0,0,0,.12));
+      overflow: hidden;
+    }
+
+    .gacha-bubbles {
+      position: absolute;
+      inset: -20px;
+      opacity: 0.75;
+      background:
+        radial-gradient(circle at 15% 25%, rgba(255,190,220,.45) 0 18px, transparent 19px),
+        radial-gradient(circle at 35% 55%, rgba(190,255,235,.40) 0 20px, transparent 21px),
+        radial-gradient(circle at 65% 30%, rgba(210,210,255,.40) 0 22px, transparent 23px),
+        radial-gradient(circle at 80% 68%, rgba(255,235,190,.35) 0 18px, transparent 19px),
+        radial-gradient(circle at 55% 78%, rgba(255,210,255,.30) 0 16px, transparent 17px);
+      filter: blur(0.2px);
+      transform: translateZ(0);
+    }
+
+    .gacha-capsule {
+      position: absolute;
+      left: 50%;
+      top: 56%;
+      width: 92px;
+      height: 56px;
+      transform: translate(-50%, -50%);
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.18);
+      background: linear-gradient(90deg, rgba(255,255,255,.62), rgba(255,190,220,.46));
+      box-shadow: 0 0 18px rgba(255,255,255,.16);
+      overflow: hidden;
+    }
+
+    .gacha-capsule::after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 0;
+      width: 2px;
+      height: 100%;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,.10);
+    }
+
+    .gacha-capsule.open {
+      background: linear-gradient(90deg, rgba(255,255,255,.68), rgba(200,255,240,.46));
+    }
+
+    .gacha-controls {
+      padding: 0 14px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .gacha-hint {
+      color: #cbd5e1;
+      font-size: 0.9rem;
+    }
+
+    .gacha-action {
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(0,255,255,.30);
+      background: rgba(0,255,255,.10);
+      color: #fff;
+      font-weight: 900;
+      cursor: pointer;
+      transition: transform .15s ease, box-shadow .15s ease;
+      box-shadow: 0 0 18px rgba(0,255,255,.14);
+    }
+
+    .gacha-action:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+
+    .gacha-action:not(:disabled):hover {
+      transform: translateY(-1px);
+      box-shadow: 0 0 26px rgba(0,255,255,.18);
+    }
+
+    .gacha-sparkle {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0;
+      background:
+        radial-gradient(circle at 20% 25%, rgba(255,255,255,.45) 0 12px, transparent 13px),
+        radial-gradient(circle at 80% 35%, rgba(255,255,255,.35) 0 10px, transparent 11px),
+        radial-gradient(circle at 55% 70%, rgba(255,255,255,.30) 0 14px, transparent 15px);
+      filter: blur(0.2px);
+    }
+
+    .gacha-machine.phase-sparkle .gacha-sparkle {
+      animation: gachaSparkle 0.9s ease-in-out 1;
+    }
+
+    @keyframes gachaSparkle {
+      0% { opacity: 0; }
+      35% { opacity: 0.9; }
+      100% { opacity: 0; }
+    }
+
+    .gacha-coin {
+      position: absolute;
+      right: 64px;
+      top: -20px;
+      width: 22px;
+      height: 22px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.78), rgba(255,215,0,.72));
+      border: 1px solid rgba(255,255,255,.18);
+      box-shadow: 0 0 14px rgba(255,215,0,.25);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .gacha-machine.phase-coin .gacha-coin {
+      animation: gachaCoinDrop 0.8s cubic-bezier(.2,.8,.2,1) 1;
+    }
+
+    @keyframes gachaCoinDrop {
+      0% { transform: translateY(-10px) rotate(0deg); opacity: 0; }
+      15% { opacity: 1; }
+      100% { transform: translateY(220px) rotate(140deg); opacity: 0; }
+    }
+
+    .gacha-machine.phase-spin .gacha-capsule {
+      animation: gachaCapsuleSpin 1.05s ease-in-out 1;
+    }
+
+    @keyframes gachaCapsuleSpin {
+      0% { transform: translate(-50%, -50%) rotate(0deg); }
+      50% { transform: translate(-50%, -50%) rotate(40deg); }
+      100% { transform: translate(-50%, -50%) rotate(0deg); }
+    }
+
+    .gacha-burst {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0;
+      background: radial-gradient(circle at 50% 55%, rgba(255,255,255,.55), transparent 60%);
+    }
+
+    .gacha-machine.phase-open .gacha-burst {
+      animation: gachaBurst 1.2s ease-out 1;
+    }
+
+    @keyframes gachaBurst {
+      0% { opacity: 0; transform: scale(0.98); }
+      35% { opacity: 0.75; transform: scale(1.02); }
+      100% { opacity: 0; transform: scale(1.06); }
+    }
+
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.55);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 9999;
+    }
+
+    .modal {
+      width: min(520px, 96vw);
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(10, 20, 40, 0.92);
+      box-shadow: 0 0 28px rgba(0,255,255,.12);
+      overflow: hidden;
+      animation: modalIn .18s ease-out 1;
+    }
+
+    .modal.jackpot {
+      box-shadow: 0 0 42px rgba(255, 215, 0, .18), 0 0 28px rgba(0,255,255,.12);
+      border-color: rgba(255, 215, 0, .22);
+      animation: modalIn .18s ease-out 1, jackpotPulse 1.6s ease-in-out 1;
+    }
+
+    @keyframes jackpotPulse {
+      0% { transform: translateY(0) scale(1); }
+      40% { transform: translateY(-1px) scale(1.01); }
+      100% { transform: translateY(0) scale(1); }
+    }
+
+    .jackpot-confetti {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0;
+      background:
+        radial-gradient(circle at 12% 18%, rgba(255,215,0,.30) 0 6px, transparent 7px),
+        radial-gradient(circle at 32% 26%, rgba(0,255,255,.22) 0 5px, transparent 6px),
+        radial-gradient(circle at 70% 20%, rgba(255,120,200,.20) 0 6px, transparent 7px),
+        radial-gradient(circle at 82% 34%, rgba(255,255,255,.22) 0 4px, transparent 5px),
+        radial-gradient(circle at 22% 62%, rgba(190,255,235,.18) 0 6px, transparent 7px),
+        radial-gradient(circle at 65% 70%, rgba(255,235,190,.18) 0 5px, transparent 6px);
+      filter: blur(0.2px);
+    }
+
+    .modal.jackpot .jackpot-confetti {
+      animation: confettiFloat 1.8s ease-out 1;
+    }
+
+    @keyframes confettiFloat {
+      0% { opacity: 0; transform: translateY(-6px); }
+      20% { opacity: 0.9; }
+      100% { opacity: 0; transform: translateY(10px); }
+    }
+
+    .jackpot-badge {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,215,0,.28);
+      background: rgba(255,215,0,.10);
+      color: #fff;
+      font-weight: 900;
+      letter-spacing: 0.4px;
+      text-shadow: 0 0 14px rgba(255,215,0,.18);
+      margin-bottom: 10px;
+    }
+
+    @keyframes modalIn {
+      from { transform: translateY(6px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .modal-header {
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+
+    .modal-title {
+      font-weight: 900;
+      color: #fff;
+      letter-spacing: 0.3px;
+    }
+
+    .modal-close {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.06);
+      color: #fff;
+      cursor: pointer;
+    }
+
+    .modal-body {
+      padding: 14px;
+      color: #e5e7eb;
+      line-height: 1.6;
+    }
+
+    .modal-result {
+      font-size: 1.05rem;
+      font-weight: 900;
+      color: var(--glow-cyan);
+      text-shadow: 0 0 12px rgba(0,255,255,.16);
+    }
+
+    .reward-hero {
+      padding: 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.10);
+      background: linear-gradient(180deg, rgba(0,255,255,.10), rgba(0,0,0,.08));
+      box-shadow: 0 0 20px rgba(0,255,255,.10);
+      margin-bottom: 12px;
+    }
+
+    .reward-hero-title {
+      font-weight: 900;
+      color: #fff;
+      margin-bottom: 6px;
+    }
+
+    .reward-list {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      max-height: 280px;
+      overflow: auto;
+    }
+
+    .reward-item {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      align-items: center;
+      padding: 10px 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.04);
+    }
+
+    .reward-item.main {
+      background: rgba(0,255,255,.08);
+      border-color: rgba(0,255,255,.22);
+    }
+
+    .reward-text {
+      font-weight: 900;
+      color: #e5e7eb;
+      line-height: 1.35;
+    }
+
+    .reward-meta {
+      margin-top: 4px;
+      color: #cbd5e1;
+      font-size: 0.85rem;
+      font-family: 'Roboto Mono', monospace;
+      opacity: 0.9;
+    }
+
+    .reward-pill {
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.16);
+      color: #e5e7eb;
+      font-family: 'Roboto Mono', monospace;
+      font-size: 0.85rem;
+      white-space: nowrap;
+    }
+
+    .modal-footer {
+      padding: 12px 14px;
+      border-top: 1px solid rgba(255,255,255,.08);
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    .modal-footer-left {
+      margin-right: auto;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #cbd5e1;
+      font-size: 0.9rem;
+      font-family: 'Roboto Mono', monospace;
+    }
+
+    .guide {
+      margin-top: 12px;
+      padding: 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(0, 255, 255, 0.22);
+      background: rgba(0,0,0,.18);
+    }
+
+    .guide-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    .guide-steps {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      margin: 10px 0 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .guide-step {
+      display: grid;
+      grid-template-columns: 34px 1fr;
+      gap: 10px;
+      padding: 10px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.08);
+      background: rgba(10, 20, 40, 0.55);
+    }
+
+    .step-badge {
+      width: 34px;
+      height: 34px;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      color: #000;
+      background: linear-gradient(45deg, var(--glow-cyan), var(--glow-magenta));
+      box-shadow: 0 0 16px rgba(0,255,255,.18);
+      font-family: 'Roboto Mono', monospace;
+    }
+
+    .step-text {
+      color: #e5e7eb;
+      line-height: 1.55;
+    }
+
     .stat-item {
       text-align: center;
       padding: 15px;
@@ -469,6 +1153,10 @@
       .games-grid {
         grid-template-columns: 1fr;
       }
+
+      .lobby-grid {
+        grid-template-columns: 1fr;
+      }
       
       .header h1 {
         font-size: 2rem;
@@ -495,6 +1183,43 @@
      </div>
 
     <div class="container">
+      <div class="modal-overlay" v-if="showLotteryModal" @click.self="closeLotteryModal" @keydown.esc.window="closeLotteryModal">
+        <div class="modal" :class="{ jackpot: jackpotActive }" role="dialog" aria-modal="true" aria-label="抽獎結果">
+          <div class="jackpot-confetti"></div>
+          <div class="modal-header">
+            <div class="modal-title">🎁 抽獎結果清單</div>
+            <button class="modal-close" @click="closeLotteryModal" aria-label="關閉">✕</button>
+          </div>
+          <div class="modal-body">
+            <div class="jackpot-badge" v-if="jackpotActive">🏆 大獎！{{ jackpotText }}</div>
+            <div class="reward-hero">
+              <div class="reward-hero-title">本次獲得</div>
+              <div class="modal-result">{{ lotteryModalText }}</div>
+              <div class="hint" style="margin:6px 0 0;" v-if="lotteryModalBonusText">額外獎勵：<b style="color: var(--glow-gold);">{{ lotteryModalBonusText }}</b></div>
+              <div class="hint" style="margin:8px 0 0;">消耗：🪙 {{ lotteryCost }}</div>
+            </div>
+
+            <div class="hint" style="margin:0 0 8px;">最近紀錄</div>
+            <ul class="reward-list">
+              <li class="reward-item" v-for="(row, idx) in lotteryHistoryParsed.slice(0, 10)" :key="idx" :class="{ main: idx===0 }">
+                <div>
+                  <div class="reward-text">{{ row.text }}</div>
+                  <div class="reward-meta">{{ row.time }}</div>
+                </div>
+                <div class="reward-pill">🪙 {{ row.cost }}</div>
+              </li>
+            </ul>
+          </div>
+          <div class="modal-footer">
+            <div class="modal-footer-left">
+              <div>🎁 寶箱：{{ lotteryChestCount }}</div>
+              <button class="mini-btn" @click="openChest" :disabled="lotteryChestCount<=0">開啟寶箱</button>
+            </div>
+            <button class="mini-btn" @click="closeLotteryModal">知道了</button>
+          </div>
+        </div>
+      </div>
+
       <!-- 歡迎訊息 -->
       <div class="welcome-message">
         <div class="welcome-title">歡迎來到遊戲中心！</div>
@@ -544,6 +1269,10 @@
             <div class="stat-value" style="color: var(--glow-gold); text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);">⭐ {{ totalStars }}</div>
             <div class="stat-label" style="color: var(--glow-gold);">總星星</div>
           </div>
+          <div class="stat-item" style="background: rgba(255, 215, 0, 0.10); border-color: var(--glow-cyan);">
+            <div class="stat-value" style="color: var(--glow-cyan); text-shadow: 0 0 10px rgba(0, 255, 255, 0.35);">🪙 {{ goldCoins }}</div>
+            <div class="stat-label" style="color: var(--glow-cyan);">金幣</div>
+          </div>
           <div class="stat-item">
             <div class="stat-value">{{ playerLevel }}</div>
             <div class="stat-label">玩家等級</div>
@@ -555,8 +1284,289 @@
         </div>
       </div>
 
+      <!-- 遊戲大廳功能區 -->
+      <div class="lobby-grid">
+        <div class="lobby-card">
+          <h3>💰 星星兌換金幣</h3>
+          <div class="hint">
+            匯率：<b style="color: var(--glow-gold);">{{ exchangeRate }}</b> 星星 = <b style="color: var(--glow-cyan);">{{ exchangeCoinsPerRate }}</b> 金幣。
+            你目前有 ⭐ {{ totalStars }} / 🪙 {{ goldCoins }}。
+          </div>
+          <div class="form-row">
+            <input class="input" type="number" min="1" step="1" v-model.number="exchangeStarsAmount" placeholder="輸入要兌換的星星數量" />
+            <button class="mini-btn" @click="exchangeStarsForCoins" :disabled="exchangeStarsAmount<=0 || totalStars < exchangeStarsAmount">兌換</button>
+          </div>
+          <div class="hint" style="margin-top:10px;">
+            估計可得：🪙 {{ previewCoins }}
+          </div>
+        </div>
+
+        <div class="lobby-card">
+          <h3>🎰 金幣抽獎（轉蛋）</h3>
+          <div class="hint">
+            每次抽獎消耗 <b style="color: var(--glow-gold);">🪙 {{ effectiveLotteryCost }}</b> 金幣。
+            可能抽到：金幣、星星、寶箱、稱號。
+            也有機會抽到<b style="color: var(--glow-red);">壞獎勵</b>（扣金幣 / 扣星星 / 空轉）。
+          </div>
+          <div
+            class="gacha-machine"
+            :class="[
+              (goldCoins < effectiveLotteryCost || gachaAnimating) ? 'locked' : '',
+              gachaPhase ? ('phase-' + gachaPhase) : ''
+            ]"
+            role="button"
+            tabindex="0"
+            @click="startGacha"
+            @keydown.enter.prevent="startGacha"
+            @keydown.space.prevent="startGacha"
+            :aria-disabled="(goldCoins < effectiveLotteryCost || gachaAnimating) ? 'true' : 'false'"
+          >
+            <div class="gacha-sparkle"></div>
+            <div class="gacha-burst"></div>
+            <div class="gacha-coin"></div>
+
+            <div class="gacha-top">
+              <div>
+                <div class="gacha-title">轉蛋機</div>
+                <div class="gacha-sub">點一下開始抽獎（不刺激特效）</div>
+              </div>
+              <div class="gacha-badge">🪙 {{ goldCoins }}</div>
+            </div>
+
+            <div class="gacha-cabinet">
+              <div class="gacha-window">
+                <div class="gacha-bubbles"></div>
+                <div class="gacha-capsule" :class="{ open: gachaPhase==='open' }"></div>
+              </div>
+
+              <div class="gacha-panel">
+                <div class="gacha-slot"></div>
+                <div class="gacha-knob"></div>
+                <button class="gacha-action" @click.stop="startGacha" :disabled="goldCoins < effectiveLotteryCost || gachaAnimating">投幣抽一次</button>
+              </div>
+            </div>
+
+            <div class="gacha-base">
+              <div class="gacha-base-left">
+                每次消耗 🪙 {{ effectiveLotteryCost }}｜本次：{{ gachaAnimating ? '抽獎中…' : '可點擊' }}
+                <div class="hint" style="margin:6px 0 0;">累積抽獎：{{ lotterySpinCount }} 次｜寶箱：{{ lotteryChestCount }}</div>
+              </div>
+              <div class="gacha-stars" aria-hidden="true">
+                <div class="gacha-star"></div>
+                <div class="gacha-star"></div>
+                <div class="gacha-star"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="hint" style="margin-top:10px;" v-if="lastLotteryResult">本次結果：<b style="color: var(--glow-cyan);">{{ lastLotteryResult }}</b></div>
+        </div>
+
+        <div class="lobby-card">
+          <h3>🧾 抽獎紀錄</h3>
+          <div class="hint">最近 20 筆</div>
+          <ul class="history">
+            <li v-if="lotteryHistory.length===0">（尚無紀錄）</li>
+            <li v-for="(item,idx) in lotteryHistory" :key="idx">{{ item }}</li>
+          </ul>
+          <div class="form-row">
+            <div></div>
+            <button class="mini-btn" @click="clearLotteryHistory" :disabled="lotteryHistory.length===0">清空紀錄</button>
+          </div>
+        </div>
+
+        <div class="lobby-card">
+          <h3>🏷️ 稱號系統</h3>
+          <div class="hint">
+            你可以啟用一個稱號獲得加成。抽到稱號會自動加入收藏。
+          </div>
+          <div class="hint" style="margin-top:10px;">目前啟用：<b style="color: var(--glow-gold);">{{ activeTitle || '（未啟用）' }}</b></div>
+          <div class="form-row" style="margin-top:10px;">
+            <select class="input" v-model="activeTitle" :disabled="ownedTitles.length===0" style="min-height: 44px;">
+              <option value="">（未啟用）</option>
+              <option v-for="t in ownedTitles" :key="t" :value="t">{{ t }}</option>
+            </select>
+            <button class="mini-btn" @click="saveTitles" :disabled="ownedTitles.length===0">保存</button>
+          </div>
+          <div class="hint" style="margin-top:10px;" v-if="activeTitle">
+            加成：<b style="color: var(--glow-cyan);">{{ titleBonusText }}</b>
+          </div>
+          <div class="hint" style="margin-top:10px;">已擁有：{{ ownedTitles.length ? ownedTitles.join('、') : '（尚無）' }}</div>
+        </div>
+      </div>
+
       <!-- 遊戲卡片 -->
       <div class="games-grid">
+                 <!-- Little Fox - Word Melody -->
+        <div class="game-card" :class="{ locked: !canPlayWordMelody }" @click="openWordMelody">
+          <div class="game-icon">🎵</div>
+          <div class="game-title">Word Melody</div>
+          <div class="game-subtitle">Little Fox 英文遊戲</div>
+          <div class="game-description">
+            連到 Little Fox 的 Word Melody 遊戲頁面。
+          </div>
+          <div class="game-features">
+            <div class="feature-item">外部網站遊戲（新分頁開啟）</div>
+            <div class="feature-item">適合練習英文單字與聽力</div>
+            <div class="feature-item" style="color: var(--glow-gold); font-weight: bold;">🪙 隨機消耗 300 / 500 / 1000 金幣 / 每次</div>
+          </div>
+
+          <div class="guide">
+            <div class="guide-title">
+              <div class="hint" style="margin:0;">玩法解說（跟圖片教學同風格）</div>
+              <button class="mini-btn" @click.stop="toggleWordMelodyGuide">{{ showWordMelodyGuide ? '收合' : '展開' }}</button>
+            </div>
+            <ul class="guide-steps" v-if="showWordMelodyGuide">
+              <li class="guide-step">
+                <div class="step-badge">1</div>
+                <div class="step-text">
+                  到 <b>My Stage</b> 可以查看每個關卡（Stage）的進度；完成所有 Stage 後也能在獎狀/獎勵區查看成果。
+                </div>
+              </li>
+              <li class="guide-step">
+                <div class="step-badge">2</div>
+                <div class="step-text">
+                  每個 Stage 分兩種：<b>Practice</b>（練習）與 <b>Game</b>（挑戰）。想闖關就選 Game，通常要完成 Play 1 才能進下一個 Play。
+                </div>
+              </li>
+              <li class="guide-step">
+                <div class="step-badge">3</div>
+                <div class="step-text">
+                  遊戲中會出現泡泡題：在時間內依提示（字母名/發音/單字）找出對應的泡泡並點破，速度越快越容易拿高分。
+                </div>
+              </li>
+              <li class="guide-step">
+                <div class="step-badge">4</div>
+                <div class="step-text">
+                  連續答對會有 <b>Bonus</b> 加成；答錯會扣分。建議先做 Practice 熟悉後再進 Game 衝分。
+                </div>
+              </li>
+              <li class="guide-step">
+                <div class="step-badge">5</div>
+                <div class="step-text">
+                  結算畫面會顯示 Correct/Incorrect/Bonus 等分數組成；點 <b>My Result</b> 可以查看每題答對/答錯的狀況。
+                </div>
+              </li>
+            </ul>
+          </div>
+
+          <button class="game-button" :class="{ locked: !canPlayWordMelody }" @click.stop="openWordMelody" :disabled="!canPlayWordMelody">
+            {{ canPlayWordMelody ? '開始 Word Melody' : `需要至少 ${gameCoinCostMax} 金幣` }}
+          </button>
+        </div>
+
+        <!-- Little Wheel -->
+        <div class="game-card" :class="{ locked: !canPlayLittleWheel }" @click="openLittleWheel">
+          <div class="game-icon">🛞</div>
+          <div class="game-title">Skywire</div>
+          <div class="game-subtitle">古怪又刺激的纜車闖關</div>
+          <div class="game-description">
+            操控纜車穿越危險軌道，避開陷阱與敵人，把乘客安全送到終點。
+          </div>
+          <div class="game-features">
+            <div class="feature-item">外部網站遊戲（新分頁開啟）</div>
+            <div class="feature-item">反應與操作挑戰</div>
+            <div class="feature-item">躲避陷阱・闖關到終點</div>
+            <div class="feature-item" style="color: var(--glow-gold); font-weight: bold;">🪙 隨機消耗 300 / 500 / 1000 金幣 / 每次</div>
+          </div>
+          <button class="game-button" :class="{ locked: !canPlayLittleWheel }" @click.stop="openLittleWheel" :disabled="!canPlayLittleWheel">
+            {{ canPlayLittleWheel ? '開始 Skywire' : `需要至少 ${gameCoinCostMax} 金幣` }}
+          </button>
+        </div>
+
+        <!-- Papas Pastaria -->
+        <div class="game-card" :class="{ locked: !canPlayPapasPastaria }" @click="openPapasPastaria">
+          <div class="game-icon">🍝</div>
+          <div class="game-title">Papas Pastaria</div>
+          <div class="game-subtitle">義大利麵餐廳經營</div>
+          <div class="game-description">
+            經營你的義大利麵餐廳：接單、煮麵、加醬配料並準時出餐，挑戰你的速度與手忙腳亂的管理能力。
+          </div>
+          <div class="game-features">
+            <div class="feature-item">外部網站遊戲（新分頁開啟）</div>
+            <div class="feature-item">餐廳經營＋時間管理</div>
+            <div class="feature-item">接單、烹飪、擺盤一手包辦</div>
+            <div class="feature-item" style="color: var(--glow-gold); font-weight: bold;">🪙 隨機消耗 300 / 500 / 1000 金幣 / 每次</div>
+          </div>
+          <button class="game-button" :class="{ locked: !canPlayPapasPastaria }" @click.stop="openPapasPastaria" :disabled="!canPlayPapasPastaria">
+            {{ canPlayPapasPastaria ? '開始 Papas Pastaria' : `需要至少 ${gameCoinCostMax} 金幣` }}
+          </button>
+        </div>
+
+        <!-- Billiards -->
+        <div class="game-card" :class="{ locked: !canPlayBilliards }" @click="openBilliards">
+          <div class="game-icon">🎱</div>
+          <div class="game-title">Billiards</div>
+          <div class="game-subtitle">桌球／撞球挑戰</div>
+          <div class="game-description">
+            來一局撞球：瞄準、控制力道與角度，把球打進洞，挑戰你的準度與策略。
+          </div>
+          <div class="game-features">
+            <div class="feature-item">外部網站遊戲（新分頁開啟）</div>
+            <div class="feature-item">瞄準與力道控制</div>
+            <div class="feature-item">休閒對戰／闖關風格</div>
+            <div class="feature-item" style="color: var(--glow-gold); font-weight: bold;">🪙 隨機消耗 300 / 500 / 1000 金幣 / 每次</div>
+          </div>
+          <button class="game-button" :class="{ locked: !canPlayBilliards }" @click.stop="openBilliards" :disabled="!canPlayBilliards">
+            {{ canPlayBilliards ? '開始 Billiards' : `需要至少 ${gameCoinCostMax} 金幣` }}
+          </button>
+        </div>
+
+        <!-- Papas Sushiria -->
+        <div class="game-card" :class="{ locked: !canPlayPapasSushiria }" @click="openPapasSushiria">
+          <div class="game-icon">🍣</div>
+          <div class="game-title">Papas Sushiria</div>
+          <div class="game-subtitle">壽司店經營</div>
+          <div class="game-description">
+            經營你的壽司店：接單、捏飯配料、切卷擺盤，準時把壽司送到客人手上。
+          </div>
+          <div class="game-features">
+            <div class="feature-item">外部網站遊戲（新分頁開啟）</div>
+            <div class="feature-item">餐廳經營＋時間管理</div>
+            <div class="feature-item">製作壽司、切卷、擺盤出餐</div>
+            <div class="feature-item" style="color: var(--glow-gold); font-weight: bold;">🪙 隨機消耗 300 / 500 / 1000 金幣 / 每次</div>
+          </div>
+          <button class="game-button" :class="{ locked: !canPlayPapasSushiria }" @click.stop="openPapasSushiria" :disabled="!canPlayPapasSushiria">
+            {{ canPlayPapasSushiria ? '開始 Papas Sushiria' : `需要至少 ${gameCoinCostMax} 金幣` }}
+          </button>
+        </div>
+
+        <!-- Bloom Defender -->
+        <div class="game-card" :class="{ locked: !canPlayBloomDefender }" @click="openBloomDefender">
+          <div class="game-icon">🌸</div>
+          <div class="game-title">Bloom Defender</div>
+          <div class="game-subtitle">花園塔防守護戰</div>
+          <div class="game-description">
+            花園塔防遊戲：配置防禦、升級火力，守住一波波敵人。
+          </div>
+          <div class="game-features">
+            <div class="feature-item">外部網站遊戲（新分頁開啟）</div>
+            <div class="feature-item">塔防策略＋升級強化</div>
+            <div class="feature-item" style="color: var(--glow-gold); font-weight: bold;">🪙 隨機消耗 300 / 500 / 1000 金幣 / 每次</div>
+          </div>
+          <button class="game-button" :class="{ locked: !canPlayBloomDefender }" @click.stop="openBloomDefender" :disabled="!canPlayBloomDefender">
+            {{ canPlayBloomDefender ? '開始 Bloom Defender' : `需要至少 ${gameCoinCostMax} 金幣` }}
+          </button>
+        </div>
+
+        <!-- Stealing the Diamond -->
+        <div class="game-card" :class="{ locked: !canPlayStealingTheDiamond }" @click="openStealingTheDiamond">
+          <div class="game-icon">💎</div>
+          <div class="game-title">Stealing the Diamond</div>
+          <div class="game-subtitle">爆笑互動式選擇劇情</div>
+          <div class="game-description">
+            選擇你的行動路線，看看能不能成功偷走鑽石！（新分頁開啟）
+          </div>
+          <div class="game-features">
+            <div class="feature-item">外部網站遊戲（新分頁開啟）</div>
+            <div class="feature-item">選擇分支・多種結局</div>
+            <div class="feature-item" style="color: var(--glow-gold); font-weight: bold;">🪙 隨機消耗 300 / 500 / 1000 金幣 / 每次</div>
+          </div>
+          <button class="game-button" :class="{ locked: !canPlayStealingTheDiamond }" @click.stop="openStealingTheDiamond" :disabled="!canPlayStealingTheDiamond">
+            {{ canPlayStealingTheDiamond ? '開始 Stealing the Diamond' : `需要至少 ${gameCoinCostMax} 金幣` }}
+          </button>
+        </div>
+
                  <!-- 拉霸機遊戲 -->
          <div class="game-card" :class="{ locked: !canPlaySlotMachine }" @click="toggleSlotMachine">
            <div class="game-icon">🎰</div>
@@ -572,34 +1582,15 @@
              <div class="feature-item">華麗視覺效果</div>
              <div class="feature-item">動態動畫效果</div>
              <div class="feature-item">分數統計系統</div>
-             <div class="feature-item" style="color: var(--glow-gold); font-weight: bold;">⭐ 需要 {{ slotMachineCost }} 顆星星</div>
+            <div class="feature-item" style="color: var(--glow-gold); font-weight: bold;">🪙 隨機消耗 300 / 500 / 1000 金幣 / 每次</div>
            </div>
            <button class="game-button" :class="{ locked: !canPlaySlotMachine }" @click.stop="toggleSlotMachine" :disabled="!canPlaySlotMachine">
-             {{ canPlaySlotMachine ? '開始拉霸機遊戲' : `需要 ${slotMachineCost} 顆星星` }}
-           </button>
-         </div>
-
-        <!-- 動物卡牌 -->
-        <div class="game-card" @click="openGame('advanced-animal-card-game.html')">
-          <div class="game-icon">🦁</div>
-          <div class="game-title">動物卡牌相克</div>
-          <div class="game-subtitle">策略性動物對戰</div>
-          <div class="game-description">
-            基於動物相克原理的策略卡牌遊戲，每種動物都有獨特的能力和相克關係。
-            運用策略組合你的卡牌，擊敗對手獲得勝利！
-          </div>
-          <div class="game-features">
-            <div class="feature-item">多種動物卡牌</div>
-            <div class="feature-item">相克系統設計</div>
-            <div class="feature-item">策略性玩法</div>
-            <div class="feature-item">精美動物插圖</div>
-            <div class="feature-item">進階AI對手</div>
-          </div>
-          <button class="game-button">開始動物卡牌</button>
+            {{ canPlaySlotMachine ? '開始拉霸機遊戲' : `需要至少 ${gameCoinCostMax} 金幣` }}
+          </button>
         </div>
 
         <!-- 卡牌對戰 -->
-        <div class="game-card" @click="openGame('battle_system.html')">
+        <div class="game-card" :class="{ locked: !canPlayBattleSystem }" @click="openBattleSystem">
           <div class="game-icon">⚔️</div>
           <div class="game-title">卡牌對戰系統</div>
           <div class="game-subtitle">史詩級卡牌戰鬥</div>
@@ -613,186 +1604,11 @@
             <div class="feature-item">特殊技能效果</div>
             <div class="feature-item">動態戰鬥動畫</div>
             <div class="feature-item">牌組管理系統</div>
+            <div class="feature-item" style="color: var(--glow-gold); font-weight: bold;">🪙 隨機消耗 300 / 500 / 1000 金幣 / 每次</div>
           </div>
-          <button class="game-button">開始卡牌對戰</button>
-        </div>
-
-         <!-- Tetris 遊戲 -->
-        <div class="game-card" :class="{ locked: !canPlayTetris }" @click="toggleTetris">
-          <div class="game-icon">🧩</div>
-          <div class="game-title">Tetris</div>
-          <div class="game-subtitle">經典俄羅斯方塊</div>
-          <div class="game-description">
-            經典的俄羅斯方塊遊戲，通過旋轉和移動不同形狀的方塊來消除完整的橫行。
-            遊戲包含多種難度等級和流暢的操作體驗，考驗你的空間思維和反應速度！
-          </div>
-          <div class="game-features">
-            <div class="feature-item">經典方塊玩法</div>
-            <div class="feature-item">多種方塊形狀</div>
-            <div class="feature-item">空間思維挑戰</div>
-            <div class="feature-item">流暢操作體驗</div>
-            <div class="feature-item">分數統計系統</div>
-            <div class="feature-item">多種難度等級</div>
-            <div class="feature-item" style="color: var(--glow-gold); font-weight: bold;">⭐ 需要 {{ tetrisCost }} 顆星星</div>
-          </div>
-          <button class="game-button" :class="{ locked: !canPlayTetris }" @click.stop="toggleTetris" :disabled="!canPlayTetris">
-            {{ canPlayTetris ? '開始 Tetris' : `需要 ${tetrisCost} 顆星星` }}
+          <button class="game-button" :class="{ locked: !canPlayBattleSystem }" @click.stop="openBattleSystem" :disabled="!canPlayBattleSystem">
+            {{ canPlayBattleSystem ? '開始卡牌對戰' : `需要至少 ${gameCoinCostMax} 金幣` }}
           </button>
-        </div>
-
-         <!-- Classic Uno 遊戲 -->
-        <div class="game-card" :class="{ locked: !canPlayClassicUno }" @click="toggleClassicUno">
-          <div class="game-icon">🃏</div>
-          <div class="game-title">Classic Uno</div>
-          <div class="game-subtitle">經典卡牌遊戲</div>
-          <div class="game-description">
-            經典的 Uno 卡牌遊戲，通過出牌和特殊卡牌效果來清空手牌。
-            遊戲包含多種遊戲模式和策略玩法，考驗你的卡牌技巧和策略思維！
-          </div>
-          <div class="game-features">
-            <div class="feature-item">經典 Uno 玩法</div>
-            <div class="feature-item">多種特殊卡牌</div>
-            <div class="feature-item">策略思維挑戰</div>
-            <div class="feature-item">流暢遊戲體驗</div>
-            <div class="feature-item">多人遊戲模式</div>
-            <div class="feature-item">分數統計系統</div>
-            <div class="feature-item" style="color: var(--glow-gold); font-weight: bold;">⭐ 需要 {{ classicUnoCost }} 顆星星</div>
-          </div>
-          <button class="game-button" :class="{ locked: !canPlayClassicUno }" @click.stop="toggleClassicUno" :disabled="!canPlayClassicUno">
-            {{ canPlayClassicUno ? '開始 Classic Uno' : `需要 ${classicUnoCost} 顆星星` }}
-          </button>
-        </div>
-
-         <!-- Little Wheel 遊戲 -->
-        <div class="game-card" :class="{ locked: !canPlayLittleWheel }" @click="toggleLittleWheel">
-          <div class="game-icon">🎡</div>
-          <div class="game-title">Little Wheel</div>
-          <div class="game-subtitle">小輪子冒險遊戲</div>
-          <div class="game-description">
-            有趣的小輪子冒險遊戲，控制小輪子在各種地形上滾動和跳躍。
-            遊戲包含豐富的關卡設計和物理效果，考驗你的反應能力和操作技巧！
-          </div>
-          <div class="game-features">
-            <div class="feature-item">物理引擎遊戲</div>
-            <div class="feature-item">豐富關卡設計</div>
-            <div class="feature-item">反應能力挑戰</div>
-            <div class="feature-item">流暢操作體驗</div>
-            <div class="feature-item">多種地形變化</div>
-            <div class="feature-item">收集要素系統</div>
-            <div class="feature-item" style="color: var(--glow-gold); font-weight: bold;">⭐ 需要 {{ littleWheelCost }} 顆星星</div>
-          </div>
-          <button class="game-button" :class="{ locked: !canPlayLittleWheel }" @click.stop="toggleLittleWheel" :disabled="!canPlayLittleWheel">
-            {{ canPlayLittleWheel ? '開始 Little Wheel' : `需要 ${littleWheelCost} 顆星星` }}
-          </button>
-        </div>
-
-         <!-- Plants vs Zombies Demo 遊戲 -->
-        <div class="game-card" :class="{ locked: !canPlayPlantsVsZombies }" @click="togglePlantsVsZombies">
-          <div class="game-icon">🌱</div>
-          <div class="game-title">Plants vs Zombies Demo</div>
-          <div class="game-subtitle">植物大戰殭屍試玩版</div>
-          <div class="game-description">
-            經典的塔防遊戲，種植各種植物來抵禦殭屍的進攻。
-            遊戲包含豐富的植物種類和策略玩法，考驗你的戰略思維能力！
-          </div>
-          <div class="game-features">
-            <div class="feature-item">經典塔防玩法</div>
-            <div class="feature-item">豐富植物種類</div>
-            <div class="feature-item">策略思維挑戰</div>
-            <div class="feature-item">多樣化殭屍</div>
-            <div class="feature-item">關卡進階設計</div>
-            <div class="feature-item">陽光收集系統</div>
-            <div class="feature-item" style="color: var(--glow-gold); font-weight: bold;">⭐ 需要 {{ plantsVsZombiesCost }} 顆星星</div>
-          </div>
-          <button class="game-button" :class="{ locked: !canPlayPlantsVsZombies }" @click.stop="togglePlantsVsZombies" :disabled="!canPlayPlantsVsZombies">
-            {{ canPlayPlantsVsZombies ? '開始 Plants vs Zombies Demo' : `需要 ${plantsVsZombiesCost} 顆星星` }}
-          </button>
-        </div>
-
-         <!-- Cut the Rope 2 -->
-        <div class="game-card" :class="{ locked: !canPlayCutTheRope }" @click="toggleCutTheRope">
-          <div class="game-icon">🍭</div>
-          <div class="game-title">Cut the Rope 2</div>
-          <div class="game-subtitle">經典物理益智遊戲</div>
-          <div class="game-description">
-            經典的物理益智遊戲，通過切斷繩子讓糖果落入小怪物的口中。
-            遊戲包含豐富的關卡設計和有趣的物理效果，考驗你的邏輯思維能力！
-          </div>
-          <div class="game-features">
-            <div class="feature-item">經典物理玩法</div>
-            <div class="feature-item">豐富關卡設計</div>
-            <div class="feature-item">邏輯思維挑戰</div>
-            <div class="feature-item">可愛遊戲角色</div>
-            <div class="feature-item">流暢遊戲體驗</div>
-            <div class="feature-item" style="color: var(--glow-gold); font-weight: bold;">⭐ 需要 {{ cutTheRopeCost }} 顆星星</div>
-          </div>
-          <button class="game-button" :class="{ locked: !canPlayCutTheRope }" @click.stop="toggleCutTheRope" :disabled="!canPlayCutTheRope">
-            {{ canPlayCutTheRope ? '開始Cut the Rope 2' : `需要 ${cutTheRopeCost} 顆星星` }}
-          </button>
-        </div>
-
-         <!-- Motherload 遊戲 -->
-        <div class="game-card" :class="{ locked: !canPlayMotherload }" @click="toggleMotherload">
-          <div class="game-icon">⛏️</div>
-          <div class="game-title">Motherload</div>
-          <div class="game-subtitle">火星採礦冒險</div>
-          <div class="game-description">
-            引人入勝的基於瀏覽器的採礦冒險遊戲，將你帶入火星的地表之下。
-            作為一家未來派公司的勇敢礦工，你的目標是深入土壤、岩石和礦物層，收集寶貴資源！
-          </div>
-          <div class="game-features">
-            <div class="feature-item">火星採礦冒險</div>
-            <div class="feature-item">資源管理系統</div>
-            <div class="feature-item">設備升級系統</div>
-            <div class="feature-item">深度探索玩法</div>
-            <div class="feature-item">燃料管理機制</div>
-            <div class="feature-item">稀有寶藏發現</div>
-            <div class="feature-item" style="color: var(--glow-gold); font-weight: bold;">⭐ 需要 {{ motherloadCost }} 顆星星</div>
-          </div>
-          <button class="game-button" :class="{ locked: !canPlayMotherload }" @click.stop="toggleMotherload" :disabled="!canPlayMotherload">
-            {{ canPlayMotherload ? '開始 Motherload' : `需要 ${motherloadCost} 顆星星` }}
-          </button>
-        </div>
-
-         <!-- Keeper of the Grove 遊戲 -->
-        <div class="game-card" :class="{ locked: !canPlayKeeperOfTheGrove }" @click="toggleKeeperOfTheGrove">
-          <div class="game-icon">🌳</div>
-          <div class="game-title">Keeper of the Grove</div>
-          <div class="game-subtitle">神聖樹叢守護者</div>
-          <div class="game-description">
-            刺激且引人入勝的塔防遊戲，您將化身為保護神聖樹叢的守護者，抵禦危險的入侵者。
-            利用魔法力量建造和升級塔樓，抵擋旨在竊取樹叢珍貴寶石的怪物潮！
-          </div>
-          <div class="game-features">
-            <div class="feature-item">奇幻塔防遊戲</div>
-            <div class="feature-item">元素塔樓系統</div>
-            <div class="feature-item">策略性防禦</div>
-            <div class="feature-item">寶石保護機制</div>
-            <div class="feature-item">多波敵人挑戰</div>
-            <div class="feature-item">塔樓升級系統</div>
-            <div class="feature-item" style="color: var(--glow-gold); font-weight: bold;">⭐ 需要 {{ keeperOfTheGroveCost }} 顆星星</div>
-          </div>
-          <button class="game-button" :class="{ locked: !canPlayKeeperOfTheGrove }" @click.stop="toggleKeeperOfTheGrove" :disabled="!canPlayKeeperOfTheGrove">
-            {{ canPlayKeeperOfTheGrove ? '開始 Keeper of the Grove' : `需要 ${keeperOfTheGroveCost} 顆星星` }}
-          </button>
-        </div>
-      </div>
-
-      <!-- Cut the Rope 2 嵌入式遊戲容器 -->
-      <div v-if="showCutTheRope" class="embedded-game-container">
-        <div class="embedded-game-header">
-          <h2>🍭 Cut the Rope 2</h2>
-          <button class="close-game-btn" @click="closeCutTheRope">
-            <i class="material-icons">close</i>
-          </button>
-        </div>
-        <div class="embedded-game-frame">
-          <iframe 
-            src="https://nutwg.com/cut-the-rope-2/"
-            frameborder="0"
-            allowfullscreen
-            title="Cut the Rope 2">
-          </iframe>
         </div>
       </div>
     </div>
@@ -810,6 +1626,26 @@
     <source src="sound/type.mp3" type="audio/mpeg">
   </audio>
 
+  <audio id="gachaCoinSfx" preload="auto">
+    <source src="sound/click.mp3" type="audio/mpeg">
+  </audio>
+
+  <audio id="gachaSpinSfx" preload="auto">
+    <source src="sound/clock-ticking-sound.mp3" type="audio/mpeg">
+  </audio>
+
+  <audio id="gachaOpenSfx" preload="auto">
+    <source src="sound/shine-7-268909.mp3" type="audio/mpeg">
+  </audio>
+
+  <audio id="chestOpenSfx" preload="auto">
+    <source src="sound/unlock.mp3" type="audio/mpeg">
+  </audio>
+
+  <audio id="jackpotSfx" preload="auto">
+    <source src="sound/winning-82808.mp3" type="audio/mpeg">
+  </audio>
+
   <audio id="backgroundMusic" loop>
     <source src="sound/午後放鬆時光（純音樂）.mp3" type="audio/mpeg">
   </audio>
@@ -820,20 +1656,33 @@
     createApp({
       data() {
         return {
-          totalGames: 10,
-          availableGames: 10,
+          totalGames: 9,
+          availableGames: 9,
           completedGames: 0,
           totalStars: 0,
+          goldCoins: 0,
           playerLevel: 1,
-                     showCutTheRope: false,
-                     cutTheRopeCost: 100, // Cut the Rope 2 遊戲成本
-          slotMachineCost: 50, // 拉霸機遊戲成本
-          tetrisCost: 100, // Tetris 遊戲成本
-          classicUnoCost: 100, // Classic Uno 遊戲成本
-          littleWheelCost: 100, // Little Wheel 遊戲成本
-          plantsVsZombiesCost: 200, // Plants vs Zombies Demo 遊戲成本
-          motherloadCost: 300, // Motherload 遊戲成本
-          keeperOfTheGroveCost: 500, // Keeper of the Grove 遊戲成本
+          gameCoinCostOptions: [300, 500, 1000],
+          gameCoinCostMax: 1000,
+          showWordMelodyGuide: false,
+          exchangeRate: 1,
+          exchangeCoinsPerRate: 10,
+          exchangeStarsAmount: 1,
+          lotteryCost: 50,
+          lastLotteryResult: '',
+          lotteryHistory: [],
+          gachaAnimating: false,
+          gachaPhase: '',
+          showLotteryModal: false,
+          lotteryModalText: '',
+          lotteryModalBonusText: '',
+          jackpotActive: false,
+          jackpotText: '',
+          ownedTitles: [],
+          activeTitle: '',
+          lastSpinCost: 0,
+          lotterySpinCount: 0,
+          lotteryChestCount: 0,
           starsAnimation: false, // 星星動畫狀態
           // 新增星星系統相關數據
           starsEarned: 0, // 本局獲得的星星
@@ -848,30 +1697,71 @@
         completionRate() {
           return Math.round((this.completedGames / this.totalGames) * 100);
         },
-                 canPlayCutTheRope() {
-           return this.totalStars >= this.cutTheRopeCost;
-         },
          canPlaySlotMachine() {
-           return this.totalStars >= this.slotMachineCost;
+           return this.goldCoins >= this.gameCoinCostMax;
          },
-         canPlayTetris() {
-           return this.totalStars >= this.tetrisCost;
-         },
-         canPlayClassicUno() {
-           return this.totalStars >= this.classicUnoCost;
-         },
-         canPlayLittleWheel() {
-           return this.totalStars >= this.littleWheelCost;
-         },
-         canPlayPlantsVsZombies() {
-           return this.totalStars >= this.plantsVsZombiesCost;
-         },
-         canPlayMotherload() {
-           return this.totalStars >= this.motherloadCost;
-         },
-         canPlayKeeperOfTheGrove() {
-           return this.totalStars >= this.keeperOfTheGroveCost;
-         },
+        canPlayBattleSystem() {
+          return this.goldCoins >= this.gameCoinCostMax;
+        },
+        canPlayWordMelody() {
+          return this.goldCoins >= this.gameCoinCostMax;
+        },
+        canPlayLittleWheel() {
+          return this.goldCoins >= this.gameCoinCostMax;
+        },
+        canPlayPapasPastaria() {
+          return this.goldCoins >= this.gameCoinCostMax;
+        },
+        canPlayBilliards() {
+          return this.goldCoins >= this.gameCoinCostMax;
+        },
+        canPlayPapasSushiria() {
+          return this.goldCoins >= this.gameCoinCostMax;
+        },
+        canPlayBloomDefender() {
+          return this.goldCoins >= this.gameCoinCostMax;
+        },
+        canPlayStealingTheDiamond() {
+          return this.goldCoins >= this.gameCoinCostMax;
+        },
+        previewCoins() {
+          const stars = Math.max(0, Math.floor(Number(this.exchangeStarsAmount) || 0));
+          if (!stars) { return 0; }
+          const perStar = this.exchangeCoinsPerRate / this.exchangeRate;
+          return Math.floor(stars * perStar);
+        },
+        effectiveLotteryCost() {
+          const base = Math.max(1, Math.floor(Number(this.lotteryCost) || 1));
+          if (this.activeTitle === '轉蛋之王') { return Math.max(1, base - 10); }
+          if (this.activeTitle === '省錢達人') { return Math.max(1, base - 5); }
+          return base;
+        },
+        titleBonusText() {
+          const t = this.activeTitle;
+          if (!t) { return '無'; }
+          if (t === '新手冒險家') { return '每次抽獎額外 +🪙 5（小補貼）'; }
+          if (t === '幸運玩家') { return '抽到金幣/星星時略為加成（小幅提升）'; }
+          if (t === '閃耀之星') { return '抽到星星時額外 +⭐ 1（含開寶箱）'; }
+          if (t === '轉蛋之王') { return '抽獎費用 -🪙 10'; }
+          if (t === '傳說收藏家') { return '開寶箱獎勵提升（大金幣/大星星更容易觸發大獎）'; }
+          if (t === '寶箱獵人') { return '抽獎更容易抽到寶箱（+機率）'; }
+          if (t === '金幣富翁') { return '抽到金幣回饋時再額外 +🪙 20%'; }
+          if (t === '星星守護者') { return '抽到星星時再額外 +⭐ 1（不含開寶箱）'; }
+          if (t === '省錢達人') { return '抽獎費用 -🪙 5'; }
+          if (t === '連勝之手') { return '抽到寶箱時有機會變成 x2'; }
+          return '特殊加成';
+        },
+        lotteryHistoryParsed() {
+          const rows = Array.isArray(this.lotteryHistory) ? this.lotteryHistory : [];
+          return rows.map((line) => {
+            const s = String(line || '');
+            const m = s.match(/^\[(.*?)\]\s*(.*?)(?:（消耗\s*🪙\s*(\d+)）)?$/);
+            const time = m ? (m[1] || '') : '';
+            const text = m ? (m[2] || s) : s;
+            const cost = m && m[3] ? Number(m[3]) : this.effectiveLotteryCost;
+            return { time, text, cost };
+          });
+        },
         // 新增星星系統計算屬性
         levelProgressPercentage() {
           return Math.round((this.totalStars % this.nextLevelStars) / this.nextLevelStars * 100);
@@ -884,6 +1774,428 @@
         }
       },
       methods: {
+                 toggleWordMelodyGuide() {
+           this.showWordMelodyGuide = !this.showWordMelodyGuide;
+         },
+                 spendRandomGameCoins() {
+           const maxCost = Math.max(0, Math.floor(Number(this.gameCoinCostMax) || 0));
+           if (this.goldCoins < maxCost) { return null; }
+           const options = Array.isArray(this.gameCoinCostOptions) ? this.gameCoinCostOptions : [];
+           const safeOptions = options.map(v => Math.floor(Number(v) || 0)).filter(v => v > 0);
+           if (safeOptions.length === 0) { return null; }
+           const cost = safeOptions[Math.floor(Math.random() * safeOptions.length)];
+           this.goldCoins -= cost;
+           this.saveEconomyData();
+           this.triggerStarsAnimation();
+           return cost;
+         },
+                 trySpendCoins(amount) {
+           const cost = Math.max(0, Math.floor(Number(amount) || 0));
+           if (!cost) { return true; }
+           if (this.goldCoins < cost) { return false; }
+           this.goldCoins -= cost;
+           this.saveEconomyData();
+           this.triggerStarsAnimation();
+           return true;
+         },
+                 openWordMelody() {
+           const spent = this.spendRandomGameCoins();
+           if (spent === null) {
+             alert(`❌ 金幣不足！需要至少 ${this.gameCoinCostMax} 金幣才能遊玩 Word Melody。\n\n目前金幣：${this.goldCoins}`);
+             return;
+           }
+           alert(`🎵 開始遊玩 Word Melody！\n\n本次扣除金幣：${spent}\n剩餘金幣：${this.goldCoins}`);
+           window.open('https://www.littlefox.com/tw/games/word_melody', '_blank');
+         },
+        openLittleWheel() {
+          const spent = this.spendRandomGameCoins();
+          if (spent === null) {
+            alert(`❌ 金幣不足！需要至少 ${this.gameCoinCostMax} 金幣才能遊玩 Little Wheel。\n\n目前金幣：${this.goldCoins}`);
+            return;
+          }
+          alert(`🛞 開始遊玩 Little Wheel！\n\n本次扣除金幣：${spent}\n剩餘金幣：${this.goldCoins}`);
+          window.open('https://omiplay.com/zh/games/little-wheel/', '_blank');
+        },
+        openPapasPastaria() {
+          const spent = this.spendRandomGameCoins();
+          if (spent === null) {
+            alert(`❌ 金幣不足！需要至少 ${this.gameCoinCostMax} 金幣才能遊玩 Papas Pastaria。\n\n目前金幣：${this.goldCoins}`);
+            return;
+          }
+          alert(`🍝 開始遊玩 Papas Pastaria！\n\n本次扣除金幣：${spent}\n剩餘金幣：${this.goldCoins}`);
+          window.open('https://omiplay.com/zh/games/play-papas-pastaria-online/', '_blank');
+        },
+        openBilliards() {
+          const spent = this.spendRandomGameCoins();
+          if (spent === null) {
+            alert(`❌ 金幣不足！需要至少 ${this.gameCoinCostMax} 金幣才能遊玩 Billiards。\n\n目前金幣：${this.goldCoins}`);
+            return;
+          }
+          alert(`🎱 開始遊玩 Billiards！\n\n本次扣除金幣：${spent}\n剩餘金幣：${this.goldCoins}`);
+          window.open('https://omiplay.com/zh/games/billiards/', '_blank');
+        },
+        openPapasSushiria() {
+          const spent = this.spendRandomGameCoins();
+          if (spent === null) {
+            alert(`❌ 金幣不足！需要至少 ${this.gameCoinCostMax} 金幣才能遊玩 Papas Sushiria。\n\n目前金幣：${this.goldCoins}`);
+            return;
+          }
+          alert(`🍣 開始遊玩 Papas Sushiria！\n\n本次扣除金幣：${spent}\n剩餘金幣：${this.goldCoins}`);
+          window.open('https://omiplay.com/zh/games/papas-sushiria/', '_blank');
+        },
+        openBloomDefender() {
+          const spent = this.spendRandomGameCoins();
+          if (spent === null) {
+            alert(`❌ 金幣不足！需要至少 ${this.gameCoinCostMax} 金幣才能遊玩 Bloom Defender。\n\n目前金幣：${this.goldCoins}`);
+            return;
+          }
+          alert(`🌸 開始遊玩 Bloom Defender！\n\n本次扣除金幣：${spent}\n剩餘金幣：${this.goldCoins}`);
+          window.open('https://omiplay.com/zh/games/bloom-defender/', '_blank');
+        },
+        openStealingTheDiamond() {
+          const spent = this.spendRandomGameCoins();
+          if (spent === null) {
+            alert(`❌ 金幣不足！需要至少 ${this.gameCoinCostMax} 金幣才能遊玩 Stealing the Diamond。\n\n目前金幣：${this.goldCoins}`);
+            return;
+          }
+          alert(`💎 開始遊玩 Stealing the Diamond！\n\n本次扣除金幣：${spent}\n剩餘金幣：${this.goldCoins}`);
+          window.open('https://omiplay.com/zh/games/stealing-the-diamond/', '_blank');
+        },
+        openBattleSystem() {
+          const spent = this.spendRandomGameCoins();
+          if (spent === null) {
+            alert(`❌ 金幣不足！需要至少 ${this.gameCoinCostMax} 金幣才能遊玩卡牌對戰系統。\n\n目前金幣：${this.goldCoins}`);
+            return;
+          }
+          alert(`⚔️ 開始遊玩卡牌對戰系統！\n\n本次扣除金幣：${spent}\n剩餘金幣：${this.goldCoins}`);
+          this.openGame('battle_system.html');
+        },
+        loadEconomyData() {
+          const coins = parseInt(localStorage.getItem('goldCoins') || '0', 10);
+          this.goldCoins = Number.isFinite(coins) ? coins : 0;
+
+          const spinCount = parseInt(localStorage.getItem('lotterySpinCount_v1') || '0', 10);
+          this.lotterySpinCount = Number.isFinite(spinCount) ? spinCount : 0;
+          const chestCount = parseInt(localStorage.getItem('lotteryChestCount_v1') || '0', 10);
+          this.lotteryChestCount = Number.isFinite(chestCount) ? chestCount : 0;
+
+          try {
+            const raw = localStorage.getItem('lotteryHistory_v1');
+            const parsed = raw ? JSON.parse(raw) : [];
+            this.lotteryHistory = Array.isArray(parsed) ? parsed : [];
+          } catch (e) {
+            this.lotteryHistory = [];
+          }
+        },
+        loadTitles() {
+          try {
+            const raw = localStorage.getItem('ownedTitles_v1');
+            const parsed = raw ? JSON.parse(raw) : [];
+            this.ownedTitles = Array.isArray(parsed) ? parsed.filter(Boolean) : [];
+          } catch (e) {
+            this.ownedTitles = [];
+          }
+          const active = localStorage.getItem('activeTitle_v1') || '';
+          this.activeTitle = active;
+        },
+        saveEconomyData() {
+          localStorage.setItem('goldCoins', String(this.goldCoins));
+          localStorage.setItem('lotteryHistory_v1', JSON.stringify(this.lotteryHistory));
+          localStorage.setItem('lotterySpinCount_v1', String(this.lotterySpinCount));
+          localStorage.setItem('lotteryChestCount_v1', String(this.lotteryChestCount));
+        },
+        saveTitles() {
+          localStorage.setItem('ownedTitles_v1', JSON.stringify(this.ownedTitles));
+          localStorage.setItem('activeTitle_v1', String(this.activeTitle || ''));
+        },
+        unlockTitle(title) {
+          const t = String(title || '').trim();
+          if (!t) { return; }
+          if (!this.ownedTitles.includes(t)) {
+            this.ownedTitles.push(t);
+            this.saveTitles();
+            const time = new Date().toLocaleString();
+            this.lotteryHistory.unshift(`[${time}] 🏷️ 解鎖稱號：${t}`);
+            this.lotteryHistory = this.lotteryHistory.slice(0, 20);
+            this.saveEconomyData();
+          }
+          if (!this.activeTitle) {
+            this.activeTitle = t;
+            this.saveTitles();
+          }
+        },
+        exchangeStarsForCoins() {
+          const stars = Math.max(0, Math.floor(Number(this.exchangeStarsAmount) || 0));
+          if (!stars) { return; }
+          if (this.totalStars < stars) {
+            alert('❌ 星星不足，無法兌換');
+            return;
+          }
+          const coinsToGet = this.previewCoins;
+          if (coinsToGet <= 0) {
+            alert('❌ 兌換數量太小');
+            return;
+          }
+
+          this.totalStars -= stars;
+          this.goldCoins += coinsToGet;
+          this.starsSpent += stars;
+
+          localStorage.setItem('totalStars', this.totalStars.toString());
+          this.savePlayerData();
+          this.saveEconomyData();
+          this.triggerStarsAnimation();
+
+          alert(`✅ 兌換成功！\n\n使用星星：⭐ ${stars}\n獲得金幣：🪙 ${coinsToGet}\n\n目前星星：⭐ ${this.totalStars}\n目前金幣：🪙 ${this.goldCoins}`);
+        },
+        startGacha() {
+          if (this.gachaAnimating) { return; }
+          if (this.goldCoins < this.effectiveLotteryCost) {
+            alert('❌ 金幣不足，無法抽獎');
+            return;
+          }
+
+          this.gachaAnimating = true;
+          this.gachaPhase = 'sparkle';
+
+          this.playSfx('gachaCoinSfx', 0.20);
+
+          window.setTimeout(() => {
+            this.gachaPhase = 'coin';
+            this.lastSpinCost = this.effectiveLotteryCost;
+            this.goldCoins -= this.lastSpinCost;
+            this.saveEconomyData();
+            this.playSfx('gachaCoinSfx', 0.25);
+          }, 250);
+
+          window.setTimeout(() => {
+            this.gachaPhase = 'spin';
+            this.playSfx('gachaSpinSfx', 0.12);
+          }, 720);
+
+          window.setTimeout(() => {
+            this.gachaPhase = 'open';
+            this.playSfx('gachaOpenSfx', 0.18);
+          }, 1400);
+
+          window.setTimeout(() => {
+            this.applyLotteryRoll();
+            this.gachaAnimating = false;
+            this.gachaPhase = '';
+          }, 2050);
+        },
+        spinLottery() {
+          this.startGacha();
+        },
+        applyLotteryRoll() {
+          const roll = Math.random();
+          let resultText = '';
+          this.lotteryModalBonusText = '';
+          const costUsed = Math.max(1, Math.floor(Number(this.lastSpinCost) || this.effectiveLotteryCost));
+
+          const chestBoost = this.activeTitle === '寶箱獵人' ? 0.06 : 0;
+          const coinBoostRatio = this.activeTitle === '金幣富翁' ? 0.20 : 0;
+          const starExtra = (this.activeTitle === '閃耀之星' ? 1 : 0) + (this.activeTitle === '星星守護者' ? 1 : 0);
+
+          // 壞獎勵機率：12%（避免越抽越富）
+          const badCut = 0.12;
+
+          // 獎池：金幣 / 星星 / 寶箱 / 稱號
+          // 基本機率：壞獎勵 12% / 金幣 33% / 星星 25% / 寶箱 10% / 稱號 20%
+          // 寶箱獵人會把部分機率挪到寶箱（從金幣/星星各扣一些）
+          const effectiveChestBoost = Math.min(0.05, Math.max(0, chestBoost));
+          const coinCut = badCut + (0.33 - (effectiveChestBoost * 0.5));
+          const starCut = coinCut + (0.25 - (effectiveChestBoost * 0.5));
+          const chestCut = starCut + (0.10 + effectiveChestBoost);
+
+          if (roll < badCut) {
+            const badRoll = Math.random();
+            if (badRoll < 0.45) {
+              const lose = 20 + Math.floor(Math.random() * 61); // 20~80
+              const actual = Math.min(this.goldCoins, lose);
+              this.goldCoins = Math.max(0, this.goldCoins - actual);
+              resultText = `💥 壞獎勵：🪙 金幣 -${actual}`;
+            } else if (badRoll < 0.85) {
+              const loseStars = 1 + Math.floor(Math.random() * 2); // 1~2
+              const actual = Math.min(this.totalStars, loseStars);
+              this.totalStars = Math.max(0, this.totalStars - actual);
+              localStorage.setItem('totalStars', this.totalStars.toString());
+              this.savePlayerData();
+              resultText = `💥 壞獎勵：⭐ 星星 -${actual}`;
+            } else {
+              resultText = '💨 壞獎勵：空轉（沒有獲得任何東西）';
+            }
+          } else if (roll < coinCut) {
+            const coinsBack = Math.floor(10 + Math.random() * 90); // 10~99
+            let add = coinsBack;
+            if (this.activeTitle === '幸運玩家') { add += 8; }
+            if (this.activeTitle === '新手冒險家') { add += 5; }
+            if (coinBoostRatio > 0) { add += Math.max(1, Math.floor(coinsBack * coinBoostRatio)); }
+            this.goldCoins += add;
+            resultText = `🎉 金幣回饋 +${coinsBack}`;
+
+            if (coinsBack >= 90) {
+              this.triggerJackpot('金幣回饋');
+            }
+          } else if (roll < starCut) {
+            const stars = 1 + Math.floor(Math.random() * 3); // 1~3
+            let addStars = stars;
+            if (this.activeTitle === '幸運玩家' && stars >= 2) { addStars += 1; }
+            if (starExtra > 0) { addStars += starExtra; }
+            this.totalStars += addStars;
+            this.totalStarsEarned += addStars;
+            resultText = `⭐ 星星獎勵 +${stars}`;
+
+            if (stars >= 3) {
+              this.triggerJackpot('星星大獎');
+            }
+          } else if (roll < chestCut) {
+            let chestAdd = 1;
+            if (this.activeTitle === '連勝之手' && Math.random() < 0.25) { chestAdd = 2; }
+            this.lotteryChestCount += chestAdd;
+            resultText = `🎁 寶箱 +${chestAdd}`;
+            if (chestAdd >= 2) {
+              this.triggerJackpot('寶箱 x2');
+            }
+          } else {
+            const titles = [
+              '新手冒險家',
+              '幸運玩家',
+              '閃耀之星',
+              '轉蛋之王',
+              '傳說收藏家',
+              '寶箱獵人',
+              '金幣富翁',
+              '星星守護者',
+              '省錢達人',
+              '連勝之手'
+            ];
+            const t = titles[Math.floor(Math.random() * titles.length)];
+            resultText = `🏷️ 稱號：${t}`;
+            this.unlockTitle(t);
+
+            if (t === '轉蛋之王' || t === '傳說收藏家' || t === '金幣富翁' || t === '寶箱獵人') {
+              this.triggerJackpot('稀有稱號');
+            }
+          }
+
+          const time = new Date().toLocaleString();
+          this.lotterySpinCount += 1;
+
+          const bonuses = [];
+          if (this.lotterySpinCount % 5 === 0) {
+            this.lotteryChestCount += 1;
+            bonuses.push('🎁 寶箱 x1');
+          }
+
+          const bonusSuffix = bonuses.length ? `｜${bonuses.join(' ')}` : '';
+          const finalText = `${resultText}${bonusSuffix}`;
+          const log = `[${time}] ${finalText}（消耗 🪙 ${costUsed}）`;
+          this.lastLotteryResult = finalText;
+          this.lotteryHistory.unshift(log);
+          this.lotteryHistory = this.lotteryHistory.slice(0, 20);
+          this.saveEconomyData();
+          this.triggerStarsAnimation();
+
+          this.lotteryModalText = resultText;
+          this.lotteryModalBonusText = bonuses.join(' ');
+          this.showLotteryModal = true;
+        },
+        closeLotteryModal() {
+          this.showLotteryModal = false;
+          this.jackpotActive = false;
+        },
+        triggerJackpot(label) {
+          this.jackpotText = label || '';
+          this.jackpotActive = true;
+          this.playSfx('jackpotSfx', 0.24);
+          window.setTimeout(() => {
+            this.jackpotActive = false;
+          }, 1800);
+        },
+        openChest() {
+          if (this.lotteryChestCount <= 0) {
+            alert('目前沒有寶箱可開啟');
+            return;
+          }
+
+          this.lotteryChestCount -= 1;
+          this.playSfx('chestOpenSfx', 0.22);
+
+          const roll = Math.random();
+          let rewardText = '';
+
+          if (roll < 0.45) {
+            const coins = 30 + Math.floor(Math.random() * 91); // 30~120
+            let addCoins = coins;
+            if (this.activeTitle === '傳說收藏家') { addCoins = Math.floor(addCoins * 1.15); }
+            this.goldCoins += addCoins;
+            rewardText = `🧰 開啟寶箱：🪙 金幣 +${coins}`;
+            this.saveEconomyData();
+
+            if (coins >= 110) {
+              this.triggerJackpot('寶箱金幣大獎');
+            }
+          } else if (roll < 0.85) {
+            const stars = 1 + Math.floor(Math.random() * 3); // 1~3
+            let addStars = stars;
+            if (this.activeTitle === '閃耀之星') { addStars += 1; }
+            if (this.activeTitle === '傳說收藏家' && stars >= 4) { addStars += 1; }
+            this.totalStars += addStars;
+            this.totalStarsEarned += addStars;
+            localStorage.setItem('totalStars', this.totalStars.toString());
+            this.savePlayerData();
+            this.saveEconomyData();
+            this.triggerStarsAnimation();
+            rewardText = `🧰 開啟寶箱：⭐ 星星 +${stars}`;
+
+            if (stars >= 3) {
+              this.triggerJackpot('寶箱星星大獎');
+            }
+          } else if (roll < 0.95) {
+            // 選項 D：原本的文字獎勵改成「直接給寶箱」（但機率不要太高）
+            this.lotteryChestCount += 1;
+            rewardText = '🎁 驚喜：額外寶箱 +1';
+            this.saveEconomyData();
+            this.triggerJackpot('驚喜寶箱');
+          } else {
+            // 少量失敗結果，避免開寶箱期望值過高
+            const lose = 10 + Math.floor(Math.random() * 31); // 10~40
+            const actual = Math.min(this.goldCoins, lose);
+            this.goldCoins = Math.max(0, this.goldCoins - actual);
+            rewardText = `😵 寶箱陷阱：🪙 金幣 -${actual}`;
+            this.saveEconomyData();
+          }
+
+          const time = new Date().toLocaleString();
+          const log = `[${time}] ${rewardText}`;
+          this.lotteryHistory.unshift(log);
+          this.lotteryHistory = this.lotteryHistory.slice(0, 20);
+          this.saveEconomyData();
+
+          this.lotteryModalText = rewardText;
+          this.lotteryModalBonusText = '';
+          this.showLotteryModal = true;
+        },
+        playSfx(audioId, volume) {
+          try {
+            const el = document.getElementById(audioId);
+            if (!el) { return; }
+            el.pause();
+            el.currentTime = 0;
+            el.volume = Math.max(0, Math.min(1, Number(volume) || 0.2));
+            const p = el.play();
+            if (p && typeof p.catch === 'function') { p.catch(() => {}); }
+          } catch (e) {
+            // ignore
+          }
+        },
+        clearLotteryHistory() {
+          if (!confirm('確定要清空抽獎紀錄？')) { return; }
+          this.lotteryHistory = [];
+          this.lastLotteryResult = '';
+          this.saveEconomyData();
+        },
                  openGame(gamePath) {
            // 在新視窗中打開遊戲
            window.open(gamePath, '_blank');
@@ -891,130 +2203,11 @@
            // 模擬遊戲完成獲得星星（這裡可以根據實際遊戲結果調整）
            setTimeout(() => {
              const gameNames = {
-               'advanced-animal-card-game.html': '動物卡牌相克',
                'battle_system.html': '卡牌對戰系統',
-               'https://tw.pigame.cc/game/tetris': 'Tetris'
              };
              
              const gameName = gameNames[gamePath] || '遊戲';
              this.simulateGameCompletion(gameName);
-           }, 2000); // 2秒後模擬遊戲完成
-         },
-         openTetris() {
-           // 在新視窗中打開 Tetris 遊戲
-           window.open('https://tw.pigame.cc/game/tetris', '_blank');
-           
-           // 模擬遊戲完成獲得星星
-           setTimeout(() => {
-             this.simulateGameCompletion('Tetris');
-           }, 2000); // 2秒後模擬遊戲完成
-         },
-         toggleTetris() {
-           // 使用新的星星花費系統
-           if (!this.spendStars(this.tetrisCost)) {
-             alert(`❌ 星星不足！需要 ${this.tetrisCost} 顆星星才能遊玩 Tetris。\n\n目前星星：${this.totalStars} 顆\n需要星星：${this.tetrisCost} 顆`);
-             return;
-           }
-           
-           // 顯示扣除訊息
-           alert(`🧩 開始遊玩 Tetris！\n\n扣除星星：${this.tetrisCost} 顆\n剩餘星星：${this.totalStars} 顆`);
-           
-           // 開啟遊戲
-           window.open('https://tw.pigame.cc/game/tetris', '_blank');
-           
-           // 模擬遊戲完成獲得星星
-           setTimeout(() => {
-             this.simulateGameCompletion('Tetris');
-           }, 2000); // 2秒後模擬遊戲完成
-         },
-         toggleClassicUno() {
-           // 使用新的星星花費系統
-           if (!this.spendStars(this.classicUnoCost)) {
-             alert(`❌ 星星不足！需要 ${this.classicUnoCost} 顆星星才能遊玩 Classic Uno。\n\n目前星星：${this.totalStars} 顆\n需要星星：${this.classicUnoCost} 顆`);
-             return;
-           }
-           
-           // 顯示扣除訊息
-           alert(`🃏 開始遊玩 Classic Uno！\n\n扣除星星：${this.classicUnoCost} 顆\n剩餘星星：${this.totalStars} 顆`);
-           
-           // 開啟遊戲
-           window.open('https://tw.pigame.cc/game/classic-uno', '_blank');
-           
-           // 模擬遊戲完成獲得星星
-           setTimeout(() => {
-             this.simulateGameCompletion('Classic Uno');
-           }, 2000); // 2秒後模擬遊戲完成
-         },
-         toggleLittleWheel() {
-           // 使用新的星星花費系統
-           if (!this.spendStars(this.littleWheelCost)) {
-             alert(`❌ 星星不足！需要 ${this.littleWheelCost} 顆星星才能遊玩 Little Wheel。\n\n目前星星：${this.totalStars} 顆\n需要星星：${this.littleWheelCost} 顆`);
-             return;
-           }
-           
-           // 顯示扣除訊息
-           alert(`🎡 開始遊玩 Little Wheel！\n\n扣除星星：${this.littleWheelCost} 顆\n剩餘星星：${this.totalStars} 顆`);
-           
-           // 開啟遊戲
-           window.open('https://omiplay.com/zh/games/little-wheel/', '_blank');
-           
-           // 模擬遊戲完成獲得星星
-           setTimeout(() => {
-             this.simulateGameCompletion('Little Wheel');
-           }, 2000); // 2秒後模擬遊戲完成
-         },
-         togglePlantsVsZombies() {
-           // 使用新的星星花費系統
-           if (!this.spendStars(this.plantsVsZombiesCost)) {
-             alert(`❌ 星星不足！需要 ${this.plantsVsZombiesCost} 顆星星才能遊玩 Plants vs Zombies Demo。\n\n目前星星：${this.totalStars} 顆\n需要星星：${this.plantsVsZombiesCost} 顆`);
-             return;
-           }
-           
-           // 顯示扣除訊息
-           alert(`🌱 開始遊玩 Plants vs Zombies Demo！\n\n扣除星星：${this.plantsVsZombiesCost} 顆\n剩餘星星：${this.totalStars} 顆`);
-           
-           // 開啟遊戲
-           window.open('https://omiplay.com/zh/games/plants-vs-zombies-demo/', '_blank');
-           
-           // 模擬遊戲完成獲得星星
-           setTimeout(() => {
-             this.simulateGameCompletion('Plants vs Zombies Demo');
-           }, 2000); // 2秒後模擬遊戲完成
-         },
-         toggleMotherload() {
-           // 使用新的星星花費系統
-           if (!this.spendStars(this.motherloadCost)) {
-             alert(`❌ 星星不足！需要 ${this.motherloadCost} 顆星星才能遊玩 Motherload。\n\n目前星星：${this.totalStars} 顆\n需要星星：${this.motherloadCost} 顆`);
-             return;
-           }
-           
-           // 顯示扣除訊息
-           alert(`⛏️ 開始遊玩 Motherload！\n\n扣除星星：${this.motherloadCost} 顆\n剩餘星星：${this.totalStars} 顆`);
-           
-           // 開啟遊戲
-           window.open('https://omiplay.com/zh/games/motherload/', '_blank');
-           
-           // 模擬遊戲完成獲得星星
-           setTimeout(() => {
-             this.simulateGameCompletion('Motherload');
-           }, 2000); // 2秒後模擬遊戲完成
-         },
-         toggleKeeperOfTheGrove() {
-           // 使用新的星星花費系統
-           if (!this.spendStars(this.keeperOfTheGroveCost)) {
-             alert(`❌ 星星不足！需要 ${this.keeperOfTheGroveCost} 顆星星才能遊玩 Keeper of the Grove。\n\n目前星星：${this.totalStars} 顆\n需要星星：${this.keeperOfTheGroveCost} 顆`);
-             return;
-           }
-           
-           // 顯示扣除訊息
-           alert(`🌳 開始遊玩 Keeper of the Grove！\n\n扣除星星：${this.keeperOfTheGroveCost} 顆\n剩餘星星：${this.totalStars} 顆`);
-           
-           // 開啟遊戲
-           window.open('https://omiplay.com/zh/games/keeper-of-the-grove/', '_blank');
-           
-           // 模擬遊戲完成獲得星星
-           setTimeout(() => {
-             this.simulateGameCompletion('Keeper of the Grove');
            }, 2000); // 2秒後模擬遊戲完成
          },
         goHome() {
@@ -1057,28 +2250,15 @@
           };
           localStorage.setItem('gameProgress', JSON.stringify(progress));
         },
-                 toggleCutTheRope() {
-           // 使用新的星星花費系統
-           if (!this.spendStars(this.cutTheRopeCost)) {
-             alert(`❌ 星星不足！需要 ${this.cutTheRopeCost} 顆星星才能遊玩 Cut the Rope 2。\n\n目前星星：${this.totalStars} 顆\n需要星星：${this.cutTheRopeCost} 顆`);
-             return;
-           }
-           
-           // 顯示扣除訊息
-           alert(`🎮 開始遊玩 Cut the Rope 2！\n\n扣除星星：${this.cutTheRopeCost} 顆\n剩餘星星：${this.totalStars} 顆`);
-           
-           // 開啟遊戲
-           this.showCutTheRope = true;
-         },
          toggleSlotMachine() {
-           // 使用新的星星花費系統
-           if (!this.spendStars(this.slotMachineCost)) {
-             alert(`❌ 星星不足！需要 ${this.slotMachineCost} 顆星星才能遊玩拉霸機遊戲。\n\n目前星星：${this.totalStars} 顆\n需要星星：${this.slotMachineCost} 顆`);
+           const spent = this.spendRandomGameCoins();
+           if (spent === null) {
+             alert(`❌ 金幣不足！需要至少 ${this.gameCoinCostMax} 金幣才能遊玩拉霸機遊戲。\n\n目前金幣：${this.goldCoins} 金幣\n需要金幣：${this.gameCoinCostMax} 金幣`);
              return;
            }
            
            // 顯示扣除訊息
-           alert(`🎰 開始遊玩拉霸機遊戲！\n\n扣除星星：${this.slotMachineCost} 顆\n剩餘星星：${this.totalStars} 顆`);
+           alert(`🎰 開始遊玩拉霸機遊戲！\n\n本次扣除金幣：${spent} 金幣\n剩餘金幣：${this.goldCoins} 金幣`);
            
            // 開啟遊戲
            window.open('word_spin_game.html', '_blank');
@@ -1088,9 +2268,6 @@
              this.simulateGameCompletion('拉霸機遊戲');
            }, 2000); // 2秒後模擬遊戲完成
          },
-        closeCutTheRope() {
-          this.showCutTheRope = false;
-        },
         savePlayerData() {
           // 保存星星到localStorage，與首頁保持一致
           localStorage.setItem('totalStars', this.totalStars.toString());
@@ -1221,6 +2398,12 @@
       mounted() {
         // 從localStorage讀取玩家數據
         this.loadPlayerData();
+
+        // 讀取金幣 / 抽獎紀錄
+        this.loadEconomyData();
+
+        // 讀取稱號收藏與目前啟用稱號
+        this.loadTitles();
         
         // 初始化背景音樂系統
         initBackgroundMusic();
