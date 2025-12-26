@@ -2414,9 +2414,6 @@
                 }, 500);
                 
             } else {
-                // 播放失敗音效（僅手動轉動）
-                soundSystem.playLoseSound();
-                
                 gameState.streak = 0;
                 showResult('😔 未中獎，再試一次！', 'lose');
             }
