@@ -1455,6 +1455,40 @@
           </button>
         </div>
 
+        <div class="game-card" :class="{ locked: !canPlayScratchGame }" @click="openScratchGame">
+          <div class="game-icon">🕹️</div>
+          <div class="game-title">Scratch 遊戲</div>
+          <div class="game-subtitle">嵌入式小遊戲</div>
+          <div class="game-description">
+            Scratch 平台的互動遊戲，點擊後開啟本地嵌入頁面開始遊玩。
+          </div>
+          <div class="game-features">
+            <div class="feature-item">Scratch 嵌入（在新分頁開啟）</div>
+            <div class="feature-item">支援手機/電腦自適應</div>
+            <div class="feature-item" style="color: var(--glow-gold); font-weight: bold;">🪙 隨機消耗 300 / 500 / 1000 金幣 / 每次</div>
+          </div>
+          <button class="game-button" :class="{ locked: !canPlayScratchGame }" @click.stop="openScratchGame" :disabled="!canPlayScratchGame">
+            {{ canPlayScratchGame ? '開始 Scratch 遊戲' : `需要至少 ${gameCoinCostMax} 金幣` }}
+          </button>
+        </div>
+
+        <div class="game-card" :class="{ locked: !canPlayScratchCard }" @click="openScratchCard">
+          <div class="game-icon">🪙</div>
+          <div class="game-title">刮刮樂</div>
+          <div class="game-subtitle">刮開銀漆抽獎</div>
+          <div class="game-description">
+            刮開銀漆揭曉獎項，支援滑鼠與觸控。
+          </div>
+          <div class="game-features">
+            <div class="feature-item">Canvas 刮開效果</div>
+            <div class="feature-item">刮到一定比例自動揭曉</div>
+            <div class="feature-item" style="color: var(--glow-gold); font-weight: bold;">🪙 隨機消耗 300 / 500 / 1000 金幣 / 每次</div>
+          </div>
+          <button class="game-button" :class="{ locked: !canPlayScratchCard }" @click.stop="openScratchCard" :disabled="!canPlayScratchCard">
+            {{ canPlayScratchCard ? '開始刮刮樂' : `需要至少 ${gameCoinCostMax} 金幣` }}
+          </button>
+        </div>
+
         <!-- Little Wheel -->
         <div class="game-card" :class="{ locked: !canPlayLittleWheel }" @click="openLittleWheel">
           <div class="game-icon">🛞</div>
@@ -1656,8 +1690,8 @@
     createApp({
       data() {
         return {
-          totalGames: 9,
-          availableGames: 9,
+          totalGames: 10,
+          availableGames: 10,
           completedGames: 0,
           totalStars: 0,
           goldCoins: 0,
@@ -1697,10 +1731,16 @@
         completionRate() {
           return Math.round((this.completedGames / this.totalGames) * 100);
         },
-         canPlaySlotMachine() {
+        canPlaySlotMachine() {
            return this.goldCoins >= this.gameCoinCostMax;
          },
         canPlayBattleSystem() {
+          return this.goldCoins >= this.gameCoinCostMax;
+        },
+        canPlayScratchGame() {
+          return this.goldCoins >= this.gameCoinCostMax;
+        },
+        canPlayScratchCard() {
           return this.goldCoins >= this.gameCoinCostMax;
         },
         canPlayWordMelody() {
@@ -1807,6 +1847,24 @@
            alert(`🎵 開始遊玩 Word Melody！\n\n本次扣除金幣：${spent}\n剩餘金幣：${this.goldCoins}`);
            window.open('https://www.littlefox.com/tw/games/word_melody', '_blank');
          },
+        openScratchGame() {
+          const spent = this.spendRandomGameCoins();
+          if (spent === null) {
+            alert(`❌ 金幣不足！需要至少 ${this.gameCoinCostMax} 金幣才能遊玩 Scratch 遊戲。\n\n目前金幣：${this.goldCoins}`);
+            return;
+          }
+          alert(`🕹️ 開始遊玩 Scratch 遊戲！\n\n本次扣除金幣：${spent}\n剩餘金幣：${this.goldCoins}`);
+          this.openGame('scratch_game.html');
+        },
+        openScratchCard() {
+          const spent = this.spendRandomGameCoins();
+          if (spent === null) {
+            alert(`❌ 金幣不足！需要至少 ${this.gameCoinCostMax} 金幣才能遊玩刮刮樂。\n\n目前金幣：${this.goldCoins}`);
+            return;
+          }
+          alert(`🪙 開始遊玩刮刮樂！\n\n本次扣除金幣：${spent}\n剩餘金幣：${this.goldCoins}`);
+          this.openGame('scratch_card.html');
+        },
         openLittleWheel() {
           const spent = this.spendRandomGameCoins();
           if (spent === null) {
