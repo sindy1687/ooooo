@@ -1,0 +1,2352 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>選卡刮刮樂</title>
+
+<style>
+:root{
+  --bg:#0b1220;
+  --panel: rgba(0,0,0,0.25);
+  --panelBorder: rgba(255,255,255,0.10);
+  --softBorder: rgba(255,255,255,0.12);
+  --text: #fff;
+  --muted: rgba(255,255,255,0.78);
+  --brandA:#00f5ff;
+  --brandB:#a259ff;
+  --gold: rgba(255,215,0,0.35);
+  --shadow: 0 18px 60px rgba(0,0,0,0.55);
+}
+body{
+  margin:0;
+  font-family: system-ui, "Noto Sans TC";
+  background:radial-gradient(circle at 20% 0%, rgba(0,245,255,0.10), transparent 35%),
+             radial-gradient(circle at 90% 10%, rgba(162,89,255,0.10), transparent 45%),
+             var(--bg);
+  color:var(--text);
+  display:flex;
+  justify-content:center;
+  padding:18px;
+}
+.toast{
+  position:fixed;
+  left:50%;
+  bottom:18px;
+  transform: translateX(-50%) translateY(18px);
+  padding:10px 12px;
+  border-radius:999px;
+  background:rgba(0,0,0,0.72);
+  border:1px solid rgba(255,255,255,0.14);
+  box-shadow: 0 18px 60px rgba(0,0,0,0.55);
+  z-index:10000;
+  opacity:0;
+  pointer-events:none;
+  transition: opacity 160ms ease, transform 160ms ease;
+  font-weight:900;
+}
+.toast.show{
+  opacity:1;
+  transform: translateX(-50%) translateY(0);
+}
+.app{ width:min(680px, 100%); }
+
+.topbar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin-bottom:12px;
+}
+
+.brand{
+  font-size:18px;
+  font-weight:900;
+}
+
+.pill{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:10px 12px;
+  border-radius:999px;
+  background:rgba(255,255,255,0.06);
+  border:1px solid rgba(255,255,255,0.10);
+  font-weight:800;
+}
+
+.mini{
+  font-size:12px;
+  opacity:.85;
+}
+
+.grid2{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap:10px;
+}
+
+.panel{
+  background:var(--panel);
+  border:1px solid var(--panelBorder);
+  border-radius:16px;
+  padding:12px;
+  margin-bottom:12px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.35);
+  backdrop-filter: blur(8px);
+}
+
+.panelTitle{
+  font-weight:900;
+  margin:0 0 8px;
+}
+
+.row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+}
+
+.input{
+  width:100%;
+  padding:10px 12px;
+  border-radius:12px;
+  border:1px solid var(--softBorder);
+  background:rgba(255,255,255,0.06);
+  color:#fff;
+  outline:none;
+  font-weight:800;
+}
+
+.input:focus{
+  border-color: rgba(0,245,255,0.55);
+  box-shadow: 0 0 0 3px rgba(0,245,255,0.12);
+}
+
+.select{
+  width:100%;
+  padding:10px 12px;
+  border-radius:12px;
+  border:1px solid var(--softBorder);
+  background:rgba(255,255,255,0.06);
+  color:#fff;
+  outline:none;
+  font-weight:900;
+}
+
+.select:focus{
+  border-color: rgba(162,89,255,0.55);
+  box-shadow: 0 0 0 3px rgba(162,89,255,0.12);
+}
+
+.tabs{
+  display:flex;
+  gap:10px;
+}
+
+.tab{
+  flex:1;
+  padding:10px;
+  border-radius:12px;
+  border:1px solid var(--softBorder);
+  background:rgba(255,255,255,0.06);
+  color:#fff;
+  font-weight:900;
+  cursor:pointer;
+  transition: transform .12s ease, background .12s ease, border-color .12s ease;
+}
+
+.tab:hover{ transform: translateY(-1px); }
+
+.tab.active{
+  background: linear-gradient(135deg,#00f5ff,#a259ff);
+  color:#000;
+  border-color: transparent;
+  box-shadow: 0 12px 40px rgba(0,245,255,0.12), 0 12px 40px rgba(162,89,255,0.10);
+}
+
+/* ===== 選卡畫面 ===== */
+#selectView{
+  display:block;
+}
+
+.cardGrid{
+  display:grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap:12px;
+  margin-top:12px;
+}
+
+.cardPick{
+  aspect-ratio: 3/4;
+  border-radius:16px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:20px;
+  cursor:pointer;
+  box-shadow: 0 16px 55px rgba(0,0,0,0.55);
+  transition: transform .14s ease, box-shadow .14s ease, filter .14s ease;
+  background:
+    radial-gradient(circle at 25% 20%, rgba(255,255,255,.22), transparent 45%),
+    linear-gradient(135deg,#ffd700,#ff9f1a);
+  border:1px solid rgba(255,255,255,0.18);
+  user-select:none;
+  position:relative;
+}
+
+.cardPick:hover{ transform: translateY(-2px) scale(1.02); filter: saturate(1.05); }
+.cardPick:active{ transform: translateY(0px) scale(0.99); }
+
+.cardPick .numBadge{
+  position:absolute;
+  top:10px;
+  left:10px;
+  padding:6px 9px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:1000;
+  color:#0b1220;
+  background: linear-gradient(135deg, rgba(0,245,255,0.95), rgba(162,89,255,0.95));
+  box-shadow: 0 10px 24px rgba(0,0,0,0.35);
+  border:1px solid rgba(255,255,255,0.22);
+}
+
+ .cardPick .restockBadge{
+   position:absolute;
+   top:10px;
+   right:10px;
+   padding:6px 9px;
+   border-radius:999px;
+   font-size:12px;
+   font-weight:1000;
+   color:#e2e8f0;
+   background: rgba(10,20,40,0.88);
+   box-shadow: 0 10px 24px rgba(0,0,0,0.35);
+   border:1px solid rgba(0,245,255,0.35);
+ }
+
+.tip{
+  text-align:center;
+  opacity:.82;
+  margin-top:10px;
+  font-size:13px;
+  line-height:1.4;
+}
+
+/* ===== 刮刮樂畫面 ===== */
+#scratchView{ display:none; }
+
+.stage{
+  position:relative;
+  aspect-ratio:3/2;
+  border-radius:18px;
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 25% 20%, rgba(255,215,0,.16), transparent 55%),
+    radial-gradient(circle at 75% 35%, rgba(0,245,255,.14), transparent 58%),
+    linear-gradient(135deg, rgba(30,41,59,0.9), rgba(2,6,23,0.9));
+  border:1px solid rgba(255,215,0,0.35);
+  box-shadow: var(--shadow);
+}
+
+ .winFx{
+   position:absolute;
+   inset:0;
+   pointer-events:none;
+   z-index:50;
+ }
+
+ .winFx.big .winFxFlash{ animation-duration: 1600ms; }
+ .winFx.big .winFxParticle{ animation-duration: 1700ms; }
+
+ .winFxFlash{
+   position:absolute;
+   inset:-30%;
+   background:
+     radial-gradient(circle at 30% 20%, rgba(0,245,255,0.35), transparent 55%),
+     radial-gradient(circle at 70% 30%, rgba(162,89,255,0.35), transparent 58%),
+     radial-gradient(circle at 50% 80%, rgba(255,215,0,0.28), transparent 62%);
+   filter: blur(0px);
+   opacity:0;
+   transform: scale(0.98);
+   animation: winFlash 1100ms ease-out forwards;
+ }
+
+ .winFxParticles{
+   position:absolute;
+   inset:0;
+ }
+
+ .winFxParticle{
+   position:absolute;
+   width:8px;
+   height:8px;
+   border-radius:999px;
+   opacity:0;
+   transform: translateY(0) scale(0.9);
+   animation: winParticle 1200ms ease-out forwards;
+ }
+
+ @keyframes winFlash{
+   0%{ opacity:0; transform: scale(0.98); }
+   18%{ opacity:1; transform: scale(1.02); }
+   100%{ opacity:0; transform: scale(1.08); }
+ }
+
+ @keyframes winParticle{
+   0%{ opacity:0; transform: translateY(0) scale(0.8); }
+   12%{ opacity:1; }
+   100%{ opacity:0; transform: translateY(-120px) scale(1.1); }
+ }
+
+ @keyframes winStagePulse{
+   0%{ transform: scale(1); }
+   15%{ transform: scale(1.015); }
+   35%{ transform: scale(0.995); }
+   55%{ transform: scale(1.01); }
+   100%{ transform: scale(1); }
+ }
+
+ @keyframes winStageShake{
+   0%{ transform: translate(0,0); }
+   15%{ transform: translate(1px,-1px); }
+   30%{ transform: translate(-2px,1px); }
+   45%{ transform: translate(2px,1px); }
+   60%{ transform: translate(-1px,-2px); }
+   75%{ transform: translate(1px,2px); }
+   100%{ transform: translate(0,0); }
+ }
+
+ .stage.bigWinPulse{ animation: winStagePulse 900ms ease-out; }
+ .stage.bigWinShake{ animation: winStageShake 520ms ease-out; }
+
+.result{
+  position:absolute;
+  inset:0;
+  padding:14px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.board{
+  width:100%;
+  height:100%;
+  display:grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap:10px;
+  align-content:center;
+}
+
+.cell{
+  border-radius:14px;
+  background:rgba(0,0,0,0.28);
+  border:1px solid rgba(255,255,255,0.10);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:28px;
+  font-weight:900;
+  min-height:52px;
+}
+
+.resultLine{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  text-align:center;
+}
+
+.big{
+  font-size:28px;
+  font-weight:1000;
+}
+
+.sub{
+  font-size:13px;
+  opacity:.85;
+  line-height:1.35;
+}
+
+canvas{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  touch-action:none;
+}
+
+button{
+  width:100%;
+  margin-top:12px;
+  padding:12px;
+  border-radius:14px;
+  border:0;
+  font-weight:900;
+  cursor:pointer;
+  transition: transform .12s ease, filter .12s ease, opacity .12s ease;
+}
+
+button:hover{ transform: translateY(-1px); }
+button:active{ transform: translateY(0px) scale(0.99); }
+
+button.primary{
+  background: linear-gradient(135deg,#00f5ff,#a259ff);
+  color:#000;
+}
+
+button.ghost{
+  background: rgba(255,255,255,0.08);
+  color:#fff;
+  border:1px solid rgba(255,255,255,0.12);
+}
+
+button:disabled{
+  opacity:.55;
+  cursor:not-allowed;
+  transform:none;
+}
+
+.scratch-zone{
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,0.10);
+  background: rgba(0,0,0,0.18);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.30);
+}
+
+.scratch-zone .board{ height:auto; }
+
+.modal{
+  position:fixed;
+  inset:0;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  background:rgba(0,0,0,0.6);
+  padding:16px;
+  z-index:9999;
+}
+
+.modal.show{ display:flex; }
+
+.modalCard{
+  width:min(420px, 100%);
+  border-radius:18px;
+  background:rgba(10,20,40,0.95);
+  border:1px solid rgba(255,215,0,0.35);
+  box-shadow:0 20px 60px rgba(0,0,0,0.55);
+  padding:14px;
+}
+
+ .boostWrap{
+   margin-top:12px;
+   display:none;
+   border-radius:16px;
+   border:1px solid rgba(255,255,255,0.10);
+   background:rgba(0,0,0,0.18);
+   padding:12px;
+ }
+
+ .boostWrap.show{ display:block; }
+
+ .wheelArea{
+   display:flex;
+   flex-direction:column;
+   align-items:center;
+   gap:10px;
+ }
+
+ .wheelShell{
+   position:relative;
+   width:220px;
+   height:220px;
+ }
+
+ .wheel{
+   position:absolute;
+   inset:0;
+   border-radius:50%;
+   background: conic-gradient(
+     rgba(255,215,0,0.95) 0deg 90deg,
+     rgba(0,245,255,0.90) 90deg 180deg,
+     rgba(162,89,255,0.90) 180deg 270deg,
+     rgba(255,255,255,0.85) 270deg 360deg
+   );
+   border:1px solid rgba(255,255,255,0.22);
+   box-shadow: 0 18px 55px rgba(0,0,0,0.55);
+   transform: rotate(0deg);
+   transition: transform 2600ms cubic-bezier(.12,.78,.12,1);
+ }
+
+ .wheelCenter{
+   position:absolute;
+   left:50%;
+   top:50%;
+   transform: translate(-50%, -50%);
+   width:70px;
+   height:70px;
+   border-radius:50%;
+   background:rgba(10,20,40,0.95);
+   border:1px solid rgba(255,255,255,0.18);
+   display:flex;
+   align-items:center;
+   justify-content:center;
+   font-weight:1000;
+ }
+
+ .wheelPointer{
+   position:absolute;
+   left:50%;
+   top:-6px;
+   transform: translateX(-50%);
+   width:0;
+   height:0;
+   border-left:10px solid transparent;
+   border-right:10px solid transparent;
+   border-bottom:18px solid rgba(255,255,255,0.95);
+   filter: drop-shadow(0 6px 10px rgba(0,0,0,0.45));
+ }
+
+ .wheelLabels{
+   position:absolute;
+   inset:0;
+   display:flex;
+   align-items:center;
+   justify-content:center;
+   pointer-events:none;
+   font-weight:1000;
+   color:#0b1220;
+ }
+
+ .wheelLabels span{
+   position:absolute;
+   width:70px;
+   text-align:center;
+   transform-origin: 0 110px;
+ }
+
+.modalTitle{
+  font-weight:1000;
+  font-size:18px;
+  margin:0 0 10px;
+}
+
+.modalText{
+  margin:0;
+  white-space:pre-line;
+  line-height:1.45;
+  opacity:0.95;
+}
+</style>
+</head>
+
+ <body>
+ <div class="app">
+ 
+   <div class="topbar">
+     <div class="brand">選卡刮刮樂</div>
+     <div class="pill" title="本地資料（localStorage）">
+       <span>⭐ <span id="starsText">0</span></span>
+       <span>🪙 <span id="coinsText">0</span></span>
+     </div>
+   </div>
+ 
+   <div class="panel" id="exchangePanel">
+     <div class="panelTitle">先換金幣才能玩</div>
+     <div class="mini" style="margin-bottom:10px;">使用星星兌換金幣後，就能選卡開始刮刮樂。</div>
+     <div class="grid2">
+       <div>
+         <div class="mini" style="margin:0 0 6px; font-weight:900;">兌換星星數</div>
+         <input class="input" id="exchangeStars" type="number" min="1" step="1" value="1" />
+       </div>
+       <div>
+         <div class="mini" style="margin:0 0 6px; font-weight:900;">匯率</div>
+         <div class="input" style="display:flex;align-items:center;justify-content:center;">1 ⭐ = <span id="exchangeRateText" style="margin-left:6px;">10</span> 🪙</div>
+       </div>
+     </div>
+     <button class="primary" id="exchangeBtn" style="margin-top:12px;">兌換</button>
+     <div class="mini" style="margin-top:8px;">每次遊玩將消耗 <b id="playCostText">50</b> 🪙</div>
+   </div>
+ 
+   <div id="selectView">
+     <div class="panel">
+       <div class="panelTitle">選擇刮刮卡（共 3 面，每面 20 張）</div>
+       <div class="tabs" id="pageTabs">
+         <button class="tab active" data-page="1">第 1 面</button>
+         <button class="tab" data-page="2">第 2 面</button>
+         <button class="tab" data-page="3">第 3 面</button>
+       </div>
+       <div class="mini" id="restockText" style="margin-top:8px; font-weight:900;"></div>
+       <div class="row" id="restockPayRow" style="margin-top:8px; display:none; align-items:center; gap:10px;">
+         <button class="primary" id="restockNowBtn" style="width:220px; margin:0;">立即補貨（2000 🪙）</button>
+         <div class="mini" id="restockQuotaText" style="margin:0; font-weight:900;"></div>
+       </div>
+       <div class="row" style="margin-top:10px;">
+         <div style="flex:1;">
+           <div class="mini" style="margin:0 0 6px; font-weight:900;">刮開門檻</div>
+           <select class="select" id="thresholdSelect">
+             <option value="80" selected>80%</option>
+           </select>
+         </div>
+         <div style="width:140px;">
+           <div class="mini" style="margin:0 0 6px; font-weight:900;">每次消耗</div>
+           <div class="input" style="display:flex;align-items:center;justify-content:center;">🪙 <span id="playCostText2">50</span></div>
+         </div>
+       </div>
+       <div class="cardGrid" id="cardGrid"></div>
+       <div class="tip">提示：點選任一張卡後會立即扣金幣並進入刮刮樂。刮開達門檻會自動揭曉。</div>
+     </div>
+   </div>
+ 
+   <div id="scratchView">
+     <div class="stage" id="stage">
+       <div class="result" id="resultArea"></div>
+       <canvas id="cv"></canvas>
+     </div>
+     <button class="primary" id="revealBtn">刮開</button>
+     <button class="ghost" id="backBtn">回到選卡</button>
+   </div>
+ 
+   <div class="modal" id="resultModal" role="dialog" aria-modal="true" aria-label="結果">
+     <div class="modalCard">
+       <div class="modalTitle" id="modalTitle">🎉 結果</div>
+       <p class="modalText" id="modalText"></p>
+       <div class="boostWrap" id="boostWrap">
+         <div class="wheelArea">
+           <div class="mini" style="font-weight:1000; text-align:center;">加碼輪盤：可能歸零 / 2 倍 / 5 倍 / 10 倍</div>
+           <div class="wheelShell">
+             <div class="wheelPointer"></div>
+             <div class="wheel" id="boostWheel"></div>
+             <div class="wheelLabels" aria-hidden="true">
+               <span style="transform: rotate(45deg) translateY(-92px);">0x</span>
+               <span style="transform: rotate(135deg) translateY(-92px);">2x</span>
+               <span style="transform: rotate(225deg) translateY(-92px);">5x</span>
+               <span style="transform: rotate(315deg) translateY(-92px);">10x</span>
+             </div>
+             <div class="wheelCenter" id="wheelCenter">加碼</div>
+           </div>
+           <button class="primary" id="spinBtn">轉輪盤</button>
+           <div class="mini" id="boostResultText" style="text-align:center; font-weight:900;"></div>
+         </div>
+       </div>
+       <div class="row" style="margin-top:12px;">
+         <button class="primary" id="claimBtn">領取獎勵</button>
+         <button class="ghost" id="boostBtn" style="width:140px;">加碼</button>
+         <button class="ghost" id="closeModalBtn" style="width:140px;">關閉</button>
+       </div>
+     </div>
+   </div>
+
+  <div class="modal" id="chargeModal" role="dialog" aria-modal="true" aria-label="扣款">
+    <div class="modalCard">
+      <div class="modalTitle" id="chargeTitle">✅ 扣款成功</div>
+      <p class="modalText" id="chargeText"></p>
+      <div class="row" style="margin-top:12px;">
+        <button class="primary" id="chargeOkBtn">開始刮</button>
+        <button class="ghost" id="chargeCloseBtn" style="width:140px;">取消</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="summaryModal" role="dialog" aria-modal="true" aria-label="中獎清單">
+    <div class="modalCard">
+      <div class="modalTitle" id="summaryTitle">🏁 本面中獎清單</div>
+      <p class="modalText" id="summaryText"></p>
+      <div class="row" style="margin-top:12px;">
+        <button class="primary" id="summaryCloseBtn">關閉</button>
+      </div>
+    </div>
+  </div>
+
+ <div class="toast" id="toast"></div>
+
+ <script>
+ const STORAGE_STARS_KEY = 'totalStars';
+ const STORAGE_COINS_KEY = 'goldCoins';
+ 
+ const EXCHANGE_RATE = 10;
+ const BRUSH_RADIUS = 18;
+ const PAGE1_CARD_IMAGE_URL = 'https://i.pinimg.com/736x/41/0a/3c/410a3c7d383e9d63e5e972a541238fc8.jpg';
+ const PAGE2_CARD_IMAGE_URL = 'https://i.pinimg.com/736x/2b/eb/51/2beb51c26896e2f92e42b3d0ede1f997.jpg';
+ const PAGE3_CARD_IMAGE_URL = 'https://i.pinimg.com/736x/58/5a/2b/585a2bf20b7b1c8788d4c25df15eff42.jpg';
+ const PAGE3_CARD_ZOOM_PERCENT = 140;
+
+ const PLAY_COST_BY_PAGE = {
+   1: 1000,
+   2: 2000,
+   3: 5000
+ };
+
+ const PRIZE_TABLE = {
+   1: { first: 10000, second: 5000, third: 1500 },
+   2: { first: 25000, second: 10000, third: 2500 },
+   3: { first: 100000, second: 50000, third: 5500 }
+ };
+
+ const winSfx = new Audio('sound/game-bonus-144751.mp3');
+ const bigWinSfx = new Audio('sound/shine-7-268909.mp3');
+ const scratchSfx = new Audio('sound/check.mp3');
+ const bgm = new Audio('sound/kids-happy-background-music-366043.mp3');
+ winSfx.preload = 'auto';
+ bigWinSfx.preload = 'auto';
+ scratchSfx.preload = 'auto';
+ scratchSfx.volume = 0.7;
+ bgm.preload = 'auto';
+ bgm.loop = true;
+ bgm.volume = 0.25;
+
+ const STORAGE_CARD_LABELS_KEY = 'scratchCard_labels_v1';
+ const STORAGE_PRIZE_MAP_KEY = 'scratchCard_prizeMap_v1';
+ const STORAGE_SCRATCHED_KEY = 'scratchCard_scratched_v1';
+ const STORAGE_RESULTS_KEY = 'scratchCard_results_v1';
+ const STORAGE_RESTOCK_KEY = 'scratchCard_restock_v1';
+ const STORAGE_PAID_RESTOCK_KEY = 'scratchCard_paidRestock_v1';
+ const PAID_RESTOCK_COST = 2000;
+ const PAID_RESTOCK_DAILY_LIMIT = 3;
+ 
+ const selectView = document.getElementById('selectView');
+ const scratchView = document.getElementById('scratchView');
+ const cardGrid = document.getElementById('cardGrid');
+ const pageTabs = document.getElementById('pageTabs');
+ 
+ const starsText = document.getElementById('starsText');
+ const coinsText = document.getElementById('coinsText');
+ const exchangePanel = document.getElementById('exchangePanel');
+ const exchangeStarsInput = document.getElementById('exchangeStars');
+ const exchangeBtn = document.getElementById('exchangeBtn');
+ document.getElementById('exchangeRateText').textContent = String(EXCHANGE_RATE);
+ const playCostText = document.getElementById('playCostText');
+ const playCostText2 = document.getElementById('playCostText2');
+ 
+ const thresholdSelect = document.getElementById('thresholdSelect');
+ 
+ const stage = document.getElementById('stage');
+ const resultArea = document.getElementById('resultArea');
+ const cv = document.getElementById('cv');
+ const ctx = cv.getContext('2d', { willReadFrequently: true });
+ const revealBtn = document.getElementById('revealBtn');
+ const backBtn = document.getElementById('backBtn');
+ 
+ const modal = document.getElementById('resultModal');
+ const modalTitle = document.getElementById('modalTitle');
+ const modalText = document.getElementById('modalText');
+ const claimBtn = document.getElementById('claimBtn');
+ const boostBtn = document.getElementById('boostBtn');
+ const boostWrap = document.getElementById('boostWrap');
+ const boostWheel = document.getElementById('boostWheel');
+ const wheelCenter = document.getElementById('wheelCenter');
+ const spinBtn = document.getElementById('spinBtn');
+ const boostResultText = document.getElementById('boostResultText');
+ const closeModalBtn = document.getElementById('closeModalBtn');
+
+ const chargeModal = document.getElementById('chargeModal');
+ const chargeTitle = document.getElementById('chargeTitle');
+ const chargeText = document.getElementById('chargeText');
+ const chargeOkBtn = document.getElementById('chargeOkBtn');
+ const chargeCloseBtn = document.getElementById('chargeCloseBtn');
+ let pendingStartScratch = null;
+ let pendingChargeCost = 0;
+
+ const summaryModal = document.getElementById('summaryModal');
+ const summaryTitle = document.getElementById('summaryTitle');
+ const summaryText = document.getElementById('summaryText');
+ const summaryCloseBtn = document.getElementById('summaryCloseBtn');
+
+ const restockText = document.getElementById('restockText');
+ const restockPayRow = document.getElementById('restockPayRow');
+ const restockNowBtn = document.getElementById('restockNowBtn');
+ const restockQuotaText = document.getElementById('restockQuotaText');
+
+ const toastEl = document.getElementById('toast');
+ let toastTimer = null;
+
+ function showToast(text) {
+   if (!toastEl) return;
+   toastEl.textContent = String(text || '');
+   toastEl.classList.add('show');
+   if (toastTimer) clearTimeout(toastTimer);
+   toastTimer = setTimeout(() => {
+     toastEl.classList.remove('show');
+   }, 1200);
+ }
+
+ window.showToast = showToast;
+ 
+ function readInt(key, fallback = 0) {
+   const v = parseInt(localStorage.getItem(key) || String(fallback), 10);
+   return Number.isFinite(v) ? v : fallback;
+ }
+ 
+ function writeInt(key, value) {
+   localStorage.setItem(key, String(Math.max(0, Math.floor(Number(value) || 0))));
+ }
+ 
+ function getStars() { return readInt(STORAGE_STARS_KEY, 0); }
+ function getCoins() { return readInt(STORAGE_COINS_KEY, 0); }
+ function setStars(v) { writeInt(STORAGE_STARS_KEY, v); }
+ function setCoins(v) { writeInt(STORAGE_COINS_KEY, v); }
+ 
+ function syncEconomyUI() {
+   starsText.textContent = String(getStars());
+   coinsText.textContent = String(getCoins());
+ 
+   const hasCoins = getCoins() > 0;
+   exchangePanel.style.display = hasCoins ? 'none' : 'block';
+ }
+
+ let bgmStarted = false;
+ function ensureBgm() {
+   if (bgmStarted) return;
+   bgmStarted = true;
+   try {
+     const p = bgm.play();
+     if (p && typeof p.catch === 'function') p.catch(() => { bgmStarted = false; });
+   } catch (e) {
+     bgmStarted = false;
+   }
+ }
+
+ function loadCardLabelState() {
+   try {
+     const raw = localStorage.getItem(STORAGE_CARD_LABELS_KEY);
+     const parsed = raw ? JSON.parse(raw) : null;
+     if (!parsed || typeof parsed !== 'object') return null;
+     return parsed;
+   } catch (e) {
+     return null;
+   }
+ }
+
+ function saveCardLabelState(state) {
+   try {
+     localStorage.setItem(STORAGE_CARD_LABELS_KEY, JSON.stringify(state));
+   } catch (e) {}
+ }
+
+ function getOrInitCardLabelState() {
+   const state = loadCardLabelState() || {};
+   for (const p of [1,2,3]) {
+     const key = String(p);
+     if (!state[key] || typeof state[key] !== 'object') {
+       state[key] = { labels: Array.from({ length: 20 }, (_, i) => i + 1), next: 21 };
+     }
+     if (!Array.isArray(state[key].labels) || state[key].labels.length !== 20) {
+       state[key].labels = Array.from({ length: 20 }, (_, i) => i + 1);
+     }
+     const n = Number(state[key].next);
+     state[key].next = Number.isFinite(n) && n > 0 ? n : 21;
+   }
+   saveCardLabelState(state);
+   return state;
+ }
+
+ function getLabelsForPage(page) {
+   const state = getOrInitCardLabelState();
+   const key = String(Number(page));
+   return state[key].labels.slice();
+ }
+
+ function resetPageLabelState(page) {
+   const state = getOrInitCardLabelState();
+   const key = String(Number(page));
+   state[key] = { labels: Array.from({ length: 20 }, (_, i) => i + 1), next: 21 };
+   saveCardLabelState(state);
+ }
+
+ function replacePickedLabel(page, positionIndex) {
+   const state = getOrInitCardLabelState();
+   const key = String(Number(page));
+   const slot = state[key];
+   const pos = Math.max(0, Math.min(19, Number(positionIndex) || 0));
+   const next = Number(slot.next) || 21;
+   slot.labels[pos] = next;
+   slot.next = next + 1;
+   saveCardLabelState(state);
+ }
+
+ function loadPrizeMapState() {
+   try {
+     const raw = localStorage.getItem(STORAGE_PRIZE_MAP_KEY);
+     const parsed = raw ? JSON.parse(raw) : null;
+     if (!parsed || typeof parsed !== 'object') return null;
+     return parsed;
+   } catch (e) {
+     return null;
+   }
+ }
+
+ function savePrizeMapState(state) {
+   try {
+     localStorage.setItem(STORAGE_PRIZE_MAP_KEY, JSON.stringify(state));
+   } catch (e) {}
+ }
+
+ function pickRandomFromLabels(labels, excludeSet) {
+   const safe = labels.map(n => Number(n)).filter(n => Number.isFinite(n));
+   const pool = safe.filter(n => !excludeSet.has(n));
+   if (pool.length === 0) return null;
+   return pool[Math.floor(Math.random() * pool.length)];
+ }
+
+ function getOrInitPrizeMapState() {
+   const state = loadPrizeMapState() || {};
+   for (const p of [1,2,3]) {
+     const key = String(p);
+     if (!state[key] || typeof state[key] !== 'object') state[key] = {};
+   }
+   savePrizeMapState(state);
+   return state;
+ }
+
+ function syncPrizeMapForPage(page, labels) {
+   const state = getOrInitPrizeMapState();
+   const key = String(Number(page));
+   const slot = state[key];
+
+   const labelSet = new Set(labels.map(n => Number(n)).filter(n => Number.isFinite(n)));
+   const needFix = (tier) => {
+     const v = Number(slot[tier]);
+     return !Number.isFinite(v) || !labelSet.has(v);
+   };
+
+   const used = new Set();
+   for (const t of ['first','second','third']) {
+     const v = Number(slot[t]);
+     if (Number.isFinite(v) && labelSet.has(v)) used.add(v);
+   }
+
+   for (const t of ['first','second','third']) {
+     if (needFix(t)) {
+       const picked = pickRandomFromLabels(labels, used);
+       if (picked !== null) {
+         slot[t] = picked;
+         used.add(picked);
+       }
+     }
+   }
+
+   savePrizeMapState(state);
+   return { first: Number(slot.first), second: Number(slot.second), third: Number(slot.third) };
+ }
+
+ function getPrizeTierForNumber(page, displayNumber, labels) {
+   const map = syncPrizeMapForPage(page, labels);
+   const n = Number(displayNumber);
+   if (!Number.isFinite(n)) return null;
+   if (n === map.first) return 'first';
+   if (n === map.second) return 'second';
+   if (n === map.third) return 'third';
+   return null;
+ }
+
+ function bumpPrizeAfterPick(page, pickedNumber, labels) {
+   const state = getOrInitPrizeMapState();
+   const key = String(Number(page));
+   const slot = state[key];
+   const pn = Number(pickedNumber);
+   if (!Number.isFinite(pn)) return;
+
+   const occupied = new Set([
+     Number(slot.first),
+     Number(slot.second),
+     Number(slot.third)
+   ].filter(n => Number.isFinite(n)));
+
+   for (const t of ['first','second','third']) {
+     const v = Number(slot[t]);
+     if (Number.isFinite(v) && v === pn) {
+       occupied.delete(v);
+       const nextPick = pickRandomFromLabels(labels, occupied);
+       if (nextPick !== null) {
+         slot[t] = nextPick;
+         occupied.add(nextPick);
+       } else {
+         delete slot[t];
+       }
+     }
+   }
+
+   savePrizeMapState(state);
+ }
+ 
+ function weightedPick(rows) {
+   const total = rows.reduce((s, r) => s + (Number(r.weight) || 0), 0);
+   let x = Math.random() * total;
+   for (const r of rows) {
+     x -= (Number(r.weight) || 0);
+     if (x <= 0) return r;
+   }
+   return rows[rows.length - 1];
+ }
+
+ function getPlayCostForPage(page) {
+   return PLAY_COST_BY_PAGE[Number(page)] || PLAY_COST_BY_PAGE[1];
+ }
+
+ function getPrizeTableForPage(page) {
+   return PRIZE_TABLE[Number(page)] || PRIZE_TABLE[1];
+ }
+
+ function syncCostUI(page) {
+   const cost = getPlayCostForPage(page);
+   playCostText.textContent = String(cost);
+   playCostText2.textContent = String(cost);
+ }
+ 
+ function ResultBoard(labels) {
+   const board = document.createElement('div');
+   board.className = 'board';
+   for (const t of labels) {
+     const cell = document.createElement('div');
+     cell.className = 'cell';
+     cell.textContent = t;
+     board.appendChild(cell);
+   }
+   return board;
+ }
+ 
+ function ResultLineBoard(labels3) {
+   const board = document.createElement('div');
+   board.className = 'board';
+   board.style.gridTemplateColumns = 'repeat(3, 1fr)';
+   for (const t of labels3) {
+     const cell = document.createElement('div');
+     cell.className = 'cell';
+     cell.textContent = t;
+     board.appendChild(cell);
+   }
+   return board;
+ }
+
+ // 類型一：幸運號碼對號碼（最常見）
+ function makeTemplate1(page) {
+   const prize = getPrizeTableForPage(page);
+   const lucky = String(Math.floor(Math.random() * 100)).padStart(2, '0');
+   const attempt1 = Array.from({ length: 15 }, () => String(Math.floor(Math.random() * 100)).padStart(2, '0'));
+   const attempt2 = Array.from({ length: 15 }, () => String(Math.floor(Math.random() * 100)).padStart(2, '0'));
+   const hit1 = attempt1.includes(lucky);
+   const hit2 = attempt2.includes(lucky);
+   const hitCount = (hit1 ? 1 : 0) + (hit2 ? 1 : 0);
+   const win = hitCount > 0;
+   const tier = hitCount >= 2 ? 'first' : (hitCount === 1 ? weightedPick([
+     { weight: 3, tier: 'second' },
+     { weight: 12, tier: 'third' }
+   ]).tier : null);
+   const coins = tier ? prize[tier] : 0;
+   return {
+     name: '幸運號碼對號碼',
+     render() {
+       const wrap = document.createElement('div');
+       wrap.style.display = 'flex';
+       wrap.style.flexDirection = 'column';
+       wrap.style.gap = '10px';
+
+       const luckyBoard = ResultLineBoard(['幸運', lucky, '號碼']);
+       luckyBoard.style.gridTemplateColumns = 'repeat(3, 1fr)';
+
+       const luckyZone = document.createElement('div');
+       luckyZone.className = 'scratch-zone';
+       luckyZone.dataset.scratch = '1';
+       luckyZone.appendChild(luckyBoard);
+
+       const label1 = document.createElement('div');
+       label1.className = 'mini';
+       label1.style.fontWeight = '900';
+       label1.textContent = '第 1 次';
+
+       const board1 = ResultBoard(attempt1.map(n => n));
+       board1.style.gridTemplateColumns = 'repeat(5, 1fr)';
+       board1.querySelectorAll('.cell').forEach((c) => {
+         c.style.fontSize = '20px';
+         c.style.minHeight = '44px';
+       });
+
+       const zone1 = document.createElement('div');
+       zone1.className = 'scratch-zone';
+       zone1.dataset.scratch = '1';
+       zone1.appendChild(label1);
+       zone1.appendChild(board1);
+
+       const label2 = document.createElement('div');
+       label2.className = 'mini';
+       label2.style.fontWeight = '900';
+       label2.textContent = '第 2 次';
+
+       const board2 = ResultBoard(attempt2.map(n => n));
+       board2.style.gridTemplateColumns = 'repeat(5, 1fr)';
+       board2.querySelectorAll('.cell').forEach((c) => {
+         c.style.fontSize = '20px';
+         c.style.minHeight = '44px';
+       });
+
+       const zone2 = document.createElement('div');
+       zone2.className = 'scratch-zone';
+       zone2.dataset.scratch = '1';
+       zone2.appendChild(label2);
+       zone2.appendChild(board2);
+
+       const row2 = document.createElement('div');
+       row2.style.display = 'grid';
+       row2.style.gridTemplateColumns = 'repeat(2, 1fr)';
+       row2.style.gap = '10px';
+       row2.appendChild(zone1);
+       row2.appendChild(zone2);
+
+       wrap.appendChild(luckyZone);
+       wrap.appendChild(row2);
+       return wrap;
+     },
+     settle() {
+       return {
+         coins,
+         tier,
+         stars: 0,
+         message: win ? ('你對中幸運號碼 ' + lucky + '（命中 ' + hitCount + ' 次）！獲得 🪙 ' + coins) : ('沒有對中幸運號碼 ' + lucky + '，未中獎。')
+       };
+     }
+   };
+ }
+
+ // 類型二：金額對金額（出現相同金額即可獲得該金額）
+ function makeTemplate2(page) {
+   const amounts = [50, 30, 100, 150, 200, 250, 300, 350, 500, 550, 600, 650, 700, 800, 900, 1000, 1500, 2000, 3000];
+   const attempts = Array.from({ length: 3 }, () => Array.from({ length: 5 }, () => amounts[Math.floor(Math.random() * amounts.length)]));
+
+   function bestWinInAttempt(picks5) {
+     const counts = new Map();
+     for (const v of picks5) counts.set(v, (counts.get(v) || 0) + 1);
+     const winners = [...counts.entries()]
+       .filter(([, c]) => c >= 3)
+       .map(([v]) => v)
+       .sort((a, b) => b - a);
+     return winners.length ? winners[0] : 0;
+   }
+
+   const wins = attempts.map(bestWinInAttempt);
+   const coins = wins.reduce((s, v) => s + (Number(v) || 0), 0);
+   return {
+     name: '金額對金額',
+     render() {
+       const wrap = document.createElement('div');
+       wrap.style.display = 'flex';
+       wrap.style.flexDirection = 'column';
+       wrap.style.gap = '10px';
+
+       const rule = document.createElement('div');
+       rule.className = 'mini';
+       rule.style.fontWeight = '1000';
+       rule.textContent = '第 2 面可刮 3 次：每次 5 個金額，任意 3 個相同就中該金額（3 次加總）';
+       wrap.appendChild(rule);
+
+       function buildAttemptZone(picks5, idx) {
+         const label = document.createElement('div');
+         label.className = 'mini';
+         label.style.fontWeight = '900';
+         label.textContent = '第 ' + (idx + 1) + ' 次';
+
+         const board = ResultBoard(picks5.map(v => '$' + v));
+         board.style.gridTemplateColumns = 'repeat(5, 1fr)';
+         board.style.gap = '8px';
+         board.querySelectorAll('.cell').forEach((c) => {
+           c.style.fontSize = '18px';
+           c.style.minHeight = '46px';
+         });
+
+         const zone = document.createElement('div');
+         zone.className = 'scratch-zone';
+         zone.dataset.scratch = '1';
+         zone.style.borderRadius = '14px';
+         zone.style.padding = '10px';
+         zone.style.border = '1px solid rgba(255,255,255,0.10)';
+         zone.style.background = 'rgba(0,0,0,0.18)';
+         zone.style.display = 'flex';
+         zone.style.flexDirection = 'column';
+         zone.style.gap = '8px';
+         zone.appendChild(label);
+         zone.appendChild(board);
+         return zone;
+       }
+
+       const grid = document.createElement('div');
+       grid.style.display = 'grid';
+       grid.style.gridTemplateColumns = 'repeat(1, 1fr)';
+       grid.style.gap = '10px';
+
+       attempts.forEach((picks5, idx) => {
+         grid.appendChild(buildAttemptZone(picks5, idx));
+       });
+
+       wrap.appendChild(grid);
+       return wrap;
+     },
+     settle() {
+       const parts = wins
+         .map((v, i) => ({ v: Number(v) || 0, i: i + 1 }))
+         .filter(x => x.v > 0);
+       return {
+         coins,
+         tier: coins > 0 ? 'second' : null,
+         stars: 0,
+         message: coins > 0
+           ? ('第 ' + parts.map(p => p.i).join('、') + ' 次中獎，合計獲得 🪙 ' + coins)
+           : '三次都沒有出現三個相同金額，未中獎。'
+       };
+     }
+   };
+ }
+
+ // 類型三：符號中獎（刮出指定圖案即可中獎）
+ function makeTemplate3(page) {
+   const prize = getPrizeTableForPage(page);
+   const pool = ['🍀', '⭐', '💎', '🎁', '🪙', '🌙', '🍒', '🔔'];
+   const target = pool[Math.floor(Math.random() * pool.length)];
+
+   const hitCount = weightedPick([
+     { weight: 65, value: 0 },
+     { weight: 20, value: 3 },
+     { weight: 10, value: 5 },
+     { weight: 5, value: 6 }
+   ]).value;
+
+   const totalCells = 15;
+   const otherPool = pool.filter(s => s !== target);
+   const picks = Array.from({ length: totalCells }, () => otherPool[Math.floor(Math.random() * otherPool.length)]);
+   const available = Array.from({ length: totalCells }, (_, i) => i);
+   for (let k = 0; k < hitCount; k++) {
+     if (!available.length) break;
+     const j = Math.floor(Math.random() * available.length);
+     const idx = available.splice(j, 1)[0];
+     picks[idx] = target;
+   }
+
+   const actualHits = picks.filter(s => s === target).length;
+   const bestTier = actualHits >= 6 ? 'first' : (actualHits >= 5 ? 'second' : (actualHits >= 3 ? 'third' : null));
+   const coins = bestTier ? prize[bestTier] : 0;
+   return {
+     name: '符號中獎',
+     render() {
+       const wrap = document.createElement('div');
+       wrap.style.display = 'flex';
+       wrap.style.flexDirection = 'column';
+       wrap.style.gap = '10px';
+
+       const headZone = document.createElement('div');
+       headZone.className = 'scratch-zone';
+       headZone.dataset.scratch = '0';
+       headZone.dataset.scratchTarget = '1';
+       headZone.style.borderRadius = '14px';
+       headZone.style.padding = '10px';
+       headZone.style.border = '1px solid rgba(255,255,255,0.10)';
+       headZone.style.background = 'rgba(0,0,0,0.18)';
+       headZone.style.display = 'flex';
+       headZone.style.flexDirection = 'column';
+       headZone.style.gap = '8px';
+
+       const head = ResultLineBoard(['指定圖案', target, '刮中越多獎越大']);
+       head.style.gridTemplateColumns = 'repeat(3, 1fr)';
+       head.querySelectorAll('.cell').forEach((c, i) => {
+         c.style.fontSize = i === 1 ? '30px' : '14px';
+         c.style.minHeight = '44px';
+       });
+       headZone.appendChild(head);
+
+       const boardZone = document.createElement('div');
+       boardZone.style.display = 'grid';
+       boardZone.style.gridTemplateColumns = 'repeat(3, 1fr)';
+       boardZone.style.gap = '10px';
+
+       const rule = document.createElement('div');
+       rule.className = 'mini';
+       rule.style.fontWeight = '900';
+       rule.textContent = '第 3 面可刮 5 次（每次 3 格）：刮中 3/5/6 個指定圖案分別是 三獎/貳獎/大獎';
+
+       function buildAttemptBlock(picks3, idx) {
+         const block = document.createElement('div');
+         block.className = 'scratch-zone';
+         block.dataset.scratch = '1';
+         block.dataset.scratchMain = '1';
+         block.style.borderRadius = '14px';
+         block.style.padding = '10px';
+         block.style.border = '1px solid rgba(255,255,255,0.10)';
+         block.style.background = 'rgba(0,0,0,0.18)';
+         block.style.display = 'flex';
+         block.style.flexDirection = 'column';
+         block.style.gap = '8px';
+
+         const label = document.createElement('div');
+         label.className = 'mini';
+         label.style.fontWeight = '900';
+         label.textContent = '第 ' + (idx + 1) + ' 次';
+
+         const board = ResultLineBoard(picks3);
+         board.style.gridTemplateColumns = 'repeat(3, 1fr)';
+         board.style.gap = '8px';
+         board.querySelectorAll('.cell').forEach((c) => {
+           c.style.fontSize = '28px';
+           c.style.minHeight = '54px';
+         });
+
+         block.appendChild(label);
+         block.appendChild(board);
+         return block;
+       }
+
+       const attempts = Array.from({ length: 5 }, (_, i) => picks.slice(i * 3, i * 3 + 3));
+       attempts.forEach((picks3, idx) => {
+         boardZone.appendChild(buildAttemptBlock(picks3, idx));
+       });
+
+       wrap.appendChild(headZone);
+       wrap.appendChild(rule);
+       wrap.appendChild(boardZone);
+       return wrap;
+     },
+     settle() {
+       const human = actualHits;
+       const tierText = bestTier === 'first' ? '大獎' : (bestTier === 'second' ? '貳獎' : (bestTier === 'third' ? '三獎' : '未中獎'));
+       return {
+         coins,
+         tier: bestTier,
+         stars: 0,
+         message: bestTier === null ? ('目標圖案是 ' + target + '，你刮中 ' + human + ' 個，未中獎。') : ('目標圖案是 ' + target + '，你刮中 ' + human + ' 個（' + tierText + '）！獲得 🪙 ' + coins)
+       };
+     }
+   };
+ }
+ 
+ let activePage = 1;
+ let activeCard = null;
+ let scratchThreshold = 80;
+ let revealed = false;
+ let claimed = false;
+ let scratchPhase = 'main';
+ let boostUsed = false;
+ let boostSpinning = false;
+ let baseCoinsBeforeBoost = 0;
+ let boostMultiplier = 1;
+ let wheelRotation = 0;
+ 
+ function renderCards(page) {
+   activePage = page;
+   cardGrid.innerHTML = '';
+   ensureRestockState(page);
+   const lock = isRestocking(page);
+   const end = getRestockEnd(page);
+   const labels = getLabelsForPage(page);
+   syncPrizeMapForPage(page, labels);
+   const scratched = getOrInitScratchedState(page);
+   for (let i = 1; i <= 20; i++) {
+     const btn = document.createElement('div');
+     btn.className = 'cardPick';
+     const shown = labels[i - 1];
+     const badge = document.createElement('div');
+     badge.className = 'numBadge';
+     badge.textContent = String(shown);
+     btn.appendChild(badge);
+ 
+     if (lock && end > Date.now()) {
+       const rb = document.createElement('div');
+       rb.className = 'restockBadge';
+       rb.textContent = formatMs(end - Date.now());
+       btn.appendChild(rb);
+     }
+     if (Number(page) === 1) {
+       btn.style.backgroundImage = 'url(' + PAGE1_CARD_IMAGE_URL + ')';
+       btn.style.backgroundSize = 'cover';
+       btn.style.backgroundPosition = 'center';
+       btn.style.backgroundRepeat = 'no-repeat';
+       btn.style.border = '1px solid rgba(255,255,255,0.18)';
+       btn.style.color = 'rgba(0,0,0,0)';
+       btn.style.textShadow = 'none';
+     } else if (Number(page) === 2) {
+       btn.style.backgroundImage = 'url(' + PAGE2_CARD_IMAGE_URL + ')';
+       btn.style.backgroundSize = 'cover';
+       btn.style.backgroundPosition = 'center';
+       btn.style.backgroundRepeat = 'no-repeat';
+       btn.style.border = '1px solid rgba(255,255,255,0.18)';
+       btn.style.color = 'rgba(0,0,0,0)';
+       btn.style.textShadow = 'none';
+     } else if (Number(page) === 3) {
+       btn.style.backgroundImage = 'url(' + PAGE3_CARD_IMAGE_URL + ')';
+       btn.style.backgroundSize = String(PAGE3_CARD_ZOOM_PERCENT) + '% ' + String(PAGE3_CARD_ZOOM_PERCENT) + '%';
+       btn.style.backgroundPosition = 'center';
+       btn.style.backgroundRepeat = 'no-repeat';
+       btn.style.border = '1px solid rgba(255,255,255,0.18)';
+       btn.style.color = 'rgba(0,0,0,0)';
+       btn.style.textShadow = 'none';
+     }
+
+     const already = !!scratched[i - 1];
+     if (already) {
+       btn.style.filter = 'grayscale(1) brightness(0.7)';
+       btn.style.opacity = '0.6';
+       btn.style.cursor = 'not-allowed';
+     }
+
+     if (lock) {
+       btn.style.filter = 'grayscale(1) brightness(0.55)';
+       btn.style.opacity = '0.55';
+       btn.style.cursor = 'not-allowed';
+     }
+
+     btn.addEventListener('click', () => {
+       if (lock) {
+         showToast('補貨中，請稍後再來');
+         return;
+       }
+       if (already) {
+         showToast('這張卡已刮過');
+         return;
+       }
+       onPickCard(page, i, shown, i - 1);
+     });
+     cardGrid.appendChild(btn);
+   }
+ }
+
+ function loadScratchedState() {
+   try {
+     const raw = localStorage.getItem(STORAGE_SCRATCHED_KEY);
+     const parsed = raw ? JSON.parse(raw) : null;
+     if (!parsed || typeof parsed !== 'object') return null;
+     return parsed;
+   } catch (e) {
+     return null;
+   }
+ }
+
+ function saveScratchedState(state) {
+   try {
+     localStorage.setItem(STORAGE_SCRATCHED_KEY, JSON.stringify(state));
+   } catch (e) {}
+ }
+
+ function getOrInitScratchedState(page) {
+   const state = loadScratchedState() || {};
+   const key = String(Number(page));
+   if (!Array.isArray(state[key]) || state[key].length !== 20) {
+     state[key] = Array.from({ length: 20 }, () => false);
+   }
+   saveScratchedState(state);
+   return state[key].slice();
+ }
+
+ function markScratched(page, index1based) {
+   const state = loadScratchedState() || {};
+   const key = String(Number(page));
+   if (!Array.isArray(state[key]) || state[key].length !== 20) {
+     state[key] = Array.from({ length: 20 }, () => false);
+   }
+   const idx = Math.max(1, Math.min(20, Number(index1based) || 1)) - 1;
+   state[key][idx] = true;
+   saveScratchedState(state);
+ }
+
+ function loadResultsState() {
+   try {
+     const raw = localStorage.getItem(STORAGE_RESULTS_KEY);
+     const parsed = raw ? JSON.parse(raw) : null;
+     if (!parsed || typeof parsed !== 'object') return null;
+     return parsed;
+   } catch (e) {
+     return null;
+   }
+ }
+
+ function saveResultsState(state) {
+   try {
+     localStorage.setItem(STORAGE_RESULTS_KEY, JSON.stringify(state));
+   } catch (e) {}
+ }
+
+ function pushResult(page, cardIndex, coins) {
+   const state = loadResultsState() || {};
+   const key = String(Number(page));
+   if (!Array.isArray(state[key])) state[key] = [];
+   state[key].push({ card: Number(cardIndex) || 0, coins: Math.max(0, Math.floor(Number(coins) || 0)) });
+   saveResultsState(state);
+ }
+
+ function isPageAllScratched(page) {
+   const arr = getOrInitScratchedState(page);
+   return arr.every(Boolean);
+ }
+
+ function openSummaryModal(page) {
+   const results = (loadResultsState() || {})[String(Number(page))] || [];
+   const winRows = results.filter(r => Number(r.coins) > 0);
+   const total = winRows.reduce((s, r) => s + (Number(r.coins) || 0), 0);
+   summaryTitle.textContent = '🏁 第 ' + Number(page) + ' 面中獎清單';
+   if (winRows.length === 0) {
+     summaryText.textContent = '本面 20 張已全部刮完。\n\n沒有中獎。';
+   } else {
+     const lines = winRows.map(r => '卡片 ' + String(r.card).padStart(2,'0') + '：🪙 ' + r.coins);
+     summaryText.textContent = '本面 20 張已全部刮完。\n\n' + lines.join('\n') + '\n\n合計：🪙 ' + total;
+   }
+   summaryModal.classList.add('show');
+ }
+
+ function loadRestockState() {
+   try {
+     const raw = localStorage.getItem(STORAGE_RESTOCK_KEY);
+     const parsed = raw ? JSON.parse(raw) : null;
+     if (!parsed || typeof parsed !== 'object') return null;
+     return parsed;
+   } catch (e) {
+     return null;
+   }
+ }
+
+ function saveRestockState(state) {
+   try {
+     localStorage.setItem(STORAGE_RESTOCK_KEY, JSON.stringify(state));
+   } catch (e) {}
+ }
+
+ function getRestockEnd(page) {
+   const state = loadRestockState() || {};
+   const key = String(Number(page));
+   const ts = Number(state[key] || 0);
+   return Number.isFinite(ts) ? ts : 0;
+ }
+
+ function setRestockEnd(page, endTs) {
+   const state = loadRestockState() || {};
+   const key = String(Number(page));
+   state[key] = Math.max(0, Math.floor(Number(endTs) || 0));
+   saveRestockState(state);
+ }
+
+ function clearRestock(page) {
+   const state = loadRestockState() || {};
+   const key = String(Number(page));
+   delete state[key];
+   saveRestockState(state);
+ }
+
+ function isRestocking(page) {
+   const end = getRestockEnd(page);
+   return end > Date.now();
+ }
+
+ function resetPageProgressState(page) {
+   // scratched
+   const s0 = loadScratchedState() || {};
+   s0[String(Number(page))] = Array.from({ length: 20 }, () => false);
+   saveScratchedState(s0);
+
+   // results
+   const r0 = loadResultsState() || {};
+   r0[String(Number(page))] = [];
+   saveResultsState(r0);
+
+   // labels
+   resetPageLabelState(page);
+
+   // prize map: remove and regenerate next render
+   const pm = loadPrizeMapState() || {};
+   delete pm[String(Number(page))];
+   savePrizeMapState(pm);
+ }
+
+ function ensureRestockState(page) {
+   const end = getRestockEnd(page);
+   if (end && Date.now() >= end) {
+     clearRestock(page);
+     resetPageProgressState(page);
+   }
+ }
+
+ function formatMs(ms) {
+   const s = Math.max(0, Math.floor(ms / 1000));
+   const m = Math.floor(s / 60);
+   const r = s % 60;
+   return String(m).padStart(2, '0') + ':' + String(r).padStart(2, '0');
+ }
+
+ function todayKey() {
+   const d = new Date();
+   const y = d.getFullYear();
+   const m = String(d.getMonth() + 1).padStart(2, '0');
+   const day = String(d.getDate()).padStart(2, '0');
+   return y + '-' + m + '-' + day;
+ }
+
+ function loadPaidRestockState() {
+   try {
+     const raw = localStorage.getItem(STORAGE_PAID_RESTOCK_KEY);
+     const parsed = raw ? JSON.parse(raw) : null;
+     if (!parsed || typeof parsed !== 'object') return null;
+     return parsed;
+   } catch (e) {
+     return null;
+   }
+ }
+
+ function savePaidRestockState(state) {
+   try {
+     localStorage.setItem(STORAGE_PAID_RESTOCK_KEY, JSON.stringify(state));
+   } catch (e) {}
+ }
+
+ function getPaidRestockUsedToday() {
+   const state = loadPaidRestockState() || {};
+   const key = todayKey();
+   if (state.date !== key) {
+     state.date = key;
+     state.used = 0;
+     savePaidRestockState(state);
+   }
+   const n = Number(state.used || 0);
+   return Number.isFinite(n) ? n : 0;
+ }
+
+ function incPaidRestockUsedToday() {
+   const state = loadPaidRestockState() || {};
+   const key = todayKey();
+   if (state.date !== key) {
+     state.date = key;
+     state.used = 0;
+   }
+   const n = Number(state.used || 0);
+   state.used = (Number.isFinite(n) ? n : 0) + 1;
+ function updateRestockUI() {
+   if (!restockText) return;
+   if (typeof window.__restockPrevEndTs !== 'number') window.__restockPrevEndTs = 0;
+   const prevEnd = window.__restockPrevEndTs;
+   ensureRestockState(activePage);
+   const end = getRestockEnd(activePage);
+   window.__restockPrevEndTs = end;
+   if (end > Date.now()) {
+     restockText.textContent = '補貨中：剩餘 ' + formatMs(end - Date.now()) + '（約 10–20 分鐘）';
+   } else {
+     restockText.textContent = '';
+   }
+
+   if (prevEnd > 0 && prevEnd <= Date.now() && end === 0) {
+     try { renderCards(activePage); } catch (e) {}
+   }
+
+   try {
+     const badges = document.querySelectorAll('.cardPick .restockBadge');
+     if (badges && badges.length && end > Date.now()) {
+       const txt = formatMs(end - Date.now());
+       badges.forEach((b) => { b.textContent = txt; });
+     }
+   } catch (e) {}
+
+   if (restockPayRow && restockNowBtn && restockQuotaText) {
+     const isLock = end > Date.now();
+     restockPayRow.style.display = isLock ? 'flex' : 'none';
+     if (isLock) {
+       const used = getPaidRestockUsedToday();
+       const left = Math.max(0, PAID_RESTOCK_DAILY_LIMIT - used);
+       restockQuotaText.textContent = '今日剩餘：' + left + '/' + PAID_RESTOCK_DAILY_LIMIT;
+       const enough = getCoins() >= PAID_RESTOCK_COST;
+       restockNowBtn.disabled = !(left > 0 && enough);
+       if (!enough) {
+         restockQuotaText.textContent += '（金幣不足）';
+       }
+     }
+   }
+ }
+ 
+ function setActiveTab(page) {
+   [...pageTabs.querySelectorAll('.tab')].forEach((t) => {
+     t.classList.toggle('active', Number(t.dataset.page) === Number(page));
+   });
+ }
+ 
+ function onPickCard(page, index, displayNumber, positionIndex) {
+   syncEconomyUI();
+   const coins = getCoins();
+   const cost = getPlayCostForPage(page);
+   if (coins < cost) {
+     alert('❌ 金幣不足！需要至少 ' + cost + ' 金幣才能刮。\n\n目前金幣：' + coins + '\n請先用星星兌換金幣。');
+     exchangePanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+     return;
+   }
+
+   setCoins(coins - cost);
+   syncEconomyUI();
+   pendingChargeCost = cost;
+
+   pendingStartScratch = () => {
+     const beforeLabels = getLabelsForPage(page);
+     const forcedTier = getPrizeTierForNumber(page, displayNumber, beforeLabels);
+
+     const template = (Number(page) === 1 ? makeTemplate1 : (Number(page) === 2 ? makeTemplate2 : makeTemplate3))(page);
+
+     activeCard = { page, index, displayNumber, template, settle: null, forcedTier };
+     revealed = false;
+     claimed = false;
+     claimBtn.disabled = true;
+
+     openScratchView();
+   };
+
+   chargeTitle.textContent = '✅ 扣款成功';
+   chargeText.textContent = '扣款 ' + cost + ' 金幣成功\n\n祝你中大獎！';
+   chargeModal.classList.add('show');
+ }
+
+ function closeChargeModal(refund) {
+   try { chargeModal.classList.remove('show'); } catch (e) {}
+   if (refund) {
+     const back = Math.max(0, Math.floor(Number(pendingChargeCost) || 0));
+     if (back > 0) {
+       setCoins(getCoins() + back);
+       syncEconomyUI();
+     }
+   }
+   pendingChargeCost = 0;
+   pendingStartScratch = null;
+ }
+ 
+ function openScratchView() {
+   selectView.style.display = 'none';
+   scratchView.style.display = 'block';
+ 
+   scratchThreshold = 80;
+   scratchPhase = (activeCard && Number(activeCard.page) === 3) ? 'target' : 'main';
+   boostUsed = false;
+   boostSpinning = false;
+   baseCoinsBeforeBoost = 0;
+   boostMultiplier = 1;
+   wheelRotation = 0;
+   revealBtn.disabled = false;
+   backBtn.disabled = true;
+   renderResultArea();
+   setupCanvasCover();
+ }
+ 
+ function openSelectView() {
+   scratchView.style.display = 'none';
+   selectView.style.display = 'block';
+   closeModal();
+   updateRestockUI();
+ }
+ 
+ function renderResultArea() {
+   resultArea.innerHTML = '';
+   const wrapper = document.createElement('div');
+   wrapper.className = 'resultLine';
+ 
+   const title = document.createElement('div');
+   title.className = 'mini';
+   title.style.fontWeight = '1000';
+   title.textContent = '第 ' + activeCard.page + ' 面 / 卡片 ' + String(activeCard.index).padStart(2,'0') + '｜版型：' + activeCard.template.name;
+ 
+   const board = activeCard.template.render();
+ 
+   const hint = document.createElement('div');
+   hint.className = 'sub';
+   hint.textContent = '刮開達 ' + scratchThreshold + '% 會自動揭曉';
+ 
+   wrapper.appendChild(title);
+   wrapper.appendChild(board);
+   wrapper.appendChild(hint);
+   resultArea.appendChild(wrapper);
+ }
+
+ function getScratchRegions(page, w, h) {
+   let zones = [];
+   if (Number(page) === 3) {
+     if (scratchPhase === 'target') {
+       zones = [...resultArea.querySelectorAll('[data-scratch-target="1"]')];
+     } else {
+       zones = [...resultArea.querySelectorAll('[data-scratch-main="1"]')];
+     }
+   }
+
+   if (zones.length === 0) {
+     const preferred = [...resultArea.querySelectorAll('[data-scratch="1"]')];
+     zones = preferred.length ? preferred : [...resultArea.querySelectorAll('.scratch-zone')];
+   }
+   const stageRect = stage.getBoundingClientRect();
+   if (zones.length === 0) {
+     return [{ x: 0, y: 0, w, h }];
+   }
+
+   const pad = 2;
+   return zones.map((el) => {
+     const r = el.getBoundingClientRect();
+     const x = Math.max(0, (r.left - stageRect.left) - pad);
+     const y = Math.max(0, (r.top - stageRect.top) - pad);
+     const rw = Math.min(w - x, r.width + pad * 2);
+     const rh = Math.min(h - y, r.height + pad * 2);
+     return { x, y, w: rw, h: rh };
+   });
+ }
+
+ function isInsideAnyRegion(p, regions) {
+   for (const r of regions) {
+     if (p.x >= r.x && p.x <= (r.x + r.w) && p.y >= r.y && p.y <= (r.y + r.h)) return true;
+   }
+   return false;
+ }
+ 
+ function setupCanvasCover() {
+   const rect = stage.getBoundingClientRect();
+   const dpr = Math.max(1, Math.floor(window.devicePixelRatio || 1));
+   cv.width = Math.floor(rect.width * dpr);
+   cv.height = Math.floor(rect.height * dpr);
+   cv.style.width = rect.width + 'px';
+   cv.style.height = rect.height + 'px';
+   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+ 
+   const w = rect.width;
+   const h = rect.height;
+ 
+   ctx.globalCompositeOperation = 'source-over';
+   ctx.clearRect(0, 0, w, h);
+
+   const regions = getScratchRegions(activeCard ? activeCard.page : 1, w, h);
+   const roundRectPath = (x, y, rw, rh, rr) => {
+     ctx.beginPath();
+     ctx.moveTo(x + rr, y);
+     ctx.arcTo(x + rw, y, x + rw, y + rh, rr);
+     ctx.arcTo(x + rw, y + rh, x, y + rh, rr);
+     ctx.arcTo(x, y + rh, x, y, rr);
+     ctx.arcTo(x, y, x + rw, y, rr);
+     ctx.closePath();
+   };
+
+   for (const r of regions) {
+     const rr = 14;
+     const x = r.x;
+     const y = r.y;
+     const rw = r.w;
+     const rh = r.h;
+
+     ctx.save();
+     roundRectPath(x, y, rw, rh, rr);
+     ctx.clip();
+
+     const base = ctx.createLinearGradient(x, y, x + rw, y + rh);
+     base.addColorStop(0, '#f8fafc');
+     base.addColorStop(0.28, '#e2e8f0');
+     base.addColorStop(0.55, '#94a3b8');
+     base.addColorStop(0.78, '#e2e8f0');
+     base.addColorStop(1, '#cbd5e1');
+     ctx.fillStyle = base;
+     ctx.fillRect(x, y, rw, rh);
+
+     const sheen = ctx.createLinearGradient(x, y, x + rw, y + rh);
+     sheen.addColorStop(0, 'rgba(255,255,255,0.32)');
+     sheen.addColorStop(0.45, 'rgba(255,255,255,0.06)');
+     sheen.addColorStop(0.55, 'rgba(255,255,255,0.22)');
+     sheen.addColorStop(1, 'rgba(255,255,255,0.10)');
+     ctx.fillStyle = sheen;
+     ctx.fillRect(x, y, rw, rh);
+
+     ctx.globalAlpha = 0.18;
+     for (let i = 0; i < 9; i++) {
+       const yy = y + (i / 9) * rh;
+       const streak = ctx.createLinearGradient(x, yy, x + rw, yy);
+       streak.addColorStop(0, 'rgba(255,255,255,0)');
+       streak.addColorStop(0.35, 'rgba(255,255,255,0.55)');
+       streak.addColorStop(0.7, 'rgba(255,255,255,0)');
+       ctx.fillStyle = streak;
+       ctx.fillRect(x, yy, rw, 2);
+     }
+     ctx.globalAlpha = 1;
+
+     for (let i = 0; i < 18; i++) {
+       const sx = x + Math.random() * rw;
+       const sy = y + Math.random() * rh;
+       const sr = 0.8 + Math.random() * 2.2;
+       ctx.fillStyle = 'rgba(255,255,255,' + (0.05 + Math.random() * 0.08) + ')';
+       ctx.beginPath();
+       ctx.arc(sx, sy, sr, 0, Math.PI * 2);
+       ctx.fill();
+     }
+
+     ctx.restore();
+
+     ctx.strokeStyle = 'rgba(0,0,0,0.18)';
+     ctx.lineWidth = 1;
+     roundRectPath(x, y, rw, rh, rr);
+     ctx.stroke();
+   }
+
+   ctx.globalCompositeOperation = 'source-over';
+   ctx.fillStyle = 'rgba(2,6,23,0.34)';
+   ctx.fillRect(0, 0, w, 42);
+   ctx.fillStyle = 'rgba(255,255,255,0.92)';
+   ctx.font = '900 15px system-ui, "Noto Sans TC"';
+   ctx.textAlign = 'center';
+   ctx.textBaseline = 'middle';
+   ctx.fillText('刮開塗層揭曉結果', w / 2, 21);
+
+   ctx.globalCompositeOperation = 'destination-out';
+ }
+ 
+ function toLocal(e) {
+   const r = cv.getBoundingClientRect();
+   const point = (e.touches && e.touches[0]) ? e.touches[0] : e;
+   return { x: point.clientX - r.left, y: point.clientY - r.top };
+ }
+ 
+ let down = false;
+ let lastPercentUpdate = 0;
+ let lastScratchSfxAt = 0;
+ 
+ function scratchAt(p) {
+   const r = cv.getBoundingClientRect();
+   const regions = getScratchRegions(activeCard ? activeCard.page : 1, r.width, r.height);
+   if (!isInsideAnyRegion(p, regions)) return;
+
+   const now = Date.now();
+   if (now - lastScratchSfxAt > 55) {
+     lastScratchSfxAt = now;
+     try {
+       scratchSfx.currentTime = 0;
+       const pp = scratchSfx.play();
+       if (pp && typeof pp.catch === 'function') pp.catch(() => {});
+     } catch (e) {}
+   }
+
+   ctx.beginPath();
+   ctx.arc(p.x, p.y, BRUSH_RADIUS, 0, Math.PI * 2);
+   ctx.fillStyle = 'rgba(0,0,0,1)';
+   ctx.fill();
+ }
+ 
+ function calcClearedPercent() {
+   const r = cv.getBoundingClientRect();
+   const w = Math.floor(r.width);
+   const h = Math.floor(r.height);
+   if (!w || !h) return 0;
+
+   const regions = getScratchRegions(activeCard ? activeCard.page : 1, w, h);
+   const sample = 10;
+   const data = ctx.getImageData(0, 0, w, h).data;
+   const stride = w * 4;
+   let cleared = 0;
+   let total = 0;
+
+   for (const reg of regions) {
+     const x0 = Math.max(0, Math.floor(reg.x));
+     const y0 = Math.max(0, Math.floor(reg.y));
+     const x1 = Math.min(w, Math.floor(reg.x + reg.w));
+     const y1 = Math.min(h, Math.floor(reg.y + reg.h));
+     for (let y = y0; y < y1; y += sample) {
+       for (let x = x0; x < x1; x += sample) {
+         const a = data[y * stride + x * 4 + 3];
+         total++;
+         if (a === 0) cleared++;
+       }
+     }
+   }
+
+   return total ? Math.round((cleared / total) * 100) : 0;
+ }
+ 
+ function maybeReveal() {
+   const now = Date.now();
+   if (now - lastPercentUpdate < 220) return;
+   lastPercentUpdate = now;
+ 
+   const p = calcClearedPercent();
+   if (revealed || p < scratchThreshold) return;
+
+   if (activeCard && Number(activeCard.page) === 3 && scratchPhase === 'target') {
+     scratchPhase = 'main';
+     lastPercentUpdate = 0;
+     setupCanvasCover();
+     return;
+   }
+
+   revealAll(true);
+ }
+ 
+ function revealAll(auto) {
+   if (revealed) return;
+   revealed = true;
+   down = false;
+   revealBtn.disabled = true;
+ 
+   const r = cv.getBoundingClientRect();
+   ctx.globalCompositeOperation = 'destination-out';
+   ctx.fillStyle = 'rgba(0,0,0,1)';
+   ctx.fillRect(0, 0, r.width, r.height);
+ 
+   activeCard.settle = activeCard.template.settle();
+
+   try {
+     const ft = activeCard && activeCard.forcedTier ? String(activeCard.forcedTier) : '';
+     if ((Number(activeCard.page) !== 2) && (Number(activeCard.page) !== 3) && (ft === 'first' || ft === 'second' || ft === 'third')) {
+       const prize = getPrizeTableForPage(activeCard.page);
+       const coins = prize[ft] || 0;
+       activeCard.settle.coins = coins;
+       activeCard.settle.tier = ft;
+       activeCard.settle.message = '恭喜！你選到中獎號碼卡（' + ft + '）獲得 🪙 ' + coins;
+     }
+   } catch (e) {}
+
+   try {
+     const t = activeCard.settle ? activeCard.settle.tier : null;
+     const c = activeCard.settle ? Number(activeCard.settle.coins || 0) : 0;
+     if (c > 0) {
+       try { triggerWinAnimation(t); } catch (e) {}
+       const a = (t === 'first') ? bigWinSfx : winSfx;
+       a.currentTime = 0;
+       const p = a.play();
+       if (p && typeof p.catch === 'function') p.catch(() => {});
+     }
+   } catch (e) {}
+
+   claimBtn.disabled = false;
+   claimBtn.textContent = '領取獎勵';
+   openModal(auto);
+ }
+ 
+ function openModal(auto) {
+   modalTitle.textContent = '🎉 結果';
+   const s = activeCard.settle;
+
+   const coins = Number(s && s.coins ? s.coins : 0);
+   baseCoinsBeforeBoost = coins;
+   boostMultiplier = 1;
+   boostUsed = false;
+   boostSpinning = false;
+   boostResultText.textContent = '';
+   boostWrap.classList.remove('show');
+   spinBtn.disabled = false;
+   boostBtn.disabled = false;
+   boostBtn.textContent = '加碼';
+   if (boostWheel) boostWheel.style.transform = 'rotate(0deg)';
+
+   if (coins > 0) {
+     boostBtn.style.display = '';
+   } else {
+     boostBtn.style.display = 'none';
+     boostWrap.classList.remove('show');
+   }
+
+   const prefix = auto ? ('你已刮到 ' + scratchThreshold + '% ，自動揭曉！') : '結果已揭曉。';
+   modalText.textContent = prefix + '\n\n你中獎：🪙 ' + coins + '\n\n要不要加碼？';
+
+   modal.classList.add('show');
+ }
+
+ function triggerWinAnimation(tier) {
+   const old = stage.querySelector('.winFx');
+   if (old) old.remove();
+
+   const fx = document.createElement('div');
+   fx.className = 'winFx';
+   if (tier === 'first') fx.classList.add('big');
+
+   const flash = document.createElement('div');
+   flash.className = 'winFxFlash';
+   fx.appendChild(flash);
+
+   const particles = document.createElement('div');
+   particles.className = 'winFxParticles';
+   fx.appendChild(particles);
+
+   const count = tier === 'first' ? 64 : (tier === 'second' ? 26 : 14);
+   const colors = ['#00f5ff', '#a259ff', '#ffd700', '#ffffff'];
+   for (let i = 0; i < count; i++) {
+     const p = document.createElement('div');
+     p.className = 'winFxParticle';
+     p.style.left = (Math.random() * 100) + '%';
+     p.style.top = (60 + Math.random() * 40) + '%';
+     p.style.background = colors[Math.floor(Math.random() * colors.length)];
+     p.style.width = (6 + Math.random() * 8) + 'px';
+     p.style.height = p.style.width;
+     p.style.animationDelay = (Math.random() * (tier === 'first' ? 220 : 160)) + 'ms';
+     p.style.filter = 'blur(' + (Math.random() * (tier === 'first' ? 0.8 : 0.4)) + 'px)';
+     if (tier === 'first') {
+       p.style.borderRadius = (Math.random() < 0.35) ? '2px' : '999px';
+       p.style.width = (8 + Math.random() * 10) + 'px';
+       p.style.height = (Math.random() < 0.35) ? (3 + Math.random() * 4) + 'px' : p.style.width;
+     }
+     particles.appendChild(p);
+   }
+
+   stage.appendChild(fx);
+   if (tier === 'first') {
+     stage.classList.remove('bigWinPulse');
+     stage.classList.remove('bigWinShake');
+     void stage.offsetWidth;
+     stage.classList.add('bigWinShake');
+     setTimeout(() => {
+       try {
+         stage.classList.remove('bigWinShake');
+         stage.classList.add('bigWinPulse');
+       } catch (e) {}
+     }, 520);
+     setTimeout(() => {
+       try { stage.classList.remove('bigWinPulse'); } catch (e) {}
+     }, 1600);
+   }
+   setTimeout(() => {
+     try { fx.remove(); } catch (e) {}
+   }, tier === 'first' ? 2100 : 1300);
+ }
+ 
+ function closeModal() {
+   modal.classList.remove('show');
+ }
+
+ function finalizeCardAndReturn() {
+   try {
+     if (!activeCard) return;
+     if (!revealed) return;
+     const page = Number(activeCard.page);
+     const idx = Number(activeCard.index);
+     const coins = activeCard.settle ? Number(activeCard.settle.coins || 0) : 0;
+     markScratched(page, idx);
+     pushResult(page, idx, coins);
+     renderCards(page);
+     syncCostUI(page);
+     backBtn.disabled = false;
+     openSelectView();
+     if (isPageAllScratched(page)) {
+       const mins = 10 + Math.floor(Math.random() * 11);
+       setRestockEnd(page, Date.now() + mins * 60 * 1000);
+       openSummaryModal(page);
+       updateRestockUI();
+     }
+   } catch (e) {}
+ }
+ 
+ cv.addEventListener('mousedown', (e) => {
+   ensureBgm();
+   if (revealed) return;
+   down = true;
+   scratchAt(toLocal(e));
+   maybeReveal();
+ });
+ cv.addEventListener('mousemove', (e) => {
+   if (!down || revealed) return;
+   scratchAt(toLocal(e));
+   maybeReveal();
+ });
+ window.addEventListener('mouseup', () => { down = false; });
+ 
+ cv.addEventListener('touchstart', (e) => {
+   ensureBgm();
+   if (revealed) return;
+   down = true;
+   scratchAt(toLocal(e));
+   maybeReveal();
+   e.preventDefault();
+ }, { passive: false });
+ cv.addEventListener('touchmove', (e) => {
+   if (!down || revealed) return;
+   scratchAt(toLocal(e));
+   maybeReveal();
+   e.preventDefault();
+ }, { passive: false });
+ cv.addEventListener('touchend', () => { down = false; });
+ cv.addEventListener('touchcancel', () => { down = false; });
+ 
+ exchangeBtn.addEventListener('click', () => {
+   ensureBgm();
+   const stars = getStars();
+   const want = Math.max(0, Math.floor(Number(exchangeStarsInput.value) || 0));
+   if (!want) return;
+   if (stars < want) {
+     alert('❌ 星星不足！\n\n目前星星：' + stars);
+     return;
+   }
+   setStars(stars - want);
+   setCoins(getCoins() + want * EXCHANGE_RATE);
+   syncEconomyUI();
+ });
+ 
+ pageTabs.addEventListener('click', (e) => {
+   ensureBgm();
+   const btn = e.target.closest('.tab');
+   if (!btn) return;
+   const page = Number(btn.dataset.page || 1);
+   setActiveTab(page);
+   renderCards(page);
+   syncCostUI(page);
+ });
+ 
+ thresholdSelect.addEventListener('change', () => {
+   thresholdSelect.value = '80';
+   scratchThreshold = 80;
+ });
+ 
+ backBtn.addEventListener('click', () => {
+   openSelectView();
+ });
+
+ revealBtn.addEventListener('click', () => {
+   if (revealed) return;
+   if (activeCard && Number(activeCard.page) === 3 && scratchPhase === 'target') {
+     scratchPhase = 'main';
+     lastPercentUpdate = 0;
+     setupCanvasCover();
+     return;
+   }
+   revealAll(false);
+ });
+ 
+ closeModalBtn.addEventListener('click', () => {
+   closeModal();
+   if (revealed) finalizeCardAndReturn();
+ });
+ modal.addEventListener('click', (e) => {
+   if (e.target !== modal) return;
+   closeModal();
+   if (revealed) finalizeCardAndReturn();
+ });
+
+ chargeOkBtn.addEventListener('click', () => {
+   try { chargeModal.classList.remove('show'); } catch (e) {}
+   const fn = pendingStartScratch;
+   pendingStartScratch = null;
+   pendingChargeCost = 0;
+   if (typeof fn === 'function') fn();
+ });
+
+ chargeCloseBtn.addEventListener('click', () => {
+   closeChargeModal(true);
+ });
+
+ chargeModal.addEventListener('click', (e) => {
+   if (e.target === chargeModal) closeChargeModal(true);
+ });
+ 
+ claimBtn.addEventListener('click', () => {
+   if (!revealed || claimed) return;
+   if (boostSpinning) return;
+   claimed = true;
+   const s = activeCard.settle;
+   if (s && (s.coins || s.stars)) {
+     setCoins(getCoins() + (s.coins || 0));
+     setStars(getStars() + (s.stars || 0));
+   }
+   syncEconomyUI();
+   claimBtn.disabled = true;
+   claimBtn.textContent = '已領取';
+   modalTitle.textContent = '✅ 已領取';
+   closeModal();
+   finalizeCardAndReturn();
+ });
+
+ summaryCloseBtn.addEventListener('click', () => {
+   try { summaryModal.classList.remove('show'); } catch (e) {}
+ });
+
+ summaryModal.addEventListener('click', (e) => {
+   if (e.target === summaryModal) {
+     try { summaryModal.classList.remove('show'); } catch (e) {}
+   }
+ });
+
+ setInterval(updateRestockUI, 1000);
+
+ if (restockNowBtn) {
+   restockNowBtn.addEventListener('click', () => {
+     ensureBgm();
+     ensureRestockState(activePage);
+     const end = getRestockEnd(activePage);
+     if (!(end > Date.now())) {
+       showToast('目前不需要補貨');
+       updateRestockUI();
+       return;
+     }
+
+     const used = getPaidRestockUsedToday();
+     const left = Math.max(0, PAID_RESTOCK_DAILY_LIMIT - used);
+     if (left <= 0) {
+       showToast('今天補貨次數已用完');
+       updateRestockUI();
+       return;
+     }
+
+     const coins = getCoins();
+     if (coins < PAID_RESTOCK_COST) {
+       showToast('金幣不足，需 ' + PAID_RESTOCK_COST + ' 🪙');
+       updateRestockUI();
+       return;
+     }
+
+     setCoins(coins - PAID_RESTOCK_COST);
+     incPaidRestockUsedToday();
+     syncEconomyUI();
+
+     clearRestock(activePage);
+     resetPageProgressState(activePage);
+     renderCards(activePage);
+     syncCostUI(activePage);
+     updateRestockUI();
+     showToast('補貨完成！已上架新卡');
+   });
+ }
+
+ boostBtn.addEventListener('click', () => {
+   if (!revealed) return;
+   const s = activeCard && activeCard.settle ? activeCard.settle : null;
+   const coins = Number(s && s.coins ? s.coins : 0);
+   if (coins <= 0) return;
+   boostWrap.classList.toggle('show');
+ });
+
+ spinBtn.addEventListener('click', () => {
+   if (!revealed) return;
+   if (boostUsed || boostSpinning) return;
+   const s = activeCard && activeCard.settle ? activeCard.settle : null;
+   const coins = Number(s && s.coins ? s.coins : 0);
+   if (coins <= 0) return;
+
+   boostSpinning = true;
+   spinBtn.disabled = true;
+   claimBtn.disabled = true;
+
+   const opts = [0, 2, 5, 10];
+   const idx = Math.floor(Math.random() * opts.length);
+   const mult = opts[idx];
+
+   const segment = 360 / opts.length;
+   const targetAngle = (idx * segment) + (segment / 2);
+   const spins = 6;
+   wheelRotation = wheelRotation + spins * 360 + (360 - targetAngle);
+   if (boostWheel) boostWheel.style.transform = 'rotate(' + wheelRotation + 'deg)';
+
+   setTimeout(() => {
+     boostMultiplier = mult;
+     boostUsed = true;
+     boostSpinning = false;
+
+     const finalCoins = Math.max(0, Math.floor(baseCoinsBeforeBoost * boostMultiplier));
+     if (activeCard && activeCard.settle) {
+       activeCard.settle.coins = finalCoins;
+     }
+
+     boostResultText.textContent = (mult === 0)
+       ? ('加碼結果：歸零（🪙 0）')
+       : ('加碼結果：' + mult + ' 倍！目前可領取 🪙 ' + finalCoins);
+
+     claimBtn.disabled = false;
+     boostBtn.disabled = true;
+     boostBtn.textContent = '已加碼';
+   }, 2700);
+ });
+ 
+ window.addEventListener('resize', () => {
+   if (!activeCard) return;
+   if (revealed) return;
+   if (scratchView.style.display === 'none') return;
+   setupCanvasCover();
+ });
+ 
+ syncEconomyUI();
+ setActiveTab(1);
+ renderCards(1);
+ syncCostUI(1);
+ </script>
+</body>
+</html>
