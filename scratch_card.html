@@ -556,8 +556,8 @@ button:disabled{
    </div>
  
    <div class="panel" id="exchangePanel">
-     <div class="panelTitle">先換金幣才能玩</div>
-     <div class="mini" style="margin-bottom:10px;">使用星星兌換金幣後，就能選卡開始刮刮樂。</div>
+     <div class="panelTitle">先換寶石才能玩</div>
+     <div class="mini" style="margin-bottom:10px;">使用星星兌換寶石後，就能選卡開始刮刮樂。</div>
      <div class="grid2">
        <div>
          <div class="mini" style="margin:0 0 6px; font-weight:900;">兌換星星數</div>
@@ -598,7 +598,7 @@ button:disabled{
          </div>
        </div>
        <div class="cardGrid" id="cardGrid"></div>
-       <div class="tip">提示：點選任一張卡後會立即扣金幣並進入刮刮樂。刮開達門檻會自動揭曉。</div>
+       <div class="tip">提示：點選任一張卡後會立即扣寶石並進入刮刮樂。刮開達門檻會自動揭曉。</div>
      </div>
    </div>
  
@@ -1652,7 +1652,7 @@ button:disabled{
        const enough = getCoins() >= PAID_RESTOCK_COST;
        restockNowBtn.disabled = !(left > 0 && enough);
        if (!enough) {
-         restockQuotaText.textContent += '（金幣不足）';
+         restockQuotaText.textContent += '（寶石不足）';
        }
      }
    }
@@ -1669,7 +1669,7 @@ button:disabled{
    const coins = getCoins();
    const cost = getPlayCostForPage(page);
    if (coins < cost) {
-     alert('❌ 金幣不足！需要至少 ' + cost + ' 金幣才能刮。\n\n目前金幣：' + coins + '\n請先用星星兌換金幣。');
+     alert('❌ 寶石不足！需要至少 ' + cost + ' 寶石才能刮。\n\n目前寶石：' + coins + '\n請先用星星兌換寶石。');
      exchangePanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
      return;
    }
@@ -1693,7 +1693,7 @@ button:disabled{
    };
 
    chargeTitle.textContent = '✅ 扣款成功';
-   chargeText.textContent = '扣款 ' + cost + ' 金幣成功\n\n祝你中大獎！';
+   chargeText.textContent = '扣款 ' + cost + ' 寶石成功\n\n祝你中大獎！';
    chargeModal.classList.add('show');
  }
 
@@ -2272,7 +2272,7 @@ button:disabled{
 
      const coins = getCoins();
      if (coins < PAID_RESTOCK_COST) {
-       showToast('金幣不足，需 ' + PAID_RESTOCK_COST + ' 🪙');
+       showToast('寶石不足，需 ' + PAID_RESTOCK_COST + ' 🪙');
        updateRestockUI();
        return;
      }
@@ -2367,4 +2367,5 @@ button:disabled{
  </script>
 </body>
 </html>
+
 
