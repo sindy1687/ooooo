@@ -1545,6 +1545,30 @@
 
             <div class="control-group">
                 <h3>☁️ 雲端備份</h3>
+                <div style="margin: 12px 0; padding: 12px; border-radius: 14px; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.18);">
+                    <div style="margin-bottom: 10px;">
+                        <div style="font-weight: 700; margin-bottom: 6px; color: #e8f7ff;">Google Sheet API URL</div>
+                        <input id="cloudApiUrl" type="text" placeholder="貼上 Apps Script Web App /exec URL" style="width: 100%; padding: 10px 12px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.25); background: rgba(0,0,0,0.35); color: #fff;" />
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <div>
+                            <div style="font-weight: 700; margin-bottom: 6px; color: #e8f7ff;">玩家名稱</div>
+                            <input id="cloudPlayerName" type="text" placeholder="必填" style="width: 100%; padding: 10px 12px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.25); background: rgba(0,0,0,0.35); color: #fff;" />
+                        </div>
+                        <div>
+                            <div style="font-weight: 700; margin-bottom: 6px; color: #e8f7ff;">PIN</div>
+                            <input id="cloudPlayerPin" type="password" placeholder="必填" style="width: 100%; padding: 10px 12px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.25); background: rgba(0,0,0,0.35); color: #fff;" />
+                        </div>
+                    </div>
+                    <div style="margin-top: 10px; display: flex; gap: 10px; flex-wrap: wrap;">
+                        <button class="btn" onclick="saveCloudSettings()" style="background: linear-gradient(135deg, #4facfe, #00f2fe); color: #0b1b2a; font-weight: 800;">
+                            💾 儲存雲端設定
+                        </button>
+                        <button class="btn" onclick="uploadToCloud()" style="background: linear-gradient(135deg, #00ff88, #00d4aa); color: #0b1b2a; font-weight: 800;">
+                            ☁️ 上傳到 Google Sheet
+                        </button>
+                    </div>
+                </div>
                 <button class="btn" onclick="loadFromCloud()">
                     📡 載入雲端備份
                 </button>
@@ -1760,10 +1784,87 @@
         
         // 頁面載入完成後初始化
         document.addEventListener('DOMContentLoaded', function() {
+            loadCloudSettings();
             setTimeout(() => {
                 initializeManager();
             }, 1000);
         });
+
+        function loadCloudSettings() {
+            const defaultApiUrl = 'https://script.google.com/macros/s/AKfycbxLFkMDO1Q9quXJH7OAUE6_bOOCVYlexAxP4378XhrPGY5rHrRlBrG5X6kUmYwvg4aZlQ/exec';
+            const apiUrlInput = document.getElementById('cloudApiUrl');
+            const playerNameInput = document.getElementById('cloudPlayerName');
+            const pinInput = document.getElementById('cloudPlayerPin');
+
+            const storedApiUrl = (localStorage.getItem('googleSheetApiUrl') || '').trim();
+            const apiUrlToUse = storedApiUrl || defaultApiUrl;
+            if (apiUrlInput) apiUrlInput.value = apiUrlToUse;
+            if (playerNameInput) playerNameInput.value = localStorage.getItem('playerName') || '';
+            if (pinInput) pinInput.value = localStorage.getItem('playerPin') || '';
+
+            if (!storedApiUrl) {
+                localStorage.setItem('googleSheetApiUrl', apiUrlToUse);
+            }
+            if (typeof window.UnifiedAutoSave !== 'undefined' && typeof window.UnifiedAutoSave.setGoogleSheetApiUrl === 'function') {
+                window.UnifiedAutoSave.setGoogleSheetApiUrl(apiUrlToUse);
+            }
+        }
+
+        function saveCloudSettings() {
+            const apiUrlEl = document.getElementById('cloudApiUrl');
+            const playerNameEl = document.getElementById('cloudPlayerName');
+            const pinEl = document.getElementById('cloudPlayerPin');
+
+            const apiUrl = (apiUrlEl ? apiUrlEl.value : '').trim();
+            const playerName = (playerNameEl ? playerNameEl.value : '').trim();
+            const pin = (pinEl ? pinEl.value : '').trim();
+
+            if (!apiUrl) {
+                showNotification('請輸入 Google Sheet API URL', 'error');
+                return false;
+            }
+            if (!playerName) {
+                showNotification('請輸入玩家名稱', 'error');
+                return false;
+            }
+            if (!pin) {
+                showNotification('請輸入 PIN', 'error');
+                return false;
+            }
+
+            localStorage.setItem('googleSheetApiUrl', apiUrl);
+            localStorage.setItem('playerName', playerName);
+            localStorage.setItem('playerPin', pin);
+
+            if (typeof window.UnifiedAutoSave !== 'undefined' && typeof window.UnifiedAutoSave.setGoogleSheetApiUrl === 'function') {
+                window.UnifiedAutoSave.setGoogleSheetApiUrl(apiUrl);
+            }
+
+            addLog('✅ 已儲存雲端同步設定');
+            showNotification('雲端同步設定已儲存', 'success');
+            return true;
+        }
+
+        function uploadToCloud() {
+            if (typeof window.UnifiedAutoSave === 'undefined') {
+                showNotification('自動儲存系統未載入', 'error');
+                return;
+            }
+
+            if (!saveCloudSettings()) {
+                return;
+            }
+
+            addLog('☁️ 準備上傳完整備份到 Google Sheet...');
+            try {
+                window.UnifiedAutoSave.performImmediateSave();
+                addLog('✅ 已觸發上傳（請到 Google Sheet 檢查資料列）');
+                showNotification('已觸發上傳到 Google Sheet', 'success');
+            } catch (error) {
+                addLog('❌ 上傳失敗：' + error.message);
+                showNotification('上傳失敗', 'error');
+            }
+        }
         
         /**
          * 初始化管理器
@@ -1882,13 +1983,18 @@
             
             addLog('📡 準備載入雲端備份...');
             
-            const success = window.UnifiedAutoSave.loadFromCloud();
-            
-            if (success) {
-                addLog('✅ 雲端備份載入成功');
-            } else {
-                addLog('❌ 雲端備份載入失敗或取消');
-            }
+            Promise.resolve(window.UnifiedAutoSave.loadFromCloud()).then((success) => {
+                if (success) {
+                    addLog('✅ 雲端備份載入成功');
+                    showNotification('雲端備份載入成功', 'success');
+                } else {
+                    addLog('❌ 雲端備份載入失敗');
+                    showNotification('雲端備份載入失敗', 'error');
+                }
+            }).catch((error) => {
+                addLog('❌ 雲端備份載入失敗：' + (error && error.message ? error.message : error));
+                showNotification('雲端備份載入失敗', 'error');
+            });
         }
         
         /**
