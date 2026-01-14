@@ -17,8 +17,8 @@ const StarRewardSystem = {
     // 播放音效
     this.playStarSound();
     
-    // 顯示獎勵動畫
-    this.showStarReward(amount);
+    // 顯示獎勵動畫 - 已移除彈窗，只保留結算清單
+    // this.showStarReward(amount);
     
     return newStars;
   },
@@ -58,49 +58,11 @@ const StarRewardSystem = {
     }
   },
   
-  // 顯示星星獎勵動畫
+  // 顯示星星獎勵動畫 - 已停用
   showStarReward: function(amount) {
-    // 創建獎勵提示
-    const rewardDiv = document.createElement('div');
-    rewardDiv.style.cssText = `
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: linear-gradient(135deg, rgba(255, 215, 0, 0.9), rgba(255, 170, 0, 0.9));
-      color: #000;
-      padding: 20px 30px;
-      border-radius: 15px;
-      font-size: 1.5rem;
-      font-weight: bold;
-      z-index: 1000;
-      box-shadow: 0 0 30px #ffd700;
-      animation: starRewardPop 3s cubic-bezier(.4,2,.6,1) forwards;
-      font-family: 'Orbitron', sans-serif;
-    `;
-    rewardDiv.innerHTML = `⭐ +${amount} 星星 ⭐`;
-    
-    // 添加動畫樣式
-    const style = document.createElement('style');
-    style.textContent = `
-      @keyframes starRewardPop {
-        0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
-        20% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
-        80% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
-        100% { transform: translate(-50%, -50%) scale(1); opacity: 0; }
-      }
-    `;
-    document.head.appendChild(style);
-    
-    document.body.appendChild(rewardDiv);
-    
-    // 3秒後移除
-    setTimeout(() => {
-      if (document.body.contains(rewardDiv)) {
-        document.body.removeChild(rewardDiv);
-      }
-    }, 5000);
-  }
+    // 不再顯示彈窗，星星會直接加到總數並在結算時顯示
+    console.log(`⭐ 獲得 ${amount} 顆星星`);
+  },
 };
 
 // 單字達人成就系統
