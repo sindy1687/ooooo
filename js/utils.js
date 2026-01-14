@@ -174,7 +174,7 @@ const LeaderboardUtils = {
   // 分類名稱對應表
   categoryNames: {
     'all': '全部關卡',
-    'aries': '白羊座', 'taurus': '金牛座', 'gemini': '雙子座', 'cancer': '巨蟹座',
+    'aries': '牡羊座', 'taurus': '金牛座', 'gemini': '雙子座', 'cancer': '巨蟹座',
     'leo': '獅子座', 'virgo': '處女座', 'libra': '天秤座', 'scorpio': '天蠍座',
     'sagittarius': '射手座', 'capricorn': '摩羯座', 'aquarius': '水瓶座', 'pisces': '雙魚座',
     'andromeda': '仙女座', 'cygnus': '天鵝座', 'orion': '獵戶座', 'pegasus': '飛馬座',
@@ -204,8 +204,64 @@ const LeaderboardUtils = {
       return [];
     }
     
-    // 排序
-    const sorted = [...data].sort((a, b) => (b.score || 0) - (a.score || 0));
+    // 排序邏輯：先比對的題數，再比時間
+    const sorted = [...data].sort((a, b) => {
+      // 詳細調試：輸出完整數據結構
+      console.log('=== SORTING DEBUG ===');
+      console.log('Player A:', a);
+      console.log('Player B:', b);
+      console.log('A fields:', { 
+        correct: a.correct, 
+        答對: a.答對, 
+        correctAnswers: a.correctAnswers, 
+        score: a.score,
+        totalTime: a.totalTime,
+        總時間: a.總時間,
+        time: a.time,
+        duration: a.duration
+      });
+      console.log('B fields:', { 
+        correct: b.correct, 
+        答對: b.答對, 
+        correctAnswers: b.correctAnswers, 
+        score: b.score,
+        totalTime: b.totalTime,
+        總時間: b.總時間,
+        time: b.time,
+        duration: b.duration
+      });
+      
+      // 1. 先比較答對題數（越多越好，排名越高）
+      // 支持多種可能的欄位名稱
+      const aCorrect = a.correct || a.答對 || a.correctAnswers || parseInt(a.score) || 0;
+      const bCorrect = b.correct || b.答對 || b.correctAnswers || parseInt(b.score) || 0;
+      const correctDiff = bCorrect - aCorrect;
+      
+      console.log(`Correct answers: A=${aCorrect}, B=${bCorrect}, Diff=${correctDiff}`);
+      
+      // 如果答對題數不同，直接返回比較結果
+      if (correctDiff !== 0) {
+        console.log(`RESULT: Different correct answers - B wins by ${correctDiff}`);
+        return correctDiff;
+      }
+      
+      // 2. 答對題數相同時，比較總時間（越短越好，排名越高）
+      // 支持多種可能的時間欄位名稱
+      const aTime = a.totalTime || a.總時間 || a.time || a.duration || 0;
+      const bTime = b.totalTime || b.總時間 || b.time || b.duration || 0;
+      
+      console.log(`Time: A=${aTime}, B=${bTime}`);
+      
+      // 如果時間也相同，保持原順序（同分同排名）
+      if (aTime === bTime) {
+        console.log(`RESULT: Same correct answers and same time - TIE`);
+        return 0; // 保持原順序，後續會處理同排名
+      }
+      
+      const timeDiff = aTime - bTime;
+      console.log(`RESULT: Same correct answers, time diff=${timeDiff} (A-B)`);
+      return timeDiff;
+    });
     
     // 標記原始名次
     sorted.forEach((item, idx) => {
@@ -228,17 +284,45 @@ const LeaderboardUtils = {
         }
       });
       
-      // 重新計算排名
+      // 重新計算排名（處理同分同排名）
+      let currentRank = 1;
       dedup.forEach((item, idx) => {
-        item.rank = idx + 1;
+        if (idx > 0) {
+          const prevItem = dedup[idx - 1];
+          const prevCorrect = prevItem.correct || prevItem.答對 || prevItem.correctAnswers || parseInt(prevItem.score) || 0;
+          const prevTime = prevItem.totalTime || prevItem.總時間 || prevItem.time || prevItem.duration || 0;
+          
+          const currCorrect = item.correct || item.答對 || item.correctAnswers || parseInt(item.score) || 0;
+          const currTime = item.totalTime || item.總時間 || item.time || item.duration || 0;
+          
+          // 如果答對題數或時間不同，排名遞增
+          if (currCorrect !== prevCorrect || currTime !== prevTime) {
+            currentRank = idx + 1;
+          }
+        }
+        item.rank = currentRank;
       });
       
       return dedup;
     }
     
-    // 不去重時，直接標記排名
+    // 不去重時，直接標記排名（處理同分同排名）
+    let currentRank = 1;
     sorted.forEach((item, idx) => {
-      item.rank = idx + 1;
+      if (idx > 0) {
+        const prevItem = sorted[idx - 1];
+        const prevCorrect = prevItem.correct || prevItem.答對 || prevItem.correctAnswers || parseInt(prevItem.score) || 0;
+        const prevTime = prevItem.totalTime || prevItem.總時間 || prevItem.time || prevItem.duration || 0;
+        
+        const currCorrect = item.correct || item.答對 || item.correctAnswers || parseInt(item.score) || 0;
+        const currTime = item.totalTime || item.總時間 || item.time || item.duration || 0;
+        
+        // 如果答對題數或時間不同，排名遞增
+        if (currCorrect !== prevCorrect || currTime !== prevTime) {
+          currentRank = idx + 1;
+        }
+      }
+      item.rank = currentRank;
     });
     
     return sorted;
