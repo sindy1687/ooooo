@@ -1044,6 +1044,8 @@
               card.classList.remove('locked');
               card.removeAttribute('data-locktext');
               card.querySelector('.card-info').textContent = '已解鎖';
+              // 更新希臘關卡進度條
+              updateProgress3();
             } else {
               alert('星星不足，無法解鎖');
               return;
@@ -1087,6 +1089,30 @@
       passDiv.textContent = `✔ 已通關 ${passed} / ${total}`;
     }
     updateProgress1();
+
+    // Tab3進度條 (希臘神祇)
+    function updateProgress3() {
+      const deities = ['宙斯', '赫拉', '波塞頓', '得墨忒耳', '雅典娜', '阿波羅', '阿爾忒彌斯', 
+        '阿瑞斯', '阿芙蘿黛蒂', '赫菲斯托斯', '赫耳墨斯', '赫斯提亞', '狄俄尼索斯', '哈迪斯', 
+        '珀爾塞福涅', '厄洛斯', '尼刻', '蓋婭', '阿特拉斯', '克洛諾斯', '瑞亞', '普羅米修斯'];
+      const total = deities.length;
+      const unlocked = JSON.parse(localStorage.getItem('unlockedGreek')||'[]').length;
+      const percent = Math.round(unlocked/total*100);
+      document.getElementById('progressBar3').style.width = percent+'%';
+      document.getElementById('progressText3').textContent = `已解鎖 ${unlocked} / ${total}（${percent}%）`;
+      let passed = JSON.parse(localStorage.getItem('passed_flipcard')||'[]').length;
+      let passDiv = document.getElementById('passText3');
+      if (!passDiv) {
+        passDiv = document.createElement('div');
+        passDiv.id = 'passText3';
+        document.getElementById('progressBar3Container').after(passDiv);
+      }
+      passDiv.style.textAlign = 'center';
+      passDiv.style.color = '#ffd700';
+      passDiv.style.fontWeight = 'bold';
+      passDiv.textContent = `✔ 已通關 ${passed} / ${total}`;
+    }
+    updateProgress3();
 
     // ----- 星座排行榜（Tab4） -----
     let currentRankingCategory = 'all';
