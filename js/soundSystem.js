@@ -4,7 +4,7 @@
 const SoundSystem = (function() {
   // 背景音樂
   let bgm = null;
-  let bgmState = localStorage.getItem('bgMusicState') || 'playing';
+  let bgmState = localStorage.getItem('bgMusicState') || 'paused';
   let bgmVolume = 0.3;
   let bgmSrc = 'sound/午後放鬆時光（純音樂）.mp3';
 
@@ -37,7 +37,7 @@ const SoundSystem = (function() {
     }
     bgm.volume = bgmVolume;
     bgm.loop = true;
-    if (bgmState === 'playing') playBGM();
+    // 不自動播放，等待用戶主動開啟
   }
 
   function playBGM() {
