@@ -41,9 +41,10 @@ const SoundSystem = {
         
         // 從localStorage讀取音樂狀態
         const musicState = localStorage.getItem('bgMusicState');
-        if (musicState === 'playing') {
-          this.play();
-        }
+        // 不自動播放，等待用戶主動開啟
+        // if (musicState === 'playing') {
+        //   this.play();
+        // }
         
         // 監聽音樂結束事件，確保循環播放
         this.globalAudio.addEventListener('ended', () => {
@@ -133,9 +134,6 @@ const SoundSystem = {
   // 發音系統
   speech: {
     preferredVoice: null,
-    _speakSeq: 0,
-    _activeSeq: 0,
-
     isInitialized: false,
 
     // 初始化發音系統
@@ -312,15 +310,21 @@ const SoundSystem = {
         return;
       }
 
-      // 產生此次發音序號，用於忽略「被新一次 speak() 取消」的舊事件
-      const seq = ++this._speakSeq;
-      this._activeSeq = seq;
-
-      // 停止之前的發音（會觸發上一段的 interrupted/canceled）
-      if (window.speechSynthesis.speaking || window.speechSynthesis.pending) {
+      // 溫和地停止之前的發音（如果有）
+      if (window.speechSynthesis.speaking) {
         window.speechSynthesis.cancel();
+        // 等待一個短暫的時間讓取消完成
+        setTimeout(() => {
+          this._performSpeak(text, options);
+        }, 50);
+        return;
       }
 
+      this._performSpeak(text, options);
+    },
+
+    // 實際執行發音的方法
+    _performSpeak(text, options) {
       // 清理文本，移除下劃線
       const cleanText = text.replace(/_/g, '');
 
@@ -349,31 +353,47 @@ const SoundSystem = {
       
       // 使用最佳語音
       if (this.preferredVoice) {
-        utter.voice = this.preferredVoice;
+        // 檢查語音是否仍然可用
+        const voices = window.speechSynthesis.getVoices();
+        const voiceStillAvailable = voices.some(v => v.name === this.preferredVoice.name && v.lang === this.preferredVoice.lang);
+        
+        if (voiceStillAvailable) {
+          utter.voice = this.preferredVoice;
+        } else {
+          // 如果偏好語音不可用，重新選擇
+          console.warn('偏好語音不可用，重新選擇語音');
+          this.selectBestVoice();
+          if (this.preferredVoice) {
+            utter.voice = this.preferredVoice;
+          }
+        }
+      } else {
+        // 如果沒有偏好語音，立即選擇一個
+        this.selectBestVoice();
+        if (this.preferredVoice) {
+          utter.voice = this.preferredVoice;
+        }
       }
 
       // 回調函數
-      utter.onstart = () => {
-        if (seq !== this._activeSeq) return;
-        if (options.onStart) options.onStart();
-      };
-      utter.onend = () => {
-        if (seq !== this._activeSeq) return;
-        if (options.onEnd) options.onEnd();
-      };
+      if (options.onStart) utter.onstart = options.onStart;
+      if (options.onEnd) utter.onend = options.onEnd;
+
+      // 統一的錯誤處理
       utter.onerror = (event) => {
-        // 若不是當前這一次 speak，忽略（通常是被 cancel 的舊 utterance）
-        if (seq !== this._activeSeq) return;
-
-        const err = String(event?.error || '').toLowerCase();
-        // interrupted/canceled 通常代表「被新一次 speak() 取消」，不視為錯誤
-        if (err === 'interrupted' || err === 'canceled' || err === 'cancelled') {
-          if (options.onEnd) options.onEnd();
-          return;
+        // 忽略中斷錯誤，這是正常的
+        if (event.error === 'interrupted') {
+          console.log('🔇 語音被中斷（正常情況）');
+        } else {
+          console.error('語音合成錯誤:', event);
         }
-
-        console.error('語音合成錯誤:', event);
-        if (options.onError) options.onError(event);
+        
+        if (options.onError) {
+          options.onError(event);
+        } else if (options.onEnd) {
+          // 如果發生錯誤但沒有錯誤回調，執行結束回調以避免卡住
+          options.onEnd();
+        }
       };
 
       utter.onpause = () => {
@@ -438,13 +458,13 @@ const SoundSystem = {
               if (callback) callback();
             },
             onError: (error) => {
-              const err = String(error?.error || error?.name || '').toLowerCase();
-              // interrupted/canceled 不當作錯誤（多為快速連點或系統 cancel）
-              if (err === 'interrupted' || err === 'canceled' || err === 'cancelled') {
+              // 忽略中斷錯誤，這是正常的
+              if (error.error === 'interrupted') {
+                console.log(`🔇 發音被中斷: "${cleanWord}"（正常情況）`);
                 if (callback) callback();
                 return;
               }
-
+              
               console.error(`❌ 發音錯誤: "${cleanWord}"`, error);
               
               // 重試機制（最多重試2次）
