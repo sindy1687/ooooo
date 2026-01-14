@@ -1287,17 +1287,32 @@
       <!-- 遊戲大廳功能區 -->
       <div class="lobby-grid">
         <div class="lobby-card">
-          <h3>💰 星星兌換金幣</h3>
+          <h3>💱 星星／金幣雙向兌換</h3>
           <div class="hint">
-            匯率：<b style="color: var(--glow-gold);">{{ exchangeRate }}</b> 星星 = <b style="color: var(--glow-cyan);">{{ exchangeCoinsPerRate }}</b> 金幣。
+            匯率：<b style="color: var(--glow-gold);">{{ exchangeRate }}</b> ⭐ = <b style="color: var(--glow-cyan);">{{ exchangeCoinsPerRate }}</b> 🪙。
             你目前有 ⭐ {{ totalStars }} / 🪙 {{ goldCoins }}。
           </div>
-          <div class="form-row">
-            <input class="input" type="number" min="1" step="1" v-model.number="exchangeStarsAmount" placeholder="輸入要兌換的星星數量" />
-            <button class="mini-btn" @click="exchangeStarsForCoins" :disabled="exchangeStarsAmount<=0 || totalStars < exchangeStarsAmount">兌換</button>
+
+          <div style="margin-top:12px; padding:12px; border:1px solid rgba(255,255,255,0.1); border-radius:10px;">
+            <div style="font-weight:700; color:var(--glow-gold); margin-bottom:6px;">⭐ 換 🪙</div>
+            <div class="form-row">
+              <input class="input" type="number" min="1" step="1" v-model.number="exchangeStarsAmount" placeholder="輸入要兌換的星星數量" />
+              <button class="mini-btn" @click="exchangeStarsForCoins" :disabled="exchangeStarsAmount<=0 || totalStars < exchangeStarsAmount">兌換</button>
+            </div>
+            <div class="hint" style="margin-top:8px;">
+              估計可得：🪙 {{ previewCoins }}
+            </div>
           </div>
-          <div class="hint" style="margin-top:10px;">
-            估計可得：🪙 {{ previewCoins }}
+
+          <div style="margin-top:16px; padding:12px; border:1px solid rgba(255,255,255,0.1); border-radius:10px;">
+            <div style="font-weight:700; color:var(--glow-cyan); margin-bottom:6px;">🪙 換 ⭐</div>
+            <div class="form-row">
+              <input class="input" type="number" min="10000000" step="10000000" v-model.number="exchangeCoinsAmount" placeholder="輸入要兌換的金幣數量" />
+              <button class="mini-btn" @click="exchangeCoinsForStars" :disabled="exchangeCoinsAmount<=0 || goldCoins < exchangeCoinsAmount">兌換</button>
+            </div>
+            <div class="hint" style="margin-top:8px;">
+              估計可得：⭐ {{ previewStars }}
+            </div>
           </div>
         </div>
 
@@ -1308,6 +1323,7 @@
             可能抽到：金幣、星星、寶箱、稱號。
             也有機會抽到<b style="color: var(--glow-red);">壞獎勵</b>（扣金幣 / 扣星星 / 空轉）。
           </div>
+          <div class="gacha-machine"
           <div
             class="gacha-machine"
             :class="[
@@ -1687,21 +1703,23 @@
   <script>
     const { createApp } = Vue;
 
-    createApp({
+    const app = createApp({
       data() {
         return {
           totalGames: 10,
           availableGames: 10,
           completedGames: 0,
+
           totalStars: 0,
           goldCoins: 0,
           playerLevel: 1,
           gameCoinCostOptions: [300, 500, 1000],
           gameCoinCostMax: 1000,
           showWordMelodyGuide: false,
-          exchangeRate: 1,
-          exchangeCoinsPerRate: 10,
+          exchangeRate: 100, // 1星星 = 100金幣
+          exchangeCoinsPerRate: 10000000, // 10,000,000金幣 = 1星星
           exchangeStarsAmount: 1,
+          exchangeCoinsAmount: 10000000,
           lotteryCost: 50,
           lastLotteryResult: '',
           lotteryHistory: [],
@@ -1767,8 +1785,14 @@
         previewCoins() {
           const stars = Math.max(0, Math.floor(Number(this.exchangeStarsAmount) || 0));
           if (!stars) { return 0; }
-          const perStar = this.exchangeCoinsPerRate / this.exchangeRate;
-          return Math.floor(stars * perStar);
+          // 1星星 = 100金幣
+          return Math.floor(stars * this.exchangeRate);
+        },
+        previewStars() {
+          const coins = Math.max(0, Math.floor(Number(this.exchangeCoinsAmount) || 0));
+          if (!coins) { return 0; }
+          // 10,000,000金幣 = 1星星
+          return Math.floor(coins / this.exchangeCoinsPerRate);
         },
         effectiveLotteryCost() {
           const base = Math.max(1, Math.floor(Number(this.lotteryCost) || 1));
@@ -2006,6 +2030,29 @@
 
           alert(`✅ 兌換成功！\n\n使用星星：⭐ ${stars}\n獲得金幣：🪙 ${coinsToGet}\n\n目前星星：⭐ ${this.totalStars}\n目前金幣：🪙 ${this.goldCoins}`);
         },
+        exchangeCoinsForStars() {
+          const coins = Math.max(0, Math.floor(Number(this.exchangeCoinsAmount) || 0));
+          if (!coins) { return; }
+          if (this.goldCoins < coins) {
+            alert('❌ 金幣不足，無法兌換');
+            return;
+          }
+          const starsToGet = this.previewStars;
+          if (starsToGet <= 0) {
+            alert('❌ 兌換數量太小');
+            return;
+          }
+
+          this.goldCoins -= coins;
+          this.totalStars += starsToGet;
+
+          localStorage.setItem('totalStars', this.totalStars.toString());
+          this.savePlayerData();
+          this.saveEconomyData();
+          this.triggerStarsAnimation();
+
+          alert(`✅ 兌換成功！\n\n使用金幣：🪙 ${coins}\n獲得星星：⭐ ${starsToGet}\n\n目前星星：⭐ ${this.totalStars}\n目前金幣：🪙 ${this.goldCoins}`);
+        },
         startGacha() {
           if (this.gachaAnimating) { return; }
           if (this.goldCoins < this.effectiveLotteryCost) {
@@ -2042,134 +2089,174 @@
             this.gachaPhase = '';
           }, 2050);
         },
-        spinLottery() {
-          this.startGacha();
-        },
         applyLotteryRoll() {
           const roll = Math.random();
-          let resultText = '';
-          this.lotteryModalBonusText = '';
-          const costUsed = Math.max(1, Math.floor(Number(this.lastSpinCost) || this.effectiveLotteryCost));
-
-          const chestBoost = this.activeTitle === '寶箱獵人' ? 0.06 : 0;
-          const coinBoostRatio = this.activeTitle === '金幣富翁' ? 0.20 : 0;
-          const starExtra = (this.activeTitle === '閃耀之星' ? 1 : 0) + (this.activeTitle === '星星守護者' ? 1 : 0);
-
-          // 壞獎勵機率：12%（避免越抽越富）
-          const badCut = 0.12;
-
-          // 獎池：金幣 / 星星 / 寶箱 / 稱號
-          // 基本機率：壞獎勵 12% / 金幣 33% / 星星 25% / 寶箱 10% / 稱號 20%
-          // 寶箱獵人會把部分機率挪到寶箱（從金幣/星星各扣一些）
-          const effectiveChestBoost = Math.min(0.05, Math.max(0, chestBoost));
-          const coinCut = badCut + (0.33 - (effectiveChestBoost * 0.5));
-          const starCut = coinCut + (0.25 - (effectiveChestBoost * 0.5));
-          const chestCut = starCut + (0.10 + effectiveChestBoost);
-
-          if (roll < badCut) {
-            const badRoll = Math.random();
-            if (badRoll < 0.45) {
-              const lose = 20 + Math.floor(Math.random() * 61); // 20~80
-              const actual = Math.min(this.goldCoins, lose);
-              this.goldCoins = Math.max(0, this.goldCoins - actual);
-              resultText = `💥 壞獎勵：🪙 金幣 -${actual}`;
-            } else if (badRoll < 0.85) {
-              const loseStars = 1 + Math.floor(Math.random() * 2); // 1~2
-              const actual = Math.min(this.totalStars, loseStars);
-              this.totalStars = Math.max(0, this.totalStars - actual);
-              localStorage.setItem('totalStars', this.totalStars.toString());
-              this.savePlayerData();
-              resultText = `💥 壞獎勵：⭐ 星星 -${actual}`;
-            } else {
-              resultText = '💨 壞獎勵：空轉（沒有獲得任何東西）';
+          let rewardText = '';
+          let bonusText = '';
+          
+          // 增加抽獎次數統計
+          this.lotterySpinCount += 1;
+          
+          if (roll < 0.35) {
+            // 金幣獎勵 (35%)
+            const coins = 20 + Math.floor(Math.random() * 81); // 20~100
+            let addCoins = coins;
+            
+            // 稱號加成
+            if (this.activeTitle === '金幣富翁') { addCoins = Math.floor(addCoins * 1.2); }
+            if (this.activeTitle === '傳說收藏家') { addCoins = Math.floor(addCoins * 1.1); }
+            
+            this.goldCoins += addCoins;
+            rewardText = `🎰 抽獎：🪙 金幣 +${coins}`;
+            if (addCoins > coins) {
+              bonusText = `稱號加成：+${addCoins - coins} 金幣`;
             }
-          } else if (roll < coinCut) {
-            const coinsBack = Math.floor(10 + Math.random() * 90); // 10~99
-            let add = coinsBack;
-            if (this.activeTitle === '幸運玩家') { add += 8; }
-            if (this.activeTitle === '新手冒險家') { add += 5; }
-            if (coinBoostRatio > 0) { add += Math.max(1, Math.floor(coinsBack * coinBoostRatio)); }
-            this.goldCoins += add;
-            resultText = `🎉 金幣回饋 +${coinsBack}`;
-
-            if (coinsBack >= 90) {
-              this.triggerJackpot('金幣回饋');
+            this.saveEconomyData();
+            
+            if (coins >= 90) {
+              this.triggerJackpot('金幣大獎');
             }
-          } else if (roll < starCut) {
-            const stars = 1 + Math.floor(Math.random() * 3); // 1~3
+          } else if (roll < 0.65) {
+            // 星星獎勵 (30%)
+            const stars = 1 + Math.floor(Math.random() * 2); // 1~2
             let addStars = stars;
-            if (this.activeTitle === '幸運玩家' && stars >= 2) { addStars += 1; }
-            if (starExtra > 0) { addStars += starExtra; }
+            
+            // 稱號加成
+            if (this.activeTitle === '閃耀之星') { addStars += 1; }
+            if (this.activeTitle === '星星守護者') { addStars += 1; }
+            if (this.activeTitle === '傳說收藏家' && stars >= 2) { addStars += 1; }
+            
             this.totalStars += addStars;
             this.totalStarsEarned += addStars;
-            resultText = `⭐ 星星獎勵 +${stars}`;
-
-            if (stars >= 3) {
+            localStorage.setItem('totalStars', this.totalStars.toString());
+            this.savePlayerData();
+            this.saveEconomyData();
+            this.triggerStarsAnimation();
+            rewardText = `🎰 抽獎：⭐ 星星 +${stars}`;
+            if (addStars > stars) {
+              bonusText = `稱號加成：+${addStars - stars} 星星`;
+            }
+            
+            if (stars >= 2) {
               this.triggerJackpot('星星大獎');
             }
-          } else if (roll < chestCut) {
-            let chestAdd = 1;
-            if (this.activeTitle === '連勝之手' && Math.random() < 0.25) { chestAdd = 2; }
-            this.lotteryChestCount += chestAdd;
-            resultText = `🎁 寶箱 +${chestAdd}`;
-            if (chestAdd >= 2) {
-              this.triggerJackpot('寶箱 x2');
-            }
-          } else {
-            const titles = [
-              '新手冒險家',
-              '幸運玩家',
-              '閃耀之星',
-              '轉蛋之王',
-              '傳說收藏家',
-              '寶箱獵人',
-              '金幣富翁',
-              '星星守護者',
-              '省錢達人',
-              '連勝之手'
-            ];
-            const t = titles[Math.floor(Math.random() * titles.length)];
-            resultText = `🏷️ 稱號：${t}`;
-            this.unlockTitle(t);
-
-            if (t === '轉蛋之王' || t === '傳說收藏家' || t === '金幣富翁' || t === '寶箱獵人') {
-              this.triggerJackpot('稀有稱號');
-            }
-          }
-
-          const time = new Date().toLocaleString();
-          this.lotterySpinCount += 1;
-
-          const bonuses = [];
-          if (this.lotterySpinCount % 5 === 0) {
+          } else if (roll < 0.85) {
+            // 寶箱獎勵 (20%)
             this.lotteryChestCount += 1;
-            bonuses.push('🎁 寶箱 x1');
+            rewardText = '🎰 抽獎：🧰 寶箱 +1';
+            this.saveEconomyData();
+            
+            // 連勝之手稱號有機率給雙倍寶箱
+            if (this.activeTitle === '連勝之手' && Math.random() < 0.3) {
+              this.lotteryChestCount += 1;
+              rewardText = '🎰 抽獎：🧰 寶箱 +2 (連勝之手加成)';
+              bonusText = '連勝之手稱號觸發雙倍寶箱！';
+              this.triggerJackpot('雙倍寶箱');
+            } else {
+              this.triggerJackpot('寶箱獎勵');
+            }
+          } else if (roll < 0.95) {
+            // 超級獎勵 (10%)
+            const superCoins = 100 + Math.floor(Math.random() * 101); // 100~200
+            const superStars = 3 + Math.floor(Math.random() * 3); // 3~5
+            
+            let addCoins = superCoins;
+            let addStars = superStars;
+            
+            // 稱號加成
+            if (this.activeTitle === '金幣富翁') { addCoins = Math.floor(addCoins * 1.2); }
+            if (this.activeTitle === '閃耀之星') { addStars += 1; }
+            if (this.activeTitle === '星星守護者') { addStars += 1; }
+            if (this.activeTitle === '傳說收藏家') { 
+              addCoins = Math.floor(addCoins * 1.15); 
+              addStars += 1;
+            }
+            
+            this.goldCoins += addCoins;
+            this.totalStars += addStars;
+            this.totalStarsEarned += addStars;
+            localStorage.setItem('totalStars', this.totalStars.toString());
+            this.savePlayerData();
+            this.saveEconomyData();
+            this.triggerStarsAnimation();
+            
+            rewardText = `🎰 抽獎超級大獎：🪙 ${superCoins} 金幣 + ⭐ ${superStars} 星星`;
+            if (addCoins > superCoins || addStars > superStars) {
+              const coinBonus = addCoins - superCoins;
+              const starBonus = addStars - superStars;
+              bonusText = `稱號加成：`;
+              if (coinBonus > 0) bonusText += `+${coinBonus} 金幣 `;
+              if (starBonus > 0) bonusText += `+${starBonus} 星星`;
+            }
+            
+            this.triggerJackpot('超級大獎');
+          } else {
+            // 幸運獎勵 (5%)
+            this.lotteryChestCount += 2;
+            const luckyCoins = 150;
+            const luckyStars = 8;
+            
+            let addCoins = luckyCoins;
+            let addStars = luckyStars;
+            
+            // 稱號加成
+            if (this.activeTitle === '金幣富翁') { addCoins = Math.floor(addCoins * 1.2); }
+            if (this.activeTitle === '閃耀之星') { addStars += 1; }
+            if (this.activeTitle === '星星守護者') { addStars += 1; }
+            if (this.activeTitle === '傳說收藏家') { 
+              addCoins = Math.floor(addCoins * 1.15); 
+              addStars += 2;
+            }
+            
+            this.goldCoins += addCoins;
+            this.totalStars += addStars;
+            this.totalStarsEarned += addStars;
+            localStorage.setItem('totalStars', this.totalStars.toString());
+            this.savePlayerData();
+            this.saveEconomyData();
+            this.triggerStarsAnimation();
+            
+            rewardText = `🎰 幸運大獎：🧰 寶箱 x2 + 🪙 ${luckyCoins} 金幣 + ⭐ ${luckyStars} 星星`;
+            if (addCoins > luckyCoins || addStars > luckyStars) {
+              const coinBonus = addCoins - luckyCoins;
+              const starBonus = addStars - luckyStars;
+              bonusText = `稱號加成：`;
+              if (coinBonus > 0) bonusText += `+${coinBonus} 金幣 `;
+              if (starBonus > 0) bonusText += `+${starBonus} 星星`;
+            }
+            
+            this.triggerJackpot('幸運大獎');
           }
-
-          const bonusSuffix = bonuses.length ? `｜${bonuses.join(' ')}` : '';
-          const finalText = `${resultText}${bonusSuffix}`;
-          const log = `[${time}] ${finalText}（消耗 🪙 ${costUsed}）`;
-          this.lastLotteryResult = finalText;
+          
+          // 記錄抽獎結果
+          const time = new Date().toLocaleString();
+          const log = `[${time}] ${rewardText}（消耗 🪙 ${this.lastSpinCost}）`;
           this.lotteryHistory.unshift(log);
           this.lotteryHistory = this.lotteryHistory.slice(0, 20);
+          this.lastLotteryResult = rewardText;
           this.saveEconomyData();
-          this.triggerStarsAnimation();
-
-          this.lotteryModalText = resultText;
-          this.lotteryModalBonusText = bonuses.join(' ');
+          
+          // 顯示結果
+          this.lotteryModalText = rewardText;
+          this.lotteryModalBonusText = bonusText;
           this.showLotteryModal = true;
+        },
+        triggerJackpot(jackpotType) {
+          this.jackpotActive = true;
+          this.jackpotText = jackpotType;
+          
+          // 3秒後自動關閉大獎效果
+          setTimeout(() => {
+            this.jackpotActive = false;
+            this.jackpotText = '';
+          }, 3000);
         },
         closeLotteryModal() {
           this.showLotteryModal = false;
+          this.lotteryModalText = '';
+          this.lotteryModalBonusText = '';
           this.jackpotActive = false;
-        },
-        triggerJackpot(label) {
-          this.jackpotText = label || '';
-          this.jackpotActive = true;
-          this.playSfx('jackpotSfx', 0.24);
-          window.setTimeout(() => {
-            this.jackpotActive = false;
-          }, 1800);
+          this.jackpotText = '';
         },
         openChest() {
           if (this.lotteryChestCount <= 0) {
@@ -2479,13 +2566,38 @@
           this.checkStarsSystem();
         }, 10000); // 每10秒檢查一次
       }
-    }).mount('#app');
+    });
+
+    // 背景音樂控制系統 - 宣告在頂部避免初始化錯誤
+    var backgroundMusic = null;
+    var toggleMusicBtn = null;
+    var isMusicPlaying = false;
+
+    const vm = app.mount('#app');
+
+    function syncEconomyFromStorage() {
+      try {
+        const stars = parseInt(localStorage.getItem('totalStars') || '0', 10);
+        const coins = parseInt(localStorage.getItem('goldCoins') || '0', 10);
+        vm.totalStars = Number.isFinite(stars) ? stars : 0;
+        vm.goldCoins = Number.isFinite(coins) ? coins : 0;
+      } catch (e) {}
+    }
+
+    window.addEventListener('storage', (e) => {
+      if (!e) return;
+      if (e.key === 'totalStars' || e.key === 'goldCoins') {
+        syncEconomyFromStorage();
+      }
+    });
+
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) return;
+      syncEconomyFromStorage();
+    });
+
 
     // 背景音樂控制系統
-    let backgroundMusic = null;
-    let toggleMusicBtn = null;
-    let isMusicPlaying = false;
-
     // 播放背景音樂
     function playBackgroundMusic() {
       if (!backgroundMusic) return;
