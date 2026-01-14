@@ -8,18 +8,9 @@
   <link rel="stylesheet" href="responsive_enhanced.css">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <style>
-    /* 防止水平滾動 */
-    html {
-      overflow-x: hidden;
-    }
-    
-    /* 確保所有元素都在視窗範圍內 */
-    * {
-      box-sizing: border-box;
-      max-width: 100%;
-    }
-    
-    /* === 背景：星空與漸層 === */
+    html { overflow-x: hidden; }
+    * { box-sizing: border-box; max-width: 100%; }
+
     body {
       margin: 0;
       padding: 0;
@@ -30,54 +21,50 @@
       width: 100%;
       overflow-x: hidden;
     }
-    /* 星星粒子 */
+
     #starfield {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
       z-index: 0;
       pointer-events: none;
     }
-    /* 主要容器：半透明背景和模糊效果 */
+
     #container {
       position: relative;
       z-index: 1;
       max-width: 500px;
       margin: 40px auto;
       padding: 20px;
-      background: rgba(10, 20, 40, 0.7);
+      background: rgba(10,20,40,0.7);
       border-radius: 16px;
       box-shadow: 0 0 32px #00ffff44, 0 0 80px #a259ff22 inset;
       backdrop-filter: blur(8px);
     }
-    /* 返回首頁按鈕 */
+
     .home-btn {
       position: absolute;
       top: 20px;
       left: 20px;
-      background: linear-gradient(90deg, #00ffff 0%, #a259ff 100%);
-      color: #000;
-      font-weight: bold;
-      padding: 8px 16px;
-      border-radius: 8px;
-      box-shadow: 0 0 16px #00ffff;
-      text-decoration: none;
-      z-index: 2;
-      transition: transform 0.2s, box-shadow 0.2s;
-      font-family: 'Orbitron', sans-serif;
+      background: linear-gradient(90deg,#00ffff 0%,#a259ff 100%);
+      color:#000;
+      font-weight:bold;
+      padding:8px 16px;
+      border-radius:8px;
+      box-shadow:0 0 16px #00ffff;
+      text-decoration:none;
+      z-index:2;
+      transition:transform .2s, box-shadow .2s;
+      font-family:'Orbitron',sans-serif;
     }
     .home-btn:hover {
-      transform: scale(1.1);
-      box-shadow: 0 0 32px #00ffff;
+      transform:scale(1.1);
+      box-shadow:0 0 32px #00ffff;
     }
-    /* 總星星顯示 */
-    #totalStars {
+
+    #totalStars, #lives {
       position: absolute;
       bottom: 20px;
-      left: 20px;
-      background: rgba(10, 20, 40, 0.85);
       padding: 8px 14px;
       border-radius: 10px;
       box-shadow: 0 0 12px #ffd700, 0 0 32px #00ffff;
@@ -87,25 +74,11 @@
       font-weight: bold;
       z-index: 2;
       font-family: 'Orbitron', sans-serif;
+      background: rgba(10,20,40,0.85);
     }
-    /* 生命值顯示 */
-    #lives {
-      position: absolute;
-      bottom: 20px;
-      right: 20px;
-      background: rgba(10, 20, 40, 0.85);
-      padding: 8px 14px;
-      border-radius: 10px;
-      box-shadow: 0 0 12px #ffd700, 0 0 32px #00ffff;
-      border: 2px solid #00ffff;
-      color: #ffd700;
-      font-size: 1.2rem;
-      font-weight: bold;
-      z-index: 2;
-      font-family: 'Orbitron', sans-serif;
-    }
-    
-    /* 音樂控制按鈕 */
+    #totalStars { left: 20px; }
+    #lives { right: 20px; color: #ffd700; }
+
     #audioControls {
       position: fixed;
       top: 20px;
@@ -114,577 +87,460 @@
       display: flex;
       gap: 10px;
     }
-    
+
     #toggleMusic {
-      background: rgba(10, 20, 40, 0.85);
+      background: rgba(10,20,40,0.85);
       border: 2px solid #00ffff;
       color: #00ffff;
       border-radius: 50%;
-      width: 50px;
-      height: 50px;
+      width: 50px; height: 50px;
       cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.3s ease;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      transition: all .3s ease;
       backdrop-filter: blur(10px);
-      box-shadow: 0 0 16px #00ffff;
+      box-shadow:0 0 16px #00ffff;
     }
-    
     #toggleMusic:hover {
-      background: rgba(0, 255, 255, 0.2);
-      transform: scale(1.1);
-      box-shadow: 0 0 24px #00ffff;
+      background: rgba(0,255,255,0.2);
+      transform:scale(1.1);
+      box-shadow:0 0 24px #00ffff;
     }
-    
-    #toggleMusic.playing {
-      background: rgba(0, 255, 255, 0.2);
-      border-color: #00ffff;
-      animation: pulse 2s infinite;
-    }
-    
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.05); }
-    }
-    
 
-    /* 標題 */
     h1 {
-      margin-top: 60px;
-      font-size: 2rem;
-      letter-spacing: 1px;
-      color: #00ffff;
-      text-shadow: 0 0 12px #00ffff, 0 0 32px #a259ff;
-      z-index: 2;
-      font-family: 'Orbitron', sans-serif;
-      text-align: center;
+      margin-top:60px;
+      font-size:2rem;
+      letter-spacing:1px;
+      color:#00ffff;
+      text-shadow:0 0 12px #00ffff, 0 0 32px #a259ff;
+      text-align:center;
     }
-    /* 題數顯示 */
+
     #questionCount {
-      margin: 10px auto;
-      font-size: 1.2rem;
-      color: #a0a0ff;
-      text-align: center;
-      z-index: 2;
-      font-family: 'Orbitron', sans-serif;
-      text-shadow: 0 0 6px #00ffff;
+      margin:10px auto;
+      font-size:1.2rem;
+      color:#a0a0ff;
+      text-align:center;
+      text-shadow:0 0 6px #00ffff;
     }
-    /* 單字顯示 */
+
     #wordDisplay {
-      margin: 20px auto;
-      font-size: 2.8rem;
-      font-weight: bold;
-      color: #ffd700;
-      text-shadow: 0 0 8px #ffd700;
-      animation: glow 2s ease-in-out infinite alternate;
-      z-index: 2;
-      font-family: 'Orbitron', sans-serif;
-      text-align: center;
+      margin:20px auto;
+      font-size:2.8rem;
+      font-weight:bold;
+      color:#ffd700;
+      text-shadow:0 0 8px #ffd700;
+      animation:glow 2s ease-in-out infinite alternate;
+      text-align:center;
     }
     @keyframes glow {
-      from { text-shadow: 0 0 8px #ffd700; }
-      to { text-shadow: 0 0 16px #ffd700, 0 0 32px #00ffff; }
+      from { text-shadow:0 0 8px #ffd700; }
+      to { text-shadow:0 0 16px #ffd700, 0 0 32px #00ffff; }
     }
-    /* 計時器 */
+
     #timerDisplay {
-      font-size: 1.1rem;
-      color: #00ffff;
-      margin-bottom: 15px;
-      z-index: 2;
-      font-family: 'Orbitron', sans-serif;
-      text-align: center;
-      text-shadow: 0 0 6px #00ffff;
+      font-size:1.1rem;
+      color:#00ffff;
+      margin-bottom:15px;
+      text-align:center;
+      text-shadow:0 0 6px #00ffff;
     }
     #timerDisplay.danger { animation: flash 1s infinite; }
-    @keyframes flash { 0%,100% { color: #00ffff; } 50% { color: #ff4444; } }
-    /* 輸入框 */
+    @keyframes flash {
+      0%,100% { color:#00ffff; }
+      50% { color:#ff4444; }
+    }
+
     #answerInput {
-      font-family: 'Roboto Mono', monospace;
-      font-size: 1.1rem;
-      padding: 12px 16px;
-      border-radius: 12px;
-      border: 2px solid #00ffff;
-      width: 80%;
-      max-width: 400px;
-      background: rgba(10, 20, 40, 0.7);
-      color: #fff;
-      box-shadow: 0 0 16px #00ffff80;
-      text-align: center;
-      outline: none;
-      margin-bottom: 15px;
-      display: block;
-      margin-left: auto;
-      margin-right: auto;
+      font-family:'Roboto Mono',monospace;
+      font-size:1.1rem;
+      padding:12px 16px;
+      border-radius:12px;
+      border:2px solid #00ffff;
+      width:80%;
+      max-width:400px;
+      background:rgba(10,20,40,0.7);
+      color:#fff;
+      box-shadow:0 0 16px #00ffff80;
+      text-align:center;
+      outline:none;
+      margin:0 auto 15px;
+      display:block;
     }
     #answerInput:focus {
-      border-color: #00ffff;
-      box-shadow: 0 0 32px #00ffff;
+      border-color:#00ffff;
+      box-shadow:0 0 32px #00ffff;
     }
-    /* 回饋訊息 */
+
     #feedback {
-      height: 30px;
-      font-size: 1.1rem;
-      font-weight: bold;
-      margin: 12px 0;
-      z-index: 2;
-      font-family: 'Orbitron', sans-serif;
-      text-align: center;
-      color: #ffd700;
-      text-shadow: 0 0 6px #00ffff;
+      height:30px;
+      font-size:1.1rem;
+      font-weight:bold;
+      margin:12px 0;
+      text-align:center;
+      color:#ffd700;
+      text-shadow:0 0 6px #00ffff;
     }
-    /* 按鈕列 */
+
     .btn-row {
-      display: flex;
-      justify-content: center;
-      gap: 12px;
-      flex-wrap: wrap;
-      margin-top: 20px;
-      margin-bottom: 80px;
-      z-index: 2;
+      display:flex;
+      justify-content:center;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-top:20px;
+      margin-bottom:80px;
     }
+
     .btn-row button {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 1rem;
-      padding: 12px 20px;
-      border-radius: 12px;
-      border: none;
-      cursor: pointer;
-      background: linear-gradient(90deg, #00ffff 0%, #a259ff 100%);
-      color: #000;
-      font-weight: bold;
-      box-shadow: 0 0 16px #00ffff, 0 0 24px #a259ff99;
-      transition: transform 0.2s, box-shadow 0.2s;
+      font-family:'Orbitron',sans-serif;
+      font-size:1rem;
+      padding:12px 20px;
+      border-radius:12px;
+      border:none;
+      cursor:pointer;
+      background:linear-gradient(90deg,#00ffff 0%,#a259ff 100%);
+      color:#000;
+      font-weight:bold;
+      box-shadow:0 0 16px #00ffff, 0 0 24px #a259ff99;
+      transition:transform .2s, box-shadow .2s;
     }
     .btn-row button:hover {
-      transform: scale(1.08);
-      box-shadow: 0 0 32px #00ffff, 0 0 48px #a259ffcc;
+      transform:scale(1.08);
+      box-shadow:0 0 32px #00ffff, 0 0 48px #a259ffcc;
     }
-    #speakBtn { 
-      background: linear-gradient(90deg, #ffd700 0%, #ffaa00 100%);
-      color: #000;
+
+    #speakBtn {
+      background:linear-gradient(90deg,#ffd700 0%,#ffaa00 100%);
+      color:#000;
     }
-    /* 模態視窗 - 美化版本 */
+
     .modal {
-      display: none;
-      position: fixed;
-      z-index: 1000;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.85);
-      align-items: flex-start;
-      justify-content: center;
-      overflow-y: auto;
-      padding: 20px;
-      backdrop-filter: blur(8px);
-      animation: modalFadeIn 0.3s ease-out;
+      display:none;
+      position:fixed;
+      z-index:1000;
+      left:0; top:0;
+      width:100%; height:100%;
+      background:rgba(0,0,0,0.85);
+      align-items:flex-start;
+      justify-content:center;
+      overflow-y:auto;
+      padding:20px;
+      backdrop-filter:blur(8px);
+      animation:modalFadeIn .3s ease-out;
     }
-    
     @keyframes modalFadeIn {
-      from { opacity: 0; transform: scale(0.9); }
-      to { opacity: 1; transform: scale(1); }
+      from { opacity:0; transform:scale(.9); }
+      to { opacity:1; transform:scale(1); }
     }
-    
+
     .modal-content {
-      background: linear-gradient(135deg, rgba(10, 20, 40, 0.98), rgba(20, 40, 80, 0.95));
-      padding: 35px;
-      border-radius: 20px;
-      color: #fff;
-      max-width: 600px;
-      width: 90%;
-      text-align: center;
-      box-shadow: 
-        0 0 40px #00ffff88, 
-        0 0 80px #a259ff44 inset,
-        0 20px 40px rgba(0, 0, 0, 0.5);
-      font-family: 'Orbitron', sans-serif;
-      margin: 20px;
-      border: 3px solid #00ffff;
-      position: relative;
-      overflow-y: auto;
-      max-height: 80vh;
-      animation: modalSlideIn 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+      background:linear-gradient(135deg,rgba(10,20,40,.98),rgba(20,40,80,.95));
+      padding:35px;
+      border-radius:20px;
+      color:#fff;
+      max-width:600px;
+      width:90%;
+      text-align:center;
+      box-shadow:0 0 40px #00ffff88, 0 0 80px #a259ff44 inset, 0 20px 40px rgba(0,0,0,.5);
+      font-family:'Orbitron',sans-serif;
+      margin:20px;
+      border:3px solid #00ffff;
+      position:relative;
+      overflow-y:auto;
+      max-height:80vh;
+      animation:modalSlideIn .4s cubic-bezier(.68,-.55,.27,1.55);
     }
-    
     @keyframes modalSlideIn {
-      from { transform: translateY(-50px) scale(0.9); opacity: 0; }
-      to { transform: translateY(0) scale(1); opacity: 1; }
+      from { transform:translateY(-50px) scale(.9); opacity:0; }
+      to   { transform:translateY(0) scale(1);   opacity:1; }
     }
-    
     .modal-content::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 3px;
-      background: linear-gradient(90deg, #00ffff, #a259ff, #ffd700, #00ffff);
-      animation: borderGlow 2s linear infinite;
+      content:'';
+      position:absolute;
+      top:0; left:0; right:0;
+      height:3px;
+      background:linear-gradient(90deg,#00ffff,#a259ff,#ffd700,#00ffff);
+      animation:borderGlow 2s linear infinite;
+      background-size:200% 100%;
     }
-    
     @keyframes borderGlow {
-      0% { background-position: 0% 50%; }
-      100% { background-position: 200% 50%; }
+      0% { background-position:0% 50%; }
+      100% { background-position:200% 50%; }
     }
-    
     .modal-content h2 {
-      margin-bottom: 20px;
-      color: #00ffff;
-      text-shadow: 0 0 15px #00ffff, 0 0 35px #a259ff;
-      font-size: 1.8rem;
-      font-family: 'Orbitron', sans-serif;
-      font-weight: bold;
-      letter-spacing: 1px;
-      position: relative;
+      margin-bottom:20px;
+      color:#00ffff;
+      text-shadow:0 0 15px #00ffff, 0 0 35px #a259ff;
+      font-size:1.8rem;
+      font-weight:bold;
+      letter-spacing:1px;
+      position:relative;
     }
-    
     .modal-content h2::after {
-      content: '';
-      position: absolute;
-      bottom: -8px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 60px;
-      height: 3px;
-      background: linear-gradient(90deg, #00ffff, #a259ff);
-      border-radius: 2px;
+      content:'';
+      position:absolute;
+      bottom:-8px; left:50%;
+      transform:translateX(-50%);
+      width:60px; height:3px;
+      background:linear-gradient(90deg,#00ffff,#a259ff);
+      border-radius:2px;
     }
-    
     .modal-content p {
-      margin: 12px 0;
-      font-size: 1rem;
-      font-family: 'Orbitron', sans-serif;
-      color: #a0a0ff;
-      line-height: 1.5;
+      margin:12px 0;
+      font-size:1rem;
+      color:#a0a0ff;
+      line-height:1.5;
     }
-    
     .modal-content ul {
-      list-style: none;
-      padding: 0;
-      max-height: 200px;
-      overflow-y: auto;
-      margin: 20px 0;
-      text-align: left;
-      font-size: 0.95rem;
-      font-family: 'Roboto Mono', monospace;
-      color: #fff;
-      background: rgba(0, 0, 0, 0.3);
-      border-radius: 10px;
-      padding: 15px;
-      border: 1px solid rgba(0, 255, 255, 0.2);
+      list-style:none;
+      padding:15px;
+      max-height:200px;
+      overflow-y:auto;
+      margin:20px 0;
+      text-align:left;
+      font-size:.95rem;
+      font-family:'Roboto Mono',monospace;
+      color:#fff;
+      background:rgba(0,0,0,.3);
+      border-radius:10px;
+      border:1px solid rgba(0,255,255,.2);
     }
-    
-    .modal-content ul li { 
-      margin: 8px 0;
-      padding: 8px 12px;
-      background: linear-gradient(135deg, rgba(0, 255, 255, 0.1), rgba(162, 89, 255, 0.1));
-      border-radius: 8px;
-      border-left: 3px solid #00ffff;
-      transition: all 0.3s ease;
+    .modal-content ul li {
+      margin:8px 0;
+      padding:8px 12px;
+      background:linear-gradient(135deg,rgba(0,255,255,.1),rgba(162,89,255,.1));
+      border-radius:8px;
+      border-left:3px solid #00ffff;
+      transition:all .3s ease;
     }
-    
     .modal-content ul li:hover {
-      background: linear-gradient(135deg, rgba(0, 255, 255, 0.2), rgba(162, 89, 255, 0.2));
-      transform: translateX(5px);
-      box-shadow: 0 2px 8px rgba(0, 255, 255, 0.3);
+      background:linear-gradient(135deg,rgba(0,255,255,.2),rgba(162,89,255,.2));
+      transform:translateX(5px);
+      box-shadow:0 2px 8px rgba(0,255,255,.3);
     }
-    
-    /* 排行榜表格美化 */
+
     .modal-content table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 20px 0;
-      background: rgba(0, 0, 0, 0.3);
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      width:100%;
+      border-collapse:collapse;
+      margin:20px 0;
+      background:rgba(0,0,0,.3);
+      border-radius:12px;
+      overflow:hidden;
+      box-shadow:0 4px 20px rgba(0,0,0,.3);
     }
-    
+
     .modal-content th {
-      background: linear-gradient(135deg, #00ffff22, #a259ff22);
-      color: #00ffff;
-      padding: 12px 8px;
-      font-weight: bold;
-      font-size: 0.9rem;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      border-bottom: 2px solid #00ffff;
+      background:linear-gradient(135deg,#00ffff22,#a259ff22);
+      color:#00ffff;
+      padding:12px 8px;
+      font-weight:bold;
+      font-size:.9rem;
+      text-transform:uppercase;
+      letter-spacing:1px;
+      border-bottom:2px solid #00ffff;
     }
-    
+
     .modal-content td {
-      padding: 10px 8px;
-      border-bottom: 1px solid rgba(0, 255, 255, 0.1);
-      transition: background 0.3s ease;
+      padding:10px 8px;
+      border-bottom:1px solid rgba(0,255,255,.1);
+      transition:background .3s ease;
     }
-    
     .modal-content tr:hover td {
-      background: rgba(0, 255, 255, 0.1);
+      background:rgba(0,255,255,.1);
     }
-    
-    /* 按鈕美化 */
+
     .modal-content button {
-      background: linear-gradient(135deg, #00ffff 0%, #a259ff 100%);
-      border: none;
-      padding: 12px 24px;
-      border-radius: 25px;
-      color: #000;
-      font-weight: bold;
-      font-size: 1rem;
-      cursor: pointer;
-      margin: 8px;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 15px rgba(0, 255, 255, 0.3);
-      font-family: 'Orbitron', sans-serif;
-      text-transform: uppercase;
-      letter-spacing: 1px;
+      background:linear-gradient(135deg,#00ffff 0%,#a259ff 100%);
+      border:none;
+      padding:12px 24px;
+      border-radius:25px;
+      color:#000;
+      font-weight:bold;
+      font-size:1rem;
+      cursor:pointer;
+      margin:8px;
+      transition:all .3s ease;
+      box-shadow:0 4px 15px rgba(0,255,255,.3);
+      font-family:'Orbitron',sans-serif;
+      text-transform:uppercase;
+      letter-spacing:1px;
     }
-    
     .modal-content button:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(0, 255, 255, 0.5);
-      background: linear-gradient(135deg, #00ffff 0%, #ffd700 100%);
+      transform:translateY(-2px);
+      box-shadow:0 8px 25px rgba(0,255,255,.5);
+      background:linear-gradient(135deg,#00ffff 0%,#ffd700 100%);
     }
-    
-    .modal-content button:active {
-      transform: translateY(0);
-    }
-    
-    /* 下拉選單樣式 */
+
     .category-select {
-      background: linear-gradient(135deg, rgba(10, 20, 40, 0.9), rgba(20, 40, 80, 0.9));
-      border: 2px solid #00ffff;
-      color: #fff;
-      padding: 12px 16px;
-      border-radius: 25px;
-      font-size: 1rem;
-      font-weight: bold;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      font-family: 'Orbitron', sans-serif;
-      min-width: 200px;
-      outline: none;
-      box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
-      appearance: none;
-      -webkit-appearance: none;
-      -moz-appearance: none;
-      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2300ffff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
-      background-repeat: no-repeat;
-      background-position: right 12px center;
-      background-size: 16px;
-      padding-right: 40px;
+      background:linear-gradient(135deg,rgba(10,20,40,.9),rgba(20,40,80,.9));
+      border:2px solid #00ffff;
+      color:#fff;
+      padding:12px 16px;
+      border-radius:25px;
+      font-size:1rem;
+      font-weight:bold;
+      cursor:pointer;
+      transition:all .3s ease;
+      font-family:'Orbitron',sans-serif;
+      min-width:200px;
+      outline:none;
+      box-shadow:0 0 15px rgba(0,255,255,.3);
+      appearance:none;
+      -webkit-appearance:none;
+      -moz-appearance:none;
+      background-image:url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2300ffff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+      background-repeat:no-repeat;
+      background-position:right 12px center;
+      background-size:16px;
+      padding-right:40px;
     }
-    
     .category-select:hover {
-      border-color: #a259ff;
-      box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
-      transform: translateY(-1px);
+      border-color:#a259ff;
+      box-shadow:0 0 20px rgba(0,255,255,.5);
+      transform:translateY(-1px);
     }
-    
     .category-select:focus {
-      border-color: #ffd700;
-      box-shadow: 0 0 25px rgba(255, 215, 0, 0.5);
-      outline: none;
+      border-color:#ffd700;
+      box-shadow:0 0 25px rgba(255,215,0,.5);
     }
-    
     .category-select option {
-      background: rgba(10, 20, 40, 0.95);
-      color: #fff;
-      padding: 8px;
-      font-family: 'Orbitron', sans-serif;
-      font-size: 0.9rem;
+      background:rgba(10,20,40,.95);
+      color:#fff;
+      padding:8px;
+      font-size:.9rem;
     }
-    
-    .category-select option:hover {
-      background: rgba(0, 255, 255, 0.2);
-    }
-    
-    /* 排行榜載入狀態 */
+
     .loading {
-      text-align: center;
-      padding: 20px;
-      color: #00ffff;
-      font-family: 'Orbitron', sans-serif;
-      font-size: 1.1rem;
+      text-align:center;
+      padding:20px;
+      color:#00ffff;
+      font-size:1.1rem;
     }
-    
     .loading::after {
-      content: '';
-      display: inline-block;
-      width: 20px;
-      height: 20px;
-      border: 2px solid #00ffff;
-      border-radius: 50%;
-      border-top-color: transparent;
-      animation: spin 1s linear infinite;
-      margin-left: 10px;
+      content:'';
+      display:inline-block;
+      width:20px; height:20px;
+      border:2px solid #00ffff;
+      border-radius:50%;
+      border-top-color:transparent;
+      animation:spin 1s linear infinite;
+      margin-left:10px;
     }
-    
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-    
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.1); }
-    }
-    
-    @keyframes bounce {
-      0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
-      40% { transform: translateY(-10px); }
-      60% { transform: translateY(-5px); }
-    }
-    
-    /* 自定義滾動條樣式 */
-    .modal-content::-webkit-scrollbar {
-      width: 8px;
-    }
-    
-    .modal-content::-webkit-scrollbar-track {
-      background: rgba(0, 255, 255, 0.1);
-      border-radius: 4px;
-    }
-    
-    .modal-content::-webkit-scrollbar-thumb {
-      background: linear-gradient(135deg, #00ffff, #a259ff);
-      border-radius: 4px;
-      border: 1px solid rgba(0, 255, 255, 0.3);
-    }
-    
-    .modal-content::-webkit-scrollbar-thumb:hover {
-      background: linear-gradient(135deg, #00ffff, #ffd700);
-      box-shadow: 0 0 8px rgba(0, 255, 255, 0.5);
-    }
-    
-    /* Firefox 滾動條樣式 */
-    .modal-content {
-      scrollbar-width: thin;
-      scrollbar-color: #00ffff rgba(0, 255, 255, 0.2);
-    }
-    
-    /* 排行榜滾動容器樣式 */
-    .leaderboard-scroll-container::-webkit-scrollbar {
-      width: 8px;
-    }
-    
-    .leaderboard-scroll-container::-webkit-scrollbar-track {
-      background: rgba(0, 255, 255, 0.1);
-      border-radius: 4px;
-    }
-    
-    .leaderboard-scroll-container::-webkit-scrollbar-thumb {
-      background: linear-gradient(135deg, #00ffff, #a259ff);
-      border-radius: 4px;
-      border: 1px solid rgba(0, 255, 255, 0.3);
-    }
-    
-    .leaderboard-scroll-container::-webkit-scrollbar-thumb:hover {
-      background: linear-gradient(135deg, #00ffff, #ffd700);
-      box-shadow: 0 0 8px rgba(0, 255, 255, 0.5);
-    }
-    
-    .leaderboard-scroll-container {
-      scrollbar-width: thin;
-      scrollbar-color: #00ffff rgba(0, 255, 255, 0.2);
-    }
-    /* 翻牌卡片動畫 */
+    @keyframes spin { to { transform:rotate(360deg); } }
+
     .flip-card-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 28px 18px;
-      justify-content: center;
-      margin: 32px auto 0 auto;
-      max-width: 600px;
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:28px 18px;
+      justify-content:center;
+      margin:32px auto 0;
+      max-width:600px;
     }
     .flip-card {
-      background: transparent;
-      width: 260px;
-      height: 160px;
-      perspective: 1000px;
-      cursor: pointer;
-      margin: 0 auto;
+      background:transparent;
+      width:260px; height:160px;
+      perspective:1000px;
+      cursor:pointer;
+      margin:0 auto;
     }
     .flip-card-inner {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      transition: transform 0.7s cubic-bezier(.4,2,.6,1);
-      transform-style: preserve-3d;
+      position:relative;
+      width:100%; height:100%;
+      transition:transform .7s cubic-bezier(.4,2,.6,1);
+      transform-style:preserve-3d;
     }
     .flip-card.flipped .flip-card-inner {
-      transform: rotateY(180deg);
+      transform:rotateY(180deg);
     }
-    .flip-card-front, .flip-card-back {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      backface-visibility: hidden;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-size: 2rem;
-      font-family: 'Orbitron', sans-serif;
-      border-radius: 18px;
-      box-shadow: 0 0 24px #00ffff44, 0 0 48px #a259ff22 inset;
-      background: linear-gradient(135deg, #181818 60%, #00ffff22 100%);
-      color: #00ffff;
-      border: 2px solid #00ffff;
-      user-select: none;
+    .flip-card-front,.flip-card-back {
+      position:absolute;
+      width:100%; height:100%;
+      backface-visibility:hidden;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      font-size:2rem;
+      border-radius:18px;
+      box-shadow:0 0 24px #00ffff44, 0 0 48px #a259ff22 inset;
+      background:linear-gradient(135deg,#181818 60%,#00ffff22 100%);
+      color:#00ffff;
+      border:2px solid #00ffff;
+      user-select:none;
     }
     .flip-card-back {
-      background: linear-gradient(135deg, #ffd700 60%, #a259ff22 100%);
-      color: #a259ff;
-      transform: rotateY(180deg);
-      font-size: 2.2rem;
-      font-weight: bold;
-      text-shadow: 0 0 12px #ffd700, 0 0 32px #a259ff;
+      background:linear-gradient(135deg,#ffd700 60%,#a259ff22 100%);
+      color:#a259ff;
+      transform:rotateY(180deg);
+      font-size:2.2rem;
+      font-weight:bold;
+      text-shadow:0 0 12px #ffd700,0 0 32px #a259ff;
     }
+
     .practice-next-btn {
-      display: block;
-      margin: 28px auto 0 auto;
-      font-size: 1.1rem;
-      padding: 10px 32px;
-      border-radius: 10px;
-      background: linear-gradient(90deg,#00ffff 0%,#a259ff 100%);
-      color: #000;
-      font-weight: bold;
-      box-shadow: 0 0 12px #00ffff;
-      border: none;
-      cursor: pointer;
-      transition: transform 0.2s, box-shadow 0.2s;
+      display:block;
+      margin:28px auto 0;
+      font-size:1.1rem;
+      padding:10px 32px;
+      border-radius:10px;
+      background:linear-gradient(90deg,#00ffff 0%,#a259ff 100%);
+      color:#000;
+      font-weight:bold;
+      box-shadow:0 0 12px #00ffff;
+      border:none;
+      cursor:pointer;
+      transition:transform .2s, box-shadow .2s;
     }
     .practice-next-btn:hover {
-      transform: scale(1.08);
-      box-shadow: 0 0 32px #00ffff, 0 0 48px #a259ffcc;
+      transform:scale(1.08);
+      box-shadow:0 0 32px #00ffff, 0 0 48px #a259ffcc;
+    }
+
+    .modal-content::-webkit-scrollbar,
+    .leaderboard-scroll-container::-webkit-scrollbar {
+      width:8px;
+    }
+    .modal-content::-webkit-scrollbar-track,
+    .leaderboard-scroll-container::-webkit-scrollbar-track {
+      background:rgba(0,255,255,.1);
+      border-radius:4px;
+    }
+    .modal-content::-webkit-scrollbar-thumb,
+    .leaderboard-scroll-container::-webkit-scrollbar-thumb {
+      background:linear-gradient(135deg,#00ffff,#a259ff);
+      border-radius:4px;
+      border:1px solid rgba(0,255,255,.3);
+    }
+    .modal-content::-webkit-scrollbar-thumb:hover,
+    .leaderboard-scroll-container::-webkit-scrollbar-thumb:hover {
+      background:linear-gradient(135deg,#00ffff,#ffd700);
+      box-shadow:0 0 8px rgba(0,255,255,.5);
+    }
+    .modal-content {
+      scrollbar-width:thin;
+      scrollbar-color:#00ffff rgba(0,255,255,.2);
+    }
+    .leaderboard-scroll-container {
+      scrollbar-width:thin;
+      scrollbar-color:#00ffff rgba(0,255,255,.2);
     }
   </style>
 </head>
 <body>
-  <!-- 音樂控制 -->
-  <div id="audioControls">
-    <button id="toggleMusic" title="背景音樂">
-      <span class="material-icons">music_note</span>
-    </button>
-
-  </div>
-
-  <!-- 背景音樂音頻元素 -->
-  <audio id="backgroundMusic" loop>
-    <source src="sound/午後放鬆時光（純音樂）.mp3" type="audio/mpeg">
-  </audio>
-
   <canvas id="starfield"></canvas>
+
   <div id="container">
     <a href="atlas.html" class="home-btn">← 返回首頁</a>
     <div id="totalStars">總星星：<span id="totalStarCount">0</span> ⭐</div>
     <div id="lives">❤️❤️❤️❤️❤️</div>
+
     <h1>🧠 星座挑戰：<span id="categoryName"></span></h1>
     <div id="questionCount">第 <span id="currentQuestion">0</span> 題 / 20 題</div>
     <div id="wordDisplay">準備中...</div>
     <div id="timerDisplay">⏱ 時間：<span id="timeLeft">30</span> 秒</div>
     <input type="text" id="answerInput" placeholder="請輸入英文..." autocomplete="off" />
     <div id="feedback"></div>
+
     <div class="btn-row">
       <button onclick="checkAnswer()">送出</button>
       <button onclick="nextWord()">跳過</button>
@@ -705,18 +561,22 @@
         <button onclick="goHome()">返回首頁</button>
       </div>
     </div>
-    
+
     <!-- 排行榜面板 -->
     <div id="leaderboardModal" class="modal">
       <div class="modal-content">
-        <h2>🏆 星座挑戰排行榜</h2>
-        
-        <!-- 關卡選擇器 -->
-        <div style="margin-bottom: 20px; text-align: center;">
-          <div style="margin-bottom: 10px; color: #00ffff; font-weight: bold; font-size: 1rem;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+          <h2 style="margin:0; color:#fff; text-shadow:0 0 10px rgba(0,255,255,.5);">🏆 星座挑戰排行榜</h2>
+          <div style="display:flex; gap:10px;">
+            <button onclick="closeLeaderboard()" style="background:#ff6b6b;color:#fff;border:none;padding:8px 12px;border-radius:5px;cursor:pointer;font-size:.9rem;">✕ 關閉</button>
+          </div>
+        </div>
+
+        <div style="margin-bottom:20px; text-align:center;">
+          <div style="margin-bottom:10px; color:#00ffff; font-weight:bold; font-size:1rem;">
             選擇關卡：
           </div>
-          <div style="position: relative; display: inline-block; min-width: 200px;">
+          <div style="position:relative; display:inline-block; min-width:200px;">
             <select id="categorySelect" class="category-select" onchange="selectCategory(this.value)">
               <option value="all">🌟 全部關卡</option>
               <option value="aries">♈ 白羊座</option>
@@ -731,17 +591,25 @@
               <option value="capricorn">♑ 摩羯座</option>
               <option value="aquarius">♒ 水瓶座</option>
               <option value="pisces">♓ 雙魚座</option>
+              <option value="andromeda">👸 仙女座</option>
+              <option value="cygnus">🦢 天鵝座</option>
+              <option value="orion">🏹 獵戶座</option>
+              <option value="pegasus">🐎 飛馬座</option>
+              <option value="cassiopeia">👑 仙后座</option>
+              <option value="scorpius">🦂 天蠍座</option>
+              <option value="phoenix">🔥 鳳凰座</option>
+              <option value="vela">⛵ 船帆座</option>
             </select>
           </div>
         </div>
-        
+
         <div id="leaderboardContent">
           <div class="loading">正在載入排行榜...</div>
         </div>
         <button onclick="closeLeaderboard()">關閉</button>
       </div>
     </div>
-    
+
     <!-- 錯題複習面板 -->
     <div id="wrongModal" class="modal">
       <div class="modal-content">
@@ -757,37 +625,11 @@
   <script src="js/sound.js"></script>
   <script src="js/starRewardSystem.js"></script>
   <script src="js/vocabData.js"></script>
-  <!-- 新增：引入卡片資料 -->
   <script src="js/cards.js"></script>
   <script src="js/achievementSystem.js"></script>
+
   <script>
-    /***** 背景音樂連動系統 *****/
-    function initBackgroundMusic() {
-      if (typeof SoundSystem !== 'undefined') {
-        SoundSystem.bgm.initGlobalAudio();
-        SoundSystem.bgm.updateAllControls();
-      }
-    }
-
-    function playBackgroundMusic() {
-      if (typeof SoundSystem !== 'undefined') {
-        SoundSystem.bgm.play();
-      }
-    }
-
-    function pauseBackgroundMusic() {
-      if (typeof SoundSystem !== 'undefined') {
-        SoundSystem.bgm.pause();
-      }
-    }
-
-    function toggleBackgroundMusic() {
-      if (typeof SoundSystem !== 'undefined') {
-        SoundSystem.bgm.toggle();
-      }
-    }
-    
-    // === 星空背景生成 ===
+    // 星空背景
     const starCanvas = document.getElementById('starfield');
     const ctx = starCanvas.getContext('2d');
     let width = window.innerWidth, height = window.innerHeight;
@@ -813,7 +655,7 @@
         s.alpha = Math.abs(Math.sin(s.twinkle));
         ctx.beginPath();
         ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(255, 255, 255, ${s.alpha})`;
+        ctx.fillStyle = `rgba(255,255,255,${s.alpha})`;
         ctx.fill();
       });
       requestAnimationFrame(drawStars);
@@ -828,41 +670,33 @@
     initStars();
     drawStars();
 
-    // === TTS voices 載入 ===
-    // 使用新的發音系統，移除舊的語音載入邏輯
-
+    // 語音發音封裝
+    let isSpeaking = false;
     function speak(text) {
-      if (!text) return;
-      isSpeaking = true;
-      document.getElementById('answerInput').disabled = true;
-      SoundSystem.speech.speakWord(text, function() {
+      if (!text || typeof SoundSystem === 'undefined') return;
+      // 不再禁用輸入，允許邊聽邊輸入
+      const input = document.getElementById('answerInput');
+
+      SoundSystem.speech.speakWord(text, function () {
         isSpeaking = false;
-        document.getElementById('answerInput').disabled = false;
-        document.getElementById('answerInput').focus();
       });
     }
-    
     function speakCurrentWord() {
-      if (!current) return;
-      isSpeaking = true;
-      document.getElementById('answerInput').disabled = true;
-      SoundSystem.speech.speakWord(current.en, function() {
+      if (!current || typeof SoundSystem === 'undefined') return;
+      // 不再禁用輸入，允許邊聽邊輸入
+      const input = document.getElementById('answerInput');
+
+      SoundSystem.speech.speakWord(current.en, function () {
         isSpeaking = false;
-        document.getElementById('answerInput').disabled = false;
-        document.getElementById('answerInput').focus();
       });
     }
 
-    // === 使用外部載入的 vocabData ===
-    // 假設 js/vocabData.js 會定義全域變數 vocabData
-
-    // ====== 刪除練習模式狀態與流程 ======
-    // 遊戲變數
+    // 遊戲資料
     const params = new URLSearchParams(location.search);
     const categoryKey = params.get('category') || 'aries';
     document.getElementById('categoryName').textContent = categoryKey;
     let words = vocabData[categoryKey] || [];
-    words = words.slice(0, 20); // 每關最多 20 題
+    words = words.slice(0, 20);
 
     let current = null;
     let used = [];
@@ -871,207 +705,102 @@
     let timer = null;
     let timeLeft = 30;
     let lives = 5;
-    
-    // ===== 新增：遊戲狀態追蹤 =====
+
     let gameStats = {
       correctCount: 0,
       totalAnswered: 0,
-      consecutiveCorrect: 0, // 連續答對次數
-      fastestAnswer: Infinity, // 最快答題時間
-      slowestAnswer: 0, // 最慢答題時間
-      totalTimeUsed: 0, // 總用時
-      perfectAnswers: 0, // 完美答題次數（15秒內答對）
+      consecutiveCorrect: 0,
+      fastestAnswer: Infinity,
+      slowestAnswer: 0,
+      totalTimeUsed: 0,
+      perfectAnswers: 0,
       startTime: Date.now()
     };
-    
-    // ===== 新增：答題處理狀態 =====
-    let isProcessingAnswer = false; // 是否正在處理答題
-    // ===== 新增：發音鎖定狀態 =====
-    let isSpeaking = false; // 是否正在發音
 
-    // 從 localStorage 取總星星，若無則為 0
+    let isProcessingAnswer = false;
+
+    // 星星總數
     let totalStarCount = parseInt(localStorage.getItem('totalStars') || '0', 10);
     function updateTotal() {
-      // 使用連動系統獲取最新的星星數量
       if (typeof LinkageSystem !== 'undefined') {
         totalStarCount = LinkageSystem.stars.get();
-      } else if (typeof StarRewardSystem !== 'undefined') {
-        // 如果使用 StarRewardSystem，從它獲取星星數量
-        totalStarCount = StarRewardSystem.getTotalStars ? StarRewardSystem.getTotalStars() : totalStarCount;
+      } else if (typeof StarRewardSystem !== 'undefined' &&
+                 typeof StarRewardSystem.getTotalStars === 'function') {
+        totalStarCount = StarRewardSystem.getTotalStars();
       }
       document.getElementById('totalStarCount').textContent = totalStarCount;
     }
-
     function updateLives() {
-      const livesDiv = document.getElementById('lives');
-      livesDiv.innerHTML = '❤️'.repeat(lives) + '🤍'.repeat(5 - lives);
+      const el = document.getElementById('lives');
+      el.innerHTML = '❤️'.repeat(lives) + '🤍'.repeat(5 - lives);
     }
-
     function updateQuestionCount() {
       document.getElementById('currentQuestion').textContent = used.length;
     }
-    
-    // ===== 新增：星星獎勵計算函數 =====
+
     function calculateStarReward(isCorrect, answerTime, consecutiveCount, wordLength) {
       if (!isCorrect) return 0;
-      
-      let baseReward = 1; // 基礎獎勵
-      let comboReward = 0; // 連擊獎勵
-      
-      // 連擊獎勵：連續答對越多獎勵越多
-      if (consecutiveCount >= 5) {
-        comboReward = 2; // 5連擊 +2星
-      } else if (consecutiveCount >= 3) {
-        comboReward = 1; // 3連擊 +1星
-      } else if (consecutiveCount >= 2) {
-        comboReward = 1; // 2連擊 +1星
-      }
-      
-      // 計算總獎勵：基礎1星 + 連擊獎勵
-      let totalReward = baseReward + comboReward;
-      
-      return totalReward;
+      let base = 1;
+      let combo = 0;
+      if (consecutiveCount >= 5) combo = 2;
+      else if (consecutiveCount >= 3) combo = 1;
+      else if (consecutiveCount >= 2) combo = 1;
+      return base + combo;
     }
-    
-    // ===== 新增：顯示獎勵動畫 =====
-    function showRewardAnimation(starsEarned, reason = '') {
-      const rewardDiv = document.createElement('div');
-      rewardDiv.style.cssText = `
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background: linear-gradient(135deg, rgba(255, 215, 0, 0.95), rgba(255, 170, 0, 0.95));
-        color: #000;
-        padding: 20px 30px;
-        border-radius: 15px;
-        font-size: 1.5rem;
-        font-weight: bold;
-        z-index: 1000;
-        box-shadow: 0 0 30px #ffd700;
-        animation: rewardPop 1.2s ease-out forwards;
-        font-family: 'Orbitron', sans-serif;
-        text-align: center;
-        min-width: 300px;
-      `;
-      
-      let reasonText = '';
-      if (reason) {
-        reasonText = `<div style="font-size: 1rem; margin-top: 8px; color: #666;">${reason}</div>`;
-      }
-      
-      rewardDiv.innerHTML = `
-        <div style="font-size: 3rem; margin-bottom: 10px;">⭐</div>
-        <div style="font-size: 1.8rem; margin-bottom: 5px;">+${starsEarned} 星星</div>
-        ${reasonText}
-      `;
-      
-      // 添加動畫樣式
-      const style = document.createElement('style');
-      style.textContent = `
-        @keyframes rewardPop {
-          0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
-          50% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
-          100% { transform: translate(-50%, -50%) scale(1); opacity: 0; }
-        }
-      `;
-      document.head.appendChild(style);
-      
-      document.body.appendChild(rewardDiv);
-      
-      // 播放星星音效
-      if (typeof StarRewardSystem !== 'undefined') {
-        StarRewardSystem.playStarSound();
-      }
-      
-      // 3.5秒後移除
-      setTimeout(() => {
-        if (document.body.contains(rewardDiv)) {
-          document.body.removeChild(rewardDiv);
-        }
-        if (document.head.contains(style)) {
-          document.head.removeChild(style);
-        }
-      }, 3500);
-    }
-    
-    // ===== 新增：顯示連擊通知 =====
+
     function showComboNotification(comboCount) {
       if (comboCount < 2) return;
-      
-      const comboDiv = document.createElement('div');
-      comboDiv.style.cssText = `
-        position: fixed;
-        top: 20%;
-        left: 50%;
-        transform: translateX(-50%);
-        background: linear-gradient(135deg, rgba(255, 69, 0, 0.9), rgba(255, 140, 0, 0.9));
-        color: #fff;
-        padding: 15px 25px;
-        border-radius: 25px;
-        font-size: 1.2rem;
-        font-weight: bold;
-        z-index: 1000;
-        box-shadow: 0 0 20px #ff4500;
-        animation: comboSlide 0.8s ease-out forwards;
-        font-family: 'Orbitron', sans-serif;
+      const div = document.createElement('div');
+      div.style.cssText = `
+        position:fixed;
+        top:20%;
+        left:50%;
+        transform:translateX(-50%);
+        background:linear-gradient(135deg,rgba(255,69,0,.9),rgba(255,140,0,.9));
+        color:#fff;
+        padding:15px 25px;
+        border-radius:25px;
+        font-size:1.2rem;
+        font-weight:bold;
+        z-index:1000;
+        box-shadow:0 0 20px #ff4500;
+        animation:comboSlide .8s ease-out forwards;
+        font-family:'Orbitron',sans-serif;
       `;
-      
-      let comboText = '';
-      let comboIcon = '';
-      
-      if (comboCount >= 5) {
-        comboText = `${comboCount} 連擊！🔥 無敵連擊！`;
-        comboIcon = '🔥';
-      } else if (comboCount >= 3) {
-        comboText = `${comboCount} 連擊！⚡ 超強連擊！`;
-        comboIcon = '⚡';
-      } else {
-        comboText = `${comboCount} 連擊！✨ 連擊開始！`;
-        comboIcon = '✨';
-      }
-      
-      comboDiv.innerHTML = `${comboIcon} ${comboText} ${comboIcon}`;
-      
-      // 添加動畫樣式
+      let text = '';
+      if (comboCount >= 5) text = `${comboCount} 連擊！🔥 無敵連擊！`;
+      else if (comboCount >= 3) text = `${comboCount} 連擊！⚡ 超強連擊！`;
+      else text = `${comboCount} 連擊！✨ 連擊開始！`;
+      div.textContent = text;
+
       const style = document.createElement('style');
       style.textContent = `
         @keyframes comboSlide {
-          0% { transform: translateX(-50%) translateY(-100%); opacity: 0; }
-          50% { transform: translateX(-50%) translateY(0); opacity: 1; }
-          100% { transform: translateX(-50%) translateY(0); opacity: 0; }
+          0% { transform:translateX(-50%) translateY(-100%); opacity:0; }
+          50% { transform:translateX(-50%) translateY(0); opacity:1; }
+          100% { transform:translateX(-50%) translateY(0); opacity:0; }
         }
       `;
       document.head.appendChild(style);
-      
-      document.body.appendChild(comboDiv);
-      
-      // 4秒後移除
+      document.body.appendChild(div);
       setTimeout(() => {
-        if (document.body.contains(comboDiv)) {
-          document.body.removeChild(comboDiv);
-        }
-        if (document.head.contains(style)) {
-          document.head.removeChild(style);
-        }
+        if (div.parentNode) div.parentNode.removeChild(div);
+        if (style.parentNode) style.parentNode.removeChild(style);
       }, 4000);
     }
 
     function showResultPanel() {
-      // 本次星星已在checkAnswer累加，不需要再次設置
       document.getElementById('sessionStars').textContent = correctCount * 2;
       document.getElementById('sessionCorrect').textContent = correctCount;
       document.getElementById('sessionWrong').textContent = wrongList.length;
       document.getElementById('wrongBtn').style.display = wrongList.length ? 'inline-block' : 'none';
       document.getElementById('resultModal').style.display = 'flex';
       disablePlay();
-      
-      // 只在沒有使用外部星星系統時更新總星星顯示
+
       if (typeof StarRewardSystem === 'undefined' && typeof LinkageSystem === 'undefined') {
         updateTotal();
       }
 
-      // 評分與分數
       const score = correctCount * 2;
       let rating = '';
       if (correctCount === 20) rating = '🌟 滿分高手！';
@@ -1080,16 +809,14 @@
       else if (correctCount >= 5) rating = '💡 多多練習會更好！';
       else rating = '📝 建議多複習單字！';
 
-      // ====== 新增：通關判斷與儲存 ======
-      if (correctCount === 20 || correctCount >= 16) {
-        let passed = JSON.parse(localStorage.getItem('passed_atlas')||'[]');
+      if (correctCount >= 16) {
+        let passed = JSON.parse(localStorage.getItem('passed_atlas') || '[]');
         if (!passed.includes(categoryKey)) {
           passed.push(categoryKey);
           localStorage.setItem('passed_atlas', JSON.stringify(passed));
         }
       }
 
-      // 取得上次分數
       let lastScore = parseInt(localStorage.getItem('lastScore') || '0', 10);
       let compare = '';
       if (lastScore === 0) compare = '（首次遊玩）';
@@ -1098,18 +825,17 @@
       else compare = '➡️ 持平';
       localStorage.setItem('lastScore', score);
 
-      // 顯示所有錯題列表
-      let wrongListHtml = '';
+      let wrongHtml = '';
       if (wrongList.length > 0) {
-        wrongListHtml = '<ul style="max-height:120px;overflow-y:auto;text-align:left;font-size:1rem;margin:10px 0 0 0;padding:0 10px 0 20px;">';
+        wrongHtml = '<ul style="max-height:120px;overflow-y:auto;text-align:left;font-size:1rem;margin:10px 0 0;padding:0 10px 0 20px;">';
         wrongList.forEach(item => {
-          wrongListHtml += `<li>❌ <b>${item.zh}</b> → <span style='color:#ffd700;'>${item.en}</span></li>`;
+          wrongHtml += `<li>❌ <b>${item.zh}</b> → <span style="color:#ffd700;">${item.en}</span></li>`;
         });
-        wrongListHtml += '</ul>';
+        wrongHtml += '</ul>';
       } else {
-        wrongListHtml = '<div style="color:#0f0;margin-top:10px;">本次無錯題！</div>';
+        wrongHtml = '<div style="color:#0f0;margin-top:10px;">本次無錯題！</div>';
       }
-      // 插入到結算面板（sessionWrong下方）
+
       const resultModal = document.getElementById('resultModal').querySelector('.modal-content');
       let wrongListDiv = document.getElementById('wrongListAll');
       if (!wrongListDiv) {
@@ -1117,441 +843,353 @@
         wrongListDiv.id = 'wrongListAll';
         resultModal.appendChild(wrongListDiv);
       }
-      wrongListDiv.innerHTML = wrongListHtml;
+      wrongListDiv.innerHTML = wrongHtml;
 
-      // 插入分數、評價、進步
       let scoreDiv = document.getElementById('scoreInfo');
       if (!scoreDiv) {
         scoreDiv = document.createElement('div');
         scoreDiv.id = 'scoreInfo';
         resultModal.insertBefore(scoreDiv, wrongListDiv);
       }
-      scoreDiv.innerHTML = `<div style='margin:10px 0 0 0;font-size:1.2rem;'>本次分數：<b style='color:#ffd700;'>${score}</b> 分<br>${rating} <span style='font-size:1rem;color:#00ffff;'>${compare}</span></div>`;
+      scoreDiv.innerHTML =
+        `<div style="margin:10px 0 0;font-size:1.2rem;">本次分數：<b style="color:#ffd700;">${score}</b> 分<br>${rating} <span style="font-size:1rem;color:#00ffff;">${compare}</span></div>`;
 
-      // ====== 新增：成就系統連動 ======
       updateQuizAchievements();
-      
-      // ====== 新增：自動提交分數到排行榜 ======
       submitScoreToLeaderboard();
     }
 
-    // ====== 新增：成就系統函數 =====
     function updateQuizAchievements() {
-      // 更新星座挑戰完成次數
-      const quizGames = parseInt(localStorage.getItem('quizGamesCompleted') || '0');
+      const quizGames = parseInt(localStorage.getItem('quizGamesCompleted') || '0', 10);
       localStorage.setItem('quizGamesCompleted', quizGames + 1);
-      
-      // 檢查並更新相關成就
       checkAndUpdateQuizAchievements();
     }
-    
-    // ===== 新增：Google Sheets 排行榜系統 =====
+
     const GOOGLE_SHEETS_API = "https://script.google.com/macros/s/AKfycbyhcoJVk9MVFWqsyee2PeE-vCo3u2p6oyL8HUCaMk0ZeNL0Td9mOBZnMlHNb6mIO5eCHQ/exec";
-    const LEADERBOARD_SHEET_ID = "11kMAXtBxLICMUYysPLP1noZzTsjbfXmbRcZSKK8_6cw";
-    
-    // 當前選擇的關卡
+
     let currentCategory = 'all';
-    
-    // 顯示排行榜
+
     function showLeaderboard() {
       document.getElementById('leaderboardModal').style.display = 'flex';
-      // 重置為全部關卡
       currentCategory = 'all';
       updateCategorySelect();
       loadLeaderboard();
     }
-    
-    // 關閉排行榜
     function closeLeaderboard() {
       document.getElementById('leaderboardModal').style.display = 'none';
     }
-    
-    // 選擇關卡
-    function selectCategory(category) {
-      currentCategory = category;
+    function selectCategory(cat) {
+      currentCategory = cat;
       updateCategorySelect();
       loadLeaderboard();
     }
-    
-    // 更新下拉選單狀態
     function updateCategorySelect() {
-      const select = document.getElementById('categorySelect');
-      if (select) {
-        select.value = currentCategory;
-      }
+      const sel = document.getElementById('categorySelect');
+      if (sel) sel.value = currentCategory;
     }
-    
-    // 載入排行榜數據
+
     async function loadLeaderboard() {
       const content = document.getElementById('leaderboardContent');
       content.innerHTML = '<div class="loading">正在載入排行榜...</div>';
-      
+
       try {
-        // 方法1：嘗試從 Google Apps Script API 獲取數據
         const formData = new URLSearchParams();
         formData.append('action', 'getQuizLeaderboard');
-        
+        if (currentCategory !== 'all') {
+          formData.append('category', currentCategory);
+        }
+
         const response = await fetch(GOOGLE_SHEETS_API, {
           method: 'POST',
           mode: 'cors',
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-          },
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
           body: formData.toString()
         });
-        
+
         if (response.ok) {
           const data = await response.json();
           if (data.success && data.leaderboard) {
-            // 根據選擇的關卡過濾數據
-            let filteredData = data.leaderboard;
-            if (currentCategory !== 'all') {
-              filteredData = data.leaderboard.filter(item => item.category === currentCategory);
-            }
-            displayLeaderboard(filteredData);
+            displayLeaderboard(data.leaderboard);
             return;
           }
         }
-        
-        // 方法2：如果 API 失敗，顯示測試數據
-        console.log('API 調用失敗，顯示測試數據');
-        const testData = [
-          // 白羊座數據
-          { rank: 1, playerName: '白羊玩家1', score: 40, correctCount: 20, category: 'aries', date: new Date(Date.now() - 5 * 60 * 1000).toISOString(), totalTime: 450 },
-          { rank: 2, playerName: '白羊玩家2', score: 38, correctCount: 19, category: 'aries', date: new Date(Date.now() - 15 * 60 * 1000).toISOString(), totalTime: 480 },
-          { rank: 3, playerName: '白羊玩家3', score: 36, correctCount: 18, category: 'aries', date: new Date(Date.now() - 25 * 60 * 1000).toISOString(), totalTime: 520 },
-          { rank: 4, playerName: '白羊玩家4', score: 34, correctCount: 17, category: 'aries', date: new Date(Date.now() - 35 * 60 * 1000).toISOString(), totalTime: 550 },
-          { rank: 5, playerName: '白羊玩家5', score: 32, correctCount: 16, category: 'aries', date: new Date(Date.now() - 45 * 60 * 1000).toISOString(), totalTime: 580 },
-          
-          // 金牛座數據
-          { rank: 6, playerName: '金牛玩家1', score: 42, correctCount: 21, category: 'taurus', date: new Date(Date.now() - 10 * 60 * 1000).toISOString(), totalTime: 420 },
-          { rank: 7, playerName: '金牛玩家2', score: 40, correctCount: 20, category: 'taurus', date: new Date(Date.now() - 20 * 60 * 1000).toISOString(), totalTime: 450 },
-          { rank: 8, playerName: '金牛玩家3', score: 38, correctCount: 19, category: 'taurus', date: new Date(Date.now() - 30 * 60 * 1000).toISOString(), totalTime: 480 },
-          { rank: 9, playerName: '金牛玩家4', score: 36, correctCount: 18, category: 'taurus', date: new Date(Date.now() - 40 * 60 * 1000).toISOString(), totalTime: 510 },
-          { rank: 10, playerName: '金牛玩家5', score: 34, correctCount: 17, category: 'taurus', date: new Date(Date.now() - 50 * 60 * 1000).toISOString(), totalTime: 540 },
-          
-          // 雙子座數據
-          { rank: 11, playerName: '雙子玩家1', score: 44, correctCount: 22, category: 'gemini', date: new Date(Date.now() - 8 * 60 * 1000).toISOString(), totalTime: 380 },
-          { rank: 12, playerName: '雙子玩家2', score: 42, correctCount: 21, category: 'gemini', date: new Date(Date.now() - 18 * 60 * 1000).toISOString(), totalTime: 410 },
-          { rank: 13, playerName: '雙子玩家3', score: 40, correctCount: 20, category: 'gemini', date: new Date(Date.now() - 28 * 60 * 1000).toISOString(), totalTime: 440 },
-          { rank: 14, playerName: '雙子玩家4', score: 38, correctCount: 19, category: 'gemini', date: new Date(Date.now() - 38 * 60 * 1000).toISOString(), totalTime: 470 },
-          { rank: 15, playerName: '雙子玩家5', score: 36, correctCount: 18, category: 'gemini', date: new Date(Date.now() - 48 * 60 * 1000).toISOString(), totalTime: 500 },
-          
-          // 巨蟹座數據
-          { rank: 16, playerName: '巨蟹玩家1', score: 40, correctCount: 20, category: 'cancer', date: new Date(Date.now() - 12 * 60 * 1000).toISOString(), totalTime: 460 },
-          { rank: 17, playerName: '巨蟹玩家2', score: 38, correctCount: 19, category: 'cancer', date: new Date(Date.now() - 22 * 60 * 1000).toISOString(), totalTime: 490 },
-          { rank: 18, playerName: '巨蟹玩家3', score: 36, correctCount: 18, category: 'cancer', date: new Date(Date.now() - 32 * 60 * 1000).toISOString(), totalTime: 520 },
-          
-          // 獅子座數據
-          { rank: 19, playerName: '獅子玩家1', score: 46, correctCount: 23, category: 'leo', date: new Date(Date.now() - 6 * 60 * 1000).toISOString(), totalTime: 350 },
-          { rank: 20, playerName: '獅子玩家2', score: 44, correctCount: 22, category: 'leo', date: new Date(Date.now() - 16 * 60 * 1000).toISOString(), totalTime: 380 },
-          { rank: 21, playerName: '獅子玩家3', score: 42, correctCount: 21, category: 'leo', date: new Date(Date.now() - 26 * 60 * 1000).toISOString(), totalTime: 410 },
-          { rank: 22, playerName: '獅子玩家4', score: 40, correctCount: 20, category: 'leo', date: new Date(Date.now() - 36 * 60 * 1000).toISOString(), totalTime: 440 },
-          { rank: 23, playerName: '獅子玩家5', score: 38, correctCount: 19, category: 'leo', date: new Date(Date.now() - 46 * 60 * 1000).toISOString(), totalTime: 470 },
-          
-          // 處女座數據
-          { rank: 24, playerName: '處女玩家1', score: 42, correctCount: 21, category: 'virgo', date: new Date(Date.now() - 9 * 60 * 1000).toISOString(), totalTime: 430 },
-          { rank: 25, playerName: '處女玩家2', score: 40, correctCount: 20, category: 'virgo', date: new Date(Date.now() - 19 * 60 * 1000).toISOString(), totalTime: 460 },
-          { rank: 26, playerName: '處女玩家3', score: 38, correctCount: 19, category: 'virgo', date: new Date(Date.now() - 29 * 60 * 1000).toISOString(), totalTime: 490 },
-          
-          // 天秤座數據
-          { rank: 27, playerName: '天秤玩家1', score: 40, correctCount: 20, category: 'libra', date: new Date(Date.now() - 11 * 60 * 1000).toISOString(), totalTime: 470 },
-          { rank: 28, playerName: '天秤玩家2', score: 38, correctCount: 19, category: 'libra', date: new Date(Date.now() - 21 * 60 * 1000).toISOString(), totalTime: 500 },
-          { rank: 29, playerName: '天秤玩家3', score: 36, correctCount: 18, category: 'libra', date: new Date(Date.now() - 31 * 60 * 1000).toISOString(), totalTime: 530 },
-          
-          // 天蠍座數據
-          { rank: 30, playerName: '天蠍玩家1', score: 44, correctCount: 22, category: 'scorpio', date: new Date(Date.now() - 7 * 60 * 1000).toISOString(), totalTime: 390 },
-          { rank: 31, playerName: '天蠍玩家2', score: 42, correctCount: 21, category: 'scorpio', date: new Date(Date.now() - 17 * 60 * 1000).toISOString(), totalTime: 420 },
-          { rank: 32, playerName: '天蠍玩家3', score: 40, correctCount: 20, category: 'scorpio', date: new Date(Date.now() - 27 * 60 * 1000).toISOString(), totalTime: 450 },
-          
-          // 射手座數據
-          { rank: 33, playerName: '射手玩家1', score: 46, correctCount: 23, category: 'sagittarius', date: new Date(Date.now() - 4 * 60 * 1000).toISOString(), totalTime: 360 },
-          { rank: 34, playerName: '射手玩家2', score: 44, correctCount: 22, category: 'sagittarius', date: new Date(Date.now() - 14 * 60 * 1000).toISOString(), totalTime: 390 },
-          { rank: 35, playerName: '射手玩家3', score: 42, correctCount: 21, category: 'sagittarius', date: new Date(Date.now() - 24 * 60 * 1000).toISOString(), totalTime: 420 },
-          
-          // 摩羯座數據
-          { rank: 36, playerName: '摩羯玩家1', score: 42, correctCount: 21, category: 'capricorn', date: new Date(Date.now() - 13 * 60 * 1000).toISOString(), totalTime: 440 },
-          { rank: 37, playerName: '摩羯玩家2', score: 40, correctCount: 20, category: 'capricorn', date: new Date(Date.now() - 23 * 60 * 1000).toISOString(), totalTime: 470 },
-          { rank: 38, playerName: '摩羯玩家3', score: 38, correctCount: 19, category: 'capricorn', date: new Date(Date.now() - 33 * 60 * 1000).toISOString(), totalTime: 500 },
-          
-          // 水瓶座數據
-          { rank: 39, playerName: '水瓶玩家1', score: 44, correctCount: 22, category: 'aquarius', date: new Date(Date.now() - 3 * 60 * 1000).toISOString(), totalTime: 370 },
-          { rank: 40, playerName: '水瓶玩家2', score: 42, correctCount: 21, category: 'aquarius', date: new Date(Date.now() - 13 * 60 * 1000).toISOString(), totalTime: 400 },
-          { rank: 41, playerName: '水瓶玩家3', score: 40, correctCount: 20, category: 'aquarius', date: new Date(Date.now() - 23 * 60 * 1000).toISOString(), totalTime: 430 },
-          
-          // 雙魚座數據
-          { rank: 42, playerName: '雙魚玩家1', score: 40, correctCount: 20, category: 'pisces', date: new Date(Date.now() - 14 * 60 * 1000).toISOString(), totalTime: 480 },
-          { rank: 43, playerName: '雙魚玩家2', score: 38, correctCount: 19, category: 'pisces', date: new Date(Date.now() - 24 * 60 * 1000).toISOString(), totalTime: 510 },
-          { rank: 44, playerName: '雙魚玩家3', score: 36, correctCount: 18, category: 'pisces', date: new Date(Date.now() - 34 * 60 * 1000).toISOString(), totalTime: 540 }
-        ];
-        
-        // 根據選擇的關卡過濾測試數據
-        let filteredTestData = testData;
-        if (currentCategory !== 'all') {
-          filteredTestData = testData.filter(item => item.category === currentCategory);
-        }
-        displayLeaderboard(filteredTestData);
-        
+        loadLocalLeaderboard();
       } catch (error) {
         console.error('載入排行榜失敗:', error);
-        content.innerHTML = `
-          <div style="color: #ff6b6b; text-align: center; padding: 30px; background: rgba(255, 107, 107, 0.1); border-radius: 15px; border: 2px solid #ff6b6b;">
-            <div style="font-size: 3rem; margin-bottom: 15px; animation: pulse 2s infinite;">⚠️</div>
-            <div style="font-size: 1.2rem; font-weight: bold; margin-bottom: 10px;">載入排行榜失敗</div>
-            <div style="font-size: 0.9rem; margin-top: 15px; color: #ff9999; background: rgba(0, 0, 0, 0.3); padding: 10px; border-radius: 8px;">
-              <strong>錯誤：</strong>${error.message}
-            </div>
-            <div style="font-size: 0.9rem; margin-top: 10px; color: #ccc;">
-              請檢查 Google Apps Script 設置
-            </div>
-          </div>
-        `;
+        displayErrorLeaderboard(error);
       }
     }
-    
-    // 顯示排行榜
+
+    function loadLocalLeaderboard() {
+      const content = document.getElementById('leaderboardContent');
+      try {
+        const localData = JSON.parse(localStorage.getItem('quizLeaderboard') || '[]');
+        if (localData.length === 0) {
+          displayEmptyLeaderboard();
+          return;
+        }
+        let filtered = localData;
+        if (currentCategory !== 'all') {
+          filtered = localData.filter(it => it.category === currentCategory);
+        }
+        filtered.sort((a, b) => b.score - a.score);
+        filtered.forEach((it, i) => it.rank = i + 1);
+        displayLeaderboard(filtered);
+      } catch (err) {
+        console.error('載入本地排行榜失敗:', err);
+        displayEmptyLeaderboard();
+      }
+    }
+
+    function displayEmptyLeaderboard() {
+      const content = document.getElementById('leaderboardContent');
+      const names = {
+        'all': '全部關卡',
+        'aries':'白羊座','taurus':'金牛座','gemini':'雙子座','cancer':'巨蟹座',
+        'leo':'獅子座','virgo':'處女座','libra':'天秤座','scorpio':'天蠍座',
+        'sagittarius':'射手座','capricorn':'摩羯座','aquarius':'水瓶座','pisces':'雙魚座',
+        'andromeda':'仙女座','cygnus':'天鵝座','orion':'獵戶座','pegasus':'飛馬座',
+        'cassiopeia':'仙后座','scorpius':'天蠍座','phoenix':'鳳凰座','vela':'船帆座'
+      };
+      const name = names[currentCategory] || '未知關卡';
+
+      content.innerHTML = `
+        <div style="text-align:center;padding:30px;color:#666;background:rgba(0,255,255,.1);border-radius:15px;border:2px solid rgba(0,255,255,.3);">
+          <div style="font-size:3rem;margin-bottom:15px;">📊</div>
+          <div style="font-size:1.2rem;font-weight:bold;margin-bottom:10px;color:#00ffff;">
+            ${name} 目前還沒有排行榜數據
+          </div>
+          <div style="font-size:1rem;margin-top:15px;color:#a0a0ff;">
+            成為第一個上榜的玩家吧！
+          </div>
+          <div style="font-size:.9rem;margin-top:15px;color:#888;background:rgba(0,0,0,.2);padding:10px;border-radius:8px;">
+            完成遊戲後，您的分數會自動上傳到排行榜
+          </div>
+        </div>
+      `;
+    }
+
+    function displayErrorLeaderboard(error) {
+      const content = document.getElementById('leaderboardContent');
+      content.innerHTML = `
+        <div style="color:#ff6b6b;text-align:center;padding:30px;background:rgba(255,107,107,.1);border-radius:15px;border:2px solid #ff6b6b;">
+          <div style="font-size:3rem;margin-bottom:15px;">⚠️</div>
+          <div style="font-size:1.2rem;font-weight:bold;margin-bottom:10px;">載入排行榜失敗</div>
+          <div style="font-size:.9rem;margin-top:15px;color:#ff9999;background:rgba(0,0,0,.3);padding:10px;border-radius:8px;">
+            <strong>錯誤：</strong>${error.message}
+          </div>
+          <div style="font-size:.9rem;margin-top:10px;color:#ccc;">
+            請檢查網路連接或稍後再試
+          </div>
+          <button onclick="loadLeaderboard()" style="margin-top:15px;padding:8px 16px;background:#ff6b6b;color:#fff;border:none;border-radius:5px;cursor:pointer;">
+            🔄 重新載入
+          </button>
+        </div>
+      `;
+    }
+
     function displayLeaderboard(data) {
       const content = document.getElementById('leaderboardContent');
-      
-      // 獲取關卡名稱
-      const categoryNames = {
+      const names = {
         'all': '全部關卡',
-        'aries': '白羊座',
-        'taurus': '金牛座',
-        'gemini': '雙子座',
-        'cancer': '巨蟹座',
-        'leo': '獅子座',
-        'virgo': '處女座',
-        'libra': '天秤座',
-        'scorpio': '天蠍座',
-        'sagittarius': '射手座',
-        'capricorn': '摩羯座',
-        'aquarius': '水瓶座',
-        'pisces': '雙魚座'
+        'aries':'白羊座','taurus':'金牛座','gemini':'雙子座','cancer':'巨蟹座',
+        'leo':'獅子座','virgo':'處女座','libra':'天秤座','scorpio':'天蠍座',
+        'sagittarius':'射手座','capricorn':'摩羯座','aquarius':'水瓶座','pisces':'雙魚座',
+        'andromeda':'仙女座','cygnus':'天鵝座','orion':'獵戶座','pegasus':'飛馬座',
+        'cassiopeia':'仙后座','scorpius':'天蠍座','phoenix':'鳳凰座','vela':'船帆座'
       };
-      
-      const categoryName = categoryNames[currentCategory] || '未知關卡';
-      
-      if (data.length === 0) {
-        content.innerHTML = `
-          <div style="text-align: center; padding: 30px; color: #666; background: rgba(0, 255, 255, 0.1); border-radius: 15px; border: 2px solid rgba(0, 255, 255, 0.3);">
-            <div style="font-size: 3rem; margin-bottom: 15px; animation: bounce 2s infinite;">📊</div>
-            <div style="font-size: 1.2rem; font-weight: bold; margin-bottom: 10px; color: #00ffff;">
-              ${categoryName} 目前還沒有排行榜數據
-            </div>
-            <div style="font-size: 1rem; margin-top: 15px; color: #a0a0ff;">
-              🎯 成為第一個上榜的玩家吧！
-            </div>
-          </div>
-        `;
+      const categoryName = names[currentCategory] || '未知關卡';
+
+      if (!data || data.length === 0) {
+        displayEmptyLeaderboard();
         return;
       }
-      
+
+      const formatTime = (sec) => {
+        if (!sec || sec <= 0) return '-';
+        const m = Math.floor(sec / 60);
+        const s = sec % 60;
+        return m > 0 ? `${m}分${s}秒` : `${s}秒`;
+      };
+
       let html = `
-        <div style="margin-bottom: 15px; text-align: center;">
-          <div style="color: #00ffff; font-size: 1.1rem; font-weight: bold; margin-bottom: 5px;">
+        <div style="margin-bottom:15px;text-align:center;">
+          <div style="color:#00ffff;font-size:1.1rem;font-weight:bold;margin-bottom:5px;">
             📊 ${categoryName} 排行榜
           </div>
-          <div style="color: #a0a0ff; font-size: 0.9rem;">
+          <div style="color:#a0a0ff;font-size:.9rem;">
             共 ${data.length} 條記錄
           </div>
         </div>
-        <div class="leaderboard-scroll-container" style="max-height: 350px; overflow-y: auto; margin-bottom: 20px; border-radius: 12px; background: rgba(0, 0, 0, 0.2); padding: 10px;">
-          <table style="width: 100%; border-collapse: collapse; font-family: 'Orbitron', sans-serif;">
+        <div class="leaderboard-scroll-container" style="max-height:500px;overflow-y:auto;margin-bottom:20px;border-radius:12px;background:rgba(0,0,0,.2);padding:10px;">
+          <table style="width:100%;border-collapse:collapse;font-family:'Orbitron',sans-serif;">
             <thead>
               <tr>
-                <th style="padding: 12px 8px; text-align: center; color: #00ffff; border-bottom: 2px solid #00ffff; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px;">排名</th>
-                <th style="padding: 12px 8px; text-align: left; color: #00ffff; border-bottom: 2px solid #00ffff; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px;">玩家</th>
-                <th style="padding: 12px 8px; text-align: center; color: #00ffff; border-bottom: 2px solid #00ffff; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px;">分數</th>
-                <th style="padding: 12px 8px; text-align: center; color: #00ffff; border-bottom: 2px solid #00ffff; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px;">答對</th>
-                <th style="padding: 12px 8px; text-align: center; color: #00ffff; border-bottom: 2px solid #00ffff; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px;">平均時間</th>
-                <th style="padding: 12px 8px; text-align: center; color: #00ffff; border-bottom: 2px solid #00ffff; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px;">總時間</th>
+                <th>排名</th>
+                <th>玩家</th>
+                <th>關卡</th>
+                <th>分數</th>
+                <th>答對</th>
+                <th>平均時間</th>
+                <th>總時間</th>
               </tr>
             </thead>
             <tbody>
       `;
-      
-      data.slice(0, 20).forEach((item, index) => {
+      data.forEach((item, index) => {
         const isTop3 = index < 3;
-        const rankIcon = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `${item.rank}`;
-        const rowStyle = isTop3 ? 
-          `background: linear-gradient(90deg, ${index === 0 ? '#ffd70022' : index === 1 ? '#c0c0c022' : '#cd7f3222'}, transparent);` : '';
-        
-        // 獲取星座顯示名稱
-        const categoryDisplayName = categoryNames[item.category] || item.category;
-        
-        // 格式化耗時時間顯示
-        const formatTime = (seconds) => {
-          if (!seconds || seconds === 0) return '-';
-          const minutes = Math.floor(seconds / 60);
-          const remainingSeconds = seconds % 60;
-          if (minutes > 0) {
-            return `${minutes}分${remainingSeconds}秒`;
-          } else {
-            return `${remainingSeconds}秒`;
-          }
-        };
-        
-        // 格式化遊戲時間顯示（總遊戲時間）
-        const formatGameTime = (totalTimeSeconds) => {
-          if (!totalTimeSeconds || totalTimeSeconds === 0) return '-';
-          const minutes = Math.floor(totalTimeSeconds / 60);
-          const remainingSeconds = totalTimeSeconds % 60;
-          if (minutes > 0) {
-            return `${minutes}分${remainingSeconds}秒`;
-          } else {
-            return `${remainingSeconds}秒`;
-          }
-        };
-        
+        const rankIcon =
+          index === 0 ? '🥇' :
+          index === 1 ? '🥈' :
+          index === 2 ? '🥉' :
+          (item.rank || index + 1);
+
+        const rowStyle = isTop3
+          ? `background:linear-gradient(90deg,${index===0?'#ffd70022':index===1?'#c0c0c022':'#cd7f3222'},transparent);`
+          : '';
+
+        const categoryDisplay = names[item.category] || item.category || '-';
+        const avgTime = item.totalTime && item.correctCount
+          ? formatTime(Math.round(item.totalTime / item.correctCount))
+          : '-';
+        const totalTime = item.totalTime ? formatTime(item.totalTime) : '-';
+
         html += `
-          <tr style="${rowStyle}; transition: all 0.3s ease;" onmouseover="this.style.background='rgba(0, 255, 255, 0.1)'" onmouseout="this.style.background='${rowStyle}'">
-            <td style="padding: 10px 8px; text-align: center; font-weight: bold; color: ${isTop3 ? '#ffd700' : '#fff'}; font-size: 1.1rem;">
-              ${rankIcon}
-            </td>
-            <td style="padding: 10px 8px; text-align: left; color: #fff; font-weight: 500;">
-              ${item.playerName}
-            </td>
-            <td style="padding: 10px 8px; text-align: center; color: #ffd700; font-weight: bold; font-size: 1.1rem;">
-              ${item.score}
-            </td>
-            <td style="padding: 10px 8px; text-align: center; color: #0f0; font-weight: 500;">
-              ${item.correctCount}/20
-            </td>
-            <td style="padding: 10px 8px; text-align: center; color: #ff6b6b; font-weight: 500; font-size: 0.9rem;">
-              ${formatTime(item.totalTime && item.correctCount ? Math.round(item.totalTime / item.correctCount) : 0)}
-            </td>
-            <td style="padding: 10px 8px; text-align: center; color: #a0a0ff; font-size: 0.9rem; font-style: italic;">
-              ${formatGameTime(item.totalTime)}
-            </td>
+          <tr style="${rowStyle}">
+            <td style="text-align:center;font-weight:bold;color:${isTop3 ? '#ffd700':'#fff'};">${rankIcon}</td>
+            <td style="text-align:left;color:#fff;">${item.playerName || '未知玩家'}</td>
+            <td style="text-align:center;color:#a259ff;font-size:.9rem;">${categoryDisplay}</td>
+            <td style="text-align:center;color:#ffd700;font-weight:bold;">${item.score}</td>
+            <td style="text-align:center;color:#0f0;">${item.correctCount || 0}/20</td>
+            <td style="text-align:center;color:#ff6b6b;font-size:.9rem;">${avgTime}</td>
+            <td style="text-align:center;color:#a0a0ff;font-size:.9rem;font-style:italic;">${totalTime}</td>
           </tr>
         `;
       });
-      
+
       html += `
             </tbody>
           </table>
         </div>
-        <div style="text-align: center; font-size: 0.9rem; color: #666; margin-top: 15px; padding: 10px; background: rgba(0, 0, 0, 0.2); border-radius: 8px;">
-          <span style="color: #00ffff;">📊</span> 顯示前 20 名玩家
+        <div style="text-align:center;font-size:.9rem;color:#666;margin-top:15px;padding:10px;background:rgba(0,0,0,.2);border-radius:8px;">
+          <span style="color:#00ffff;">📊</span> 顯示所有 ${data.length} 名玩家
         </div>
       `;
-      
       content.innerHTML = html;
     }
-    
-    // 提交分數到排行榜
+
     async function submitScoreToLeaderboard() {
       const playerName = localStorage.getItem('playerName') || '匿名玩家';
       const score = correctCount * 2;
       const category = categoryKey;
       const date = new Date().toLocaleDateString('zh-TW');
-      const totalTime = gameStats.totalTimeUsed; // 獲取總耗時時間
-      
+      const totalTime = gameStats.totalTimeUsed;
+
+      const record = {
+        playerName,
+        score,
+        correctCount,
+        category,
+        totalTime,
+        averageTime: correctCount > 0 ? Math.round(totalTime / correctCount) : 0,
+        date,
+        timestamp: new Date().toISOString()
+      };
+
+      try {
+        const localData = JSON.parse(localStorage.getItem('quizLeaderboard') || '[]');
+        localData.push(record);
+        localStorage.setItem('quizLeaderboard', JSON.stringify(localData));
+      } catch (e) {
+        console.error('保存本地排行榜失敗：', e);
+      }
+
       try {
         const formData = new URLSearchParams();
         formData.append('action', 'addQuizScore');
         formData.append('playerName', playerName);
-        formData.append('score', score.toString());
-        formData.append('correctCount', correctCount.toString());
+        formData.append('score', String(score));
+        formData.append('correctCount', String(correctCount));
         formData.append('category', category);
         formData.append('date', date);
-        formData.append('totalTime', totalTime.toString()); // 添加耗時時間
-        
-        const response = await fetch(GOOGLE_SHEETS_API, {
+        formData.append('totalTime', String(totalTime));
+
+        const resp = await fetch(GOOGLE_SHEETS_API, {
           method: 'POST',
           mode: 'cors',
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-          },
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
           body: formData.toString()
         });
-        
-        if (response.ok) {
-          console.log('分數已成功提交到排行榜');
-        } else {
-          console.error('提交分數失敗');
+        if (!resp.ok) {
+          console.log('線上排行榜提交失敗，但已保存到本地');
         }
-      } catch (error) {
-        console.error('提交分數時發生錯誤:', error);
+      } catch (e) {
+        console.log('線上排行榜提交失敗，但已保存到本地：', e);
       }
     }
-    
+
     function checkAndUpdateQuizAchievements() {
-      // 檢查是否有新成就達成
       const achievements = [
         { id: 'speed_learner', name: '快速學習者', requirement: 10 },
         { id: 'accuracy_master', name: '準確大師', requirement: 20 },
         { id: 'combo_king', name: '連擊之王', requirement: 15 }
       ];
-      
       const claimed = JSON.parse(localStorage.getItem('claimedAchievements') || '[]');
-      
+
+      const fillGames = parseInt(localStorage.getItem('fillGamesCompleted') || '0', 10);
+      const cardGames = parseInt(localStorage.getItem('cardGamesCompleted') || '0', 10);
+      const quizGames = parseInt(localStorage.getItem('quizGamesCompleted') || '0', 10);
+      const spellingGames = parseInt(localStorage.getItem('spellingGamesCompleted') || '0', 10);
+      const matchingGames = parseInt(localStorage.getItem('matchingGamesCompleted') || '0', 10);
+      const totalGames = fillGames + cardGames + quizGames + spellingGames + matchingGames;
+
       achievements.forEach(ach => {
-        if (claimed.includes(ach.id)) return; // 已經領取過了
-        
-        // 計算通過的關卡數量
-        const fillGames = parseInt(localStorage.getItem('fillGamesCompleted') || '0');
-        const cardGames = parseInt(localStorage.getItem('cardGamesCompleted') || '0');
-        const quizGames = parseInt(localStorage.getItem('quizGamesCompleted') || '0');
-        const spellingGames = parseInt(localStorage.getItem('spellingGamesCompleted') || '0');
-        const matchingGames = parseInt(localStorage.getItem('matchingGamesCompleted') || '0');
-        const totalGames = fillGames + cardGames + quizGames + spellingGames + matchingGames;
-        
+        if (claimed.includes(ach.id)) return;
         if (totalGames >= ach.requirement) {
-          // 顯示成就達成通知
           showAchievementNotification(ach.name, ach.id);
         }
       });
     }
-    
-    function showAchievementNotification(achievementName, achievementId) {
-      // 創建成就通知
-      const notification = document.createElement('div');
-      notification.style.cssText = `
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background: linear-gradient(135deg, #ffd700, #ffed4e);
-        color: #000;
-        padding: 20px 30px;
-        border-radius: 15px;
-        font-weight: bold;
-        font-size: 1.2rem;
-        z-index: 10000;
-        box-shadow: 0 0 30px #ffd700;
-        animation: achievementPop 0.8s cubic-bezier(.68, -0.55, .27, 1.55);
-        text-align: center;
-        min-width: 300px;
+
+    function showAchievementNotification(name, id) {
+      const div = document.createElement('div');
+      div.style.cssText = `
+        position:fixed;
+        top:50%;
+        left:50%;
+        transform:translate(-50%,-50%);
+        background:linear-gradient(135deg,#ffd700,#ffed4e);
+        color:#000;
+        padding:20px 30px;
+        border-radius:15px;
+        font-weight:bold;
+        font-size:1.2rem;
+        z-index:10000;
+        box-shadow:0 0 30px #ffd700;
+        animation:achievementPop .8s cubic-bezier(.68,-.55,.27,1.55);
+        text-align:center;
+        min-width:300px;
       `;
-      
-      notification.innerHTML = `
-        <div style="font-size: 3rem; margin-bottom: 10px;">🏆</div>
-        <div style="margin-bottom: 5px;">🎉 成就達成！</div>
-        <div style="font-size: 1.1rem;">${achievementName}</div>
-        <div style="font-size: 0.9rem; margin-top: 10px; color: #666;">
+      div.innerHTML = `
+        <div style="font-size:3rem;margin-bottom:10px;">🏆</div>
+        <div style="margin-bottom:5px;">成就達成！</div>
+        <div style="font-size:1.1rem;">${name}</div>
+        <div style="font-size:.9rem;margin-top:10px;color:#666;">
           前往成就頁面領取獎勵
         </div>
       `;
-      
-      // 添加動畫樣式
       const style = document.createElement('style');
       style.textContent = `
         @keyframes achievementPop {
-          0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
-          50% { transform: translate(-50%, -50%) scale(1.1); opacity: 1; }
-          100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+          0% { transform:translate(-50%,-50%) scale(.5); opacity:0; }
+          50% { transform:translate(-50%,-50%) scale(1.1); opacity:1; }
+          100% { transform:translate(-50%,-50%) scale(1); opacity:1; }
         }
       `;
       document.head.appendChild(style);
-      
-      document.body.appendChild(notification);
-      
-      // 3秒後自動移除
+      document.body.appendChild(div);
       setTimeout(() => {
-        notification.remove();
-        style.remove();
+        if (div.parentNode) div.parentNode.removeChild(div);
+        if (style.parentNode) style.parentNode.removeChild(style);
       }, 3000);
     }
 
@@ -1564,32 +1202,25 @@
       document.querySelectorAll('.btn-row button').forEach(btn => btn.disabled = false);
     }
 
-    function showWrongModal() {
-      if (!wrongList.length) return;
-      // 啟動複習模式
-      startReviewMode();
-    }
-    
-    // ===== 複習模式 =====
     let reviewList = [];
     let reviewIndex = 0;
     let inReviewMode = false;
 
+    function showWrongModal() {
+      if (!wrongList.length) return;
+      startReviewMode();
+    }
     function startReviewMode() {
       reviewList = wrongList.slice();
       reviewIndex = 0;
       inReviewMode = true;
-      // 不要模糊主畫面
-      // document.getElementById('container').style.filter = 'blur(2px)';
       document.getElementById('wrongModal').style.display = 'flex';
       showReviewQuestion();
     }
-
     function showReviewQuestion() {
       const list = document.getElementById('wrongItems');
       list.innerHTML = '';
       if (reviewIndex >= reviewList.length) {
-        // 複習結束
         const li = document.createElement('li');
         li.textContent = '🎉 複習完成！';
         list.appendChild(li);
@@ -1598,14 +1229,18 @@
       }
       const item = reviewList[reviewIndex];
       const li = document.createElement('li');
-      li.innerHTML = `<span style='color:#ffd700;font-weight:bold;'>${item.zh}</span> <input id='reviewInput' type='text' style='font-size:1rem;padding:4px 8px;border-radius:6px;border:1px solid #00ffff;width:120px;margin-left:8px;' autocomplete='off' /> <span id='reviewFeedback'></span>`;
+      li.innerHTML = `
+        <span style="color:#ffd700;font-weight:bold;">${item.zh}</span>
+        <input id="reviewInput" type="text" style="font-size:1rem;padding:4px 8px;border-radius:6px;border:1px solid #00ffff;width:120px;margin-left:8px;" autocomplete="off" />
+        <span id="reviewFeedback"></span>
+      `;
       list.appendChild(li);
-      document.getElementById('reviewInput').focus();
-      document.getElementById('reviewInput').addEventListener('keydown', function(e) {
+      const inp = document.getElementById('reviewInput');
+      inp.focus();
+      inp.addEventListener('keydown', function (e) {
         if (e.key === 'Enter') checkReviewAnswer();
       });
     }
-
     function checkReviewAnswer() {
       const item = reviewList[reviewIndex];
       const input = document.getElementById('reviewInput');
@@ -1627,10 +1262,8 @@
         }, 1200);
       }
     }
-
     function closeWrongModal() {
       document.getElementById('wrongModal').style.display = 'none';
-      // document.getElementById('container').style.filter = '';
       inReviewMode = false;
       document.getElementById('answerInput').disabled = false;
     }
@@ -1639,95 +1272,84 @@
       location.href = 'atlas.html';
     }
 
-    // ===== 新增：計時器函數 =====
     function startTimer() {
       timeLeft = 30;
       document.getElementById('timeLeft').textContent = timeLeft;
       document.getElementById('timerDisplay').classList.remove('danger');
-      
-      if (timer) {
-        clearInterval(timer);
-      }
-      
+      if (timer) clearInterval(timer);
+
       timer = setInterval(() => {
         timeLeft--;
         document.getElementById('timeLeft').textContent = timeLeft;
-        
-        // 時間不足時顯示警告
         if (timeLeft <= 10) {
           document.getElementById('timerDisplay').classList.add('danger');
         }
-        
-        // 時間到
         if (timeLeft <= 0) {
           clearInterval(timer);
-          // 時間到算答錯，也要計算耗時時間
-          const answerTime = 30; // 時間到就是用了30秒
+          const answerTime = 30;
           gameStats.totalAnswered++;
           gameStats.totalTimeUsed += answerTime;
-          
           document.getElementById('feedback').textContent = `⏰ 時間到！正解是：${current.en}`;
           document.getElementById('feedback').style.color = '#f66';
-          SoundSystem.play('wrong');
+          if (typeof SoundSystem !== 'undefined') SoundSystem.play('wrong');
           wrongList.push(current);
           lives--;
-          gameStats.consecutiveCorrect = 0; // 重置連擊
-          
+          gameStats.consecutiveCorrect = 0;
           updateLives();
           if (lives <= 0) {
-            setTimeout(() => {
-              showResultPanel();
-              isProcessingAnswer = false; // 重置處理狀態
-            }, 800);
+            setTimeout(() => { showResultPanel(); isProcessingAnswer = false; }, 800);
           } else {
-            setTimeout(() => {
-              nextWord();
-              isProcessingAnswer = false; // 重置處理狀態
-            }, 800);
+            setTimeout(() => { nextWord(); isProcessingAnswer = false; }, 800);
           }
         }
       }, 1000);
     }
 
     function nextWord() {
-      isProcessingAnswer = false; // 重置處理狀態
+      isProcessingAnswer = false;
       if (used.length >= words.length) {
         document.getElementById('wordDisplay').textContent = '✅ 挑戰完成';
         clearInterval(timer);
         showResultPanel();
         return;
       }
-      // 跳過也要扣愛心並算錯題
-      if (used.length > 0 && document.getElementById('answerInput').value === '') { // 只有跳過才扣愛心
-        // 跳過時也要計算耗時時間
-        const answerTime = (30 - timeLeft); // 計算已用時間
+
+      if (used.length > 0 && document.getElementById('answerInput').value === '') {
+        const answerTime = (30 - timeLeft);
         gameStats.totalAnswered++;
         gameStats.totalTimeUsed += answerTime;
-        
         lives--;
         updateLives();
         wrongList.push(current);
-        gameStats.consecutiveCorrect = 0; // 跳過也重置連擊
+        gameStats.consecutiveCorrect = 0;
         if (lives <= 0) {
           clearInterval(timer);
           showResultPanel();
           return;
         }
       }
+
       const available = words.filter(w => !used.includes(w.en));
       current = available[Math.floor(Math.random() * available.length)];
       used.push(current.en);
       updateQuestionCount();
       document.getElementById('wordDisplay').textContent = current.zh;
-      document.getElementById('answerInput').value = '';
+      const input = document.getElementById('answerInput');
+      if (input) {
+        input.value = '';
+        // 不再禁用輸入，允許立即輸入
+        input.disabled = false;
+        input.focus();
+      }
       document.getElementById('feedback').textContent = '';
-      isSpeaking = true;
-      document.getElementById('answerInput').disabled = true;
-      SoundSystem.speech.speakWord(current.en, function() {
-        isSpeaking = false;
-        document.getElementById('answerInput').disabled = false;
-        document.getElementById('answerInput').focus();
-      });
+
+      if (typeof SoundSystem !== 'undefined') {
+        // 不等待語音完成，直接允許輸入
+        SoundSystem.speech.speakWord(current.en, function () {
+          isSpeaking = false;
+        });
+      }
+
       startTimer();
       document.getElementById('resultModal').style.display = 'none';
       document.getElementById('wrongModal').style.display = 'none';
@@ -1736,42 +1358,29 @@
     }
 
     function checkAnswer() {
-      if (!current || isProcessingAnswer) return; // 如果正在處理答題，直接返回
-      isProcessingAnswer = true; // 設置正在處理答題狀態
+      if (!current || isProcessingAnswer) return;
+      isProcessingAnswer = true;
       const ans = document.getElementById('answerInput').value.trim().toLowerCase();
-      
-      // ===== 新增：計算答題時間 =====
-      const answerTime = (30 - timeLeft); // 30秒倒計時，所以用30減去剩餘時間
+
+      const answerTime = (30 - timeLeft);
       gameStats.totalAnswered++;
       gameStats.totalTimeUsed += answerTime;
-      
+
       if (ans === current.en.toLowerCase()) {
         document.getElementById('feedback').textContent = '✅ 正確';
         document.getElementById('feedback').style.color = '#0f0';
-        SoundSystem.play('correct');
+        if (typeof SoundSystem !== 'undefined') SoundSystem.play('correct');
         correctCount++;
-        
-        // ===== 新增：答對邏輯 =====
+
         gameStats.correctCount++;
         gameStats.consecutiveCorrect++;
-        
-        // 更新最快/最慢答題時間
-        if (answerTime < gameStats.fastestAnswer) {
-          gameStats.fastestAnswer = answerTime;
-        }
-        if (answerTime > gameStats.slowestAnswer) {
-          gameStats.slowestAnswer = answerTime;
-        }
-        
-        // 檢查是否為完美答題（15秒內答對）
-        if (answerTime <= 15) {
-          gameStats.perfectAnswers++;
-        }
-        
-        // 計算星星獎勵
+
+        if (answerTime < gameStats.fastestAnswer) gameStats.fastestAnswer = answerTime;
+        if (answerTime > gameStats.slowestAnswer) gameStats.slowestAnswer = answerTime;
+        if (answerTime <= 15) gameStats.perfectAnswers++;
+
         const starsEarned = calculateStarReward(true, answerTime, gameStats.consecutiveCorrect, current.en.length);
-        
-        // 只使用一個星星系統，避免重複加星星
+
         if (typeof StarRewardSystem !== 'undefined') {
           StarRewardSystem.addStars(starsEarned);
         } else if (typeof LinkageSystem !== 'undefined') {
@@ -1779,56 +1388,30 @@
         } else {
           totalStarCount += starsEarned;
           localStorage.setItem('totalStars', totalStarCount);
-        }
-        
-        // 更新顯示（只在沒有使用外部系統時更新）
-        if (typeof StarRewardSystem === 'undefined' && typeof LinkageSystem === 'undefined') {
           updateTotal();
         }
-        
-        // 顯示獎勵動畫
-        let reasonText = '';
-        if (gameStats.consecutiveCorrect >= 3) {
-          reasonText = '🔥 連擊獎勵！';
-        }
-        
-        // showRewardAnimation(starsEarned, reasonText); // 移除這一行，統一由 StarRewardSystem 處理彈窗動畫
-        
-        // 顯示連擊通知
+
         showComboNotification(gameStats.consecutiveCorrect);
-        
-        // ===== 新增：記錄答對的單字 =====
+
         if (typeof VocabularyAchievementSystem !== 'undefined') {
           VocabularyAchievementSystem.recordCorrectWord(current.en, categoryKey);
         }
-        
+
         clearInterval(timer);
-        setTimeout(() => {
-          nextWord();
-          isProcessingAnswer = false; // 重置處理狀態
-        }, 800);
+        setTimeout(() => { nextWord(); isProcessingAnswer = false; }, 800);
       } else {
         document.getElementById('feedback').textContent = `❌ 正解是：${current.en}`;
         document.getElementById('feedback').style.color = '#f66';
-        SoundSystem.play('wrong');
+        if (typeof SoundSystem !== 'undefined') SoundSystem.play('wrong');
         wrongList.push(current);
         lives--;
-        
-        // ===== 新增：答錯邏輯 =====
-        gameStats.consecutiveCorrect = 0; // 重置連擊
-        
+        gameStats.consecutiveCorrect = 0;
         updateLives();
         clearInterval(timer);
         if (lives <= 0) {
-          setTimeout(() => {
-            showResultPanel();
-            isProcessingAnswer = false; // 重置處理狀態
-          }, 800);
+          setTimeout(() => { showResultPanel(); isProcessingAnswer = false; }, 800);
         } else {
-          setTimeout(() => {
-            nextWord();
-            isProcessingAnswer = false; // 重置處理狀態
-          }, 800);
+          setTimeout(() => { nextWord(); isProcessingAnswer = false; }, 800);
         }
       }
     }
@@ -1838,7 +1421,7 @@
       wrongList = [];
       correctCount = 0;
       lives = 5;
-      isProcessingAnswer = false; // 重置處理狀態
+      isProcessingAnswer = false;
       gameStats = {
         correctCount: 0,
         totalAnswered: 0,
@@ -1856,94 +1439,147 @@
       nextWord();
     }
 
-    // ===== 頁面初始化 =====
-    document.addEventListener('DOMContentLoaded', function() {
-      // 初始化音效系統
-      if (typeof SoundSystem !== 'undefined') {
-        SoundSystem.init();
-      }
-      
-      // 初始化音樂系統
-      setTimeout(() => {
-        initBackgroundMusic();
-        
-        // 綁定音樂控制按鈕事件
-        const musicBtn = document.getElementById('toggleMusic');
-        if (musicBtn) {
-          musicBtn.addEventListener('click', toggleBackgroundMusic);
-          console.log('🎵 音樂控制按鈕事件已綁定');
-        }
-        
-        // 添加用戶互動觸發音樂播放
-        let hasUserInteracted = false;
-        
-        function handleUserInteraction() {
-          if (!hasUserInteracted) {
-            hasUserInteracted = true;
-            console.log('👆 用戶互動觸發，音樂系統已啟用');
-            
-            // 如果應該播放但還沒播放，嘗試播放
-            if (isMusicPlaying && backgroundMusic && backgroundMusic.paused) {
-              playBackgroundMusic();
-            }
-          }
-        }
-        
-        // 監聽各種用戶互動事件
-        ['click', 'touchstart', 'keydown'].forEach(eventType => {
-          document.addEventListener(eventType, handleUserInteraction, { once: true });
-        });
-      }, 500);
-      
-      // 監聽頁面可見性變化，處理音樂暫停/恢復
-      document.addEventListener('visibilitychange', function() {
-        if (document.hidden) {
-          // 頁面隱藏時暫停音樂
-          if (isMusicPlaying && backgroundMusic) {
-            backgroundMusic.pause();
-          }
-        } else {
-          // 頁面顯示時恢復音樂
-          if (isMusicPlaying && backgroundMusic && backgroundMusic.paused) {
-            backgroundMusic.play().catch(err => {
-              console.log('頁面恢復時音樂播放失敗:', err);
-            });
-          }
-        }
-      });
-      
-      // 初始化遊戲
+    document.addEventListener('DOMContentLoaded', function () {
       updateTotal();
       updateQuestionCount();
       lives = 5;
       updateLives();
-      
-      // 設置 Enter 鍵事件監聽器
+
       const answerInput = document.getElementById('answerInput');
       if (answerInput) {
-        answerInput.addEventListener('keydown', function(e) {
+        answerInput.addEventListener('keydown', function (e) {
           if (e.key === 'Enter') {
-            e.preventDefault(); // 防止表單提交
-            if (isSpeaking || isProcessingAnswer) return; // 發音或處理中禁止送出
+            e.preventDefault();
+            // 移除語音和處理中的檢查，允許立即輸入
             checkAnswer();
           }
         });
       }
-      
-      // 添加鍵盤快捷鍵
-      document.addEventListener('keydown', (e) => {
-        // 音樂控制快捷鍵
-        if (e.key === 'm' || e.key === 'M') {
-          toggleBackgroundMusic();
-        }
-      });
-      
-      // 開始遊戲
-      nextWord();
+
+nextWord();
     });
   </script>
+
   
-  <!-- 載入懸浮聊天室 -->
-  <script src="floating_chat_loader.js"></script>
+  <!-- 排行榜 ALL 模式分組 patch -->
+  <script>
+  (function(){
+    function install(){
+      if (typeof window.displayLeaderboard !== 'function') {
+        return setTimeout(install, 80);
+      }
+      const __origDisplay = window.displayLeaderboard;
+      window.displayLeaderboard = function(data){
+        try{
+          if (Array.isArray(data) && String(window.currentCategory||'') === 'all'){
+            const content = document.getElementById('leaderboardContent');
+            const groups = data.reduce((m,item)=>{
+              const cat = item.category || 'default';
+              (m[cat] = m[cat] || []).push(item);
+              return m;
+            },{});
+            const names = {
+              'all':'全部關卡','aries':'白羊座','taurus':'金牛座','gemini':'雙子座','cancer':'巨蟹座',
+              'leo':'獅子座','virgo':'處女座','libra':'天秤座','scorpio':'天蠍座','sagittarius':'射手座',
+              'capricorn':'摩羯座','aquarius':'水瓶座','pisces':'雙魚座','andromeda':'仙女座','cygnus':'天鵝座',
+              'orion':'獵戶座','pegasus':'飛馬座','cassiopeia':'仙后座','scorpius':'天蠍座','phoenix':'鳳凰座','vela':'船帆座',
+              'default':'一般關卡'
+            };
+            const zodiacOrder = ['aries','taurus','gemini','cancer','leo','virgo','libra','scorpio','sagittarius','capricorn','aquarius','pisces'];
+            const otherKeys = Object.keys(groups).filter(k=>!zodiacOrder.includes(k)).sort();
+            const keys = zodiacOrder.filter(k=>groups[k]).concat(otherKeys);
+
+            const fmtAvgTime = (totalTime, correctCount)=>{
+              if (!totalTime || !correctCount) return '-';
+              const sec = Math.round(totalTime / correctCount);
+              const m = Math.floor(sec/60), s = sec%60;
+              return m>0 ? `${m}分${s}秒` : `${s}秒`;
+            };
+            const fmtTotalTime = (totalTime)=>{
+              if (!totalTime) return '-';
+              const m = Math.floor(totalTime/60), s = totalTime%60;
+              return m>0 ? `${m}分${s}秒` : `${s}秒`;
+            };
+
+            let html = `
+              <div style="text-align:center;margin-bottom:12px;color:#a0a0ff;font-size:.95rem;">
+                📚 顯示 <b>${keys.length}</b> 個關卡，共 <b>${data.length}</b> 筆記錄
+              </div>
+            `;
+            keys.forEach(cat=>{
+              const list = groups[cat].slice().sort((a,b)=>b.score - a.score);
+              list.forEach((it,i)=> it.rank = i+1);
+              const title = names[cat] || cat;
+              html += `
+                <div class="leaderboard-scroll-container" style="margin:18px 0 26px;border-radius:12px;background:rgba(0,0,0,.2);padding:10px;">
+                  <div style="display:flex;align-items:center;justify-content:space-between;margin:2px 4px 10px;">
+                    <div style="color:#00ffff;font-weight:bold;">${title} 排行榜</div>
+                    <div style="color:#a0a0ff;font-size:.9rem;">${list.length} 筆</div>
+                  </div>
+                  <table style="width:100%;border-collapse:collapse;font-family:'Orbitron',sans-serif;">
+                    <thead>
+                      <tr>
+                        <th>排名</th>
+                        <th>玩家</th>
+                        <th>分數</th>
+                        <th>答對</th>
+                        <th>平均時間</th>
+                        <th>總時間</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+              `;
+              list.forEach((item,idx)=>{
+                const isTop3 = idx<3;
+                const rankIcon = idx===0?'🥇':idx===1?'🥈':idx===2?'🥉':(idx+1);
+                const rowStyle = isTop3
+                  ? `background:linear-gradient(90deg,${idx===0?'#ffd70022':idx===1?'#c0c0c022':'#cd7f3222'},transparent);`
+                  : '';
+                html += `
+                  <tr style="${rowStyle}">
+                    <td style="text-align:center;font-weight:bold;color:${isTop3?'#ffd700':'#fff'};">${rankIcon}</td>
+                    <td style="text-align:left;color:#fff;">${item.playerName || item.user || '未知玩家'}</td>
+                    <td style="text-align:center;color:#ffd700;font-weight:bold;">${item.score || 0}</td>
+                    <td style="text-align:center;color:#0f0;">${item.correctCount || 0}/20</td>
+                    <td style="text-align:center;color:#ff6b6b;">${fmtAvgTime(item.totalTime, item.correctCount)}</td>
+                    <td style="text-align:center;color:#a0a0ff;font-style:italic;">${fmtTotalTime(item.totalTime)}</td>
+                  </tr>
+                `;
+              });
+              html += `
+                    </tbody>
+                  </table>
+                </div>
+              `;
+            });
+            content.innerHTML = html;
+            return;
+          }
+        }catch(e){
+          console.warn('[leaderboard patch] error', e);
+        }
+        return __origDisplay.apply(this, arguments);
+      };
+      console.log('[patch] Grouped ALL-levels leaderboard installed');
+    }
+    install();
+  })();
+  </script>
+
+  <script>
+  (function(){
+    function keepUnlimited(){
+      try{
+        if (String(window.currentCategory||'').toLowerCase() === 'all') {
+          if (typeof window.LEADERBOARD_LIMIT !== 'undefined') window.LEADERBOARD_LIMIT = Infinity;
+          if (typeof window.maxLeaderboardItems !== 'undefined') window.maxLeaderboardItems = Infinity;
+          if (typeof window.leaderboardLimit !== 'undefined') window.leaderboardLimit = Infinity;
+        }
+      }catch(e){}
+      setTimeout(keepUnlimited, 500);
+    }
+    keepUnlimited();
+  })();
+  </script>
 </body>
 </html>
