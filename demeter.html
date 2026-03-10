@@ -760,7 +760,6 @@
 
     // ===== 題庫資料 =====
     const VOCAB_DATA = [
-   [
   {"word":"pick","zh":"挑選","en_sentence":"She picked a red apple.","zh_sentence":"她挑了一顆紅蘋果。","category":"動詞"},
   {"word":"mean","zh":"意思是","en_sentence":"What does this word mean?","zh_sentence":"這個字是什麼意思？","category":"動詞"},
   {"word":"first","zh":"第一","en_sentence":"She was the first to arrive.","zh_sentence":"她是第一個到的。","category":"序數詞"},
@@ -781,7 +780,6 @@
   {"word":"poor","zh":"貧窮的；可憐的","en_sentence":"The poor man needs help.","zh_sentence":"那個可憐的人需要幫助。","category":"形容詞"},
   {"word":"early","zh":"早的","en_sentence":"She arrived early.","zh_sentence":"她很早到。","category":"形容詞"},
   {"word":"dirty","zh":"髒的","en_sentence":"His shoes are dirty.","zh_sentence":"他的鞋子很髒。","category":"形容詞"},
-
   {"word":"easy","zh":"容易的","en_sentence":"This test is easy.","zh_sentence":"這個考試很簡單。","category":"形容詞"},
   {"word":"hard","zh":"困難的；硬的","en_sentence":"The question is hard.","zh_sentence":"這個問題很難。","category":"形容詞"},
   {"word":"busy","zh":"忙碌的","en_sentence":"I am busy today.","zh_sentence":"我今天很忙。","category":"形容詞"},
@@ -802,7 +800,6 @@
   {"word":"road","zh":"道路","en_sentence":"The road is long.","zh_sentence":"這條路很長。","category":"名詞"},
   {"word":"temple","zh":"寺廟","en_sentence":"We visited the temple.","zh_sentence":"我們參觀了寺廟。","category":"名詞"},
   {"word":"museum","zh":"博物館","en_sentence":"The museum is famous.","zh_sentence":"這間博物館很有名。","category":"名詞"}
-]
     ];
 
     // ===== 遊戲狀態變數 =====
@@ -1141,6 +1138,142 @@
       }, 400);
     }
 
+    function checkAnswer() {
+      if (gameState.answered) return;
+
+      gameState.attemptCount++;
+      const inputEl = document.getElementById('user-input');
+      const feedback = document.getElementById('feedback');
+      const current = gameState.data[gameState.currentIndex];
+      const answer = (current.answer || '').toLowerCase();
+      const userAnswer = (inputEl?.value || '').trim().toLowerCase();
+
+      if (userAnswer === answer) {
+        gameState.answered = true;
+        stopTimer();
+
+        const usedSeconds = (Date.now() - (window.answerStartTime || Date.now())) / 1000;
+        let bonus = 0;
+        let feedbackMsg = `<div class='feedback-box feedback-correct'>✅ 答對了！太棒了！`;
+
+        if (usedSeconds < 10) {
+          bonus = 2;
+          feedbackMsg += ` <span class='feedback-bonus'>BONUS! ⏱️ +2</span>`;
+        }
+        feedbackMsg += `</div>`;
+
+        feedback.innerHTML = feedbackMsg;
+        inputEl.disabled = true;
+        document.getElementById('submit-btn').disabled = true;
+
+        speak(answer, 1.1);
+        saveProgress();
+        updateCounter();
+        logAnswer(true, inputEl.value.trim());
+
+        const addStars = 1 + bonus;
+        addStarsToTotal(addStars);
+        gameState.sessionStars += addStars;
+        document.getElementById('sessionStarsDisplay').textContent = `本次已獲得 ${gameState.sessionStars} 顆星星`;
+
+        try {
+          SOUNDS.correct.currentTime = 0;
+          SOUNDS.correct.play();
+        } catch (e) {}
+
+        setTimeout(() => {
+          gameState.currentIndex++;
+          showQuestion();
+        }, 1300);
+      } else {
+        if (gameState.attemptCount < GAME_CONFIG.MAX_ATTEMPTS) {
+          feedback.innerHTML = `<div class='feedback-box feedback-wrong'>❌ 再試一次！你可以的！</div>`;
+          try {
+            SOUNDS.wrong.currentTime = 0;
+            SOUNDS.wrong.play();
+          } catch (e) {}
+          return;
+        }
+
+        feedback.innerHTML = `<div class='feedback-box feedback-wrong'>❌ 正確答案：<b>${current.answer}</b><br>別氣餒，再接再厲！</div>`;
+        inputEl.disabled = true;
+        document.getElementById('submit-btn').disabled = true;
+        logAnswer(false, inputEl.value.trim());
+        lives--;
+        updateLives();
+
+        try {
+          SOUNDS.wrong.currentTime = 0;
+          SOUNDS.wrong.play();
+        } catch (e) {}
+
+        setTimeout(() => {
+          if (lives <= 0) {
+            showGameEndScreen();
+            return;
+          }
+          gameState.currentIndex++;
+          showQuestion();
+        }, 1300);
+      }
+    }
+
+    function loadTotalStars() {
+      const stars = localStorage.getItem('totalStars');
+      return stars !== null ? parseInt(stars, 10) : 0;
+    }
+
+    function addStarsToTotal(stars) {
+      const currentStars = loadTotalStars();
+      const newTotal = currentStars + stars;
+      localStorage.setItem('totalStars', newTotal);
+      updateStarsDisplay();
+    }
+
+    function updateStarsDisplay() {
+      const el = document.getElementById('totalStarsCount');
+      if (el) {
+        el.textContent = loadTotalStars();
+      }
+    }
+
+    function showGameEndScreen() {
+      stopTimer();
+
+      const correctCount = gameState.answerLog.filter(log => log && log.correct === true).length;
+      const wrongCount = gameState.answerLog.filter(log => log && log.correct === false).length;
+      const totalStars = loadTotalStars();
+
+      document.getElementById('endSessionStars').textContent = gameState.sessionStars;
+      document.getElementById('endCorrectCount').textContent = correctCount;
+      document.getElementById('endWrongCount').textContent = wrongCount;
+      document.getElementById('endTotalStars').textContent = totalStars;
+      document.getElementById('gameEndModal').style.display = 'flex';
+
+      unlockReviewButton();
+
+      try {
+        SOUNDS.correct.currentTime = 0;
+        SOUNDS.correct.play();
+      } catch (e) {}
+    }
+
+    function restartGame() {
+      document.getElementById('gameEndModal').style.display = 'none';
+      gameState.currentIndex = 0;
+      gameState.sessionStars = 0;
+      gameState.answerLog = [];
+      gameState.totalTimeUsed = 0;
+      gameState.questionStartTs = null;
+      lives = 5;
+
+      updateLives();
+      initData();
+      updateCounter();
+      showQuestion();
+      document.getElementById('sessionStarsDisplay').textContent = '本次已獲得 0 顆星星';
+    }
+
     // ===== 複習單字功能 =====
     function showReviewModal() {
       // 暫停遊戲計時器
@@ -1380,6 +1513,8 @@
 
     function showAchievementNotify(title, desc) {
       document.getElementById('achievementNotifyTitle').textContent = title;
+      document.getElementById('achievementNotifyDesc').textContent = desc;
+      document.getElementById('achievementNotifyModal').style.display = 'flex';
     }
 
     function closeReviewModal() {
