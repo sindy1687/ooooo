@@ -5,7 +5,7 @@
   <title>英打小英雄 - 首頁</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/index.css">
+  <link rel="stylesheet" href="css/shared.css">
   <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
   <style>
     /* 全局樣式 */
@@ -4363,7 +4363,7 @@
                 </div>
 
                 <!-- 卡牌對戰 -->
-                <div class="game-card" @click="openGame('battle_system.html')">
+                <div class="game-card" @click="openGame('stage_select.html')">
                   <div class="game-icon">⚔️</div>
                   <div class="game-title">卡牌對戰系統</div>
                   <div class="game-subtitle">史詩級卡牌戰鬥</div>
@@ -4543,7 +4543,8 @@
               setTimeout(() => {
                 const gameNames = {
                   'advanced-animal-card-game.html': '動物卡牌相克',
-                  'battle_system.html': '卡牌對戰系統'
+                  'battle_system.html': '卡牌對戰系統',
+                  'stage_select.html': '卡牌關卡頁'
                 };
                 const gameName = gameNames[gamePath] || '遊戲';
                 this.simulateGameCompletion(gameName);
@@ -4974,8 +4975,45 @@
       }, 1000);
     });
   </script>
+  <!-- Configure Cloud Sync endpoint (Google Apps Script Web App URL) -->
+  <script>
+    window.GAS_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbzbpDvWYR6SD1We5BQwm7Boo-wU1nLseHEYR19P7XX8PxZ9jl9C2yy3HMccpIEoH0lLAw/exec';
+  </script>
+  <script src="js/cloudSync.js"></script>
+  <script>
+    // 簡易雲端同步入口，不影響既有邏輯
+    async function uploadCloudSave() {
+      try {
+        const userId = prompt('請輸入您的雲端帳號 userId');
+        if (!userId) return;
+        const passkey = prompt('請輸入您的 passkey（可自訂，未設定可留空）') || '';
+        const res = await CloudSync.saveAll(userId, passkey);
+        alert(res.ok ? '✅ 上傳成功' : `❌ 上傳失敗：${res.error || 'unknown'}`);
+      } catch (e) {
+        alert('❌ 上傳失敗：' + e.message);
+      }
+    }
+    async function downloadCloudSave() {
+      try {
+        const userId = prompt('請輸入您的雲端帳號 userId');
+        if (!userId) return;
+        const passkey = prompt('請輸入您的 passkey（若有設定）') || '';
+        const res = await CloudSync.loadAll(userId, passkey, 'replace');
+        if (res.ok) {
+          alert('✅ 下載完成，將重新整理套用資料');
+          location.reload();
+        } else {
+          alert(`❌ 下載失敗：${res.error || 'unknown'}`);
+        }
+      } catch (e) {
+        alert('❌ 下載失敗：' + e.message);
+      }
+    }
+  </script>
+  <div style="position: fixed; right: 14px; top: 14px; display: flex; gap: 8px; z-index: 9999;">
+    <button onclick="uploadCloudSave()" style="padding:8px 12px; border-radius:10px; border:none; font-weight:700; background:#1976d2; color:#fff; box-shadow:0 2px 8px rgba(0,0,0,.2);">☁️ 上傳雲端</button>
+    <button onclick="downloadCloudSave()" style="padding:8px 12px; border-radius:10px; border:none; font-weight:700; background:#2e7d32; color:#fff; box-shadow:0 2px 8px rgba(0,0,0,.2);">☁️ 從雲端下載</button>
+  </div>
   
-  <!-- 載入懸浮聊天室 -->
-  <script src="floating_chat_loader.js"></script>
 </body>
 </html>
