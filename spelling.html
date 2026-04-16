@@ -42,6 +42,7 @@ button:hover{transform:scale(1.07)}
 <audio id="typeSound" src="sound/type.mp3" preload="auto"></audio>
 
 <script src="js/starRewardSystem.js"></script>
+<script src="js/sound.js"></script>
 <script>
 const ipt=document.getElementById('ipt');
 const fb=document.getElementById('fb');
@@ -108,7 +109,19 @@ function loadCustomWords(){
 }
 
 function playType(){typeSound.currentTime=0;typeSound.play().catch(()=>{})}
-function speakCur(){if('speechSynthesis'in window){const u=new SpeechSynthesisUtterance(words[curIndex].word);u.lang='en-US';speechSynthesis.speak(u)}}
+function speakCur(){
+  const w=words[curIndex]?.word;
+  if(!w){return;}
+  if(typeof SoundSystem!=='undefined' && SoundSystem.speech && typeof SoundSystem.speech.speakWord==='function'){
+    SoundSystem.speech.speakWord(w);
+    return;
+  }
+  if('speechSynthesis'in window){
+    const u=new SpeechSynthesisUtterance(w);
+    u.lang='en-US';
+    speechSynthesis.speak(u);
+  }
+}
 
 function shuffleInPlace(arr){
   for(let i=arr.length-1;i>0;i--){

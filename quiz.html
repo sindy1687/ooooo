@@ -706,6 +706,82 @@
     let timeLeft = 30;
     let lives = 5;
 
+    let timeLimit = 30;
+    let pauseSkillSeconds = 0;
+    let pauseSkillUses = 0;
+    let starMultiplier = 1;
+
+    function initCardSkills() {
+      try {
+        const owned = JSON.parse(localStorage.getItem('ownedCards') || '{}') || {};
+        if (!owned || typeof window === 'undefined' || !Array.isArray(window.allCards)) return;
+
+        let maxExtend = 0;
+        let maxFreeze = 0;
+        let maxMultiply = 1;
+
+        Object.keys(owned).forEach(word => {
+          if (!owned[word]) return;
+          const card = window.allCards.find(c => c && c.word === word);
+          if (!card || !card.effect) return;
+          const eff = card.effect;
+          if (eff.type === 'time_extend') maxExtend = Math.max(maxExtend, Number(eff.value) || 0);
+          if (eff.type === 'time_freeze') maxFreeze = Math.max(maxFreeze, Number(eff.value) || 0);
+          if (eff.type === 'score_multiply') maxMultiply = Math.max(maxMultiply, Number(eff.value) || 1);
+        });
+
+        const extendPerQuestion = Math.max(0, Math.min(15, Math.floor(maxExtend / 6)));
+        timeLimit = 30 + extendPerQuestion;
+        pauseSkillSeconds = Math.max(0, Math.min(8, Math.floor(maxFreeze / 6)));
+        pauseSkillUses = pauseSkillSeconds > 0 ? 1 : 0;
+        starMultiplier = Math.max(1, Math.min(2, maxMultiply >= 2 ? 2 : maxMultiply));
+
+        const info = [];
+        if (extendPerQuestion > 0) info.push(`⏳+${extendPerQuestion}s`);
+        if (pauseSkillUses > 0) info.push(`⏸️${pauseSkillUses}次`);
+        if (starMultiplier > 1) info.push(`⭐x${starMultiplier}`);
+
+        const badge = document.getElementById('categoryName');
+        if (badge && info.length) badge.textContent = `${categoryKey}  ${info.join(' ')}`;
+
+        if (pauseSkillUses > 0 && !document.getElementById('pauseSkillBtn')) {
+          const row = document.querySelector('.btn-row');
+          if (row) {
+            const btn = document.createElement('button');
+            btn.id = 'pauseSkillBtn';
+            btn.textContent = `⏸️ 暫停(${pauseSkillUses})`;
+            btn.onclick = () => usePauseSkill();
+            row.appendChild(btn);
+          }
+        }
+      } catch (e) {
+      }
+    }
+
+    function refreshPauseSkillBtn() {
+      const btn = document.getElementById('pauseSkillBtn');
+      if (!btn) return;
+      btn.textContent = `⏸️ 暫停(${pauseSkillUses})`;
+      btn.disabled = pauseSkillUses <= 0;
+    }
+
+    function usePauseSkill() {
+      if (pauseSkillUses <= 0) return;
+      if (!timer) return;
+      pauseSkillUses -= 1;
+      refreshPauseSkillBtn();
+      clearInterval(timer);
+      timer = null;
+      const display = document.getElementById('feedback');
+      if (display) {
+        display.textContent = `⏸️ 暫停 ${pauseSkillSeconds} 秒`; 
+        display.style.color = '#00ffff';
+      }
+      setTimeout(() => {
+        if (!timer && timeLeft > 0 && current && !isProcessingAnswer) startTimer();
+      }, pauseSkillSeconds * 1000);
+    }
+
     let gameStats = {
       correctCount: 0,
       totalAnswered: 0,
@@ -1273,7 +1349,7 @@
     }
 
     function startTimer() {
-      timeLeft = 30;
+      timeLeft = timeLimit;
       document.getElementById('timeLeft').textContent = timeLeft;
       document.getElementById('timerDisplay').classList.remove('danger');
       if (timer) clearInterval(timer);
@@ -1286,7 +1362,7 @@
         }
         if (timeLeft <= 0) {
           clearInterval(timer);
-          const answerTime = 30;
+          const answerTime = timeLimit;
           gameStats.totalAnswered++;
           gameStats.totalTimeUsed += answerTime;
           document.getElementById('feedback').textContent = `⏰ 時間到！正解是：${current.en}`;
@@ -1315,7 +1391,7 @@
       }
 
       if (used.length > 0 && document.getElementById('answerInput').value === '') {
-        const answerTime = (30 - timeLeft);
+        const answerTime = (timeLimit - timeLeft);
         gameStats.totalAnswered++;
         gameStats.totalTimeUsed += answerTime;
         lives--;
@@ -1362,7 +1438,7 @@
       isProcessingAnswer = true;
       const ans = document.getElementById('answerInput').value.trim().toLowerCase();
 
-      const answerTime = (30 - timeLeft);
+      const answerTime = (timeLimit - timeLeft);
       gameStats.totalAnswered++;
       gameStats.totalTimeUsed += answerTime;
 
@@ -1379,7 +1455,8 @@
         if (answerTime > gameStats.slowestAnswer) gameStats.slowestAnswer = answerTime;
         if (answerTime <= 15) gameStats.perfectAnswers++;
 
-        const starsEarned = calculateStarReward(true, answerTime, gameStats.consecutiveCorrect, current.en.length);
+        let starsEarned = calculateStarReward(true, answerTime, gameStats.consecutiveCorrect, current.en.length);
+        if (starMultiplier > 1) starsEarned = Math.round(starsEarned * starMultiplier);
 
         if (typeof StarRewardSystem !== 'undefined') {
           StarRewardSystem.addStars(starsEarned);
@@ -1445,6 +1522,9 @@
       lives = 5;
       updateLives();
 
+      initCardSkills();
+      refreshPauseSkillBtn();
+
       const answerInput = document.getElementById('answerInput');
       if (answerInput) {
         answerInput.addEventListener('keydown', function (e) {
@@ -1456,6 +1536,7 @@
         });
       }
 
+      nextWord();
 nextWord();
     });
   </script>

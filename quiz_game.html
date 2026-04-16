@@ -1436,9 +1436,15 @@
       autoPronouncePreviewWords();
     }
 
+    // 用 token 取消「預習自動朗讀」：避免 cancel() 後 callback 繼續把下一個單字念完
+    let previewPronounceToken = 0;
+
     function autoPronouncePreviewWords() {
+      const token = ++previewPronounceToken;
       let i = 0;
       function speakNext() {
+        if (token !== previewPronounceToken) return;
+        if (!reviewModal || reviewModal.style.display !== 'block') return;
         if (i < vocab.length) {
           const word = vocab[i].word;
           i++;
@@ -1449,6 +1455,7 @@
     }
 
     function startQuiz() {
+      previewPronounceToken++; // 停止預習自動朗讀
       window.speechSynthesis.cancel(); // 停止朗讀
       stopTimer(); // 停止計時器
       reviewModal.style.display = 'none';
