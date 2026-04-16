@@ -2682,11 +2682,6 @@
           
           <div class="modal-info-section">
             <div class="modal-input-group">
-              <label for="modalPlayerName">角色名稱:</label>
-              <input type="text" id="modalPlayerName" placeholder="輸入你的角色名稱" maxlength="15">
-            </div>
-            
-            <div class="modal-input-group">
               <label for="modalSlogan">角色標語:</label>
               <textarea id="modalSlogan" placeholder="寫下你的角色標語..." maxlength="50" rows="2"></textarea>
             </div>
@@ -3108,12 +3103,10 @@
           console.log('📂 找到自訂資料:', customData);
           
           // 更新彈窗中的資料
-          const nameInput = document.getElementById('modalPlayerName');
           const sloganInput = document.getElementById('modalSlogan');
           const typeSelect = document.getElementById('modalCharacterType');
           const avatarImg = document.getElementById('modalAvatarImage');
           
-          if (nameInput) nameInput.value = customData.name || '';
           if (sloganInput) sloganInput.value = customData.slogan || '';
           if (typeSelect) typeSelect.value = customData.characterType || 'warrior';
           
@@ -3133,7 +3126,6 @@
     // 重置彈窗頭像
     function resetModalAvatar() {
       document.getElementById('modalAvatarImage').src = 'img/avatars/avatar_TL.png';
-      document.getElementById('modalPlayerName').value = '';
       document.getElementById('modalSlogan').value = '';
       document.getElementById('modalCharacterType').value = 'warrior';
       document.getElementById('modalAvatarUpload').value = '';
@@ -3145,7 +3137,7 @@
     function saveModalCustomUser() {
       console.log('💾 儲存自訂角色...');
       
-      const modalName = document.getElementById('modalPlayerName')?.value?.trim() || '';
+      const modalName = (localStorage.getItem('playerName') || '').trim();
       const modalSlogan = document.getElementById('modalSlogan')?.value?.trim() || '';
       const modalType = document.getElementById('modalCharacterType')?.value || 'warrior';
       const modalAvatarSrc = document.getElementById('modalAvatarImage')?.src || '';
@@ -3153,7 +3145,7 @@
       console.log('📝 角色資料:', { modalName, modalSlogan, modalType, modalAvatarSrc });
       
       if (!modalName) {
-        showCustomMessage('⚠️ 請輸入角色名稱', 'warning');
+        showCustomMessage('⚠️ 請先在首頁設定玩家名稱', 'warning');
         return;
       }
       
@@ -3179,11 +3171,6 @@
       
       localStorage.setItem('customUserData', JSON.stringify(customUserData));
       console.log('💾 自訂角色資料已儲存:', customUserData);
-      
-      // 更新主介面的角色資訊
-      if (typeof LinkageSystem !== 'undefined' && LinkageSystem.player) {
-        LinkageSystem.player.setName(modalName);
-      }
       
       const characterImage = document.getElementById('characterImage');
       const characterSlogan = document.getElementById('characterSlogan');
