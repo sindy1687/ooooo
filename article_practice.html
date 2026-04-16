@@ -673,10 +673,6 @@
         <h3>📖 閱讀練習</h3>
         <p>閱讀英文文章並回答問題，提升理解能力</p>
       </div>
-      <div class="mode-card" onclick="selectMode('writing')">
-        <h3>✍️ 寫作練習</h3>
-        <p>根據提示寫作英文文章，提升表達能力</p>
-      </div>
     </div>
 
     <!-- 閱讀練習區域 -->
@@ -736,31 +732,6 @@
         </div>
       </div>
     </div>
-
-    <!-- 寫作練習區域 -->
-    <div id="writing-section" class="article-section">
-      <div class="article-content">
-        <div class="article-title" id="writing-title">寫作主題：My Dream Job</div>
-        <p id="writing-description">請根據以下提示寫一篇關於「我的理想工作」的英文文章：</p>
-        <ul id="writing-prompts">
-          <li>What is your dream job?</li>
-          <li>Why do you want this job?</li>
-          <li>What skills do you need for this job?</li>
-          <li>How will you prepare for this career?</li>
-        </ul>
-      </div>
-      
-      <div class="practice-input">
-        <h4>✍️ 寫作練習：</h4>
-        <textarea id="writing-answer" placeholder="請在這裡寫下你的英文文章..."></textarea>
-        <button class="btn" onclick="saveWriting()">💾 儲存文章</button>
-        <button class="btn btn-secondary" onclick="showWritingTips()">💡 寫作技巧</button>
-        <button class="btn btn-secondary" onclick="changeWritingTopic()">🔄 換個主題</button>
-      </div>
-    </div>
-
-
-
     <!-- 功能按鈕區域 -->
     <div style="text-align: center; margin-top: 30px;">
       <button class="btn btn-secondary" onclick="location.href='index.html'">🏠 返回首頁</button>
@@ -791,7 +762,6 @@
     // 當前模式
     let currentMode = '';
     let currentReadingLevel = 1;
-    let currentWritingTopicIndex = 0;
     let currentQuestionIndex = 0;
     let progress = 0;
     let completedExercises = [];
@@ -838,7 +808,6 @@
     document.addEventListener('DOMContentLoaded', function() {
       createStars();
       loadProgress();
-      loadWritingTopic(); // 載入第一個寫作主題
       loadReadingLevels(); // 載入閱讀關卡
       
       // 初始化音效系統
@@ -918,17 +887,6 @@
           if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault(); // 防止換行
             checkGameReadingAnswer();
-          }
-        });
-      }
-      
-      // 為寫作練習答案輸入框添加 Enter 鍵事件
-      const writingAnswerInput = document.getElementById('writing-answer');
-      if (writingAnswerInput) {
-        writingAnswerInput.addEventListener('keydown', function(e) {
-          if (e.key === 'Enter' && !e.shiftKey) {
-            e.preventDefault(); // 防止換行
-            saveWriting();
           }
         });
       }
@@ -1046,7 +1004,10 @@
       });
       
       // 顯示選中的區域
-      document.getElementById(mode + '-section').classList.add('active');
+      const selectedSection = document.getElementById(mode + '-section');
+      if (selectedSection) {
+        selectedSection.classList.add('active');
+      }
       
       // 如果是閱讀模式，顯示關卡選擇
       if (mode === 'reading') {
@@ -1791,100 +1752,6 @@
         
         // 移除彈窗，靜默暫停
       }
-    }
-
-
-
-    // 儲存寫作
-    function saveWriting() {
-      const writing = document.getElementById('writing-answer').value.trim();
-      if (writing.length > 0) {
-        localStorage.setItem('savedWriting', writing);
-        markExerciseComplete('writing');
-        
-        // 更新寫作練習完成次數
-        const writingCompleted = parseInt(localStorage.getItem('readingWritingCompleted') || '0') + 1;
-        localStorage.setItem('readingWritingCompleted', writingCompleted.toString());
-        
-        // 計算寫作獎勵（基於文章長度）
-        let starsEarned = 3; // 基礎獎勵
-        const wordCount = writing.split(' ').length;
-        
-        if (wordCount >= 50) {
-          starsEarned = 8; // 長文章獎勵
-        } else if (wordCount >= 30) {
-          starsEarned = 6; // 中等文章獎勵
-        } else if (wordCount >= 15) {
-          starsEarned = 4; // 短文章獎勵
-        }
-        
-        // 給予寫作完成獎勵
-        if (typeof StarRewardSystem !== 'undefined') {
-          StarRewardSystem.addStars(starsEarned);
-        } else {
-          // 備用星星系統
-          const currentStars = parseInt(localStorage.getItem('totalStars') || '0');
-          const newStars = currentStars + starsEarned;
-          localStorage.setItem('totalStars', newStars.toString());
-        }
-        
-        // 立即更新星星顯示
-        updateStarsDisplay();
-        
-        // 顯示星星獎勵動畫
-        showStarReward(starsEarned);
-        
-        // 播放完成音效
-        playSound('complete');
-        
-        // 檢查成就
-        checkReadingAchievements();
-        
-        // 顯示結果訊息
-        let resultMessage = `💾 文章已儲存！\n\n⭐ 獲得 ${starsEarned} 顆星星獎勵！`;
-        if (wordCount >= 50) {
-          resultMessage += '\n🎉 優秀的長篇文章！';
-        } else if (wordCount >= 30) {
-          resultMessage += '\n🎉 良好的中等文章！';
-        } else if (wordCount >= 15) {
-          resultMessage += '\n🎉 不錯的短篇文章！';
-        }
-        resultMessage += '\n\n繼續練習其他模式來解鎖遊戲關卡。';
-        
-        alert(resultMessage);
-        // 新增：累加文章練習次數
-        let articlePracticeCount = parseInt(localStorage.getItem('articlePracticeCount') || '0');
-        articlePracticeCount++;
-        localStorage.setItem('articlePracticeCount', articlePracticeCount.toString());
-      } else {
-        alert('請先寫下你的文章！');
-      }
-    }
-
-    // 載入寫作主題
-    function loadWritingTopic(index = 0) {
-      const topic = writingTopics[index];
-      document.getElementById('writing-title').textContent = `寫作主題：${topic.title}`;
-      document.getElementById('writing-description').textContent = topic.description;
-      
-      const promptsList = document.getElementById('writing-prompts');
-      promptsList.innerHTML = topic.prompts.map(prompt => `<li>${prompt}</li>`).join('');
-    }
-
-    // 切換寫作主題
-    function changeWritingTopic() {
-      currentWritingTopicIndex = (currentWritingTopicIndex + 1) % writingTopics.length;
-      loadWritingTopic(currentWritingTopicIndex);
-      document.getElementById('writing-answer').value = '';
-      
-      // 重新設置 Enter 鍵事件
-      setupAnswerInputEvents();
-    }
-
-    // 顯示寫作技巧
-    function showWritingTips() {
-      const currentTopic = writingTopics[currentWritingTopicIndex];
-      alert('💡 寫作技巧：\n\n' + currentTopic.tips.join('\n'));
     }
 
 
@@ -2978,7 +2845,6 @@
         
         // 重新載入關卡
         loadReadingLevels();
-        loadWritingTopic();
         
         alert('✅ 進度已重置！');
       }
@@ -3060,7 +2926,6 @@
       const streakDays = parseInt(localStorage.getItem('readingStreakDays') || '0');
       const vocabCorrect = parseInt(localStorage.getItem('readingVocabCorrect') || '0');
       const comprehensionCorrect = parseInt(localStorage.getItem('readingComprehensionCorrect') || '0');
-      const writingCompleted = parseInt(localStorage.getItem('readingWritingCompleted') || '0');
       const audioUsed = parseInt(localStorage.getItem('readingAudioUsed') || '0');
       const levelsUnlocked = parseInt(localStorage.getItem('readingLevelsUnlocked') || '0');
       
@@ -3076,7 +2941,6 @@
         { id: 'reading_streak', requirement: 7, reward: 40, icon: '🔥', name: '連續閱讀', description: '連續7天完成閱讀關卡' },
         { id: 'reading_vocab', requirement: 100, reward: 60, icon: '📝', name: '詞彙閱讀', description: '在閱讀關卡中答對100個詞彙問題' },
         { id: 'reading_comprehension', requirement: 50, reward: 80, icon: '🧠', name: '理解大師', description: '在閱讀測驗中答對50個理解問題' },
-        { id: 'reading_writing', requirement: 10, reward: 40, icon: '✍️', name: '寫作練習', description: '完成10次寫作練習，提升表達能力' },
         { id: 'reading_audio', requirement: 20, reward: 30, icon: '🔊', name: '聽力練習', description: '使用20次文章發音功能，提升聽力理解' },
         { id: 'reading_unlock', requirement: 10, reward: 50, icon: '🔓', name: '關卡解鎖者', description: '使用星星解鎖10個閱讀關卡' },
         { id: 'reading_all', requirement: 1, reward: 300, icon: '🌟', name: '全關卡通關', description: '完成所有閱讀關卡，達到閱讀學習的巔峰' }
@@ -3108,9 +2972,6 @@
             break;
           case 'reading_comprehension':
             isUnlocked = comprehensionCorrect >= achievement.requirement;
-            break;
-          case 'reading_writing':
-            isUnlocked = writingCompleted >= achievement.requirement;
             break;
           case 'reading_audio':
             isUnlocked = audioUsed >= achievement.requirement;
