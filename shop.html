@@ -780,6 +780,112 @@
       text-align: center;
     }
 
+    /* 邀請碼管理樣式 */
+    .invite-admin-section {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 40px 20px;
+      text-align: center;
+    }
+
+    .invite-admin-panel {
+      background: rgba(10, 20, 40, 0.85);
+      border: 2px solid #00ffff;
+      border-radius: 20px;
+      padding: 25px;
+      backdrop-filter: blur(10px);
+      text-align: left;
+    }
+
+    .admin-form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      margin-bottom: 15px;
+    }
+
+    .admin-field label {
+      display: block;
+      margin-bottom: 6px;
+      color: #00ffff;
+      font-weight: bold;
+    }
+
+    .admin-field input,
+    .admin-field select {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 2px solid rgba(0, 255, 255, 0.3);
+      background: rgba(0, 0, 0, 0.35);
+      color: #fff;
+      font-weight: bold;
+      outline: none;
+    }
+
+    .admin-field input:focus,
+    .admin-field select:focus {
+      border-color: #00ffff;
+      box-shadow: 0 0 12px rgba(0, 255, 255, 0.3);
+    }
+
+    .admin-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 15px;
+      justify-content: center;
+    }
+
+    .admin-btn {
+      background: linear-gradient(135deg, #00ffff 0%, #a259ff 100%);
+      color: #000;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 14px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: all 0.3s ease;
+      min-width: 160px;
+    }
+
+    .admin-btn.secondary {
+      background: linear-gradient(135deg, #ffd700 0%, #ffaa00 100%);
+    }
+
+    .admin-btn.danger {
+      background: linear-gradient(135deg, #ff6b6b 0%, #cc0000 100%);
+      color: #fff;
+    }
+
+    .admin-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 18px rgba(0, 255, 255, 0.35);
+    }
+
+    .admin-stats {
+      margin-top: 18px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      background: rgba(0, 0, 0, 0.25);
+      color: #ccc;
+      line-height: 1.7;
+    }
+
+    .admin-preview {
+      margin-top: 14px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      background: rgba(0, 0, 0, 0.25);
+      color: #fff;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+      white-space: pre-wrap;
+      max-height: 220px;
+      overflow: auto;
+    }
+
     .invite-code-section h3 {
       color: #333;
       font-size: 2rem;
@@ -880,7 +986,8 @@
   <div class="main-content">
     <!-- 商城分類標籤 -->
     <div class="shop-tabs">
-      <button class="tab-btn active" onclick="switchTab('invite')">🎫 邀請碼兌換</button>
+      <button class="tab-btn active" onclick="ShopSystem.switchTab('invite')">🎫 邀請碼兌換</button>
+      <button id="adminTabBtn" class="tab-btn" onclick="ShopSystem.switchTab('admin')" style="display:none;">🛠️ 邀請碼管理</button>
     </div>
 
     <!-- 邀請碼兌換 -->
@@ -899,6 +1006,62 @@
         </div>
       </div>
     </div>
+
+    <!-- 邀請碼管理（需要 ?admin=1 才會顯示標籤） -->
+    <div id="invite-admin" class="shop-section" style="display:none;">
+      <div class="invite-admin-section">
+        <h3 style="color:#00ffff; font-size:2rem; margin-bottom:10px; text-shadow:0 0 10px rgba(0,255,255,0.5);">🛠️ 邀請碼管理</h3>
+        <p style="color:#ccc; font-size:1.05rem; margin-bottom:20px;">在此產生新的邀請碼，並下載更新後的 <b>inviteCodes.json</b>（請手動覆蓋 <code>js/inviteCodes.json</code>）。</p>
+
+        <div class="invite-admin-panel">
+          <div class="admin-form-row">
+            <div class="admin-field">
+              <label for="adminGenerateCount">產生數量</label>
+              <input id="adminGenerateCount" type="number" min="1" max="500" value="10">
+            </div>
+            <div class="admin-field">
+              <label for="adminCodeLength">邀請碼長度</label>
+              <select id="adminCodeLength">
+                <option value="7">7</option>
+                <option value="8" selected>8</option>
+                <option value="9">9</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="admin-form-row">
+            <div class="admin-field">
+              <label for="adminStars">兌換星星數</label>
+              <select id="adminStars">
+                <option value="100">100</option>
+                <option value="300">300</option>
+                <option value="500">500</option>
+                <option value="1000" selected>1000</option>
+                <option value="5000">5000</option>
+                <option value="10000">10000</option>
+              </select>
+            </div>
+            <div class="admin-field">
+              <label for="adminPrefix">前綴（可選）</label>
+              <input id="adminPrefix" type="text" maxlength="4" placeholder="例如: VIP">
+            </div>
+          </div>
+
+          <div class="admin-actions">
+            <button id="adminGenerateBtn" class="admin-btn" type="button">產生邀請碼</button>
+            <button id="adminDownloadBtn" class="admin-btn secondary" type="button">下載 inviteCodes.json</button>
+            <button id="adminClearDraftBtn" class="admin-btn danger" type="button">清空本次草稿</button>
+          </div>
+
+          <div class="admin-stats">
+            <div id="adminStatsLine1">載入中...</div>
+            <div id="adminStatsLine2"></div>
+          </div>
+
+          <div id="adminPreview" class="admin-preview" style="display:none;"></div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- 載入必要的JavaScript -->
@@ -913,6 +1076,9 @@
     // 商城系統
     const ShopSystem = {
       currentTab: 'invite',
+      inviteCodes: [],
+      adminDraftCodes: [],
+      adminMode: false,
 
       // 初始化商城系統
       init() {
@@ -921,10 +1087,12 @@
         this.updateStarsDisplay();
         this.loadInviteCodes();
         this.setupEventListeners();
+        this.initAdminMode();
         
         // 延遲更新統計信息，等待邀請碼載入完成
         setTimeout(() => {
           this.updateUsedCodesInfo();
+          this.updateAdminStats();
         }, 1000);
         
         console.log('商城系統初始化完成');
@@ -949,9 +1117,47 @@
 
       // 切換標籤
       switchTab(tab) {
-        // 目前只有邀請碼兌換，所以不需要切換邏輯
-        if (tab === 'invite') {
-          // 邀請碼兌換頁面不需要額外渲染
+        const inviteSection = document.getElementById('invite-shop');
+        const adminSection = document.getElementById('invite-admin');
+        const tabButtons = document.querySelectorAll('.shop-tabs .tab-btn');
+
+        tabButtons.forEach(btn => btn.classList.remove('active'));
+
+        if (tab === 'admin' && this.adminMode) {
+          if (inviteSection) inviteSection.style.display = 'none';
+          if (adminSection) adminSection.style.display = 'block';
+          const adminBtn = document.getElementById('adminTabBtn');
+          if (adminBtn) adminBtn.classList.add('active');
+          this.currentTab = 'admin';
+          this.updateAdminStats();
+          return;
+        }
+
+        if (inviteSection) inviteSection.style.display = 'block';
+        if (adminSection) adminSection.style.display = 'none';
+        const firstBtn = document.querySelector('.shop-tabs .tab-btn');
+        if (firstBtn) firstBtn.classList.add('active');
+        this.currentTab = 'invite';
+      },
+
+      initAdminMode() {
+        try {
+          const url = new URL(window.location.href);
+          this.adminMode = url.searchParams.get('admin') === '1';
+        } catch (e) {
+          this.adminMode = false;
+        }
+
+        const adminTabBtn = document.getElementById('adminTabBtn');
+        const adminSection = document.getElementById('invite-admin');
+
+        if (this.adminMode) {
+          if (adminTabBtn) adminTabBtn.style.display = 'inline-block';
+          if (adminSection) adminSection.style.display = 'none';
+          this.setupAdminEventListeners();
+        } else {
+          if (adminTabBtn) adminTabBtn.style.display = 'none';
+          if (adminSection) adminSection.style.display = 'none';
         }
       },
 
@@ -966,11 +1172,170 @@
             
             // 載入完成後，檢查本地已使用的邀請碼並同步狀態
             this.syncLocalUsedCodes();
+            this.updateAdminStats();
           })
           .catch(error => {
             console.error('❌ 載入邀請碼失敗:', error);
             this.inviteCodes = [];
+            this.updateAdminStats();
           });
+      },
+
+      setupAdminEventListeners() {
+        const generateBtn = document.getElementById('adminGenerateBtn');
+        const downloadBtn = document.getElementById('adminDownloadBtn');
+        const clearBtn = document.getElementById('adminClearDraftBtn');
+
+        if (generateBtn) {
+          generateBtn.addEventListener('click', () => {
+            this.generateAdminInviteCodes();
+          });
+        }
+
+        if (downloadBtn) {
+          downloadBtn.addEventListener('click', () => {
+            this.downloadInviteCodesJson();
+          });
+        }
+
+        if (clearBtn) {
+          clearBtn.addEventListener('click', () => {
+            this.adminDraftCodes = [];
+            this.updateAdminStats();
+            this.updateAdminPreview();
+            this.showNotification('已清空本次草稿邀請碼', 'success');
+          });
+        }
+      },
+
+      generateAdminInviteCodes() {
+        if (!this.adminMode) return;
+
+        const countEl = document.getElementById('adminGenerateCount');
+        const lengthEl = document.getElementById('adminCodeLength');
+        const starsEl = document.getElementById('adminStars');
+        const prefixEl = document.getElementById('adminPrefix');
+
+        const count = Math.max(1, Math.min(500, parseInt((countEl && countEl.value) || '1', 10) || 1));
+        const length = Math.max(7, Math.min(9, parseInt((lengthEl && lengthEl.value) || '8', 10) || 8));
+        const stars = parseInt((starsEl && starsEl.value) || '1000', 10) || 1000;
+        const prefixRaw = ((prefixEl && prefixEl.value) || '').trim().toUpperCase();
+        const safePrefix = prefixRaw.replace(/[^A-Z0-9]/g, '').slice(0, 4);
+
+        const existingSet = new Set((this.inviteCodes || []).map(c => String(c.code || '').toUpperCase()));
+        this.adminDraftCodes.forEach(c => existingSet.add(String(c.code || '').toUpperCase()));
+
+        const alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+        const nowIso = new Date().toISOString();
+        const created = [];
+
+        const randomCode = (len) => {
+          let s = '';
+          for (let i = 0; i < len; i++) {
+            s += alphabet[Math.floor(Math.random() * alphabet.length)];
+          }
+          return s;
+        };
+
+        let guard = 0;
+        while (created.length < count && guard < count * 50) {
+          guard++;
+          const bodyLen = Math.max(1, length - safePrefix.length);
+          const candidate = `${safePrefix}${randomCode(bodyLen)}`.slice(0, length);
+          if (candidate.length < 7 || candidate.length > 9) continue;
+          if (existingSet.has(candidate)) continue;
+          existingSet.add(candidate);
+          created.push({
+            code: candidate,
+            stars,
+            used: false,
+            usedAt: null,
+            usedBy: null,
+            createdAt: nowIso
+          });
+        }
+
+        if (created.length === 0) {
+          this.showNotification('產生失敗：可能是前綴/長度導致可用組合不足', 'error');
+          return;
+        }
+
+        this.adminDraftCodes = this.adminDraftCodes.concat(created);
+        this.updateAdminStats();
+        this.updateAdminPreview();
+        this.showNotification(`已產生 ${created.length} 組邀請碼（草稿）`, 'success');
+      },
+
+      updateAdminStats() {
+        const line1 = document.getElementById('adminStatsLine1');
+        const line2 = document.getElementById('adminStatsLine2');
+        if (!line1 || !line2) return;
+
+        if (!this.adminMode) {
+          line1.textContent = '管理模式未啟用（在網址加上 ?admin=1）';
+          line2.textContent = '';
+          return;
+        }
+
+        const total = (this.inviteCodes || []).length;
+        const usedLocal = JSON.parse(localStorage.getItem('usedInviteCodes') || '[]');
+        const usedCount = Array.isArray(usedLocal) ? usedLocal.length : 0;
+        const draft = (this.adminDraftCodes || []).length;
+        line1.textContent = `目前 inviteCodes.json：${total} 組（本機已使用：${usedCount} 組）`;
+        line2.textContent = `本次草稿新增：${draft} 組（下載時會合併）`;
+      },
+
+      updateAdminPreview() {
+        const preview = document.getElementById('adminPreview');
+        if (!preview) return;
+
+        if (!this.adminMode || !this.adminDraftCodes || this.adminDraftCodes.length === 0) {
+          preview.style.display = 'none';
+          preview.textContent = '';
+          return;
+        }
+
+        const showList = this.adminDraftCodes.slice(-30).map(c => `${c.code}  ->  ⭐ ${c.stars}`).join('\n');
+        preview.style.display = 'block';
+        preview.textContent = showList;
+      },
+
+      downloadInviteCodesJson() {
+        if (!this.adminMode) return;
+
+        const baseCodes = Array.isArray(this.inviteCodes) ? this.inviteCodes : [];
+        const draftCodes = Array.isArray(this.adminDraftCodes) ? this.adminDraftCodes : [];
+
+        if (baseCodes.length === 0) {
+          this.showNotification('目前尚未載入 inviteCodes.json，請稍等載入完成', 'error');
+          return;
+        }
+
+        if (draftCodes.length === 0) {
+          this.showNotification('草稿為空：請先產生邀請碼', 'error');
+          return;
+        }
+
+        const merged = baseCodes.concat(draftCodes);
+        const payload = {
+          generatedAt: new Date().toISOString(),
+          totalCodes: merged.length,
+          codes: merged
+        };
+
+        const jsonText = JSON.stringify(payload, null, 2);
+        const blob = new Blob([jsonText], { type: 'application/json;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'inviteCodes.json';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+
+        this.showNotification('✅ 已下載 inviteCodes.json（請手動覆蓋 js/inviteCodes.json）', 'success');
       },
 
       // 同步本地已使用的邀請碼狀態
