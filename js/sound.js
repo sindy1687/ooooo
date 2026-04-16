@@ -191,38 +191,42 @@ const SoundSystem = {
 
       console.log(`找到 ${voices.length} 個可用語音`);
 
-      // 優先選擇高品質的美式語音
-      const preferredVoices = [
-        'Google US English', 
-        'Microsoft Aria Online',
-        'Microsoft Jenny Online',
-        'Microsoft Aria Online (Neural)',
-        'Microsoft Jenny Online (Neural)',
-        'Samantha', // Apple
-        'Alex', // Apple
-        'Microsoft Zira Desktop - English (United States)',
-        'Microsoft David Desktop - English (United States)',
-        'en-US-Standard-A', // Google Cloud TTS
-        'en-US-Standard-B', // Google Cloud TTS
-        'en-US-Standard-C', // Google Cloud TTS
-        'en-US-Standard-D', // Google Cloud TTS
-        'en-US-Standard-E', // Google Cloud TTS
-        'en-US-Standard-F', // Google Cloud TTS
-        'en-US-Standard-G', // Google Cloud TTS
-        'en-US-Standard-H', // Google Cloud TTS
-        'en-US-Standard-I', // Google Cloud TTS
-        'en-US-Standard-J',  // Google Cloud TTS
-        'en-US-Neural2-A',   // Google Cloud Neural TTS
-        'en-US-Neural2-B',   // Google Cloud Neural TTS
-        'en-US-Neural2-C',   // Google Cloud Neural TTS
-        'en-US-Neural2-D',   // Google Cloud Neural TTS
-        'en-US-Neural2-E',   // Google Cloud Neural TTS
-        'en-US-Neural2-F',   // Google Cloud Neural TTS
-        'en-US-Neural2-G',   // Google Cloud Neural TTS
-        'en-US-Neural2-H',   // Google Cloud Neural TTS
-        'en-US-Neural2-I',   // Google Cloud Neural TTS
-        'en-US-Neural2-J'    // Google Cloud Neural TTS
-      ];
+      // 針對美式英語做「品質打分」挑選：優先 Natural/Neural/Enhanced/Google/Microsoft Online
+      const scoreVoice = (v) => {
+        const name = (v && v.name ? v.name : '').toLowerCase();
+        const lang = (v && v.lang ? v.lang : '').toLowerCase();
+        let score = 0;
+
+        if (lang.startsWith('en-us')) score += 1000;
+        if (name.includes('natural')) score += 250;
+        if (name.includes('neural')) score += 220;
+        if (name.includes('enhanced')) score += 180;
+        if (name.includes('online')) score += 160;
+        if (name.includes('google')) score += 140;
+        if (name.includes('microsoft')) score += 120;
+
+        // 常見偏好（不同系統會有不同命名）
+        if (name.includes('aria')) score += 40;
+        if (name.includes('jenny')) score += 40;
+        if (name.includes('samantha')) score += 30;
+        if (name.includes('alex')) score += 20;
+
+        // 不優先 Desktop（通常比較機器感）
+        if (name.includes('desktop')) score -= 40;
+
+        // localService 通常可用，但品質不一定；先小幅加分，避免完全排除
+        if (v && v.localService) score += 10;
+
+        return score;
+      };
+
+      const usVoices = voices.filter(v => (v.lang || '').toLowerCase().startsWith('en-us'));
+      if (usVoices.length > 0) {
+        usVoices.sort((a, b) => scoreVoice(b) - scoreVoice(a));
+        this.preferredVoice = usVoices[0];
+        console.log(`✅ 選擇美式語音: ${this.preferredVoice.name}`);
+        return;
+      }
 
       // 優先選擇高品質的中文語音
       const preferredChineseVoices = [
@@ -241,17 +245,7 @@ const SoundSystem = {
         'zh-TW-Neural2-D'    // Google Cloud Neural TTS
       ];
 
-      // 1. 尋找偏好列表中的語音
-      for (const name of preferredVoices) {
-        const voice = voices.find(v => v.name === name && v.lang.startsWith('en-US'));
-        if (voice) {
-          this.preferredVoice = voice;
-          console.log(`✅ 選擇美式語音: ${voice.name}`);
-          return;
-        }
-      }
-
-      // 2. 尋找偏好列表中的中文語音
+      // 1. 尋找偏好列表中的中文語音
       for (const name of preferredChineseVoices) {
         const voice = voices.find(v => v.name === name && v.lang.startsWith('zh-TW'));
         if (voice) {
@@ -261,7 +255,7 @@ const SoundSystem = {
         }
       }
 
-      // 3. 備用：尋找任何本地的美式英語語音
+      // 2. 備用：尋找任何本地的美式英語語音
       const localVoice = voices.find(v => v.lang.startsWith('en-US') && v.localService);
       if (localVoice) {
         this.preferredVoice = localVoice;
@@ -269,7 +263,7 @@ const SoundSystem = {
         return;
       }
 
-      // 4. 備用：尋找任何本地的中文語音
+      // 3. 備用：尋找任何本地的中文語音
       const localChineseVoice = voices.find(v => v.lang.startsWith('zh-TW') && v.localService);
       if (localChineseVoice) {
         this.preferredVoice = localChineseVoice;
@@ -277,7 +271,7 @@ const SoundSystem = {
         return;
       }
 
-      // 5. 最後備用：尋找任何美式英語語音
+      // 4. 最後備用：尋找任何美式英語語音
       const anyUSVoice = voices.find(v => v.lang.startsWith('en-US'));
       if (anyUSVoice) {
         this.preferredVoice = anyUSVoice;
@@ -285,7 +279,7 @@ const SoundSystem = {
         return;
       }
 
-      // 6. 最後備用：尋找任何中文語音
+      // 5. 最後備用：尋找任何中文語音
       const anyChineseVoice = voices.find(v => v.lang.startsWith('zh-TW'));
       if (anyChineseVoice) {
         this.preferredVoice = anyChineseVoice;
@@ -293,7 +287,7 @@ const SoundSystem = {
         return;
       }
 
-      // 7. 如果都沒有，選擇第一個可用的語音
+      // 6. 如果都沒有，選擇第一個可用的語音
       if (voices.length > 0) {
         this.preferredVoice = voices[0];
         console.log(`⚠️ 選擇第一個可用語音: ${voices[0].name}`);
@@ -337,7 +331,7 @@ const SoundSystem = {
       // 根據文本長度調整語音參數
       const textLength = cleanText.length;
       let rate = options.rate || 0.9;
-      let pitch = options.pitch || 1.1;
+      let pitch = (typeof options.pitch === 'number') ? options.pitch : (isChinese ? 1.05 : 1.0);
       
       // 長文本需要更慢的速度
       if (textLength > 50) {
@@ -420,8 +414,11 @@ const SoundSystem = {
         return;
       }
 
-      // 清理單字（移除多餘空格、特殊字符和下劃線）
-      const cleanWord = word.trim().replace(/[^\w\s]/g, '').replace(/_/g, '');
+      // 清理單字（保留連字號/撇號，避免影響發音，例如: "can't", "mother-in-law"）
+      const cleanWord = word
+        .trim()
+        .replace(/_/g, '')
+        .replace(/[^a-zA-Z\s\-']/g, '');
       
       if (!cleanWord) {
         console.warn('speakWord: 清理後的單字為空', word);
@@ -431,16 +428,16 @@ const SoundSystem = {
 
       // 根據單字長度調整語音參數
       const wordLength = cleanWord.length;
-      let rate = 0.85;
-      let pitch = 1.15;
+      let rate = 0.9;
+      let pitch = 1.0;
       
       // 長單字需要更慢的速度和更清晰的發音
-      if (wordLength > 8) {
-        rate = 0.75;  // 更慢的速度
-        pitch = 1.2;  // 稍微提高音調
-      } else if (wordLength > 12) {
-        rate = 0.7;   // 非常慢的速度
-        pitch = 1.25; // 更高的音調
+      if (wordLength > 12) {
+        rate = 0.78;
+        pitch = 1.0;
+      } else if (wordLength > 8) {
+        rate = 0.84;
+        pitch = 1.0;
       }
 
       // 嘗試發音，如果失敗則重試
