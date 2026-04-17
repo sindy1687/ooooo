@@ -1583,11 +1583,11 @@
           <div style="font-weight:bold;color:#ffd700;margin-bottom:6px;font-size:0.9rem;text-shadow:0 0 8px #ffd700;">SSR 許願</div>
           <select id="wishPoolSSR" class="wish-select" style="min-width:150px;"></select>
         </div>
-        <div style="display:flex;flex-direction:column;align-items:center;min-width:150px;">
+        <div style="display:none;flex-direction:column;align-items:center;min-width:150px;">
           <div style="font-weight:bold;color:#a259ff;margin-bottom:6px;font-size:0.9rem;text-shadow:0 0 8px #a259ff;">R 許願</div>
           <select id="wishPoolR" class="wish-select" style="min-width:150px;"></select>
         </div>
-        <div style="display:flex;flex-direction:column;align-items:center;min-width:150px;">
+        <div style="display:none;flex-direction:column;align-items:center;min-width:150px;">
           <div style="font-weight:bold;color:#00ffff;margin-bottom:6px;font-size:0.9rem;text-shadow:0 0 8px #00ffff;">A 許願</div>
           <select id="wishPoolA" class="wish-select" style="min-width:150px;"></select>
         </div>
@@ -1878,8 +1878,6 @@
     // 許願加成機率（依稀有度）
     function getWishBonus(rarity) {
       if (rarity === '超稀有') return 2; // SSR 2%
-      if (rarity === '稀有') return 4;   // R卡 4%
-      if (rarity === '普通') return 6;   // A卡 6%
       return 0;
     }
 
@@ -1910,6 +1908,10 @@
       if (savedWishCard) {
         try {
           currentWishCard = JSON.parse(savedWishCard);
+          if (currentWishCard && currentWishCard.rarity !== '超稀有') {
+            currentWishCard = null;
+            localStorage.removeItem('currentWishCard');
+          }
         } catch (e) {
           console.error('載入許願卡片失敗:', e);
           localStorage.removeItem('currentWishCard');
@@ -1954,6 +1956,33 @@
 
     // [FINAL VERSION] 統一處理抽卡結果的核心邏輯
     function processDraw(card) {
+      // 抽到卡片時，將卡片效果轉成「可消耗道具」(例如：暫停時間)
+      // 目前先支援 time_freeze：5 / 10 / 15 / 20 秒
+      function grantConsumableFromCard(c) {
+        try {
+          if (!c || !c.effect || !c.effect.type) return;
+          if (c.effect.type !== 'time_freeze') return;
+
+          const v = Number(c.effect.value) || 0;
+          let tier = 0;
+          if (v >= 20) tier = 20;
+          else if (v >= 15) tier = 15;
+          else if (v >= 10) tier = 10;
+          else if (v >= 5) tier = 5;
+          if (!tier) return;
+
+          const key = 'consumables_time_freeze';
+          const data = JSON.parse(localStorage.getItem(key) || '{}') || {};
+          data[String(tier)] = (Number(data[String(tier)]) || 0) + 1;
+          localStorage.setItem(key, JSON.stringify(data));
+          return tier;
+        } catch (e) {
+          return;
+        }
+      }
+
+      const grantedFreezeTier = grantConsumableFromCard(card);
+
       const isOwned = LinkageSystem.cards.isCardOwned(card.word);
       
       if (!isOwned) {
@@ -1962,7 +1991,8 @@
         addNewCard(card.word);
         return { 
           type: 'new_card_unlocked', 
-          card: card
+          card: card,
+          grantedFreezeTier: grantedFreezeTier
         };
       } else {
         // 已解鎖，給星星獎勵
@@ -1973,7 +2003,7 @@
           case '普通': starReward = 2; break;    // A 給 2 星星
         }
         LinkageSystem.stars.add(starReward);
-        return { type: 'duplicate', card: card, stars: starReward };
+        return { type: 'duplicate', card: card, stars: starReward, grantedFreezeTier: grantedFreezeTier };
       }
     }
 
@@ -1988,6 +2018,11 @@
         if (result.card.rarity === '超稀有') {
           notifyChatRoomSSR(result.card);
         }
+      }
+
+      // 額外顯示：是否獲得「暫停時間」可消耗道具
+      if (result && result.grantedFreezeTier) {
+        LinkageSystem.notifications.show(`🎁 獲得道具：⏸️ 暫停 ${result.grantedFreezeTier} 秒 ×1`, 'success');
       }
     }
 
@@ -3290,8 +3325,16 @@
       function refreshAllWishSelects() {
         const val = wishSearchGlobal ? wishSearchGlobal.value : '';
         fillWishSelect('超稀有','wishPoolSSR',val);
-        fillWishSelect('稀有','wishPoolR',val);
-        fillWishSelect('普通','wishPoolA',val);
+        const wishPoolR = document.getElementById('wishPoolR');
+        const wishPoolA = document.getElementById('wishPoolA');
+        if (wishPoolR) {
+          wishPoolR.innerHTML = '<option value="">僅可許願 SSR</option>';
+          wishPoolR.disabled = true;
+        }
+        if (wishPoolA) {
+          wishPoolA.innerHTML = '<option value="">僅可許願 SSR</option>';
+          wishPoolA.disabled = true;
+        }
         updateWishPreview();
       }
       refreshAllWishSelects();
@@ -3300,7 +3343,7 @@
         wishSearchGlobal.addEventListener('input', refreshAllWishSelects);
       }
       // 選單事件
-      ['wishPoolSSR','wishPoolR','wishPoolA'].forEach(id => {
+      ['wishPoolSSR'].forEach(id => {
         const sel = document.getElementById(id);
         if (sel) {
           sel.addEventListener('change', function() {
@@ -3355,12 +3398,12 @@
       });
     }
     function getCurrentWishCard() {
-      const ssr = document.getElementById('wishPoolSSR').value;
-      const r = document.getElementById('wishPoolR').value;
-      const a = document.getElementById('wishPoolA').value;
-      const word = ssr || r || a;
+      const ssrEl = document.getElementById('wishPoolSSR');
+      const word = ssrEl ? ssrEl.value : '';
       if (!word) return null;
       const card = allCards.find(card => card.word === word);
+
+      if (!card || card.rarity !== '超稀有') return null;
       
       // 檢查卡片是否已經擁有
       if (card && LinkageSystem.cards.isCardOwned(card.word)) {
@@ -3414,7 +3457,7 @@
     }
 
     // 綁定選單
-    ['wishPoolSSR','wishPoolR','wishPoolA'].forEach(id => {
+    ['wishPoolSSR'].forEach(id => {
       const sel = document.getElementById(id);
       if (sel) {
         sel.addEventListener('change', function() {
