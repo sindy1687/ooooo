@@ -109,7 +109,8 @@ class AchievementSystem {
 
     const modalHTML = `
       <div id="achievementNotificationModal" class="achievement-notification-modal" style="display: none;">
-        <div class="achievement-notification-content">
+        <div class="achievement-notification-content" role="dialog" aria-modal="true" aria-labelledby="notificationTitle">
+          <button class="achievement-notification-x" type="button" aria-label="關閉" onclick="achievementSystem.closeNotification()">✕</button>
           <div class="achievement-notification-header">
             <div class="achievement-notification-icon" id="notificationIcon">🏆</div>
             <h2 class="achievement-notification-title" id="notificationTitle">成就達成！</h2>
@@ -143,237 +144,227 @@ class AchievementSystem {
 
     const modalCSS = `
       <style>
+        :root {
+          --ach-bg: rgba(15, 18, 30, 0.75);
+          --ach-panel: rgba(255, 255, 255, 0.08);
+          --ach-border: rgba(255, 255, 255, 0.18);
+          --ach-text: #e9eefc;
+          --ach-subtext: rgba(233, 238, 252, 0.78);
+          --ach-accent: #7c5cff;
+          --ach-accent2: #00e5ff;
+          --ach-gold: #ffcc4d;
+          --ach-shadow: 0 18px 55px rgba(0, 0, 0, 0.55);
+        }
+
         .achievement-notification-modal {
           position: fixed;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          background: rgba(0, 0, 0, 0.85);
+          inset: 0;
+          background: rgba(0, 0, 0, 0.72);
           display: none;
           justify-content: center;
           align-items: center;
           z-index: 10000;
-          backdrop-filter: blur(12px);
-          animation: modalFadeIn 0.4s ease-out;
+          backdrop-filter: blur(10px);
+          -webkit-backdrop-filter: blur(10px);
+          padding: 14px;
+          animation: achFade 180ms ease-out;
         }
-        
-        @keyframes modalFadeIn {
-          from {
-            opacity: 0;
-            transform: scale(0.7);
-          }
-          to {
-            opacity: 1;
-            transform: scale(1);
-          }
+
+        @keyframes achFade {
+          from { opacity: 0; }
+          to { opacity: 1; }
         }
-        
+
         .achievement-notification-content {
-          background: linear-gradient(135deg, rgba(10, 20, 40, 0.98), rgba(20, 40, 80, 0.98));
-          border: 3px solid #00ffff;
-          border-radius: 25px;
-          padding: 0;
-          max-width: 520px;
-          width: 90%;
-          position: relative;
-          box-shadow: 0 0 50px #00ffff, 0 0 100px #a259ff, 0 0 150px rgba(0, 255, 255, 0.4);
-          animation: modalPop 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55);
-          overflow: hidden;
-        }
-        
-        @keyframes modalPop {
-          0% {
-            transform: scale(0.2) rotate(-15deg);
-            opacity: 0;
-          }
-          50% {
-            transform: scale(1.15) rotate(3deg);
-          }
-          100% {
-            transform: scale(1) rotate(0deg);
-            opacity: 1;
-          }
-        }
-        
-        .achievement-notification-header {
-          background: linear-gradient(90deg, #00ffff, #a259ff);
-          padding: 25px;
-          text-align: center;
-          position: relative;
-          overflow: hidden;
-        }
-        
-        .achievement-notification-header::before {
-          content: '';
-          position: absolute;
-          top: -50%;
-          left: -50%;
-          width: 200%;
-          height: 200%;
-          background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-          animation: shimmer 3s infinite;
-        }
-        
-        .achievement-notification-icon {
-          font-size: 5rem;
-          margin-bottom: 15px;
-          filter: drop-shadow(0 0 25px currentColor);
-          animation: iconFloat 3s ease-in-out infinite;
-          position: relative;
-          z-index: 1;
-        }
-        
-        @keyframes iconFloat {
-          0%, 100% { transform: translateY(0px) rotate(0deg); }
-          25% { transform: translateY(-8px) rotate(2deg); }
-          50% { transform: translateY(-15px) rotate(0deg); }
-          75% { transform: translateY(-8px) rotate(-2deg); }
-        }
-        
-        .achievement-notification-title {
-          font-size: 2rem;
-          font-weight: bold;
-          color: #000;
-          margin: 0;
-          text-shadow: 0 0 15px rgba(255, 255, 255, 0.7);
-          position: relative;
-          z-index: 1;
-          letter-spacing: 1px;
-          font-family: 'Orbitron', 'Microsoft JhengHei', sans-serif;
-        }
-        
-        .achievement-notification-body {
-          padding: 30px;
-          text-align: center;
-        }
-        
-        .achievement-notification-description {
-          font-size: 1.2rem;
-          color: #ddd;
-          margin-bottom: 25px;
-          line-height: 1.6;
-          font-weight: 500;
-          font-family: 'Microsoft JhengHei', sans-serif;
-        }
-        
-        .achievement-notification-reward {
-          background: linear-gradient(90deg, #ffd700, #ffaa00);
-          border-radius: 20px;
-          padding: 20px;
-          margin: 25px 0;
-          color: #000;
-          font-weight: bold;
-          font-size: 1.4rem;
-          box-shadow: 0 0 30px #ffd700;
-          animation: rewardGlow 2s ease-in-out infinite alternate;
-          position: relative;
-          overflow: hidden;
-        }
-        
-        .achievement-notification-reward::before {
-          content: '';
-          position: absolute;
-          top: -50%;
-          left: -50%;
-          width: 200%;
-          height: 200%;
-          background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-          animation: shimmer 2s infinite;
-        }
-        
-        @keyframes rewardGlow {
-          from { 
-            box-shadow: 0 0 30px #ffd700, 0 0 40px #ffaa00;
-            transform: scale(1);
-          }
-          to { 
-            box-shadow: 0 0 40px #ffd700, 0 0 50px #ffaa00, 0 0 60px #ff8800;
-            transform: scale(1.02);
-          }
-        }
-        
-        .achievement-notification-stars {
-          font-size: 1.6rem;
-          margin-right: 10px;
-          animation: starTwinkle 1.5s ease-in-out infinite;
-        }
-        
-        @keyframes starTwinkle {
-          0%, 100% { opacity: 1; transform: scale(1); }
-          50% { opacity: 0.7; transform: scale(1.1); }
-        }
-        
-        .achievement-notification-total {
-          background: rgba(0, 255, 255, 0.15);
-          border: 2px solid #00ffff;
-          border-radius: 15px;
-          padding: 15px;
-          margin: 20px 0;
-          color: #00ffff;
-          font-weight: bold;
-          font-size: 1.1rem;
-          box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
-          font-family: 'Microsoft JhengHei', sans-serif;
-        }
-        
-        .achievement-notification-buttons {
+          width: min(420px, 100%);
+          max-height: 85vh;
           display: flex;
           flex-direction: column;
-          gap: 12px;
-          margin-top: 20px;
+          background: linear-gradient(145deg, rgba(18, 22, 36, 0.92), rgba(10, 12, 22, 0.88));
+          border: 1px solid var(--ach-border);
+          border-radius: 18px;
+          box-shadow: var(--ach-shadow);
+          overflow: hidden;
+          position: relative;
+          transform-origin: center;
+          animation: achPop 240ms ease-out;
         }
-        
+
+        @keyframes achPop {
+          from { transform: translateY(10px) scale(0.96); opacity: 0; }
+          to { transform: translateY(0) scale(1); opacity: 1; }
+        }
+
+        .achievement-notification-x {
+          position: absolute;
+          top: 10px;
+          right: 10px;
+          width: 34px;
+          height: 34px;
+          border-radius: 10px;
+          border: 1px solid rgba(255, 255, 255, 0.16);
+          background: rgba(255, 255, 255, 0.08);
+          color: rgba(255, 255, 255, 0.9);
+          cursor: pointer;
+          display: grid;
+          place-items: center;
+          transition: transform .15s ease, background .15s ease;
+          z-index: 2;
+        }
+
+        .achievement-notification-x:hover {
+          background: rgba(255, 255, 255, 0.14);
+          transform: scale(1.03);
+        }
+
+        .achievement-notification-header {
+          padding: 18px 18px 14px;
+          background: radial-gradient(120% 120% at 10% 0%, rgba(124, 92, 255, 0.45) 0%, rgba(0, 229, 255, 0.22) 40%, rgba(255, 255, 255, 0) 75%);
+          border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+          display: flex;
+          align-items: center;
+          gap: 14px;
+        }
+
+        .achievement-notification-icon {
+          width: 56px;
+          height: 56px;
+          border-radius: 16px;
+          background: rgba(255, 255, 255, 0.10);
+          border: 1px solid rgba(255, 255, 255, 0.14);
+          display: grid;
+          place-items: center;
+          font-size: 2.2rem;
+          box-shadow: 0 0 0 6px rgba(124, 92, 255, 0.12);
+          flex: 0 0 auto;
+        }
+
+        .achievement-notification-title {
+          font-size: 1.25rem;
+          line-height: 1.25;
+          margin: 0;
+          color: var(--ach-text);
+          font-weight: 800;
+          letter-spacing: 0.5px;
+          font-family: 'Microsoft JhengHei', system-ui, -apple-system, sans-serif;
+        }
+
+        .achievement-notification-body {
+          padding: 16px 18px 18px;
+          overflow: auto;
+          -webkit-overflow-scrolling: touch;
+          text-align: left;
+        }
+
+        .achievement-notification-description {
+          font-size: 1.02rem;
+          margin: 0 0 12px;
+          color: var(--ach-subtext);
+          line-height: 1.55;
+          font-family: 'Microsoft JhengHei', system-ui, -apple-system, sans-serif;
+        }
+
+        .achievement-notification-reward {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 10px;
+          padding: 12px 14px;
+          border-radius: 14px;
+          background: linear-gradient(135deg, rgba(255, 204, 77, 0.20), rgba(255, 204, 77, 0.08));
+          border: 1px solid rgba(255, 204, 77, 0.35);
+          color: var(--ach-text);
+          margin: 10px 0 12px;
+          font-weight: 800;
+          box-shadow: 0 10px 28px rgba(255, 204, 77, 0.12);
+        }
+
+        .achievement-notification-stars {
+          font-size: 1.35rem;
+        }
+
+        #notificationRewardText {
+          font-size: 1.05rem;
+        }
+
+        .achievement-notification-total {
+          padding: 11px 14px;
+          border-radius: 14px;
+          background: rgba(255, 255, 255, 0.06);
+          border: 1px solid rgba(255, 255, 255, 0.12);
+          color: rgba(233, 238, 252, 0.9);
+          font-weight: 700;
+          font-size: 0.98rem;
+          margin: 0 0 14px;
+        }
+
+        .achievement-notification-buttons {
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: 10px;
+        }
+
         .achievement-notification-claim,
         .achievement-notification-view,
         .achievement-notification-close {
-          padding: 12px 24px;
           border: none;
-          border-radius: 12px;
-          font-size: 1.1rem;
-          font-weight: bold;
+          border-radius: 14px;
+          padding: 12px 14px;
+          font-size: 1.02rem;
+          font-weight: 800;
           cursor: pointer;
-          transition: all 0.3s ease;
-          font-family: 'Orbitron', 'Microsoft JhengHei', sans-serif;
-          letter-spacing: 1px;
+          letter-spacing: 0.5px;
+          transition: transform .12s ease, filter .12s ease, background .12s ease;
+          font-family: 'Microsoft JhengHei', system-ui, -apple-system, sans-serif;
         }
-        
+
         .achievement-notification-claim {
-          background: linear-gradient(90deg, #00ff00, #00cc00);
-          color: #000;
-          box-shadow: 0 0 20px #00ff00;
+          background: linear-gradient(135deg, #33ff90, #16d66f);
+          color: #052014;
+          box-shadow: 0 12px 30px rgba(22, 214, 111, 0.22);
         }
-        
-        .achievement-notification-claim:hover {
-          transform: scale(1.05);
-          box-shadow: 0 0 30px #00ff00;
-        }
-        
+
         .achievement-notification-view {
-          background: linear-gradient(90deg, #00ffff, #a259ff);
-          color: #000;
-          box-shadow: 0 0 20px #00ffff;
+          background: linear-gradient(135deg, var(--ach-accent2), var(--ach-accent));
+          color: #06111c;
+          box-shadow: 0 12px 30px rgba(124, 92, 255, 0.18);
         }
-        
-        .achievement-notification-view:hover {
-          transform: scale(1.05);
-          box-shadow: 0 0 30px #00ffff;
-        }
-        
+
         .achievement-notification-close {
-          background: rgba(255, 255, 255, 0.2);
-          color: #fff;
-          border: 2px solid rgba(255, 255, 255, 0.3);
+          background: rgba(255, 255, 255, 0.08);
+          color: rgba(233, 238, 252, 0.92);
+          border: 1px solid rgba(255, 255, 255, 0.14);
         }
-        
+
+        .achievement-notification-claim:hover,
+        .achievement-notification-view:hover,
         .achievement-notification-close:hover {
-          background: rgba(255, 255, 255, 0.3);
-          transform: scale(1.02);
+          transform: translateY(-1px);
+          filter: brightness(1.05);
         }
-        
-        @keyframes shimmer {
-          0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
-          100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+
+        .achievement-notification-claim:active,
+        .achievement-notification-view:active,
+        .achievement-notification-close:active {
+          transform: translateY(0);
+          filter: brightness(0.98);
+        }
+
+        /* 寬螢幕時把主要兩顆按鈕改成左右排列 */
+        @media (min-width: 430px) {
+          .achievement-notification-buttons {
+            grid-template-columns: 1fr 1fr;
+          }
+          .achievement-notification-close {
+            grid-column: 1 / -1;
+          }
+        }
+
+        /* 小螢幕字級稍降，避免擠爆 */
+        @media (max-width: 360px) {
+          .achievement-notification-title { font-size: 1.15rem; }
+          .achievement-notification-description { font-size: 0.98rem; }
+          #notificationRewardText { font-size: 1rem; }
         }
       </style>
     `;
@@ -565,8 +556,10 @@ class AchievementSystem {
   // 關閉通知
   closeNotification() {
     const modal = document.getElementById('achievementNotificationModal');
-    modal.style.display = 'none';
-    modal.onclick = null;
+    if (modal) {
+      modal.style.display = 'none';
+      modal.onclick = null;
+    }
     this.currentAchievement = null;
   }
 
