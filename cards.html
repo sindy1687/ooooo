@@ -198,6 +198,98 @@
       box-shadow: var(--shadow-gold), 0 8px 25px rgba(255, 215, 0, 0.3);
     }
 
+    /* ====== 管理面板（密技） ====== */
+    .admin-panel {
+      position: fixed;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: min(520px, calc(100vw - 24px));
+      background: linear-gradient(135deg, rgba(10, 20, 40, 0.97) 0%, rgba(20, 40, 80, 0.92) 100%);
+      border-radius: 18px;
+      border: 2px solid var(--glow-cyan);
+      box-shadow: var(--shadow-primary), var(--shadow-secondary), 0 18px 50px rgba(0,0,0,0.65);
+      padding: 18px 18px 16px;
+      z-index: 9999;
+      display: none;
+      backdrop-filter: blur(12px);
+    }
+
+    .admin-panel.show {
+      display: block;
+    }
+
+    .admin-panel h3 {
+      margin: 0 0 10px;
+      font-size: 1.35rem;
+      color: var(--glow-cyan);
+      text-shadow: 0 0 12px rgba(0,255,255,0.5);
+      letter-spacing: 1px;
+    }
+
+    .admin-panel p {
+      margin: 0 0 14px;
+      color: rgba(255,255,255,0.85);
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    .admin-panel .row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .admin-panel .admin-btn {
+      background: var(--gradient-secondary);
+      color: #000;
+      border: none;
+      padding: 12px 16px;
+      border-radius: 14px;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: var(--shadow-gold);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      letter-spacing: 0.5px;
+      min-width: 200px;
+    }
+
+    .admin-panel .admin-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-gold), 0 10px 28px rgba(255, 215, 0, 0.25);
+    }
+
+    .admin-panel .close-btn {
+      background: rgba(255, 255, 255, 0.12);
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      padding: 10px 14px;
+      border-radius: 14px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform 0.2s ease, background 0.2s ease;
+      min-width: 120px;
+    }
+
+    .admin-panel .close-btn:hover {
+      transform: translateY(-2px);
+      background: rgba(255, 255, 255, 0.18);
+    }
+
+    .admin-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.65);
+      z-index: 9998;
+      display: none;
+    }
+
+    .admin-overlay.show {
+      display: block;
+    }
+
     /* ====== 控制列（搜尋、稀有度、類別） ====== */
     #controls {
       margin: 25px auto;
@@ -1920,6 +2012,19 @@
     <source src="sound/午後放鬆時光（純音樂）.mp3" type="audio/mpeg">
   </audio>
 
+  <div class="admin-overlay" id="adminOverlay" onclick="hideAdminPanel()"></div>
+  <div class="admin-panel" id="adminPanel">
+    <h3>🛠️ 測試後台（密技）</h3>
+    <p>
+      你可以用這裡快速解鎖一個「分類套裝」，立即看到「完成分類 → 寶箱 → 邀請碼」的效果。<br>
+      提示：按 <b>Esc</b> 可關閉。
+    </p>
+    <div class="row">
+      <button class="admin-btn" onclick="unlockRandomCategorySet()">🎲 隨機解鎖一個分類套裝</button>
+      <button class="close-btn" onclick="hideAdminPanel()">關閉</button>
+    </div>
+  </div>
+
   <div style="
     width: 100%;
     max-width: 100vw;
@@ -2219,6 +2324,79 @@
     // -------- 0. 從 cards.js 取得 allCards 資料 --------
     console.log('正在載入 allCards...');
     console.log('window.allCards:', window.allCards);
+
+    // ====== Admin 密技：輸入 cards 開啟面板 ======
+    let adminKeyBuffer = '';
+    const adminSecret = 'cards';
+
+    function showAdminPanel() {
+      const panel = document.getElementById('adminPanel');
+      const overlay = document.getElementById('adminOverlay');
+      if (panel) panel.classList.add('show');
+      if (overlay) overlay.classList.add('show');
+    }
+
+    function hideAdminPanel() {
+      const panel = document.getElementById('adminPanel');
+      const overlay = document.getElementById('adminOverlay');
+      if (panel) panel.classList.remove('show');
+      if (overlay) overlay.classList.remove('show');
+    }
+
+    function unlockRandomCategorySet() {
+      if (!window.allCards || !window.allCards.length) {
+        alert('allCards 尚未載入，請稍後再試');
+        return;
+      }
+      if (typeof LinkageSystem === 'undefined' || !LinkageSystem.cards) {
+        alert('LinkageSystem.cards 不可用');
+        return;
+      }
+
+      const categories = Array.from(new Set(window.allCards.map(c => c && c.category).filter(Boolean)));
+      if (categories.length === 0) {
+        alert('找不到任何分類');
+        return;
+      }
+
+      const cat = categories[Math.floor(Math.random() * categories.length)];
+      const cardsInCat = window.allCards.filter(c => c && c.category === cat);
+
+      cardsInCat.forEach(c => {
+        if (c && c.word) {
+          LinkageSystem.cards.addCard(c.word);
+        }
+      });
+
+      if (LinkageSystem.notifications && typeof LinkageSystem.notifications.show === 'function') {
+        LinkageSystem.notifications.show(`🧪 測試後台：已隨機解鎖分類「${cat}」\n共 ${cardsInCat.length} 張卡片`, 'success', 6000);
+      } else {
+        alert(`已隨機解鎖分類：${cat}（${cardsInCat.length} 張）`);
+      }
+
+      try {
+        renderCards();
+        updateCategoryStats();
+      } catch (e) {}
+    }
+
+    document.addEventListener('keydown', (e) => {
+      const target = e.target;
+      const isTypingField = target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA');
+      if (isTypingField) return;
+
+      if (e.key === 'Escape') {
+        hideAdminPanel();
+        return;
+      }
+
+      if (e.key.length === 1) {
+        adminKeyBuffer = (adminKeyBuffer + e.key.toLowerCase()).slice(-adminSecret.length);
+        if (adminKeyBuffer === adminSecret) {
+          showAdminPanel();
+        }
+      }
+    });
     
     // 等待 cards.js 完全載入
     function waitForAllCards() {
